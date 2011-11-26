@@ -1,0 +1,5 @@
+  The argparse4j is Java port of Python's famous
+  {{{http://docs.python.org/library/argparse.html}argparse}}
+  command line argument parser module.
+
+  See {{{usage.html}User Manual}} for general usage of argparse4j.
