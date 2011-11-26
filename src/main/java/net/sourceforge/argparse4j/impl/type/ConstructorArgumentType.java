@@ -1,0 +1,90 @@
+/*
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package net.sourceforge.argparse4j.impl.type;
+
+import java.lang.reflect.InvocationTargetException;
+
+import net.sourceforge.argparse4j.inf.Argument;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.ArgumentType;
+
+/**
+ * <p>
+ * This implementation converts String value into given type using given type's
+ * constructor.
+ * </p>
+ * <p>
+ * The constructor must have 1 String argument. If error occurred inside the
+ * constructor, {@link ArgumentParserException} will be thrown. If error
+ * occurred in other locations, subclass of {@link RuntimeException} will be
+ * thrown.
+ * </p>
+ * 
+ */
+public class ConstructorArgumentType implements ArgumentType {
+
+    private Class<?> type_;
+
+    /**
+     * <p>
+     * Creates {@link ConstructorArgumentType} object with given {@code type}.
+     * </p>
+     * <p>
+     * The constructor of {@code type} must have 1 String argument.
+     * </p>
+     * 
+     * @param type
+     *            The type String value should be converted to.
+     */
+    public ConstructorArgumentType(Class<?> type) {
+        type_ = type;
+    }
+
+    @Override
+    public Object convert(ArgumentParser parser, Argument arg, String value)
+            throws ArgumentParserException {
+        Object obj = null;
+        try {
+            obj = type_.getConstructor(String.class).newInstance(value);
+        } catch (InstantiationException e) {
+            handleInstatiationError(e);
+        } catch (IllegalAccessException e) {
+            handleInstatiationError(e);
+        } catch (InvocationTargetException e) {
+            throw new ArgumentParserException(String.format(
+                    "could not convert '%s' to %s (%s)", value,
+                    type_.getSimpleName(), e.getCause().getMessage()),
+                    e.getCause(), arg);
+        } catch (NoSuchMethodException e) {
+            handleInstatiationError(e);
+        }
+        return obj;
+    }
+
+    private void handleInstatiationError(Exception e) {
+        throw new IllegalArgumentException("Failed to instantiate object", e);
+    }
+
+}
