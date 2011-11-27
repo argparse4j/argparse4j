@@ -127,7 +127,7 @@ public class ArgumentImplTest {
             arg.convert(null, "hello");
             fail();
         } catch(ArgumentParserException e) {
-            assertEquals("argument --foo: expects value in {world}", e.getMessage());
+            assertEquals("argument --foo: invalid choice: 'hello' (choose from {world})", e.getMessage());
         }
     }
     
