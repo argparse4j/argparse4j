@@ -1,6 +1,6 @@
 The argparse4j User Manual
 
-  The argparse4j is Java port of Python's famous
+  The argparse4j is Java port of Python's
   {{{http://docs.python.org/library/argparse.html}argparse}} command
   line argument parser.  Because of the difference of language, we
   cannot use same syntax and usage of original, but we tried to bring
@@ -469,9 +469,9 @@ ArgumentParser object:
 
  * {{{help}help()}} - A brief description of what the argument does.
 
- * {{{metavar}#metavar()}}- A name for the argument in usage messages.
+ * {{{metavar}metavar()}}- A name for the argument in usage messages.
 
- * {{{dest}#dest()}} - The name of the attribute to be added as a
+ * {{{dest}dest()}} - The name of the attribute to be added as a
    result of <<<ArgumentParser.parseArgs()>>>.
 
   The following sections describe how each of these are used.
