@@ -6,6 +6,7 @@
 		<menu name="Overview">
 			<item name="Introduction" href="index.html" />
 			<item name="Download" href="http://sourceforge.net/projects/argparse4j/files/" />
+			<item name="Source Code" href="https://github.com/tatsuhiro-t/argparse4j" />
 			<item name="Usage" href="usage.html" />
 			<item name="Examples" href="examples.html" />
 		</menu>
