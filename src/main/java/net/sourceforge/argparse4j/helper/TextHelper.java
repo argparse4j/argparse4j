@@ -26,6 +26,8 @@ package net.sourceforge.argparse4j.helper;
 import java.io.PrintWriter;
 import java.text.BreakIterator;
 import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * <p>
@@ -80,6 +82,7 @@ public final class TextHelper {
     public static String wrap(TextWidthCounter textWidthCounter, String s,
             int width, int initialOffset, String initialIndent,
             String subsequentIndent) {
+        s = removeLineSeparator(s);
         BreakIterator iter = BreakIterator.getLineInstance();
         iter.setText(s);
         StringBuffer sb = new StringBuffer(initialIndent);
@@ -117,11 +120,17 @@ public final class TextHelper {
     }
 
     public static String nonNull(String str) {
-        if(str == null) {
+        if (str == null) {
             return "";
         } else {
             return str;
         }
     }
 
+    private static final Pattern lineSepPat_ = Pattern.compile("(\r\n|\r|\n)");
+
+    public static String removeLineSeparator(String str) {
+        Matcher m = lineSepPat_.matcher(str);
+        return m.replaceAll(" ");
+    }
 }

@@ -6,7 +6,6 @@ import net.sourceforge.argparse4j.helper.TextHelper;
 
 import org.junit.Test;
 
-
 public class StringHelperTest {
 
     @Test
@@ -23,7 +22,13 @@ public class StringHelperTest {
         String s = "alpha bravo charlie delta echo foxtrot golf hotel india juliet";
         assertEquals("        alpha bravo \n" + "    charlie delta \n"
                 + "    echo foxtrot \n" + "    golf hotel \n"
-                + "    india juliet",
-                TextHelper.wrap(new ASCIITextWidthCounter(), s, 20, 0, "        ", "    "));
+                + "    india juliet", TextHelper.wrap(
+                new ASCIITextWidthCounter(), s, 20, 0, "        ", "    "));
+    }
+
+    @Test
+    public void testRemoveLineSeparator() {
+        String s = "\nalpha\r\r\n\r\nbravo\r";
+        assertEquals(" alpha   bravo ", TextHelper.removeLineSeparator(s));
     }
 }
