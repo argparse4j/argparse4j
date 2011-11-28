@@ -34,6 +34,7 @@ import net.sourceforge.argparse4j.impl.action.StoreFalseArgumentAction;
 import net.sourceforge.argparse4j.impl.action.StoreTrueArgumentAction;
 import net.sourceforge.argparse4j.impl.action.VersionArgumentAction;
 import net.sourceforge.argparse4j.impl.choice.RangeArgumentChoice;
+import net.sourceforge.argparse4j.impl.type.EnumArgumentType;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.FeatureControl;
@@ -216,5 +217,22 @@ public final class Arguments {
      */
     public static VersionArgumentAction version() {
         return version_;
+    }
+
+    /**
+     * <p>
+     * Returns {@link EnumArgumentType} with given enum {@code type}.
+     * </p>
+     * <p>
+     * Since enum does not have a constructor with string argument, you cannot
+     * use {@link Argument#type(Class)}. Instead use this convenient function.
+     * </p>
+     * 
+     * @param type
+     *            The enum type
+     * @return {@link EnumArgumentType} object
+     */
+    public static <T extends Enum<T>> EnumArgumentType<T> enumType(Class<T> type) {
+        return new EnumArgumentType<T>(type);
     }
 }
