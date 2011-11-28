@@ -21,7 +21,7 @@ public class EnumArgumentTypeTest {
             type.convert(null, new MockArgument(), "DELTA");
         } catch (ArgumentParserException e) {
             assertEquals(
-                    "argument null: could not convert 'DELTA' to enum type (choose from {ALPHA,BRAVO,CHARLIE})",
+                    "argument null: could not convert 'DELTA' (choose from {ALPHA,BRAVO,CHARLIE})",
                     e.getMessage());
         }
     }

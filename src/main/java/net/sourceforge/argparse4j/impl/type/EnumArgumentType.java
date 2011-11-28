@@ -41,8 +41,8 @@ public class EnumArgumentType<T extends Enum<T>> implements ArgumentType {
             String choices = TextHelper.concat(type_.getEnumConstants(), 0,
                     ",", "{", "}");
             throw new ArgumentParserException(String.format(
-                    "could not convert '%s' to enum type (choose from %s)",
-                    value, choices), e, arg);
+                    "could not convert '%s' (choose from %s)", value, choices),
+                    e, arg);
         }
     }
 
