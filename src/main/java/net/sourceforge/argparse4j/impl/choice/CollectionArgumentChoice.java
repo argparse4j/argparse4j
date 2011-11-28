@@ -64,7 +64,20 @@ public class CollectionArgumentChoice<E> implements ArgumentChoice {
 
     @Override
     public boolean contains(Object val) {
-        return values.contains(val);
+        if (values.isEmpty()) {
+            // If values is empty, we don't have type information, so
+            // just return false.
+            return false;
+        }
+        Class<?> expectedType = values.iterator().next().getClass();
+        if (expectedType.equals(val.getClass())) {
+            return values.contains(val);
+        } else {
+            throw new IllegalArgumentException(String.format(
+                    "type mismatch (Make sure that you specified correct Argument.type()):"
+                            + " expected: %s actual: %s",
+                    expectedType.getName(), val.getClass().getName()));
+        }
     }
 
     @Override

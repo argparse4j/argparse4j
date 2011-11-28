@@ -6,12 +6,30 @@ import org.junit.Test;
 
 public class CollectionArgumentChoiceTest {
 
-    private CollectionArgumentChoice choice = new CollectionArgumentChoice(1, 2, 3);
-    
+    private CollectionArgumentChoice<Integer> choice = new CollectionArgumentChoice<Integer>(
+            1, 2, 3);
+
     @Test
     public void testContains() {
         assertTrue(choice.contains(2));
         assertFalse(choice.contains(0));
+    }
+
+    @Test
+    public void testContainsWithEmptyCollection() {
+        CollectionArgumentChoice<Integer> choice = new CollectionArgumentChoice<Integer>();
+        assertFalse(choice.contains(0));
+        assertFalse(choice.contains("0"));
+    }
+
+    @Test
+    public void testContainsWithWrongType() {
+        try {
+            choice.contains("2");
+            fail();
+        } catch (IllegalArgumentException e) {
+            // success
+        }
     }
 
     @Test
