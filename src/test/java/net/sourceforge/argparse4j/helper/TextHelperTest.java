@@ -6,7 +6,7 @@ import net.sourceforge.argparse4j.helper.TextHelper;
 
 import org.junit.Test;
 
-public class StringHelperTest {
+public class TextHelperTest {
 
     @Test
     public void testConcat() {
