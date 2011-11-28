@@ -1183,6 +1183,9 @@ ArgumentParser object:
  
 +---
 
+  Please pay attention to the type specified in <<<Argument.type()>>>
+  and type in <<<Argument.choices()>>>. If they are not compatible,
+  subclass of RuntimeException will be thrown.
 
 ** required()
 
