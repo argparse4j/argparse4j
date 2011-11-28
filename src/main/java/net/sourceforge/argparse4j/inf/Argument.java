@@ -105,7 +105,7 @@ public interface Argument {
      *            The const values
      * @return this
      */
-    Argument setConst(Object... values);
+    <E> Argument setConst(E... values);
 
     /**
      * <p>
@@ -137,7 +137,7 @@ public interface Argument {
      *            The default values
      * @return this
      */
-    Argument setDefault(Object... values);
+    <E> Argument setDefault(E... values);
 
     /**
      * <p>
@@ -168,7 +168,7 @@ public interface Argument {
      *            to.
      * @return this
      */
-    Argument type(Class<?> type);
+    <T> Argument type(Class<T> type);
 
     /**
      * <p>
@@ -235,7 +235,7 @@ public interface Argument {
      *            A collection of the allowable values
      * @return this
      */
-    Argument choices(Collection<?> values);
+    <E> Argument choices(Collection<E> values);
 
     /**
      * Sets a collection of the allowable values for the argument.
@@ -244,7 +244,7 @@ public interface Argument {
      *            A collection of the allowable values
      * @return this
      */
-    Argument choices(Object... values);
+    <E> Argument choices(E... values);
 
     /**
      * <p>

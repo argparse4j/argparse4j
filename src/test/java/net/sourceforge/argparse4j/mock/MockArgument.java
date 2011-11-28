@@ -29,7 +29,7 @@ public class MockArgument implements Argument {
     }
 
     @Override
-    public Argument setConst(Object... values) {
+    public <E> Argument setConst(E... values) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -41,7 +41,7 @@ public class MockArgument implements Argument {
     }
 
     @Override
-    public Argument setDefault(Object... values) {
+    public <E> Argument setDefault(E... values) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -53,7 +53,7 @@ public class MockArgument implements Argument {
     }
 
     @Override
-    public Argument type(Class<?> type) {
+    public <T> Argument type(Class<T> type) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -83,13 +83,13 @@ public class MockArgument implements Argument {
     }
 
     @Override
-    public Argument choices(Collection<?> values) {
+    public <E> Argument choices(Collection<E> values) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Argument choices(Object... values) {
+    public <E> Argument choices(E... values) {
         // TODO Auto-generated method stub
         return null;
     }

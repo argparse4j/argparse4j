@@ -53,8 +53,8 @@ public class AppendArgumentAction implements ArgumentAction {
             throws ArgumentParserException {
         if (attrs.containsKey(arg.getDest())) {
             Object obj = attrs.get(arg.getDest());
-            if (obj instanceof List<?>) {
-                ((List<Object>) obj).add(value);
+            if (obj instanceof List) {
+                ((List) obj).add(value);
                 return;
             }
         }

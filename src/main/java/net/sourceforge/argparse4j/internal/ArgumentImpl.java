@@ -263,7 +263,7 @@ public final class ArgumentImpl implements Argument {
     }
 
     @Override
-    public ArgumentImpl setConst(Object... values) {
+    public <E> ArgumentImpl setConst(E... values) {
         // Allow null
         const_ = Arrays.asList(values);
         return this;
@@ -277,7 +277,7 @@ public final class ArgumentImpl implements Argument {
     }
 
     @Override
-    public ArgumentImpl setDefault(Object... values) {
+    public <E> ArgumentImpl setDefault(E... values) {
         // Allow null
         default_ = Arrays.asList(values);
         return this;
@@ -290,11 +290,11 @@ public final class ArgumentImpl implements Argument {
     }
 
     @Override
-    public ArgumentImpl type(Class<?> type) {
+    public <T> ArgumentImpl type(Class<T> type) {
         if (type == null) {
             throw new IllegalArgumentException("type cannot be null");
         }
-        type_ = new ConstructorArgumentType(type);
+        type_ = new ConstructorArgumentType<T>(type);
         return this;
     }
 
@@ -333,20 +333,20 @@ public final class ArgumentImpl implements Argument {
     }
 
     @Override
-    public ArgumentImpl choices(Collection<?> values) {
+    public <E> ArgumentImpl choices(Collection<E> values) {
         if (values == null) {
             throw new IllegalArgumentException("choice cannot be null");
         }
-        choice_ = new CollectionArgumentChoice(values);
+        choice_ = new CollectionArgumentChoice<E>(values);
         return this;
     }
 
     @Override
-    public ArgumentImpl choices(Object... values) {
+    public <E> ArgumentImpl choices(E... values) {
         if (values == null) {
             throw new IllegalArgumentException("choice cannot be null");
         }
-        choice_ = new CollectionArgumentChoice(values);
+        choice_ = new CollectionArgumentChoice<E>(values);
         return this;
     }
 

@@ -38,9 +38,9 @@ import net.sourceforge.argparse4j.inf.ArgumentChoice;
  * given in constructor argument.
  * </p>
  */
-public class CollectionArgumentChoice implements ArgumentChoice {
+public class CollectionArgumentChoice<E> implements ArgumentChoice {
 
-    private Collection<?> values;
+    private Collection<E> values;
 
     /**
      * Initializes this object from given values.
@@ -48,7 +48,7 @@ public class CollectionArgumentChoice implements ArgumentChoice {
      * @param values
      *            Valid values
      */
-    public CollectionArgumentChoice(Object... values) {
+    public CollectionArgumentChoice(E... values) {
         this.values = Arrays.asList(values);
     }
 
@@ -58,7 +58,7 @@ public class CollectionArgumentChoice implements ArgumentChoice {
      * @param values
      *            Valid values
      */
-    public CollectionArgumentChoice(Collection<?> values) {
+    public CollectionArgumentChoice(Collection<E> values) {
         this.values = values;
     }
 

@@ -55,8 +55,8 @@ public class AppendConstArgumentAction implements ArgumentAction {
             throws ArgumentParserException {
         if (attrs.containsKey(arg.getDest())) {
             Object obj = attrs.get(arg.getDest());
-            if (obj instanceof List<?>) {
-                ((List<Object>) obj).add(arg.getConst());
+            if (obj instanceof List) {
+                ((List) obj).add(arg.getConst());
                 return;
             }
         }

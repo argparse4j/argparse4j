@@ -43,9 +43,9 @@ import net.sourceforge.argparse4j.inf.BaseArgumentParser;
  * </p>
  * 
  */
-public class ConstructorArgumentType implements ArgumentType {
+public class ConstructorArgumentType<T> implements ArgumentType {
 
-    private Class<?> type_;
+    private Class<T> type_;
 
     /**
      * <p>
@@ -58,7 +58,7 @@ public class ConstructorArgumentType implements ArgumentType {
      * @param type
      *            The type String value should be converted to.
      */
-    public ConstructorArgumentType(Class<?> type) {
+    public ConstructorArgumentType(Class<T> type) {
         type_ = type;
     }
 
