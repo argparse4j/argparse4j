@@ -66,6 +66,19 @@ public class Namespace {
     }
 
     /**
+     * Returns attribute as {@link String} with given attribute name
+     * {@code dest}.
+     * 
+     * @param dest
+     *            The attribute name
+     * @return The attribute value casted to {@link String}, or {@code null} if
+     *         is not found.
+     */
+    public String getString(String dest) {
+        return (String) attrs_.get(dest);
+    }
+
+    /**
      * Returns attribute as {@link Integer} with given attribute name
      * {@code dest}.
      * 
@@ -111,8 +124,8 @@ public class Namespace {
      * @return The attribute value casted to {@link List}, or {@code null} if it
      *         is not found.
      */
-    public List<?> getList(String dest) {
-        return (List<?>) attrs_.get(dest);
+    public <E> List<E> getList(String dest) {
+        return (List<E>) attrs_.get(dest);
     }
 
     /**
