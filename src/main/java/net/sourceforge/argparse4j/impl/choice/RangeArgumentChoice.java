@@ -41,8 +41,8 @@ import net.sourceforge.argparse4j.inf.ArgumentChoice;
 public class RangeArgumentChoice<T extends Comparable<T>> implements
         ArgumentChoice {
 
-    private T min;
-    private T max;
+    private T min_;
+    private T max_;
 
     /**
      * Creates object using range [{@code min}, {@code max}], inclusive.
@@ -53,20 +53,20 @@ public class RangeArgumentChoice<T extends Comparable<T>> implements
      *            The upperbound of the range, inclusive.
      */
     public RangeArgumentChoice(T min, T max) {
-        this.min = min;
-        this.max = max;
+        min_ = min;
+        max_ = max;
     }
 
     @Override
     public boolean contains(Object val) {
         try {
-            if (min.getClass().equals(val.getClass())) {
+            if (min_.getClass().equals(val.getClass())) {
                 T v = (T) val;
-                return min.compareTo(v) <= 0 && 0 <= max.compareTo(v);
+                return min_.compareTo(v) <= 0 && 0 <= max_.compareTo(v);
             } else {
                 throw new IllegalArgumentException(String.format(
                         "type mismatch (Make sure that you specified corrent Argument.type()):"
-                                + " expected: %s actual: %s", min.getClass()
+                                + " expected: %s actual: %s", min_.getClass()
                                 .getName(), val.getClass().getName()));
             }
         } catch (ClassCastException e) {
@@ -76,7 +76,7 @@ public class RangeArgumentChoice<T extends Comparable<T>> implements
 
     @Override
     public String textualFormat() {
-        return String.format("{%s..%s}", min, max);
+        return String.format("{%s..%s}", min_, max_);
     }
 
     @Override

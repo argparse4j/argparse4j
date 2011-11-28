@@ -40,7 +40,7 @@ import net.sourceforge.argparse4j.inf.ArgumentChoice;
  */
 public class CollectionArgumentChoice<E> implements ArgumentChoice {
 
-    private Collection<E> values;
+    private Collection<E> values_;
 
     /**
      * Initializes this object from given values.
@@ -49,7 +49,7 @@ public class CollectionArgumentChoice<E> implements ArgumentChoice {
      *            Valid values
      */
     public CollectionArgumentChoice(E... values) {
-        this.values = Arrays.asList(values);
+        values_ = Arrays.asList(values);
     }
 
     /**
@@ -59,19 +59,19 @@ public class CollectionArgumentChoice<E> implements ArgumentChoice {
      *            Valid values
      */
     public CollectionArgumentChoice(Collection<E> values) {
-        this.values = values;
+        values_ = values;
     }
 
     @Override
     public boolean contains(Object val) {
-        if (values.isEmpty()) {
+        if (values_.isEmpty()) {
             // If values is empty, we don't have type information, so
             // just return false.
             return false;
         }
-        Class<?> expectedType = values.iterator().next().getClass();
+        Class<?> expectedType = values_.iterator().next().getClass();
         if (expectedType.equals(val.getClass())) {
-            return values.contains(val);
+            return values_.contains(val);
         } else {
             throw new IllegalArgumentException(String.format(
                     "type mismatch (Make sure that you specified correct Argument.type()):"
@@ -82,7 +82,7 @@ public class CollectionArgumentChoice<E> implements ArgumentChoice {
 
     @Override
     public String textualFormat() {
-        return TextHelper.concat(values, 0, ",", "{", "}");
+        return TextHelper.concat(values_, 0, ",", "{", "}");
     }
 
     @Override
