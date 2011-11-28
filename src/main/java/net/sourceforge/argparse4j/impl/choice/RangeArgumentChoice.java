@@ -59,18 +59,14 @@ public class RangeArgumentChoice<T extends Comparable<T>> implements
 
     @Override
     public boolean contains(Object val) {
-        try {
-            if (min_.getClass().equals(val.getClass())) {
-                T v = (T) val;
-                return min_.compareTo(v) <= 0 && 0 <= max_.compareTo(v);
-            } else {
-                throw new IllegalArgumentException(String.format(
-                        "type mismatch (Make sure that you specified corrent Argument.type()):"
-                                + " expected: %s actual: %s", min_.getClass()
-                                .getName(), val.getClass().getName()));
-            }
-        } catch (ClassCastException e) {
-            return false;
+        if (min_.getClass().equals(val.getClass())) {
+            T v = (T) val;
+            return min_.compareTo(v) <= 0 && 0 <= max_.compareTo(v);
+        } else {
+            throw new IllegalArgumentException(String.format(
+                    "type mismatch (Make sure that you specified corrent Argument.type()):"
+                            + " expected: %s actual: %s", min_.getClass()
+                            .getName(), val.getClass().getName()));
         }
     }
 
