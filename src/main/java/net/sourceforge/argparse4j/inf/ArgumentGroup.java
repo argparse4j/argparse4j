@@ -45,7 +45,7 @@ public interface ArgumentGroup {
      * returns it.
      * </p>
      * <p>
-     * See {@link ArgumentParser#addArgument(String...)} for details.
+     * See {@link BaseArgumentParser#addArgument(String...)} for details.
      * </p>
      * 
      * @param nameOrFlags

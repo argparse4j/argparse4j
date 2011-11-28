@@ -27,7 +27,7 @@ import java.util.Map;
 
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentAction;
-import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.inf.BaseArgumentParser;
 
 /**
  * <p>
@@ -41,7 +41,7 @@ import net.sourceforge.argparse4j.inf.ArgumentParser;
 public class StoreArgumentAction implements ArgumentAction {
 
     @Override
-    public void run(ArgumentParser parser, Argument arg,
+    public void run(BaseArgumentParser parser, Argument arg,
             Map<String, Object> attrs, String flag, Object value) {
         attrs.put(arg.getDest(), value);
     }

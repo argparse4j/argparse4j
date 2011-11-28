@@ -30,17 +30,8 @@ import java.util.Map;
  * This interface defines Subparser used to add sub-command to
  * {@link ArgumentParser}.
  * </p>
- * <p>
- * This interface extends {@link ArgumentParser}, so it can be used just like
- * {@link ArgumentParser}, but some operations will not be supported, such as
- * {@link ArgumentParser#parseArgs(String[])} and other overloaded methods,
- * {@link ArgumentParser#handleError(ArgumentParserException)} and
- * {@link ArgumentParser#addSubparsers()}. If these methods are called, they
- * will throw subclass of {@link RuntimeException}.
- * </p>
- * 
  */
-public interface Subparser extends ArgumentParser {
+public interface Subparser extends BaseArgumentParser {
 
     @Override
     Subparser description(String description);

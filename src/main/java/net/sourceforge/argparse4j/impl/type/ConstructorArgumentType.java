@@ -26,9 +26,9 @@ package net.sourceforge.argparse4j.impl.type;
 import java.lang.reflect.InvocationTargetException;
 
 import net.sourceforge.argparse4j.inf.Argument;
-import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.ArgumentType;
+import net.sourceforge.argparse4j.inf.BaseArgumentParser;
 
 /**
  * <p>
@@ -63,7 +63,7 @@ public class ConstructorArgumentType implements ArgumentType {
     }
 
     @Override
-    public Object convert(ArgumentParser parser, Argument arg, String value)
+    public Object convert(BaseArgumentParser parser, Argument arg, String value)
             throws ArgumentParserException {
         Object obj = null;
         try {

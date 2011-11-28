@@ -27,8 +27,8 @@ import java.util.Map;
 
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentAction;
-import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.BaseArgumentParser;
 
 /**
  * <p>
@@ -36,7 +36,7 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
  * </p>
  * <p>
  * Please note that this
- * {@link #run(ArgumentParser, Argument, Map, String, Object)} terminates
+ * {@link #run(BaseArgumentParser, Argument, Map, String, Object)} terminates
  * program after printing the help message. {@link #consumeArgument()} always
  * returns {@code false}.
  * </p>
@@ -45,7 +45,7 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
 public class HelpArgumentAction implements ArgumentAction {
 
     @Override
-    public void run(ArgumentParser parser, Argument arg,
+    public void run(BaseArgumentParser parser, Argument arg,
             Map<String, Object> attrs, String flag, Object value)
             throws ArgumentParserException {
         parser.printHelp();

@@ -50,6 +50,6 @@ public interface ArgumentType {
      * @throws ArgumentParserException
      *             If conversion fails.
      */
-    Object convert(ArgumentParser parser, Argument arg, String value)
+    Object convert(BaseArgumentParser parser, Argument arg, String value)
             throws ArgumentParserException;
 }

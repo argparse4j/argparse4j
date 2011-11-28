@@ -29,8 +29,8 @@ import java.util.Map;
 
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentAction;
-import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.BaseArgumentParser;
 
 /**
  * <p>
@@ -48,7 +48,7 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
 public class AppendArgumentAction implements ArgumentAction {
 
     @Override
-    public void run(ArgumentParser parser, Argument arg,
+    public void run(BaseArgumentParser parser, Argument arg,
             Map<String, Object> attrs, String flag, Object value)
             throws ArgumentParserException {
         if (attrs.containsKey(arg.getDest())) {

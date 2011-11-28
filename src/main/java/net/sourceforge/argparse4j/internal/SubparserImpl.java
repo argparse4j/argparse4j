@@ -37,7 +37,7 @@ import net.sourceforge.argparse4j.inf.Subparsers;
 
 /**
  * <strong>The application code must not use this class directly.</strong>
- *
+ * 
  */
 public final class SubparserImpl implements Subparser {
 
@@ -56,12 +56,6 @@ public final class SubparserImpl implements Subparser {
     @Override
     public Argument addArgument(String... nameOrFlags) {
         return parser_.addArgument(nameOrFlags);
-    }
-
-    @Override
-    public Subparsers addSubparsers() {
-        throw new UnsupportedOperationException(
-                "Subparser does not support addSubparsers() method");
     }
 
     @Override
@@ -153,38 +147,6 @@ public final class SubparserImpl implements Subparser {
     @Override
     public Object getDefault(String dest) {
         return parser_.getDefault(dest);
-    }
-
-    @Override
-    public Namespace parseArgs(String[] args) throws ArgumentParserException {
-        throw new UnsupportedOperationException(
-                "Subparser does not support parseArgs() method");
-    }
-
-    @Override
-    public void parseArgs(String[] args, Map<String, Object> attrs) {
-        throw new UnsupportedOperationException(
-                "Subparser does not support parseArgs() method");
-    }
-
-    @Override
-    public void parseArgs(String[] args, Object userData)
-            throws ArgumentParserException {
-        throw new UnsupportedOperationException(
-                "Subparser does not support parseArgs() method");
-    }
-
-    @Override
-    public void parseArgs(String[] args, Map<String, Object> attrs,
-            Object userData) throws ArgumentParserException {
-        throw new UnsupportedOperationException(
-                "Subparser does not support parseArgs() method");
-    }
-
-    @Override
-    public void handleError(ArgumentParserException e) {
-        throw new UnsupportedOperationException(
-                "Subparser does not support handleError() method");
     }
 
     @Override

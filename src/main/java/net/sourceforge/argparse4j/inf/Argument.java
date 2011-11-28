@@ -28,7 +28,7 @@ import java.util.List;
 
 /**
  * This interface provides a way to specify parameters to argument to be
- * processed in {@link ArgumentParser} object.
+ * processed in {@link BaseArgumentParser} object.
  * 
  */
 public interface Argument {
@@ -293,7 +293,7 @@ public interface Argument {
      * 
      * <p>
      * For optional arguments, this method returns the first argument given in
-     * {@link ArgumentParser#addArgument(String...)}. For positional arguments,
+     * {@link BaseArgumentParser#addArgument(String...)}. For positional arguments,
      * this method returns the flags joined with "/", e.g. {@code -f/--foo}.
      * </p>
      * 
