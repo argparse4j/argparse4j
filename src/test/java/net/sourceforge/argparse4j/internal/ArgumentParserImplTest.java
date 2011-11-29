@@ -14,30 +14,17 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.FileInputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.xml.ws.ServiceMode;
 
 import net.sourceforge.argparse4j.annotation.Arg;
-import net.sourceforge.argparse4j.impl.Arguments;
-import net.sourceforge.argparse4j.impl.action.AppendConstArgumentAction;
-import net.sourceforge.argparse4j.impl.action.StoreConstArgumentAction;
-import net.sourceforge.argparse4j.impl.action.StoreFalseArgumentAction;
 import net.sourceforge.argparse4j.inf.ArgumentGroup;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import net.sourceforge.argparse4j.inf.Subparsers;
-import net.sourceforge.argparse4j.internal.ArgumentImpl;
-import net.sourceforge.argparse4j.internal.ArgumentParserImpl;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -551,7 +538,7 @@ public class ArgumentParserImplTest {
             throws ArgumentParserException {
         Subparsers subparsers = ap.addSubparsers().help("subcommand help")
                 .title("mysubcommands").description("valid subcommands");
-        Subparser parser = subparsers.addParser("install").help("install help");
+        subparsers.addParser("install").help("install help");
         assertEquals("usage: argparse4j [-h] {install} ...\n" + "\n"
                 + "optional arguments:\n"
                 + "  -h, --help             show this help message and exit\n"

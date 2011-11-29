@@ -11,8 +11,8 @@ public class ConstructorArgumentTypeTest {
 
     @Test
     public void testConvert() throws ArgumentParserException {
-        ConstructorArgumentType at = new ConstructorArgumentType(Integer.class);
-        assertEquals(100, at.convert(null, null, "100"));
+        ConstructorArgumentType<Integer> at = new ConstructorArgumentType<Integer>(Integer.class);
+        assertEquals((Integer)100, at.convert(null, null, "100"));
         try {
             at.convert(null, new MockArgument(), "0x100");
             fail();

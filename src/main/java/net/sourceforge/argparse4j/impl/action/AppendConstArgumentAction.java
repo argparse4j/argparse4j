@@ -56,7 +56,7 @@ public class AppendConstArgumentAction implements ArgumentAction {
         if (attrs.containsKey(arg.getDest())) {
             Object obj = attrs.get(arg.getDest());
             if (obj instanceof List) {
-                ((List) obj).add(arg.getConst());
+                ((List<Object>) obj).add(arg.getConst());
                 return;
             }
         }

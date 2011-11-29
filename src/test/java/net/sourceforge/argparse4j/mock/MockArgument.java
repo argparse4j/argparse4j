@@ -59,7 +59,7 @@ public class MockArgument implements Argument {
     }
 
     @Override
-    public Argument type(ArgumentType type) {
+    public <T> Argument type(ArgumentType<T> type) {
         // TODO Auto-generated method stub
         return null;
     }

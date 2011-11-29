@@ -1,13 +1,10 @@
 package net.sourceforge.argparse4j.internal;
 
-import static org.junit.Assert.*;
-
-import java.util.regex.Pattern;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 import net.sourceforge.argparse4j.helper.PrefixPattern;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
-import net.sourceforge.argparse4j.internal.ArgumentImpl;
-import net.sourceforge.argparse4j.internal.ArgumentParserImpl;
 
 import org.junit.Before;
 import org.junit.Test;

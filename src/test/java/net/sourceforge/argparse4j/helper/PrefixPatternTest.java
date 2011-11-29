@@ -1,11 +1,7 @@
 package net.sourceforge.argparse4j.helper;
 
-import static org.junit.Assert.*;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import net.sourceforge.argparse4j.helper.PrefixPattern;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 

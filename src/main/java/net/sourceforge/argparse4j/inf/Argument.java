@@ -184,7 +184,7 @@ public interface Argument {
      *            The {@link ArgumentType} object
      * @return this
      */
-    Argument type(ArgumentType type);
+    <T> Argument type(ArgumentType<T> type);
 
     /**
      * <p>

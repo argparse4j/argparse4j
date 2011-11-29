@@ -54,7 +54,7 @@ public class AppendArgumentAction implements ArgumentAction {
         if (attrs.containsKey(arg.getDest())) {
             Object obj = attrs.get(arg.getDest());
             if (obj instanceof List) {
-                ((List) obj).add(value);
+                ((List<Object>) obj).add(value);
                 return;
             }
         }

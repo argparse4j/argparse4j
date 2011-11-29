@@ -52,7 +52,7 @@ public final class ArgumentImpl implements Argument {
     private String name_;
     private String flags_[];
     private String dest_;
-    private ArgumentType type_ = new StringArgumentType();
+    private ArgumentType<?> type_ = new StringArgumentType();
     private ArgumentAction action_ = Arguments.store();
     private ArgumentChoice choice_;
     private Object const_;
@@ -299,7 +299,7 @@ public final class ArgumentImpl implements Argument {
     }
 
     @Override
-    public ArgumentImpl type(ArgumentType type) {
+    public <T> ArgumentImpl type(ArgumentType<T> type) {
         if (type == null) {
             throw new IllegalArgumentException("type cannot be null");
         }
