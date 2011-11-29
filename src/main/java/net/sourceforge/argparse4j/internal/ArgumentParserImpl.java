@@ -313,11 +313,11 @@ public final class ArgumentParserImpl implements ArgumentParser {
         int offset;
         String firstIndent;
         String subsequentIndent;
-        String indent = "                       ";
+        String indent = "                              ";
         int usageprogWidth = textWidthCounter_.width(usageprog);
-        if (usageprogWidth > 23) {
+        if (usageprogWidth > indent.length()) {
             writer.print("\n");
-            offset = 0;
+            offset = 6;
             firstIndent = subsequentIndent = indent.substring(0, offset);
         } else {
             offset = usageprogWidth;
