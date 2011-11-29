@@ -24,7 +24,7 @@ import net.sourceforge.argparse4j.inf.BaseArgumentParser;
  * @param <T>
  *            Type of enum
  */
-public class EnumArgumentType<T extends Enum<T>> implements ArgumentType {
+public class EnumArgumentType<T extends Enum<T>> implements ArgumentType<T> {
 
     private Class<T> type_;
 
@@ -33,7 +33,7 @@ public class EnumArgumentType<T extends Enum<T>> implements ArgumentType {
     }
 
     @Override
-    public Object convert(BaseArgumentParser parser, Argument arg, String value)
+    public T convert(BaseArgumentParser parser, Argument arg, String value)
             throws ArgumentParserException {
         try {
             return Enum.valueOf(type_, value);

@@ -43,7 +43,7 @@ import net.sourceforge.argparse4j.inf.BaseArgumentParser;
  * </p>
  * 
  */
-public class ConstructorArgumentType<T> implements ArgumentType {
+public class ConstructorArgumentType<T> implements ArgumentType<T> {
 
     private Class<T> type_;
 
@@ -63,9 +63,9 @@ public class ConstructorArgumentType<T> implements ArgumentType {
     }
 
     @Override
-    public Object convert(BaseArgumentParser parser, Argument arg, String value)
+    public T convert(BaseArgumentParser parser, Argument arg, String value)
             throws ArgumentParserException {
-        Object obj = null;
+        T obj = null;
         try {
             obj = type_.getConstructor(String.class).newInstance(value);
         } catch (InstantiationException e) {

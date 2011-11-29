@@ -26,8 +26,10 @@ package net.sourceforge.argparse4j.inf;
 /**
  * This interface defines type conversion method.
  * 
+ * @param <T>
+ *            Type this object convert to.
  */
-public interface ArgumentType {
+public interface ArgumentType<T> {
 
     /**
      * <p>
@@ -50,6 +52,6 @@ public interface ArgumentType {
      * @throws ArgumentParserException
      *             If conversion fails.
      */
-    Object convert(BaseArgumentParser parser, Argument arg, String value)
+    T convert(BaseArgumentParser parser, Argument arg, String value)
             throws ArgumentParserException;
 }

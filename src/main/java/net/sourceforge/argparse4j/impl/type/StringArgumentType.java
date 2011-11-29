@@ -32,10 +32,10 @@ import net.sourceforge.argparse4j.inf.BaseArgumentParser;
  * Specialized to String type, just echos back given string.
  * 
  */
-public class StringArgumentType implements ArgumentType {
+public class StringArgumentType implements ArgumentType<String> {
 
     @Override
-    public Object convert(BaseArgumentParser parser, Argument arg, String value)
+    public String convert(BaseArgumentParser parser, Argument arg, String value)
             throws ArgumentParserException {
         return value;
     }
