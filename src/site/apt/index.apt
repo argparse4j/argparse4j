@@ -4,7 +4,15 @@ Argparse4j - The command line argument parser
   {{{http://docs.python.org/library/argparse.html}argparse}}
   command line argument parser module.
 
-  {{{http://sourceforge.net/projects/argparse4j/files/}Download}}
+  {{{http://sourceforge.net/projects/argparse4j/files/argparse4j-0.1.0}Download 0.1.0}} Argparse4j is also available in Maven central repository:
+
++---
+<dependency>
+  <groupId>net.sourceforge.argparse4j</groupId>
+  <artifactId>argparse4j</artifactId>
+  <version>0.1.0</version>
+</dependency>
++---
 
   To see how to use argparse4j, see {{{./usage.html}Usage}}.
   See also {{{./examples.html}Examples}}.

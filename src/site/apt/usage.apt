@@ -14,6 +14,8 @@ The argparse4j User Manual
   manual with good quality in a short time. Thanks to Python community
   for the great module and documentation.
 
+%{toc}
+
 * Examples
 
   The following code is a Java program that takes a list of integers
