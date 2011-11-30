@@ -79,6 +79,31 @@ public class Namespace {
     }
 
     /**
+     * Returns attribute as {@link Byte} with given attribute name {@code dest}.
+     * 
+     * @param dest
+     *            The attribute name
+     * @return The attribute value casted to {@link Byte}, or {@code null} if it
+     *         is not found.
+     */
+    public Byte getByte(String dest) {
+        return (Byte) attrs_.get(dest);
+    }
+
+    /**
+     * Returns attribute as {@link Short} with given attribute name {@code dest}
+     * .
+     * 
+     * @param dest
+     *            The attribute name
+     * @return The attribute value casted to {@link Short}, or {@code null} if
+     *         it is not found.
+     */
+    public Short getShort(String dest) {
+        return (Short) attrs_.get(dest);
+    }
+
+    /**
      * Returns attribute as {@link Integer} with given attribute name
      * {@code dest}.
      * 
@@ -104,6 +129,19 @@ public class Namespace {
     }
 
     /**
+     * Returns attribute as {@ilnk Float} with given attribute name {@code dest}
+     * .
+     * 
+     * @param dest
+     *            The attribute name
+     * @return The attribute value casted to {@link Float}, or {@code null} if
+     *         it is not found.
+     */
+    public Float getFloat(String dest) {
+        return (Float) attrs_.get(dest);
+    }
+
+    /**
      * Returns attribute as {@link Double} with given attribute name
      * {@code dest}.
      * 
@@ -114,6 +152,19 @@ public class Namespace {
      */
     public Double getDouble(String dest) {
         return (Double) attrs_.get(dest);
+    }
+
+    /**
+     * Returns attribute as {@link Boolean} with given attribute name
+     * {@code dest}.
+     * 
+     * @param dest
+     *            The attribute name
+     * @return The attribute value casted to {@link Boolean}, or {@code null} if
+     *         it is not found.
+     */
+    public Boolean getBoolean(String dest) {
+        return (Boolean) attrs_.get(dest);
     }
 
     /**
