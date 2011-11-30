@@ -32,6 +32,10 @@ import net.sourceforge.argparse4j.helper.CJKTextWidthCounter;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.internal.ArgumentParserImpl;
 
+/**
+ * Factory class to create new ArgumentParser.
+ * 
+ */
 public final class ArgumentParsers {
 
     /**
