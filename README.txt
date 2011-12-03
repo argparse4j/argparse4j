@@ -4,6 +4,10 @@ The argparse4j is Java port of Python's argparse command line argument
 parser module.
 
 To see how to use argparse4j, visit http://argparse4j.sourceforge.net/
+
+There are still missing features which exist in argparse but not in
+argparse4j, such as mutual exclusion group. At the same time, there
+are also new features only exist in argparse4j.
   
 Here is summary of features:
   
@@ -12,6 +16,10 @@ Here is summary of features:
   * Variable number of arguments.
 
   * Generates well formatted line-wrapped help message.
+
+  * Suggests optional arguments/sub-command if unrecognized
+    arguments/sub-command were given, e.g. "Did you mean: ...".
+    (since 0.2.0-SNAPSHOT)
 
   * Takes into account East Asian Width ambiguous characters when
     line-wrap.

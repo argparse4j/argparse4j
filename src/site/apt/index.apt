@@ -17,6 +17,10 @@ Argparse4j - The command line argument parser
   To see how to use argparse4j, see {{{./usage.html}Usage}}.
   See also {{{./examples.html}Examples}}.
   
+  There are still missing features which exist in argparse but not in
+  argparse4j, such as mutual exclusion group.  At the same time, there
+  are also new features only exist in argparse4j.
+
   Here is summary of features:
   
   * Supported positional arguments and optional arguments.
@@ -24,6 +28,10 @@ Argparse4j - The command line argument parser
   * Variable number of arguments.
 
   * Generates well formatted line-wrapped help message.
+
+  * Suggests optional arguments/sub-command if unrecognized
+    arguments/sub-command were given, e.g. "Did you mean: ...".
+    (since 0.2.0-SNAPSHOT)
 
   * Takes into account East Asian Width ambiguous characters when line-wrap.
 
@@ -133,6 +141,14 @@ optional arguments:
 $ java Checksum file1.cc file1.h
 6bd85bf4b936bc8870c70bea04cd12d4fe3745934f511e6e188d718d32154a79  file1.cc
 839ef370cbd54f62985bac7b974cc575eaaa24a8edd6ae7787cfc71829ceda40  file1.h
+
+$ java Checksum --tpye file1.cc
+usage: Checksum [-h] [-t {SHA-256,SHA-512,SHA1}] [file [file ...]]
+Checksum: error: unrecognized arguments: --tpye
+
+Did you mean:
+	--type
+
 $ java Checksum -t SHA1 file1.cc
 20bada64dde97b98faaba09ebbfdb70af71476f1  file1.cc
 +---

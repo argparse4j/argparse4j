@@ -1862,6 +1862,44 @@ outusername=out
  
 +---
 
+  As you can see above, all sub-commands are printed in help message.
+  It would be good for only 2 or 3 sub-commands, but if there are many
+  sub-commands, the display will become quite ugly.  In that case,
+  <<<Subparser.metavar>>> sets text to use instead of all sub-command
+  names. For example:
+
++---
+    public static void main(String[] args) {
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        Subparsers subparsers = parser.addSubparsers().title("subcommands")
+                .description("valid subcommands").help("additional help")
+                .metavar("COMMAND");
+        subparsers.addParser("foo").help("foo help");
+        subparsers.addParser("bar").help("bar help");
+        try {
+            System.out.println(parser.parseArgs(args));
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+            System.exit(1);
+        }
+    }
++---
+
++---
+$ java Demo -h
+usage: prog [-h] COMMAND ...
+
+optional arguments:
+  -h, --help             show this help message and exit
+
+subcommands:
+  valid subcommands
+
+  COMMAND                additional help
+    foo                  foo help
+    bar                  bar help
++---
+
   One particularly effective way of handling sub-commands is to
   combine the use of <<<Subparser.setDefault()>>> so that each
   subparser knows which function it should execute. For example:
