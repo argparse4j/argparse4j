@@ -129,7 +129,7 @@ public class Namespace {
     }
 
     /**
-     * Returns attribute as {@ilnk Float} with given attribute name {@code dest}
+     * Returns attribute as {@link Float} with given attribute name {@code dest}
      * .
      * 
      * @param dest
