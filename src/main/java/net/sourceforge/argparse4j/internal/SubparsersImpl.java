@@ -24,7 +24,9 @@
 package net.sourceforge.argparse4j.internal;
 
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.argparse4j.helper.TextHelper;
@@ -34,7 +36,7 @@ import net.sourceforge.argparse4j.inf.Subparsers;
 
 /**
  * <strong>The application code must not use this class directly.</strong>
- *
+ * 
  */
 public final class SubparsersImpl implements Subparsers {
 
@@ -62,8 +64,9 @@ public final class SubparsersImpl implements Subparsers {
     @Override
     public Subparser addParser(String command, boolean addHelp,
             String prefixChars) {
-        if(command == null || command.isEmpty()) {
-            throw new IllegalArgumentException("command cannot be null or empty");
+        if (command == null || command.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "command cannot be null or empty");
         }
         SubparserImpl parser = new SubparserImpl(mainParser_.getProg(),
                 addHelp, prefixChars, mainParser_.getTextWidthCounter(),
@@ -120,9 +123,9 @@ public final class SubparsersImpl implements Subparsers {
                 sb.append("'").append(entry.getKey()).append("', ");
             }
             sb.delete(sb.length() - 2, sb.length());
-            throw new ArgumentParserException(String.format(
+            throw new UnrecognizedCommandException(String.format(
                     "invalid choice: '%s' (choose from %s)", args[offset],
-                    sb.toString()));
+                    sb.toString()), args[offset]);
         } else {
             ap.parseArgs(args, offset + 1, opts);
             if (!dest_.isEmpty()) {
@@ -153,4 +156,7 @@ public final class SubparsersImpl implements Subparsers {
         }
     }
 
+    public Collection<String> getCommands() {
+        return parsers_.keySet();
+    }
 }

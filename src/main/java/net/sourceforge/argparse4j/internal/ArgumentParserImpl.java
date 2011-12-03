@@ -28,6 +28,7 @@ import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -50,7 +51,7 @@ import net.sourceforge.argparse4j.inf.Subparsers;
 
 /**
  * <strong>The application code must not use this class directly.</strong>
- *
+ * 
  */
 public final class ArgumentParserImpl implements ArgumentParser {
 
@@ -205,7 +206,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
     private void printArgumentHelp(PrintWriter writer, List<ArgumentImpl> args) {
         for (ArgumentImpl arg : args) {
             if (arg.getArgumentGroup() == null) {
-                arg.printHelp(writer, defaultHelp_, textWidthCounter_, FORMAT_WIDTH);
+                arg.printHelp(writer, defaultHelp_, textWidthCounter_,
+                        FORMAT_WIDTH);
             }
         }
     }
@@ -526,8 +528,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
                         }
                     }
                     if (!shortOptsFound) {
-                        throw new ArgumentParserException(String.format(
-                                "unrecognized arguments: %s", term));
+                        throw new UnrecognizedArgumentException(String.format(
+                                "unrecognized arguments: %s", term), term);
                     }
                 }
                 assert (arg.getAction() != null);
@@ -694,7 +696,162 @@ public final class ArgumentParserImpl implements ArgumentParser {
         PrintWriter writer = new PrintWriter(System.err);
         printUsage(writer);
         writer.format("%s: error: %s\n", prog_, e.getMessage());
-        writer.close();
+        if (e instanceof UnrecognizedArgumentException) {
+            String argument = ((UnrecognizedArgumentException) e).getArgument();
+            if (prefixPattern_.match(argument)) {
+                String flagBody = prefixPattern_.removePrefix(argument);
+                if (flagBody.length() >= 2) {
+                    printFlagCandidates(flagBody, writer);
+                }
+            }
+        } else if (e instanceof UnrecognizedCommandException) {
+            String command = ((UnrecognizedCommandException) e).getCommand();
+            printCommandCandidates(command, writer);
+        }
+        writer.flush();
+    }
+
+    /**
+     * Calculates Damerau–Levenshtein distance between string {@code a} and
+     * {@code b} with given costs.
+     * 
+     * @param a
+     *            String
+     * @param b
+     *            String
+     * @param swap
+     *            Cost to swap 2 adjacent characters.
+     * @param sub
+     *            Cost to substitute character.
+     * @param add
+     *            Cost to add character.
+     * @param del
+     *            Cost to delete character.
+     * @return Damerau–Levenshtein distance between {@code a} and {@code b}
+     */
+    private int levenshtein(String a, String b, int swap, int sub, int add,
+            int del) {
+        int alen = a.length();
+        int blen = b.length();
+        int dp[][] = new int[3][blen + 1];
+        for (int i = 0; i <= blen; ++i) {
+            dp[1][i] = i;
+        }
+        for (int i = 1; i <= alen; ++i) {
+            dp[0][0] = i;
+            for (int j = 1; j <= blen; ++j) {
+                dp[0][j] = dp[1][j - 1]
+                        + (a.charAt(i - 1) == b.charAt(j - 1) ? 0 : sub);
+                if (i >= 2 && j >= 2 && a.charAt(i - 1) != b.charAt(j - 1)
+                        && a.charAt(i - 2) == b.charAt(j - 1)
+                        && a.charAt(i - 1) == b.charAt(j - 2)) {
+                    dp[0][j] = Math.min(dp[0][j], dp[2][j - 2] + swap);
+                }
+                dp[0][j] = Math.min(dp[0][j],
+                        Math.min(dp[1][j] + del, dp[0][j - 1] + add));
+            }
+            int temp[] = dp[2];
+            dp[2] = dp[1];
+            dp[1] = dp[0];
+            dp[0] = temp;
+        }
+        return dp[1][blen];
+    }
+
+    private static class SubjectBody {
+        public String subject;
+        public String body;
+
+        public SubjectBody(String subject, String body) {
+            this.subject = subject;
+            this.body = body;
+        }
+    }
+
+    private static class Candidate implements Comparable<Candidate> {
+        public int similarity;
+        public String subject;
+
+        public Candidate(int similarity, String subject) {
+            this.similarity = similarity;
+            this.subject = subject;
+        }
+
+        @Override
+        public int compareTo(Candidate rhs) {
+            if (similarity < rhs.similarity) {
+                return -1;
+            } else if (similarity == rhs.similarity) {
+                return subject.compareTo(rhs.subject);
+            } else {
+                return 1;
+            }
+        }
+    }
+
+    private void printFlagCandidates(String flagBody, PrintWriter writer) {
+        List<SubjectBody> subjects = new ArrayList<SubjectBody>();
+        for (ArgumentImpl arg : optargs_) {
+            String flags[] = arg.getFlags();
+            for (int i = 0, len = flags.length; i < len; ++i) {
+                String body = prefixPattern_.removePrefix(flags[i]);
+                if (body.length() <= 1) {
+                    continue;
+                }
+                subjects.add(new SubjectBody(flags[i], body));
+            }
+        }
+        printCandidates(flagBody, subjects, writer);
+    }
+
+    private void printCommandCandidates(String command, PrintWriter writer) {
+        List<SubjectBody> subjects = new ArrayList<SubjectBody>();
+        for (String com : subparsers_.getCommands()) {
+            subjects.add(new SubjectBody(com, com));
+        }
+        printCandidates(command, subjects, writer);
+    }
+
+    /**
+     * Prints most similar subjects in subjects to body. Similarity is
+     * calculated between body and each {@link SubjectBody#body} in subjects.
+     * 
+     * @param body
+     *            String to compare.
+     * @param subjects
+     *            Target to be compared.
+     * @param writer
+     *            Output
+     */
+    private void printCandidates(String body, List<SubjectBody> subjects,
+            PrintWriter writer) {
+        List<Candidate> candidates = new ArrayList<Candidate>();
+        for (SubjectBody sub : subjects) {
+            if (sub.body.startsWith(body)) {
+                candidates.add(new Candidate(0, sub.subject));
+                continue;
+            } else {
+                // Cost values were borrowed from git, help.c
+                candidates.add(new Candidate(levenshtein(body, sub.body, 0, 2,
+                        1, 4), sub.subject));
+            }
+        }
+        if (candidates.isEmpty()) {
+            return;
+        }
+        Collections.sort(candidates);
+        int threshold = candidates.get(0).similarity;
+        // Magic number 7 was borrowed from git, help.c
+        if (threshold >= 7) {
+            return;
+        }
+        writer.write("\nDid you mean:\n");
+        for (Candidate cand : candidates) {
+            if (cand.similarity > threshold) {
+                break;
+            }
+            writer.format("\t%s\n", cand.subject);
+        }
     }
 
     public String getCommand() {
