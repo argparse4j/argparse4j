@@ -137,15 +137,17 @@ public final class ArgumentImpl implements Argument {
     }
 
     public String[] resolveMetavar() {
-        if (choice_ == null) {
-            if (metavar_ == null) {
-                return new String[] { isOptionalArgument() ? dest_
-                        .toUpperCase() : dest_ };
+        if (metavar_ == null) {
+            String metavar[] = new String[1];
+            if(choice_ == null) {
+                metavar[0] = isOptionalArgument() ? dest_
+                        .toUpperCase() : dest_;
             } else {
-                return metavar_;
+                metavar[0] = choice_.textualFormat();
             }
+            return metavar;
         } else {
-            return new String[] { choice_.textualFormat() };
+            return metavar_;
         }
     }
 

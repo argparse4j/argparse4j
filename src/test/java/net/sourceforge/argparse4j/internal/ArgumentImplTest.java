@@ -70,19 +70,19 @@ public class ArgumentImplTest {
         assertEquals("FOO", arg.resolveMetavar()[0]);
         arg.dest("bar");
         assertEquals("BAR", arg.resolveMetavar()[0]);
-        arg.metavar("baz");
-        assertEquals("baz", arg.resolveMetavar()[0]);
         arg.choices("alpha", "bravo");
         assertEquals("{alpha,bravo}", arg.resolveMetavar()[0]);
+        arg.metavar("baz");
+        assertEquals("baz", arg.resolveMetavar()[0]);
         
         arg = new ArgumentImpl(prefix, "foo");
         assertEquals("foo", arg.resolveMetavar()[0]);
         arg.dest("bar");
         assertEquals("bar", arg.resolveMetavar()[0]);
-        arg.metavar("baz");
-        assertEquals("baz", arg.resolveMetavar()[0]);
         arg.choices("alpha", "bravo");
         assertEquals("{alpha,bravo}", arg.resolveMetavar()[0]);
+        arg.metavar("baz");
+        assertEquals("baz", arg.resolveMetavar()[0]);
     }
     
     @Test
