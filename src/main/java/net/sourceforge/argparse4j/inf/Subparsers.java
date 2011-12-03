@@ -133,4 +133,21 @@ public interface Subparsers {
      * @return this
      */
     Subparsers description(String description);
+
+    /**
+     * <p>
+     * Sets the text used to represent sub-commands in help messages.
+     * </p>
+     * <p>
+     * By default, text to represent sub-commands are concatenation of all
+     * sub-commands. This method can override this default behavior and sets
+     * arbitrary string to use. This is useful if there are many sub-commands
+     * and you don't want to show them all.
+     * </p>
+     * 
+     * @param metavar
+     *            The text used to represent sub-commands in help messages
+     * @return this
+     */
+    Subparsers metavar(String metavar);
 }

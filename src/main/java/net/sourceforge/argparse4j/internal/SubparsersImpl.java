@@ -26,7 +26,6 @@ package net.sourceforge.argparse4j.internal;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.argparse4j.helper.TextHelper;
@@ -46,6 +45,7 @@ public final class SubparsersImpl implements Subparsers {
     private String title_ = "";
     private String description_ = "";
     private String dest_ = "";
+    private String metavar_ = "";
 
     public SubparsersImpl(ArgumentParserImpl mainParser) {
         mainParser_ = mainParser;
@@ -107,6 +107,12 @@ public final class SubparsersImpl implements Subparsers {
         return description_;
     }
 
+    @Override
+    public Subparsers metavar(String metavar) {
+        metavar_ = TextHelper.nonNull(metavar);
+        return this;
+    }
+
     public boolean hasSubCommand() {
         return !parsers_.isEmpty();
     }
@@ -135,16 +141,20 @@ public final class SubparsersImpl implements Subparsers {
     }
 
     public String formatShortSyntax() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        for (Map.Entry<String, SubparserImpl> entry : parsers_.entrySet()) {
-            sb.append(entry.getKey()).append(",");
+        if(metavar_.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("{");
+            for (Map.Entry<String, SubparserImpl> entry : parsers_.entrySet()) {
+                sb.append(entry.getKey()).append(",");
+            }
+            if (sb.length() > 1) {
+                sb.delete(sb.length() - 1, sb.length());
+            }
+            sb.append("}");
+            return sb.toString();
+        } else {
+            return metavar_;
         }
-        if (sb.length() > 1) {
-            sb.delete(sb.length() - 1, sb.length());
-        }
-        sb.append("}");
-        return sb.toString();
     }
 
     public void printSubparserHelp(PrintWriter writer) {
