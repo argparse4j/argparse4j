@@ -443,6 +443,21 @@ public class ArgumentParserImplTest {
     }
 
     @Test
+    public void testFormatUsage() {
+        assertEquals("usage: argparse4j [-h]\n", ap.formatUsage());
+        ap.addArgument("-a");
+        ap.addArgument("-b").required(true);
+        ap.addArgument("file");
+        assertEquals("usage: argparse4j [-h] [-a A] -b B file\n", ap.formatUsage());
+        Subparser foosub = ap.addSubparsers().addParser("foo");
+        foosub.addArgument("hash");
+        assertEquals("usage: argparse4j [-h] [-a A] -b B file {foo} ...\n", ap.formatUsage());
+        assertEquals("usage: argparse4j -b B file foo [-h] hash\n", foosub.formatUsage());
+        Subparser bazsub = foosub.addSubparsers().addParser("baz");
+        assertEquals("usage: argparse4j -b B file foo hash baz [-h]\n", bazsub.formatUsage());
+    }
+
+    @Test
     public void testFormatHelpWithArgumentGroup()
             throws ArgumentParserException {
         ap.description("This is argparser4j.").epilog("This is epilog.");

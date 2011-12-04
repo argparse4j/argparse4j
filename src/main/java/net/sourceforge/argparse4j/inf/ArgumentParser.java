@@ -46,21 +46,6 @@ import net.sourceforge.argparse4j.annotation.Arg;
  */
 public interface ArgumentParser extends BaseArgumentParser {
 
-    /**
-     * <p>
-     * Returns {@link Subparsers}.
-     * </p>
-     * <p>
-     * The method name is rather controversial because repeated call of this
-     * method does not add new {@link Subparsers} object. Instead, this method
-     * always returns same {@link Subparsers} object. {@link Subparsers} object
-     * provides a way to add sub-commands.
-     * </p>
-     * 
-     * @return {@link Subparsers} object.
-     */
-    Subparsers addSubparsers();
-
     @Override
     ArgumentGroup addArgumentGroup(String title);
 

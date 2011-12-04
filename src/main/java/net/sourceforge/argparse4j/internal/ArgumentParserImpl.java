@@ -327,11 +327,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
             subsequentIndent = indent.substring(0, offset);
         }
         List<String> opts = new ArrayList<String>();
-        if (mainParser_ != null) {
-            for (ArgumentImpl arg : mainParser_.posargs_) {
-                opts.add(arg.formatShortSyntax());
-            }
-        }
+        addUpperParserUsage(opts, mainParser_);
         if (command_ != null) {
             opts.add(command_);
         }
@@ -346,6 +342,35 @@ public final class ArgumentParserImpl implements ArgumentParser {
             opts.add("...");
         }
         printArgumentUsage(writer, opts, offset, firstIndent, subsequentIndent);
+    }
+
+    /**
+     * Appends command, required optional arguments and positional arguments in
+     * {@code parser} to {@code opts} recursively. Most upper parser stores
+     * first, just like post order traversal.
+     * 
+     * @param opts
+     *            Command, required optional arguments and positional arguments.
+     * @param parser
+     *            The parser
+     */
+    private void addUpperParserUsage(List<String> opts,
+            ArgumentParserImpl parser) {
+        if (parser == null) {
+            return;
+        }
+        addUpperParserUsage(opts, parser.mainParser_);
+        if (parser.command_ != null) {
+            opts.add(parser.command_);
+        }
+        for (ArgumentImpl arg : parser.optargs_) {
+            if (arg.isRequired()) {
+                opts.add(arg.formatShortSyntax());
+            }
+        }
+        for (ArgumentImpl arg : parser.posargs_) {
+            opts.add(arg.formatShortSyntax());
+        }
     }
 
     @Override

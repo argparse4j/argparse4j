@@ -48,6 +48,21 @@ public interface BaseArgumentParser {
     ArgumentGroup addArgumentGroup(String title);
 
     /**
+     * <p>
+     * Returns {@link Subparsers}.
+     * </p>
+     * <p>
+     * The method name is rather controversial because repeated call of this
+     * method does not add new {@link Subparsers} object. Instead, this method
+     * always returns same {@link Subparsers} object. {@link Subparsers} object
+     * provides a way to add sub-commands.
+     * </p>
+     * 
+     * @return {@link Subparsers} object.
+     */
+    Subparsers addSubparsers();
+
+    /**
      * Sets the text to display before the argument help.
      * 
      * @param description

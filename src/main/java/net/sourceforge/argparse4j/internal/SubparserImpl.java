@@ -32,6 +32,7 @@ import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentGroup;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Subparser;
+import net.sourceforge.argparse4j.inf.Subparsers;
 
 /**
  * <strong>The application code must not use this class directly.</strong>
@@ -59,6 +60,11 @@ public final class SubparserImpl implements Subparser {
     @Override
     public ArgumentGroup addArgumentGroup(String title) {
         return parser_.addArgumentGroup(title);
+    }
+
+    @Override
+    public Subparsers addSubparsers() {
+        return parser_.addSubparsers();
     }
 
     @Override
