@@ -34,32 +34,46 @@ public class ArgumentParserException extends Exception {
      * 
      */
     private static final long serialVersionUID = 12568411943536166L;
+    private ArgumentParser parser_;
 
-    public ArgumentParserException() {
+    public ArgumentParserException(ArgumentParser parser) {
         super();
+        parser_ = parser;
     }
 
-    public ArgumentParserException(String message) {
+    public ArgumentParserException(String message, ArgumentParser parser) {
         super(message);
+        parser_ = parser;
     }
 
-    public ArgumentParserException(String message, Throwable cause) {
+    public ArgumentParserException(String message, Throwable cause,
+            ArgumentParser parser) {
         super(message, cause);
+        parser_ = parser;
     }
 
-    public ArgumentParserException(Throwable cause) {
+    public ArgumentParserException(Throwable cause, ArgumentParser parser) {
         super(cause);
+        parser_ = parser;
     }
 
-    public ArgumentParserException(String message, Argument arg) {
+    public ArgumentParserException(String message, ArgumentParser parser,
+            Argument arg) {
         super(formatMessage(message, arg));
+        parser_ = parser;
     }
 
-    public ArgumentParserException(String message, Throwable cause, Argument arg) {
+    public ArgumentParserException(String message, Throwable cause,
+            ArgumentParser parser, Argument arg) {
         super(formatMessage(message, arg), cause);
+        parser_ = parser;
     }
 
     private static String formatMessage(String message, Argument arg) {
         return String.format("argument %s: %s", arg.textualName(), message);
+    }
+
+    public ArgumentParser getParser() {
+        return parser_;
     }
 }

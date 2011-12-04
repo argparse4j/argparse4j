@@ -554,7 +554,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     }
                     if (!shortOptsFound) {
                         throw new UnrecognizedArgumentException(String.format(
-                                "unrecognized arguments: %s", term), term);
+                                "unrecognized arguments: %s", term), this, term);
                     }
                 }
                 assert (arg.getAction() != null);
@@ -576,12 +576,12 @@ public final class ArgumentParserImpl implements ArgumentParser {
             } else {
                 throw new ArgumentParserException(String.format(
                         "unrecognized arguments: %s",
-                        TextHelper.concat(args, argIndex, " ")));
+                        TextHelper.concat(args, argIndex, " ")), this);
                 // ++argIndex;
             }
         }
         if (subparsers_.hasSubCommand()) {
-            throw new ArgumentParserException("too few arguments");
+            throw new ArgumentParserException("too few arguments", this);
         }
         while (posargIndex < posargsLen) {
             ArgumentImpl arg = posargs_.get(posargIndex++);
@@ -600,7 +600,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 return argIndex;
             } else {
                 throw new ArgumentParserException(String.format(
-                        "ignore implicit argument '%s'", embeddedValue), arg);
+                        "ignore implicit argument '%s'", embeddedValue), this,
+                        arg);
             }
         }
         int len = args.length;
@@ -619,9 +620,10 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 if (arg.getMinNumArg() == -1) {
                     if (arg.isOptionalArgument()) {
                         throw new ArgumentParserException(
-                                "expected one argument", arg);
+                                "expected one argument", this, arg);
                     } else {
-                        throw new ArgumentParserException("too few arguments");
+                        throw new ArgumentParserException("too few arguments",
+                                this);
                     }
                 } else if (arg.isOptionalArgument()) {
                     arg.run(this, res, flag, arg.getConst());
@@ -645,9 +647,10 @@ public final class ArgumentParserImpl implements ArgumentParser {
             if (list.size() < arg.getMinNumArg()) {
                 if (arg.isOptionalArgument()) {
                     throw new ArgumentParserException(String.format(
-                            "expected %d argument(s)", arg.getMinNumArg()), arg);
+                            "expected %d argument(s)", arg.getMinNumArg()),
+                            this, arg);
                 } else {
-                    throw new ArgumentParserException("too few arguments");
+                    throw new ArgumentParserException("too few arguments", this);
                 }
             }
             arg.run(this, res, flag, list);
@@ -671,11 +674,11 @@ public final class ArgumentParserImpl implements ArgumentParser {
         for (ArgumentImpl arg : optargs_) {
             if (arg.isRequired() && !used.contains(arg)) {
                 throw new ArgumentParserException(String.format(
-                        "argument %s is required", arg.textualName()));
+                        "argument %s is required", arg.textualName()), this);
             }
         }
         if (posargs_.size() > posargIndex) {
-            throw new ArgumentParserException("too few arguments");
+            throw new ArgumentParserException("too few arguments", this);
         }
 
     }
@@ -718,11 +721,16 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     @Override
     public void handleError(ArgumentParserException e) {
+        if(e.getParser() != this) {
+            e.getParser().handleError(e);
+            return;
+        }
         PrintWriter writer = new PrintWriter(System.err);
         printUsage(writer);
         writer.format("%s: error: %s\n", prog_, e.getMessage());
         if (e instanceof UnrecognizedArgumentException) {
-            String argument = ((UnrecognizedArgumentException) e).getArgument();
+            UnrecognizedArgumentException ex = (UnrecognizedArgumentException) e;
+            String argument = ex.getArgument();
             if (prefixPattern_.match(argument)) {
                 String flagBody = prefixPattern_.removePrefix(argument);
                 if (flagBody.length() >= 2) {
@@ -730,7 +738,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 }
             }
         } else if (e instanceof UnrecognizedCommandException) {
-            String command = ((UnrecognizedCommandException) e).getCommand();
+            UnrecognizedCommandException ex = (UnrecognizedCommandException) e;
+            String command = ex.getCommand();
             printCommandCandidates(command, writer);
         }
         writer.flush();

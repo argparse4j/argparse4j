@@ -131,7 +131,7 @@ public final class SubparsersImpl implements Subparsers {
             sb.delete(sb.length() - 2, sb.length());
             throw new UnrecognizedCommandException(String.format(
                     "invalid choice: '%s' (choose from %s)", args[offset],
-                    sb.toString()), args[offset]);
+                    sb.toString()), mainParser_, args[offset]);
         } else {
             ap.parseArgs(args, offset + 1, opts);
             if (!dest_.isEmpty()) {

@@ -55,7 +55,7 @@ public interface ArgumentAction {
      * @throws ArgumentParserException
      *             If error occurred.
      */
-    void run(BaseArgumentParser parser, Argument arg, Map<String, Object> attrs,
+    void run(ArgumentParser parser, Argument arg, Map<String, Object> attrs,
             String flag, Object value) throws ArgumentParserException;
 
     /**

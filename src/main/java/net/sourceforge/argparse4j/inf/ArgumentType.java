@@ -52,6 +52,6 @@ public interface ArgumentType<T> {
      * @throws ArgumentParserException
      *             If conversion fails.
      */
-    T convert(BaseArgumentParser parser, Argument arg, String value)
+    T convert(ArgumentParser parser, Argument arg, String value)
             throws ArgumentParserException;
 }

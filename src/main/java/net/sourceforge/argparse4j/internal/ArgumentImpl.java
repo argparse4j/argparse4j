@@ -225,7 +225,7 @@ public final class ArgumentImpl implements Argument {
         if (choice_ != null && !choice_.contains(obj)) {
             throw new ArgumentParserException(String.format(
                     "invalid choice: '%s' (choose from %s)", value,
-                    choice_.textualFormat()), this);
+                    choice_.textualFormat()), parser, this);
         }
         return obj;
     }

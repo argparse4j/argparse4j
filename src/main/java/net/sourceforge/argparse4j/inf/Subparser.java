@@ -31,7 +31,7 @@ import java.util.Map;
  * {@link ArgumentParser}.
  * </p>
  */
-public interface Subparser extends BaseArgumentParser {
+public interface Subparser extends ArgumentParser {
 
     @Override
     Subparser description(String description);

@@ -31,6 +31,7 @@ import net.sourceforge.argparse4j.helper.TextWidthCounter;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentGroup;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import net.sourceforge.argparse4j.inf.Subparsers;
 
@@ -157,6 +158,34 @@ public final class SubparserImpl implements Subparser {
     public Subparser help(String help) {
         help_ = TextHelper.nonNull(help);
         return this;
+    }
+
+    @Override
+    public Namespace parseArgs(String[] args) throws ArgumentParserException {
+        return parser_.parseArgs(args);
+    }
+
+    @Override
+    public void parseArgs(String[] args, Map<String, Object> attrs)
+            throws ArgumentParserException {
+        parser_.parseArgs(args, attrs);
+    }
+
+    @Override
+    public void parseArgs(String[] args, Object userData)
+            throws ArgumentParserException {
+        parser_.parseArgs(args, userData);
+    }
+
+    @Override
+    public void parseArgs(String[] args, Map<String, Object> attrs,
+            Object userData) throws ArgumentParserException {
+        parser_.parseArgs(args, attrs, userData);
+    }
+
+    @Override
+    public void handleError(ArgumentParserException e) {
+        parser_.handleError(e);
     }
 
     public void parseArgs(String args[], int offset, Map<String, Object> opts)

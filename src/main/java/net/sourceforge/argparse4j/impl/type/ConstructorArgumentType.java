@@ -26,9 +26,9 @@ package net.sourceforge.argparse4j.impl.type;
 import java.lang.reflect.InvocationTargetException;
 
 import net.sourceforge.argparse4j.inf.Argument;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.ArgumentType;
-import net.sourceforge.argparse4j.inf.BaseArgumentParser;
 
 /**
  * <p>
@@ -63,7 +63,7 @@ public class ConstructorArgumentType<T> implements ArgumentType<T> {
     }
 
     @Override
-    public T convert(BaseArgumentParser parser, Argument arg, String value)
+    public T convert(ArgumentParser parser, Argument arg, String value)
             throws ArgumentParserException {
         T obj = null;
         try {
@@ -76,7 +76,7 @@ public class ConstructorArgumentType<T> implements ArgumentType<T> {
             throw new ArgumentParserException(String.format(
                     "could not convert '%s' to %s (%s)", value,
                     type_.getSimpleName(), e.getCause().getMessage()),
-                    e.getCause(), arg);
+                    e.getCause(), parser, arg);
         } catch (NoSuchMethodException e) {
             handleInstatiationError(e);
         }
