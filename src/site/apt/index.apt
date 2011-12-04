@@ -30,8 +30,8 @@ Argparse4j - The command line argument parser
   * Generates well formatted line-wrapped help message.
 
   * Suggests optional arguments/sub-command if unrecognized
-    arguments/sub-command were given, e.g. "Did you mean: ...".
-    (since 0.2.0-SNAPSHOT)
+    arguments/sub-command were given, e.g. "unrecognized argument
+    '--tpye': Did you mean: --type".  (since 0.2.0-SNAPSHOT)
 
   * Takes into account East Asian Width ambiguous characters when line-wrap.
 
