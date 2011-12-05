@@ -37,7 +37,12 @@ import net.sourceforge.argparse4j.ArgumentParsers;
 public interface Subparsers {
 
     /**
+     * <p>
      * Adds and returns {@link Subparser} object with given sub-command name.
+     * </p>
+     * <p>
+     * The prefixChars is inherited from main ArgumentParser.
+     * </p>
      * 
      * @param command
      *            Sub-command name
@@ -52,7 +57,8 @@ public interface Subparsers {
      * </p>
      * <p>
      * For {@code addHelp}, see
-     * {@link ArgumentParsers#newArgumentParser(String, boolean, String)}.
+     * {@link ArgumentParsers#newArgumentParser(String, boolean, String)}. The
+     * prefixChars is inherited from main ArgumentParser.
      * </p>
      * 
      * @param command

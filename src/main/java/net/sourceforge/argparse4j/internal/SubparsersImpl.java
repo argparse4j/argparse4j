@@ -53,12 +53,12 @@ public final class SubparsersImpl implements Subparsers {
 
     @Override
     public Subparser addParser(String command) {
-        return addParser(command, true, ArgumentParserImpl.PREFIX_CHARS);
+        return addParser(command, true, mainParser_.getPrefixChars());
     }
 
     @Override
     public Subparser addParser(String command, boolean addHelp) {
-        return addParser(command, addHelp, ArgumentParserImpl.PREFIX_CHARS);
+        return addParser(command, addHelp, mainParser_.getPrefixChars());
     }
 
     @Override

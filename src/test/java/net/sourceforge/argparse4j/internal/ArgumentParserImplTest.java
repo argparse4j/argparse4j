@@ -381,6 +381,20 @@ public class ArgumentParserImplTest {
     }
     
     @Test
+    public void testSubparserInheritPrefixChars() throws ArgumentParserException {
+        ap = new ArgumentParserImpl("argparse4j", true, "+");
+        ap.addSubparsers().addParser("install").addArgument("+f");
+        ap.addSubparsers().addParser("check", true, "-").addArgument("-f");
+        try {
+            ap.addSubparsers().addParser("check", true, "-").addArgument("+f", "++f");
+            fail();
+        } catch(IllegalArgumentException e) {
+            assertEquals("invalid option string '+f': must start with a character '-'",
+                    e.getMessage());
+        }
+    }
+    
+    @Test
     public void testSubparsersDest() throws ArgumentParserException {
         Subparsers subparsers = ap.addSubparsers().dest("command");
         subparsers.addParser("install").addArgument("--command")
