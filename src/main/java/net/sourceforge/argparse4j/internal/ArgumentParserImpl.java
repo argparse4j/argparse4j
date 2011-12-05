@@ -106,7 +106,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     public ArgumentParserImpl(String prog, boolean addHelp, String prefixChars,
             String fromFilePrefix, TextWidthCounter textWidthCounter) {
-        this(prog, addHelp, prefixChars, null, textWidthCounter, null, null);
+        this(prog, addHelp, prefixChars, fromFilePrefix, textWidthCounter, null, null);
     }
 
     public ArgumentParserImpl(String prog, boolean addHelp, String prefixChars,
