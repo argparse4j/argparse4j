@@ -9,6 +9,8 @@
 
 	<name>argparse4j</name>
 	<url>http://argparse4j.sourceforge.net</url>
+	<description>The command-line parser library based on Python's argparse</description>
+	<inceptionYear>2011</inceptionYear>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
