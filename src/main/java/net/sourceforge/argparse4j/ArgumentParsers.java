@@ -51,7 +51,7 @@ public final class ArgumentParsers {
      * </p>
      * 
      * <p>
-     * This is equivalent with {@code newArgumentParser(prog, true, "-")}.
+     * This is equivalent with {@code newArgumentParser(prog, true, "-", null)}.
      * </p>
      * 
      * @param prog
@@ -59,7 +59,8 @@ public final class ArgumentParsers {
      * @return ArgumentParser object
      */
     public static ArgumentParser newArgumentParser(String prog) {
-        return newArgumentParser(prog, true, ArgumentParserImpl.PREFIX_CHARS);
+        return newArgumentParser(prog, true, ArgumentParserImpl.PREFIX_CHARS,
+                null);
     }
 
     /**
@@ -68,7 +69,7 @@ public final class ArgumentParsers {
      * </p>
      * 
      * <p>
-     * This is equivalent with {@code ArgumentParser(prog, addHelp, "-")}.
+     * This is equivalent with {@code ArgumentParser(prog, addHelp, "-", null)}.
      * </p>
      * 
      * @param prog
@@ -79,7 +80,33 @@ public final class ArgumentParsers {
      * @return ArgumentParser object
      */
     public static ArgumentParser newArgumentParser(String prog, boolean addHelp) {
-        return newArgumentParser(prog, addHelp, ArgumentParserImpl.PREFIX_CHARS);
+        return newArgumentParser(prog, addHelp,
+                ArgumentParserImpl.PREFIX_CHARS, null);
+    }
+
+    /**
+     * <p>
+     * Creates {@link ArgumentParser} with given program name, addHelp and
+     * prefixChars.
+     * </p>
+     * 
+     * <p>
+     * This is equivalent with
+     * {@code ArgumentParser(prog, addHelp, prefixChars, null)}.
+     * </p>
+     * 
+     * @param prog
+     *            The program name
+     * @param addHelp
+     *            If true, {@code -h/--help} are available. If false, they are
+     *            not.
+     * @param prefixChars
+     *            The set of characters that prefix optional arguments.
+     * @return ArgumentParser object.
+     */
+    public static ArgumentParser newArgumentParser(String prog,
+            boolean addHelp, String prefixChars) {
+        return newArgumentParser(prog, addHelp, prefixChars, null);
     }
 
     /**
@@ -95,12 +122,16 @@ public final class ArgumentParsers {
      *            not.
      * @param prefixChars
      *            The set of characters that prefix optional arguments.
+     * @param fromFilePrefix
+     *            The set of characters that prefix file path from which
+     *            additional arguments should be read. Specify {@code null} to
+     *            disable reading arguments from file.
      * @return ArgumentParser object.
      */
     public static ArgumentParser newArgumentParser(String prog,
-            boolean addHelp, String prefixChars) {
+            boolean addHelp, String prefixChars, String fromFilePrefix) {
         return new ArgumentParserImpl(prog, addHelp, prefixChars,
-                cjkWidthHack_
+                fromFilePrefix, cjkWidthHack_
                         && cjkWidthLangs_.contains(Locale.getDefault()
                                 .getLanguage()) ? new CJKTextWidthCounter()
                         : new ASCIITextWidthCounter());

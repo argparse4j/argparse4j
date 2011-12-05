@@ -23,11 +23,16 @@
  */
 package net.sourceforge.argparse4j.internal;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -68,6 +73,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     private String epilog_ = "";
     private String version_ = "";
     private PrefixPattern prefixPattern_;
+    private PrefixPattern fromFilePrefixPattern_;
     private boolean defaultHelp_ = false;
     private boolean negNumFlag_ = false;
     private TextWidthCounter textWidthCounter_;
@@ -79,27 +85,34 @@ public final class ArgumentParserImpl implements ArgumentParser {
     public static final String PREFIX_CHARS = "-";
 
     public ArgumentParserImpl(String prog) {
-        this(prog, true, PREFIX_CHARS, new ASCIITextWidthCounter(), null, null);
+        this(prog, true, PREFIX_CHARS, null, new ASCIITextWidthCounter(), null,
+                null);
     }
 
     public ArgumentParserImpl(String prog, boolean addHelp) {
-        this(prog, addHelp, PREFIX_CHARS, new ASCIITextWidthCounter(), null,
-                null);
+        this(prog, addHelp, PREFIX_CHARS, null, new ASCIITextWidthCounter(),
+                null, null);
     }
 
     public ArgumentParserImpl(String prog, boolean addHelp, String prefixChars) {
-        this(prog, addHelp, prefixChars, new ASCIITextWidthCounter(), null,
-                null);
+        this(prog, addHelp, prefixChars, null, new ASCIITextWidthCounter(),
+                null, null);
     }
 
     public ArgumentParserImpl(String prog, boolean addHelp, String prefixChars,
-            TextWidthCounter textWidthCounter) {
-        this(prog, addHelp, prefixChars, textWidthCounter, null, null);
+            String fromFilePrefix) {
+        this(prog, addHelp, prefixChars, fromFilePrefix,
+                new ASCIITextWidthCounter(), null, null);
     }
 
     public ArgumentParserImpl(String prog, boolean addHelp, String prefixChars,
-            TextWidthCounter textWidthCounter, String command,
-            ArgumentParserImpl mainParser) {
+            String fromFilePrefix, TextWidthCounter textWidthCounter) {
+        this(prog, addHelp, prefixChars, null, textWidthCounter, null, null);
+    }
+
+    public ArgumentParserImpl(String prog, boolean addHelp, String prefixChars,
+            String fromFilePrefix, TextWidthCounter textWidthCounter,
+            String command, ArgumentParserImpl mainParser) {
         this.prog_ = TextHelper.nonNull(prog);
         this.command_ = command;
         this.mainParser_ = mainParser;
@@ -109,6 +122,9 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     "prefixChars cannot be a null or empty");
         }
         this.prefixPattern_ = new PrefixPattern(prefixChars);
+        if (fromFilePrefix != null) {
+            this.fromFilePrefixPattern_ = new PrefixPattern(fromFilePrefix);
+        }
         if (addHelp) {
             String prefix = prefixChars.substring(0, 1);
             addArgument(prefix + "h", prefix + prefix + "help")
@@ -498,26 +514,23 @@ public final class ArgumentParserImpl implements ArgumentParser {
         }
     }
 
-    private static class ParseState {
-        public boolean consumedSeparator;
-        public boolean negNumFlag;
-
-        public ParseState(boolean negNumFlag) {
-            this.negNumFlag = negNumFlag;
-        }
-    }
-
     public void parseArgs(String args[], int offset, Map<String, Object> attrs)
             throws ArgumentParserException {
-        ParseState state = new ParseState(negNumFlag_);
+        ParseState state = new ParseState(args, offset, negNumFlag_);
+        parseArgs(state, attrs);
+    }
+
+    public void parseArgs(ParseState state, Map<String, Object> attrs)
+            throws ArgumentParserException {
         populateDefaults(attrs);
         Set<ArgumentImpl> used = new HashSet<ArgumentImpl>();
-        int len = args.length;
         int posargIndex = 0;
         int posargsLen = posargs_.size();
-        for (int argIndex = offset; argIndex < len;) {
-            String term = args[argIndex];
-            if (flagFound(term, state) && !"--".equals(term)) {
+        while (state.isArgAvail()) {
+            // We first evaluate flagFound(state) before comparing arg to "--"
+            // in order to expand arguments from file.
+            if (flagFound(state) && !"--".equals(state.getArg())) {
+                String term = state.getArg();
                 int p = term.indexOf("=");
                 String flag;
                 String embeddedValue;
@@ -558,26 +571,24 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     }
                 }
                 assert (arg.getAction() != null);
-                argIndex = processArg(attrs, state, arg, args, argIndex + 1,
-                        flag, embeddedValue);
+                ++state.index;
+                processArg(attrs, state, arg, flag, embeddedValue);
                 used.add(arg);
-            } else if ("--".equals(term) && !state.consumedSeparator) {
+            } else if ("--".equals(state.getArg()) && !state.consumedSeparator) {
                 state.consumedSeparator = true;
                 state.negNumFlag = false;
-                ++argIndex;
+                ++state.index;
             } else if (posargIndex < posargsLen) {
                 ArgumentImpl arg = posargs_.get(posargIndex++);
-                argIndex = processArg(attrs, state, arg, args, argIndex, null,
-                        null);
+                processArg(attrs, state, arg, null, null);
             } else if (!state.consumedSeparator && subparsers_.hasSubCommand()) {
                 checkRequiredArgument(used, posargIndex);
-                subparsers_.parseArg(args, argIndex, attrs);
+                subparsers_.parseArg(state, attrs);
                 return;
             } else {
                 throw new ArgumentParserException(String.format(
                         "unrecognized arguments: %s",
-                        TextHelper.concat(args, argIndex, " ")), this);
-                // ++argIndex;
+                        TextHelper.concat(state.args, state.index, " ")), this);
             }
         }
         if (subparsers_.hasSubCommand()) {
@@ -585,33 +596,42 @@ public final class ArgumentParserImpl implements ArgumentParser {
         }
         while (posargIndex < posargsLen) {
             ArgumentImpl arg = posargs_.get(posargIndex++);
-            int temp = processArg(attrs, state, arg, args, len, null, null);
-            assert (temp == len);
+            processArg(attrs, state, arg, null, null);
         }
         checkRequiredArgument(used, posargIndex);
     }
 
-    private int processArg(Map<String, Object> res, ParseState state,
-            ArgumentImpl arg, String[] args, int argIndex, String flag,
-            String embeddedValue) throws ArgumentParserException {
+    /**
+     * @param res
+     * @param state
+     *            state.offset points to the argument next to flag
+     * @param arg
+     * @param flag
+     * @param embeddedValue
+     *            If optional argument is given as "foo=bar" or "-fbar" (short
+     *            option), embedded value is "bar". Otherwise {@code null}
+     * @throws ArgumentParserException
+     */
+    private void processArg(Map<String, Object> res, ParseState state,
+            ArgumentImpl arg, String flag, String embeddedValue)
+            throws ArgumentParserException {
         if (!arg.getAction().consumeArgument()) {
             if (embeddedValue == null) {
                 arg.run(this, res, flag, null);
-                return argIndex;
+                return;
             } else {
                 throw new ArgumentParserException(String.format(
                         "ignore implicit argument '%s'", embeddedValue), this,
                         arg);
             }
         }
-        int len = args.length;
         if (arg.getMinNumArg() == -1
                 || (arg.getMinNumArg() == 0 && arg.getMaxNumArg() == 1)) {
             String argval = null;
             if (embeddedValue == null) {
-                if (argIndex < len && !flagFound(args[argIndex], state)) {
-                    argval = args[argIndex];
-                    ++argIndex;
+                if (state.isArgAvail() && !flagFound(state)) {
+                    argval = state.getArg();
+                    ++state.index;
                 }
             } else {
                 argval = embeddedValue;
@@ -634,12 +654,11 @@ public final class ArgumentParserImpl implements ArgumentParser {
         } else {
             List<Object> list = new ArrayList<Object>();
             if (embeddedValue == null) {
-                for (int i = 0; i < arg.getMaxNumArg() && argIndex < len; ++i, ++argIndex) {
-                    String argval = args[argIndex];
-                    if (flagFound(argval, state)) {
+                for (int i = 0; i < arg.getMaxNumArg() && state.isArgAvail(); ++i, ++state.index) {
+                    if (flagFound(state)) {
                         break;
                     }
-                    list.add(arg.convert(this, argval));
+                    list.add(arg.convert(this, state.getArg()));
                 }
             } else {
                 list.add(embeddedValue);
@@ -655,10 +674,25 @@ public final class ArgumentParserImpl implements ArgumentParser {
             }
             arg.run(this, res, flag, list);
         }
-        return argIndex;
     }
 
-    private boolean flagFound(String term, ParseState state) {
+    /**
+     * Returns true if state.getArg() is flag. Note that if "--" is met and not
+     * consumed, this function returns true, because "--" is treated as special
+     * optional argument. If prefixFileChar is found in prefix of argument, read
+     * arguments from that file and expand arguments in state necessary.
+     * 
+     * @param state
+     * @return
+     * @throws ArgumentParserException
+     */
+    private boolean flagFound(ParseState state) throws ArgumentParserException {
+        while (fromFileFound(state)) {
+            state.resetArgs(extendArgs(
+                    fromFilePrefixPattern_.removePrefix(state.getArg()),
+                    state.args, state.index + 1));
+        }
+        String term = state.getArg();
         if (state.consumedSeparator) {
             return false;
         } else if ("--".equals(term)) {
@@ -667,6 +701,49 @@ public final class ArgumentParserImpl implements ArgumentParser {
         return prefixPattern_.match(term)
                 && (state.negNumFlag || !NEG_NUM_PATTERN.matcher(term)
                         .matches());
+    }
+
+    private boolean fromFileFound(ParseState state) {
+        return fromFilePrefixPattern_ != null
+                && fromFilePrefixPattern_.match(state.getArg());
+    }
+
+    /**
+     * Extends arguments by reading additional arguments from file. The length
+     * of returned array is oldargs.length - offset + the number of arguments in
+     * the file. We discard [0,offset) in oldargs. So the returned array starts
+     * with oldargs[offset].
+     * 
+     * @param file
+     *            File from which additional arguments are read.
+     * @param oldargs
+     *            Old arguments
+     * @param offset
+     *            Offset in old arguments. This is typically the argument next
+     *            to fromFilePrefix argument.
+     * @return The extended new argument array.
+     * @throws ArgumentParserException
+     */
+    private String[] extendArgs(String file, String oldargs[], int offset)
+            throws ArgumentParserException {
+        List<String> list = new ArrayList<String>();
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(file), "utf-8"));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                list.add(line);
+            }
+        } catch (IOException e) {
+            throw new ArgumentParserException(String.format(
+                    "Could not read arguments from file '%s'", file), e, this);
+        }
+        String newargs[] = new String[list.size() + oldargs.length - offset];
+        list.toArray(newargs);
+        System.arraycopy(oldargs, offset, newargs, list.size(), oldargs.length
+                - offset);
+        return newargs;
     }
 
     private void checkRequiredArgument(Set<ArgumentImpl> used, int posargIndex)
@@ -721,7 +798,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     @Override
     public void handleError(ArgumentParserException e) {
-        if(e.getParser() != this) {
+        if (e.getParser() != this) {
             e.getParser().handleError(e);
             return;
         }
@@ -894,5 +971,10 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     public TextWidthCounter getTextWidthCounter() {
         return textWidthCounter_;
+    }
+
+    public String getFromFilePrefix() {
+        return fromFilePrefixPattern_ == null ? null : fromFilePrefixPattern_
+                .getPrefixChars();
     }
 }

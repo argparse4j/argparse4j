@@ -69,8 +69,8 @@ public final class SubparsersImpl implements Subparsers {
                     "command cannot be null or empty");
         }
         SubparserImpl parser = new SubparserImpl(mainParser_.getProg(),
-                addHelp, prefixChars, mainParser_.getTextWidthCounter(),
-                command, mainParser_);
+                addHelp, prefixChars, mainParser_.getFromFilePrefix(),
+                mainParser_.getTextWidthCounter(), command, mainParser_);
         parsers_.put(command, parser);
         return parser;
     }
@@ -117,12 +117,12 @@ public final class SubparsersImpl implements Subparsers {
         return !parsers_.isEmpty();
     }
 
-    public void parseArg(String[] args, int offset, Map<String, Object> opts)
+    public void parseArg(ParseState state, Map<String, Object> opts)
             throws ArgumentParserException {
         if (parsers_.isEmpty()) {
             throw new IllegalArgumentException("too many arguments");
         }
-        SubparserImpl ap = parsers_.get(args[offset]);
+        SubparserImpl ap = parsers_.get(state.getArg());
         if (ap == null) {
             StringBuilder sb = new StringBuilder();
             for (Map.Entry<String, SubparserImpl> entry : parsers_.entrySet()) {
@@ -130,10 +130,13 @@ public final class SubparsersImpl implements Subparsers {
             }
             sb.delete(sb.length() - 2, sb.length());
             throw new UnrecognizedCommandException(String.format(
-                    "invalid choice: '%s' (choose from %s)", args[offset],
-                    sb.toString()), mainParser_, args[offset]);
+                    "invalid choice: '%s' (choose from %s)", state.getArg(),
+                    sb.toString()), mainParser_, state.getArg());
         } else {
-            ap.parseArgs(args, offset + 1, opts);
+            ++state.index;
+            ap.parseArgs(state, opts);
+            // Call after parseArgs to overwrite dest_ attribute set by
+            // sub-parsers.
             if (!dest_.isEmpty()) {
                 opts.put(dest_, ap.getCommand());
             }
@@ -141,7 +144,7 @@ public final class SubparsersImpl implements Subparsers {
     }
 
     public String formatShortSyntax() {
-        if(metavar_.isEmpty()) {
+        if (metavar_.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             sb.append("{");
             for (Map.Entry<String, SubparserImpl> entry : parsers_.entrySet()) {

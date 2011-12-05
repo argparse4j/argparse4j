@@ -282,6 +282,20 @@ public class ArgumentParserImplTest {
     }
 
     @Test
+    public void testParseArgsWithFromFilePrefix() throws ArgumentParserException {
+        ap = new ArgumentParserImpl("argparse4j", true, ArgumentParserImpl.PREFIX_CHARS, "@");
+        ap.addArgument("-f");
+        ap.addArgument("--baz").nargs(2);
+        ap.addArgument("x");
+        ap.addArgument("y").nargs(2);
+        Namespace res = ap.parseArgs("-f foo @args.txt --baz alpha @args2.txt x y1 @args3.txt".split(" "));
+        assertEquals("bar", res.getString("f"));
+        assertEquals(list("alpha", "bravo"), res.getList("baz"));
+        assertEquals("x", res.getString("x"));
+        assertEquals(list("y1", "y2"), res.getList("y"));
+    }
+    
+    @Test
     public void testParseArgsWithSubparsers() throws ArgumentParserException {
         ap.addArgument("-f");
         Subparsers subparsers = ap.addSubparsers();

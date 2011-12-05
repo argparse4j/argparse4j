@@ -46,11 +46,11 @@ public final class SubparserImpl implements Subparser {
     private String help_ = "";
 
     public SubparserImpl(String prog, boolean addHelp, String prefixChars,
-            TextWidthCounter textWidthCounter, String command,
-            ArgumentParserImpl mainParser) {
+            String fromFilePrefix, TextWidthCounter textWidthCounter,
+            String command, ArgumentParserImpl mainParser) {
         command_ = command;
         parser_ = new ArgumentParserImpl(prog, addHelp, prefixChars,
-                textWidthCounter, command, mainParser);
+                fromFilePrefix, textWidthCounter, command, mainParser);
     }
 
     @Override
@@ -188,9 +188,9 @@ public final class SubparserImpl implements Subparser {
         parser_.handleError(e);
     }
 
-    public void parseArgs(String args[], int offset, Map<String, Object> opts)
+    public void parseArgs(ParseState state, Map<String, Object> opts)
             throws ArgumentParserException {
-        parser_.parseArgs(args, offset, opts);
+        parser_.parseArgs(state, opts);
     }
 
     public void printSubparserHelp(PrintWriter writer) {
