@@ -288,7 +288,7 @@ public class ArgumentParserImplTest {
         ap.addArgument("--baz").nargs(2);
         ap.addArgument("x");
         ap.addArgument("y").nargs(2);
-        Namespace res = ap.parseArgs("-f foo @args.txt --baz alpha @args2.txt x y1 @args3.txt".split(" "));
+        Namespace res = ap.parseArgs("-f foo @target/test-classes/args.txt --baz alpha @target/test-classes/args2.txt x y1 @target/test-classes/args3.txt".split(" "));
         assertEquals("bar", res.getString("f"));
         assertEquals(list("alpha", "bravo"), res.getList("baz"));
         assertEquals("x", res.getString("x"));
