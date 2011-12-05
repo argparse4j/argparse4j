@@ -69,7 +69,7 @@ public final class SubparsersImpl implements Subparsers {
                     "command cannot be null or empty");
         }
         SubparserImpl parser = new SubparserImpl(mainParser_.getProg(),
-                addHelp, prefixChars, mainParser_.getFromFilePrefix(),
+                addHelp, prefixChars, mainParser_.getFromFilePrefixChars(),
                 mainParser_.getTextWidthCounter(), command, mainParser_);
         parsers_.put(command, parser);
         return parser;

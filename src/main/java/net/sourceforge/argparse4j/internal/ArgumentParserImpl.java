@@ -973,7 +973,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         return textWidthCounter_;
     }
 
-    public String getFromFilePrefix() {
+    public String getFromFilePrefixChars() {
         return fromFilePrefixPattern_ == null ? null : fromFilePrefixPattern_
                 .getPrefixChars();
     }
