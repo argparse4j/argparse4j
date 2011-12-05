@@ -207,6 +207,10 @@ ArgumentParser object:
  * {{{prefixChars}prefixChars}} - The set of characters that prefix
    optional arguments. (default: <<<->>>)
 
+ * {{{fromFilePrefixChars}fromFilePrefixChars}} - The set of
+   characters that prefix file path from which additional arguments
+   are read.
+
   After creation of the instance, several additional parameters can be
   specified using following methods:
 
@@ -338,6 +342,43 @@ ArgumentParser object:
   The <<<prefixChars>>> argument defaults to <<<"-">>> . Supplying a
   set of characters that does not include <<<->>> will cause
   <<<-f/--foo>>> options to be disallowed.
+
+** fromFilePrefixChars
+
+  It is sometimes useful to read arguments from file other than typing
+  them in command line, for example, when lots of arguments are
+  needed.  If <<<fromFilePrefixChars>>> is given as non <<<null>>>
+  string, arguments starts with one of these characters are treated as
+  file path and <<<ArgumentParser>>> reads additional arguments from
+  the file.  For example:
+
++---
+$ cat args.txt
+-f
+bar
++---
+
++---
+    public static void main(String[] args) {
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog", true,
+                "-", "@");
+        parser.addArgument("-f");
+        try {
+            System.out.println(parser.parseArgs(args));
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+            System.exit(1);
+        }
+    }
++---
+
++---
+$ java Demo -f foo @args.txt
+Namespace(f=bar)
++---
+
+  By default, <<<fromFilePrefixChars>>> is <<<null>>>, which means no
+  argument is treated as file path.
 
 ** description()
 
@@ -1740,9 +1781,11 @@ outusername=out
   <<<ArgumentParser.addSubparsers()>>> is normally called with no
   arguments and returns <<<Subparsers>>> object. This object has
   <<<Subparsers.addParser()>>>, which takes a command name and returns
-  <<<Subparser>>> object. <<<Subparser>>> object implements
-  <<<ArgumentParser>>>, but several methods are not supported.  Some
-  example usage:
+  <<<Subparser>>> object.  <<<Subparsers.addParser()>>> can take
+  <<<prefixChars>>> argument just like
+  <<<ArgumentParsers.newArgumentParser()>>>. If a version of
+  <<<Subparsers.addParser()>>> without <<<prefixChars>>> is used,
+  <<<prefixChars>>> is inherited from main parser. Some example usage:
 
 +---
 
