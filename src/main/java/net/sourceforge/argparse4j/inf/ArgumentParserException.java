@@ -34,7 +34,7 @@ public class ArgumentParserException extends Exception {
     /**
      * 
      */
-    private static final long serialVersionUID = 12568411943536166L;
+    private static final long serialVersionUID = 1L;
     private ArgumentParser parser_;
 
     public ArgumentParserException(ArgumentParser parser) {
