@@ -38,6 +38,16 @@ public class ArgumentParserImplTest {
     }
 
     @Test
+    public void testCtor() throws ArgumentParserException {
+        ap = new ArgumentParserImpl("prog", false, "+", "@", null);
+        assertEquals("prog", ap.getProg());
+        assertEquals("+", ap.getPrefixChars());
+        assertEquals("@", ap.getFromFilePrefixChars());
+        // Check +h can be added because addHelp is false
+        ap.addArgument("+h");
+    }
+
+    @Test
     public void testParseArgs() throws ArgumentParserException {
         ap.addArgument("--foo");
         ap.addArgument("--bar").nargs("?").setConst("c");
