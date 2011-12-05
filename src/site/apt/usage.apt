@@ -1,11 +1,11 @@
 The argparse4j User Manual
 
-  The argparse4j is Java port of Python's
-  {{{http://docs.python.org/library/argparse.html}argparse}} command
-  line argument parser.  Because of the difference of language, we
-  cannot use same syntax and usage of original, but we tried to bring
-  the same touch and feel as much as possible.  We also use same
-  terminology as much as possible.
+  Argparse4j is a command line argument parser library for Java based
+  on Python's
+  {{{http://docs.python.org/library/argparse.html}argparse}}.  Because
+  of the difference of language, we cannot use same syntax and usage
+  of original, but we tried to bring the same touch and feel as much
+  as possible.  We also use same terminology as much as possible.
 
   This manual was written based on argparse's manual and most of the
   the sentences are almost identical, just replaced code examples. We

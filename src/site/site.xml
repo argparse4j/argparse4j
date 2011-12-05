@@ -8,7 +8,7 @@
 		<version>1.0</version>
 	</skin>
 	<bannerLeft>
-		<name>Argparse4j - The command-line parser library</name>
+		<name>Argparse4j - The command line argument parser library</name>
 	</bannerLeft>
 	<bannerRight>
 		<src></src>
