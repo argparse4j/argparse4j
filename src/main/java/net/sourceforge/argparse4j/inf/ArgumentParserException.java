@@ -26,7 +26,7 @@ package net.sourceforge.argparse4j.inf;
 /**
  * The exception thrown from {@link ArgumentParser#parseArgs(String[])} if error
  * occurred while processing command line argument. The argument {@code parser}
- * in constructor is the ArgumentParser object where an error occurs.
+ * in constructor is the ArgumentParser object where an error occurred.
  * 
  */
 public class ArgumentParserException extends Exception {
