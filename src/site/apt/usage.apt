@@ -1487,7 +1487,7 @@ done.
 
 * The parseArgs() method
 
-  <<<ArgumentParser.parseArgs()>> converts argument strings to objects
+  <<<ArgumentParser.parseArgs()>>> converts argument strings to objects
   and populates <<<Namespace>>> object with these values. The
   populated <<<Namespace>>> object is returned.  Previous calls to
   <<<ArgumentParser.addArgument()>>> determine exactly what objects
