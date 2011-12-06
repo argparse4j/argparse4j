@@ -1,7 +1,7 @@
-Argparse4j - The command line argument parser
+Argparse4j - The command line argument parser library
 
-The argparse4j is Java port of Python's argparse command line argument
-parser module.
+The argparse4j is a command line argument parser library for Java
+based on Python's argparse.
 
 To see how to use argparse4j, visit http://argparse4j.sourceforge.net/
 
@@ -18,8 +18,8 @@ Here is summary of features:
   * Generates well formatted line-wrapped help message.
 
   * Suggests optional arguments/sub-command if unrecognized
-    arguments/sub-command were given, e.g. "Did you mean: ...".
-    (since 0.2.0-SNAPSHOT)
+    arguments/sub-command were given, e.g. "unrecognized argument
+    '--tpye'. Did you mean: --type".
 
   * Takes into account East Asian Width ambiguous characters when
     line-wrap.
@@ -39,3 +39,5 @@ Here is summary of features:
 
   * Group arguments so that it will be printed in help message in more
     readable way.
+
+  * Read additional arguments from file.
