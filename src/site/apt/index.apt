@@ -9,7 +9,7 @@
 <dependency>
   <groupId>net.sourceforge.argparse4j</groupId>
   <artifactId>argparse4j</artifactId>
-  <version>0.1.0</version>
+  <version>0.2.0</version>
 </dependency>
 +---
 
@@ -22,34 +22,42 @@
 
   Here is summary of features:
   
-  * Supported positional arguments and optional arguments.
+   * Supported positional arguments and optional arguments.
 
-  * Variable number of arguments.
+   * Variable number of arguments.
 
-  * Generates well formatted line-wrapped help message.
+   * Generates well formatted line-wrapped help message.
 
-  * Suggests optional arguments/sub-command if unrecognized
-    arguments/sub-command were given, e.g. "unrecognized argument
-    '--tpye': Did you mean: --type".  (since 0.2.0-SNAPSHOT)
+   * Suggests optional arguments/sub-command if unrecognized
+     arguments/sub-command were given, e.g. "unrecognized argument
+     '--tpye': Did you mean: --type".
 
-  * Takes into account East Asian Width ambiguous characters when line-wrap.
+   * Takes into account East Asian Width ambiguous characters when
+     line-wrap.
 
-  * Sub-commands like, <<<git add>>>.
+   * Sub-commands like, <<<git add>>>.
 
-  * Customizable option prefix characters, e.g. <<<'+f'>>> and <<<'/h'>>>.
+   * Customizable option prefix characters, e.g. <<<'+f'>>> and
+     <<<'/h'>>>.
 
-  * Print default values in help message.
+   * Print default values in help message.
 
-  * Choice from given collection of values.
+   * Choice from given collection of values.
 
-  * Type conversion from option strings.
+   * Type conversion from option strings.
 
-  * Can directly assign values into user defined classes using annotation.
+   * Can directly assign values into user defined classes using
+     annotation.
 
-  * Group arguments so that it will be printed in help message in more readable way.
+   * Group arguments so that it will be printed in help message in
+     more readable way.
 
- Here is the working demo program to calculate checksum. Argparse4j is used to parse
- command line arguments (Java 7 required to compile this source code):
+   * Read additional arguments from file.
+
+
+  Here is the working demo program to calculate checksum. Argparse4j
+  is used to parse command line arguments (Java 7 required to compile
+  this source code):
 
 +---
 import java.io.IOException;

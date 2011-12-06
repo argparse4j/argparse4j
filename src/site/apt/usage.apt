@@ -198,29 +198,29 @@ ArgumentParser object:
   <<<ArgumentParsers.newArgumentParser()>>>, following parameters can
   be specified:
 
- * {{{prog}prog}} - The name of the program. This is necessary because
-   main() method in Java does not provide program name.
+   * {{{prog}prog}} - The name of the program. This is necessary
+     because main() method in Java does not provide program name.
 
- * {{{addHelp}addHelp}} - Add a <<<-h/--help>>> option to the parser.
-   (default: <<<true>>>).
+   * {{{addHelp}addHelp}} - Add a <<<-h/--help>>> option to the
+     parser.  (default: <<<true>>>).
 
- * {{{prefixChars}prefixChars}} - The set of characters that prefix
-   optional arguments. (default: <<<->>>)
+   * {{{prefixChars}prefixChars}} - The set of characters that prefix
+     optional arguments. (default: <<<->>>)
 
- * {{{fromFilePrefixChars}fromFilePrefixChars}} - The set of
-   characters that prefix file path from which additional arguments
-   are read.
+   * {{{fromFilePrefixChars}fromFilePrefixChars}} - The set of
+     characters that prefix file path from which additional arguments
+     are read.
 
   After creation of the instance, several additional parameters can be
   specified using following methods:
 
- * {{{description}description()}} - Text to display before the
-   argument help.
+   * {{{description}description()}} - Text to display before the
+     argument help.
 
- * {{{epilog}epilog()}} - Text to display after the argument help.
+   * {{{epilog}epilog()}} - Text to display after the argument help.
 
- * {{{defaultHelp}defaultHelp()}} - Display default value to help
-   message. (default: <<<false>>>)
+   * {{{defaultHelp}defaultHelp()}} - Display default value to help
+     message. (default: <<<false>>>)
 
   The following sections describes how each of these are used.
 
@@ -492,30 +492,31 @@ Namespace(f=bar)
   e.g. <<<foo>>> or <<<-f, --foo>>>.  After obtained <<<Argument>>>
   object, several parameters can be specified using following methods:
 
- * {{{action}action()}} - The basic type of action to be taken when
-   this argument is encountered at the command line.
+   * {{{action}action()}} - The basic type of action to be taken when
+     this argument is encountered at the command line.
 
- * {{{nargs}nargs()}} - The number of command line arguments that
-   should be consumed.
+   * {{{nargs}nargs()}} - The number of command line arguments that
+     should be consumed.
 
- * {{{setConst}setConst()}} - A constant value required by some
-   {{action}} and {{nargs}} selections.
+   * {{{setConst}setConst()}} - A constant value required by some
+     {{action}} and {{nargs}} selections.
 
- * {{{type}type()}} - The type to which the command line argument
-   should be converted.
+   * {{{type}type()}} - The type to which the command line argument
+     should be converted.
 
- * {{{choices}choices()}} - A collection of the allowable values for
-   the argument.
+   * {{{choices}choices()}} - A collection of the allowable values for
+     the argument.
 
- * {{{required}required()}} - Whether or not the command line option
-   may be omitted(optional arguments only).
+   * {{{required}required()}} - Whether or not the command line option
+     may be omitted(optional arguments only).
 
- * {{{help}help()}} - A brief description of what the argument does.
+   * {{{help}help()}} - A brief description of what the argument does.
 
- * {{{metavar}metavar()}}- A name for the argument in usage messages.
+   * {{{metavar}metavar()}}- A name for the argument in usage
+     messages.
 
- * {{{dest}dest()}} - The name of the attribute to be added as a
-   result of <<<ArgumentParser.parseArgs()>>>.
+   * {{{dest}dest()}} - The name of the attribute to be added as a
+     result of <<<ArgumentParser.parseArgs()>>>.
 
   The following sections describe how each of these are used.
 
@@ -989,19 +990,20 @@ Namespace(f=bar)
   are not read from the command line but are required for the various
   actions.  The two most common uses of it are:
 
- * When {{storeConst}} and {{appendConst}} are specified.  These
-   actions add the value spcified by <<<setConst()>>> to one of the
-   attributes of the object returned by
-   <<<ArgumentParser.parseArgs()>>>.  See the {{action}} for examples.
+   * When {{storeConst}} and {{appendConst}} are specified.  These
+     actions add the value spcified by <<<setConst()>>> to one of the
+     attributes of the object returned by
+     <<<ArgumentParser.parseArgs()>>>.  See the {{action}} for
+     examples.
 
- * When <<<ArgumentParser.addArgument()>>> is called with option
-   strings (like <<<-f>>> or <<<--foo>>>) and <<<nargs("?")>>> is
-   used.  This creates an optional argument that can be followed by
-   zero or one command line argument. When parsing the command line,
-   if the option string is encountered with no command line argument
-   following it, the value specified by <<<Argument.setConst()>>> will
-   be assumed instead.  See the {{nargs}} description for examples.
-   The const value defauls to <<<null>>>.
+   * When <<<ArgumentParser.addArgument()>>> is called with option
+     strings (like <<<-f>>> or <<<--foo>>>) and <<<nargs("?")>>> is
+     used.  This creates an optional argument that can be followed by
+     zero or one command line argument. When parsing the command line,
+     if the option string is encountered with no command line argument
+     following it, the value specified by <<<Argument.setConst()>>>
+     will be assumed instead.  See the {{nargs}} description for
+     examples.  The const value defauls to <<<null>>>.
 
 ** setDefault()
 
@@ -2286,10 +2288,9 @@ optional arguments:
   take care of formatting and printing any usage or error messages.
   However, several formatting methods are available:
 
- * <<<ArgumentParser.printUsage()>>>
-   - Print a brief description of how the program should be invoked on
-   the command line.
+   * <<<ArgumentParser.printUsage()>>> - Print a brief description of
+     how the program should be invoked on the command line.
 
- * <<<ArgumentParser.printHelp()>>>
-   - Print a help message, including the program usage and information about
-   the arguments registered with <<<ArgumentParser>>>.
+   * <<<ArgumentParser.printHelp()>>> - Print a help message,
+     including the program usage and information about the arguments
+     registered with <<<ArgumentParser>>>.
