@@ -112,11 +112,13 @@ public final class TextHelper {
                     wrap(textWidthCounter, help, width, 25, "",
                             "                         "));
         } else {
-            writer.format(
-                    "  %s\n                         %s\n",
-                    title,
-                    wrap(textWidthCounter, help, width, 25, "",
-                            "                         "));
+            writer.format("  %s\n", title);
+            if (!help.isEmpty()) {
+                writer.format(
+                        "                         %s\n",
+                        wrap(textWidthCounter, help, width, 25, "",
+                                "                         "));
+            }
         }
     }
 
