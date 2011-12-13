@@ -1,5 +1,7 @@
 Examples
 
+%{toc}
+
 * CJK line-wrap example
 
   Sub-set of options of <<<ls>>>. The help messages are from <<<ls>>>
@@ -96,4 +98,58 @@ optional arguments:
 SIZE は次のうちの一つです (整数の後に付加されるかもしれません):
 KB 1000, K 1024, MB 1000*1000, M 1024*1024, その他 G, T, P, E, Z, Y など。
 
++---
+
+* Clojure example
+
++---
+(ns argparse4j-demo
+    (:import (net.sourceforge.argparse4j ArgumentParsers)
+	     (net.sourceforge.argparse4j.impl Arguments)
+	     (net.sourceforge.argparse4j.inf ArgumentParserException)))
+
+;; Helper function to convert closure list to array
+(defn va [& name-and-flags]
+  (into-array name-and-flags))
+
+(def ap (. ArgumentParsers newArgumentParser
+	   "java -cp clojure.jar clojure.main"))
+
+(let [group (. ap addArgumentGroup "init options")]
+     (doto (. group addArgument (va "-i" "--init"))
+	   (.metavar (va "path"))
+	   (.help "Load a file or resource"))
+     (doto (. group addArgument (va "-e" "--eval"))
+	   (.metavar (va "string"))
+	   (.help "Evaluate expressions in string; print non-nil values")))
+
+(let [group (. ap addArgumentGroup "main options")]
+     (doto (. group addArgument (va "-m" "--main"))
+	   (.metavar (va "ns-name"))
+	   (.help "Call the -main function from a namespace with args"))
+     (doto (. group addArgument (va "-r" "--repl"))
+	   (.action (. Arguments storeTrue))
+	   (.help "Run a repl"))
+     (doto (. group addArgument (va "path"))
+	   (.help (str "Run a script from from a file or resource;"
+		       " use '-' to read from standard input"))))
+
+(try
+ (println (. ap parseArgs (into-array String *command-line-args*)))
+ (catch RuntimeException e
+	(if (instance? ArgumentParserException (. e getCause))
+	    (. ap handleError (. e getCause))
+	  (. e printStackTrace))
+	(. System exit 1)))
++---
+
+  With Closure, use <<<Long>>> type instead of <<<Integer>>> if you use
+  <<<Argument.choices>>> with integer constants:
+
++---
+(def ap (. ArgumentParsers newArgumentParser "hello"))
+(doto (. ap addArgument (va "-i"))
+      (.type Long)
+      (.choices [1 2 3])
+      (.action (. Arguments append)))
 +---
