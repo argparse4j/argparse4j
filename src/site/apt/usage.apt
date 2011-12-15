@@ -822,7 +822,7 @@ Namespace(f=bar)
   <<<Argument.nargs()>>> associate different number of command line
   arguments with a single action.
 
-*** nargs(N), where N is an positive integer
+*** nargs(N), where N is a positive integer
 
   <<<Argument.nargs()>>> take a positive integer <<<N>>>.  <<<N>>>
   arguments from the command line will be gathered into a
