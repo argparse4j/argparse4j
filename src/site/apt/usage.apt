@@ -123,7 +123,7 @@ The argparse4j User Manual
 
 * Creating a parser
 
-  The first step in using the argparse4j is creating
+  The first step using the argparse4j is creating
 ArgumentParser object:
 
 +---
@@ -769,7 +769,7 @@ Namespace(f=bar)
 
 *** Custom actions
 
-  You can also specify your costum action by implementing
+  You can also specify your custom action by implementing
   <<<ArgumentAction>>> interface. For example:
 
 +---
@@ -1084,9 +1084,31 @@ Namespace(f=bar)
 
   By default, <<<ArgumentParser>>> objects read command line arguments
   in as simple strings. However, quite often the command line string
-  should instead be interpreted as another type, like a <<<float>>> or
-  <<<int>>>. The <<<Argument.type()>>> and pass its instance to
-  <<<Argument.type()>>>:
+  should instead be interpreted as another type, like a <<<Float>>> or
+  <<<Integer>>>. The <<<Argument.type()>>> allows any necessary
+  type-checking and type conversions to be performed.  The Classes
+  which have a constructor with 1 String argument can be passed
+  directly:
+
++---
+    public static void main(String[] args) {
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("foo").type(Integer.class);
+        try {
+            System.out.println(parser.parseArgs(args));
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+        }
+    }
++---
+
++---
+$ java Demo 100
+Namespace(foo=100)
++---
+
+ The <<<Argument.type()>>> also accepts an object which implements
+ <<<ArgumentType>>> interface:
 
 +---
     private static class PerfectSquare implements ArgumentType<Integer> {
@@ -1194,7 +1216,7 @@ Namespace(f=bar)
 +---
 
   Note that inclusion in the choices list is checked after any type
-  conversions have been performed, If a list of value is not enough,
+  conversions have been performed. If a list of value is not enough,
   you can create your own by subclassing <<<ArgumentChoice>>>. For
   example, argparse4j provides <<<Arguments.range()>>> to check
   whether an integer is in specified range:
@@ -1231,10 +1253,10 @@ Namespace(f=bar)
 
 ** required()
 
-  In general, the argparse module assumes that flags like <<<-f>>> and
-  <<<--bar>>> indicate optional arguments, which can always be omitted
-  at the command line. To make an option required, <<<true>>> can be
-  specified for <<<Argument.required()>>>:
+  In general, the <<<ArgumentParser>>> assumes that flags like
+  <<<-f>>> and <<<--bar>>> indicate optional arguments, which can
+  always be omitted at the command line. To make an option required,
+  <<<true>>> can be specified for <<<Argument.required()>>>:
 
 +---
 
