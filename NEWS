@@ -1,47 +1,13 @@
-argparse4j 0.2.0
+argparse4j 0.2.1
 ================
 
 Release Note
 ------------
 
-This release adds the ability to read additional arguments from file
-and the ability to add sub-command under sub-command.  The feature to
-print candidates for unrecognized flags/commands was also added.
-BaseArgumentParser interface was removed and the interface methods in
-it were moved to ArgumentParser interface. All methods took
-BaseArgumentParser now take ArgumentParser instead.
+This release fixes the bug that empty line is printed if help message
+for argument is empty and flag is longer than certain length.
 
 Changes
 -------
 
- * If Subparsers.addParser() without prefixChars are called, subparser
-   inherits prefixChars from main parser.
-
- * Added feature to read additional arguments from file.  The set of
-   characters to prefix file path is set in ArgumentParsers factory
-   method.
-
- * The constructors of ArgumentParserException now take ArgumentParser
-   object as a parameter.
-
- * Subparser interface now has addSubparsers() method. It means we can
-   add arbitrary number of sub-commands hierarchy.
-
- * Removed BaseArgumentParser. All interfaces are moved to
-   ArgumentParser.
-
- * Added Subparsers.metavar(). By default, text to represent
-   sub-commands are concatenation of all sub-commands. This method can
-   override this default behavior and sets arbitrary string to
-   use. This is useful if there are many sub-commands and you don't
-   want to show them all.
-
- * Use metavar if it is specified by user even if choice is specified.
-   In the previous implementation, choice's textualFormat() is used
-   over strings set by metavar(). Now strings set by metavar() has
-   precedence over choice.
-
- * Added feature to print candidates for unrecognized flags/commands.
-
- * Namespace: Added shortcut methods for byte, short, float and
-   boolean.
+ * Don't print empty line if help message for argument is empty.
