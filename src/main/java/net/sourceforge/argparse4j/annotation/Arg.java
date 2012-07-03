@@ -35,7 +35,8 @@ import java.lang.annotation.Target;
  * <p>
  * You can annotate fields and methods.
  * For methods, it must have only 1 format argument.
- * Use {@link #dest()} to specify which attribute to be assigned.
+ * Use {@link #dest()} to specify which attribute to be assigned. If it is
+ * empty, the name of the attribute or method will be used instead.
  * If the attribute value cannot be assigned to designated location,
  * error will be issued. If you want to ignore this error,
  * use {@link #ignoreError()}.
@@ -48,7 +49,7 @@ public @interface Arg {
      * The name of attribute to be assigned.
      * @return The name of attribute
      */
-    String dest();
+    String dest() default "";
 
     /**
      * Set {@code true} if you want to ignore the error in assignment.

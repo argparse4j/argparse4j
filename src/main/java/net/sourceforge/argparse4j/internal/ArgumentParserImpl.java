@@ -460,10 +460,14 @@ public final class ArgumentParserImpl implements ArgumentParser {
         for (Field field : userData.getClass().getDeclaredFields()) {
             Arg ann = field.getAnnotation(Arg.class);
             if (ann != null) {
-                if (!attrs.containsKey(ann.dest())) {
+            	String argDest = ann.dest();
+            	if (argDest.isEmpty()) {
+            		argDest = field.getName();
+            	}
+                if (!attrs.containsKey(argDest)) {
                     continue;
                 }
-                Object val = attrs.get(ann.dest());
+                Object val = attrs.get(argDest);
                 try {
                     field.setAccessible(true);
                     field.set(userData,
@@ -484,10 +488,14 @@ public final class ArgumentParserImpl implements ArgumentParser {
         for (Method method : userData.getClass().getDeclaredMethods()) {
             Arg ann = method.getAnnotation(Arg.class);
             if (ann != null) {
-                if (!attrs.containsKey(ann.dest())) {
+            	String argDest = ann.dest();
+            	if (argDest.isEmpty()) {
+            		argDest = method.getName();
+            	}
+                if (!attrs.containsKey(argDest)) {
                     continue;
                 }
-                Object val = attrs.get(ann.dest());
+                Object val = attrs.get(argDest);
                 Class<?> fargs[] = method.getParameterTypes();
                 if (fargs.length != 1) {
                     throw new IllegalArgumentException(String.format(
