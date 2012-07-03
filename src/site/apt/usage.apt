@@ -1742,7 +1742,8 @@ done.
   You can also assign values to user defined object. In this case, you
   can use <<<@Arg>>> annotation to designate where the attribute to be
   stored.  To specify the name of attribute to assign, use
-  <<<@Arg.dest>>>.  For example:
+  <<<@Arg.dest>>>; if it is not specified the name of the attribute or
+  the method will be used instead.  For example:
 
 +---
     private static class Option {
@@ -1752,6 +1753,9 @@ done.
 
         @Arg(dest = "rows")
         public int matrix[][];
+        
+        @Arg
+        public String url;
     }
 
     public static void main(String[] args) {
@@ -1759,11 +1763,13 @@ done.
         parser.addArgument("--rows").type(Integer.class).nargs("+")
                 .action(Arguments.append()).metavar("N");
         parser.addArgument("--filename");
+        parser.addArgument("--url");
 
         Option opt = new Option();
         try {
             parser.parseArgs(args, opt);
             System.out.println("outusername=" + opt.filename);
+            System.out.println("outurl=" + opt.url);
             int rows = opt.matrix.length;
             for (int i = 0; i < rows; ++i) {
                 int cols = opt.matrix[i].length;
@@ -1780,8 +1786,9 @@ done.
 +---
 
 +---
-$ java Demo --rows 1 2 3 --rows 4 5 6 --filename out
+$ java Demo --rows 1 2 3 --rows 4 5 6 --filename out --url http://example.com
 outusername=out
+http://example.com
 1	2	3	
 4	5	6	
 +---

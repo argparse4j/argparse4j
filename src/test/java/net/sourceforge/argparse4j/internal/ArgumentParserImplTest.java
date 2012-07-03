@@ -455,6 +455,9 @@ public class ArgumentParserImplTest {
             private int y;
             @Arg(dest = "username")
             public String name;
+            @Arg
+            public String host;
+            
             private int[] ints;
 
             @Arg(dest = "attrs")
@@ -473,10 +476,12 @@ public class ArgumentParserImplTest {
         }
 
         ap.addArgument("--username");
+        ap.addArgument("--host");
         ap.addArgument("--attrs").nargs("*").type(Integer.class);
         Out out = new Out();
-        ap.parseArgs("--username alice --attrs 1 2 3".split(" "), out);
+        ap.parseArgs("--username alice --host example.com --attrs 1 2 3".split(" "), out);
         assertEquals("alice", out.name);
+        assertEquals("example.com", out.host);
         assertArrayEquals(new int[] { 1, 2, 3 }, out.getInts());
     }
 
