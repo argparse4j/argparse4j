@@ -483,6 +483,21 @@ public class ArgumentParserImplTest {
         assertEquals("alice", out.name);
         assertEquals("example.com", out.host);
         assertArrayEquals(new int[] { 1, 2, 3 }, out.getInts());
+        
+        // Test inheritance
+        class SubOut extends Out {
+        	@Arg
+        	public int port;
+        }
+        
+        ap.addArgument("--port").type(Integer.class);
+        SubOut subOut = new SubOut();
+        ap.parseArgs("--username alice --host example.com --port 8080 --attrs 1 2 3".split(" "), subOut);
+        assertEquals("alice", subOut.name);
+        assertEquals("example.com", subOut.host);
+        assertArrayEquals(new int[] { 1, 2, 3 }, subOut.getInts());
+        assertEquals(8080, subOut.port);
+        
     }
 
     @Test
