@@ -24,6 +24,7 @@
 package net.sourceforge.argparse4j.internal;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -404,7 +405,11 @@ public final class ArgumentImpl implements Argument {
 
     @Override
     public Object getDefault() {
-        return default_;
+        if (default_ == null && maxNumArg_ > 1) {
+            return new ArrayList<Object>();
+        } else {
+            return default_;
+        }
     }
 
     @Override
