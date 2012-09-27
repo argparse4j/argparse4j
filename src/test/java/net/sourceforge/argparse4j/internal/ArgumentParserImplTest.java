@@ -17,9 +17,13 @@ import java.io.FileInputStream;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import net.sourceforge.argparse4j.annotation.Arg;
+import net.sourceforge.argparse4j.inf.Argument;
+import net.sourceforge.argparse4j.inf.ArgumentAction;
 import net.sourceforge.argparse4j.inf.ArgumentGroup;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
@@ -330,6 +334,34 @@ public class ArgumentParserImplTest {
         assertEquals("FOO", res.get("foo"));
         assertEquals("bar", res.get("g"));
         assertEquals("input", res.get("i"));
+    }
+
+    @Test
+    public void testParseArgsWithsPosargNargsDefaults() throws ArgumentParserException {
+
+        class MockAction implements ArgumentAction {
+            boolean invoked;
+
+            @Override
+            public void run(ArgumentParser parser, Argument arg,
+                    Map<String, Object> attrs, String flag, Object value)
+                    throws ArgumentParserException {
+                invoked = true;
+            }
+
+            @Override
+            public void onAttach(Argument arg) {}
+
+            @Override
+            public boolean consumeArgument() { return true; }
+        }
+
+        ap.addArgument("f").nargs("*").setDefault(list("default"));
+        MockAction action = new MockAction();
+        ap.addArgument("b").nargs("*").setDefault(false).action(action);
+        Namespace res = ap.parseArgs(new String[] {});
+        assertEquals(list("default"), res.get("f"));
+        assertEquals(false, action.invoked);
     }
 
     @Test
