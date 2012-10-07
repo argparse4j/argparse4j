@@ -1,3 +1,37 @@
+argparse4j 0.2.2
+================
+
+Release Note
+------------
+
+This release brings several enhancements to the existing features. In
+Arg annotation, 'dest' argument is now optional. Also inheritance
+chain is queried when searching fields and methods. When dealing with
+variable number of positional arguments, the default value is not
+overridden with empty list if no argument is given.
+
+Changes
+-------
+
+* Only override default for posArgs when there is at least one given.
+  - Don't call the action with an empty list if no parameter was given
+    for a posArgs with nArgs("*")
+  - In case default has not been set, an empty list should be returned
+    (ensured by #testParseArgsWithPosargOutOfIndex())
+  Patch from Brice Jaglin.
+
+* Included superclasses containing annotations.  Modified the method
+  that queries for the Arg annotation so that it also includes the
+  fields and methods declared in superclasses.
+  Patch from Juan Manuel Caicedo Carvajal.
+
+* Arg annotation - Made the 'dest' argument optional.  The 'dest'
+  argument of the Arg annotation now it's optional. The parser will
+  use the name of the annotated field or method in case that the
+  argument was not provided. Patch from Juan Manuel Caicedo Carvajal.
+
+
+
 argparse4j 0.2.1
 ================
 
@@ -10,4 +44,4 @@ for argument is empty and flag is longer than certain length.
 Changes
 -------
 
- * Don't print empty line if help message for argument is empty.
+* Don't print empty line if help message for argument is empty.
