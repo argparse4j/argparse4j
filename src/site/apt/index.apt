@@ -17,8 +17,8 @@
   See also {{{./examples.html}Examples}}.
   
   There are still missing features which exist in argparse but not in
-  argparse4j, such as mutual exclusion group.  At the same time, there
-  are also new features only exist in argparse4j.
+  argparse4j, but there are also new features which only exist in
+  argparse4j.
 
   Here is summary of features:
   
@@ -51,6 +51,8 @@
 
    * Group arguments so that it will be printed in help message in
      more readable way.
+
+   * Mutually exclusive argument group.
 
    * Read additional arguments from file.
 

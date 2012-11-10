@@ -2229,6 +2229,85 @@ optional arguments:
   back in the usual "positional arguments" and "optional arguments"
   sections.
 
+** Mutual exclusion
+
+  <<<ArgumentParser.addMutuallyExclusiveGroup()>>> creates a mutually
+  exclusive group. <<<ArgumentParser>>> will make sure that only one
+  of the arguments in the mutually exclusive group was present on the
+  command line:
+
++---
+
+ public static void main(String[] args) {
+     ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+     MutuallyExclusiveGroup group = parser.addMutuallyExclusiveGroup("group");
+     group.addArgument("--foo").action(Arguments.storeTrue());
+     group.addArgument("--bar").action(Arguments.storeFalse());
+     try {
+         System.out.println(parser.parseArgs(args));
+     } catch (ArgumentParserException e) {
+         parser.handleError(e);
+     }
+ }
+
++---
+
++---
+
+ $ java Demo --foo
+ Namespace(foo=true, bar=true)
+ $ java Demo --foo --bar
+ usage: prog [-h] [--foo | --bar]
+ prog: error: argument --bar: not allowed with argument --foo
+
++---
+
+  Specifying <<<true>>> to <<<MutuallyExclusiveGroup.required()>>>
+  indicates that at least one of the mutually exclusive arguments is
+  required:
+
++---
+
+ public static void main(String[] args) {
+     ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+     MutuallyExclusiveGroup group = parser.addMutuallyExclusiveGroup("group")
+             .required(true);
+     group.addArgument("--foo").action(Arguments.storeTrue());
+     group.addArgument("--bar").action(Arguments.storeFalse());
+     try {
+         System.out.println(parser.parseArgs(args));
+     } catch (ArgumentParserException e) {
+         parser.handleError(e);
+     }
+ }
+
++---
+
++---
+
+ $ java Demo
+ usage: prog [-h] (--foo | --bar)
+ prog: error: one of the arguments --foo --bar is required
+
++---
+
+  The mutually exclusive groups support the title and description just
+  like <<<ArgumentGroup>>> object:
+
++---
+
+ $ java Demo -h
+ usage: prog [-h] (--foo | --bar)
+
+ optional arguments:
+   -h, --help             show this help message and exit
+
+ group:
+   --foo
+   --bar
+
++---
+
 ** Parser defaults
 
   Most of the time, the attributes of the object returned by
