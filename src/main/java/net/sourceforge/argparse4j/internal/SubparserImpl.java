@@ -31,6 +31,7 @@ import net.sourceforge.argparse4j.helper.TextWidthCounter;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentGroup;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.MutuallyExclusiveGroup;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import net.sourceforge.argparse4j.inf.Subparsers;
@@ -61,6 +62,11 @@ public final class SubparserImpl implements Subparser {
     @Override
     public ArgumentGroup addArgumentGroup(String title) {
         return parser_.addArgumentGroup(title);
+    }
+
+    @Override
+    public MutuallyExclusiveGroup addMutuallyExclusiveGroup(String title) {
+        return parser_.addMutuallyExclusiveGroup(title);
     }
 
     @Override

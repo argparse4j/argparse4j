@@ -20,11 +20,13 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.argparse4j.annotation.Arg;
+import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentAction;
 import net.sourceforge.argparse4j.inf.ArgumentGroup;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.MutuallyExclusiveGroup;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import net.sourceforge.argparse4j.inf.Subparsers;
@@ -399,6 +401,74 @@ public class ArgumentParserImplTest {
     }
 
     @Test
+    public void testParseArgsWithMutexGroup() throws ArgumentParserException {
+        MutuallyExclusiveGroup group = ap.addMutuallyExclusiveGroup("mutex");
+        group.addArgument("--foo");
+        group.addArgument("--bar");
+        Namespace res = ap.parseArgs("--foo bar".split(" "));
+        assertEquals("bar", res.get("foo"));
+    }
+
+    @Test
+    public void testParseArgsWithMutexGroupDuplicate() throws ArgumentParserException {
+        MutuallyExclusiveGroup group = ap.addMutuallyExclusiveGroup("mutex");
+        group.addArgument("--foo");
+        group.addArgument("--bar");
+        try {
+            ap.parseArgs("--foo bar --bar baz".split(" "));
+            fail();
+        } catch(ArgumentParserException e) {
+            assertEquals("argument --bar: not allowed with argument --foo", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testParseArgsWithMutexGroupRequired() throws ArgumentParserException {
+        MutuallyExclusiveGroup group = ap.addMutuallyExclusiveGroup("mutex").required(true);
+        group.addArgument("--foo");
+        group.addArgument("--bar");
+        Namespace res = ap.parseArgs("--foo bar".split(" "));
+        assertEquals("bar", res.get("foo"));
+    }
+
+    @Test
+    public void testParseArgsWithMutexGroupRequiredFail() throws ArgumentParserException {
+        MutuallyExclusiveGroup group = ap.addMutuallyExclusiveGroup("mutex").required(true);
+        group.addArgument("--foo");
+        group.addArgument("--bar");
+        try {
+            ap.parseArgs(new String []{});
+            fail();
+        } catch(ArgumentParserException e) {
+            assertEquals("one of the arguments --foo --bar is required", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testParseArgsWithMutexGroupConcatDuplicate() throws ArgumentParserException {
+        MutuallyExclusiveGroup group = ap.addMutuallyExclusiveGroup("mutex").required(true);
+        group.addArgument("-a").action(Arguments.storeTrue());
+        group.addArgument("-b").action(Arguments.storeTrue());
+        ap.addArgument("-c").action(Arguments.storeTrue());
+        try {
+            ap.parseArgs("-acb".split(" "));
+        } catch(ArgumentParserException e) {
+            assertEquals("argument -b: not allowed with argument -a", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testParseArgsWithMutexGroupConcat() throws ArgumentParserException {
+        MutuallyExclusiveGroup group = ap.addMutuallyExclusiveGroup("mutex").required(true);
+        group.addArgument("-a").action(Arguments.storeTrue());
+        group.addArgument("-b").action(Arguments.storeTrue());
+        ap.addArgument("-c");
+        Namespace res = ap.parseArgs("-acfoo".split(" "));
+        assertEquals(true, res.getBoolean("a"));
+        assertEquals("foo", res.get("c"));
+    }
+
+    @Test
     public void testParseArgsWithCommandAfterSeparator() throws ArgumentParserException {
         Subparsers subparsers = ap.addSubparsers();
         subparsers.addParser("install");
@@ -421,7 +491,7 @@ public class ArgumentParserImplTest {
             assertEquals("too few arguments", e.getMessage());
         }
     }
-    
+
     @Test
     public void testSubparserInheritPrefixChars() throws ArgumentParserException {
         ap = new ArgumentParserImpl("argparse4j", true, "+");
@@ -537,14 +607,17 @@ public class ArgumentParserImplTest {
         assertEquals("usage: argparse4j [-h]\n", ap.formatUsage());
         ap.addArgument("-a");
         ap.addArgument("-b").required(true);
+        MutuallyExclusiveGroup group = ap.addMutuallyExclusiveGroup("mutex").required(true);
+        group.addArgument("-c").required(true);
+        group.addArgument("-d").required(true);
         ap.addArgument("file");
-        assertEquals("usage: argparse4j [-h] [-a A] -b B file\n", ap.formatUsage());
+        assertEquals("usage: argparse4j [-h] [-a A] -b B (-c C | -d D) file\n", ap.formatUsage());
         Subparser foosub = ap.addSubparsers().addParser("foo");
         foosub.addArgument("hash");
-        assertEquals("usage: argparse4j [-h] [-a A] -b B file {foo} ...\n", ap.formatUsage());
-        assertEquals("usage: argparse4j -b B file foo [-h] hash\n", foosub.formatUsage());
+        assertEquals("usage: argparse4j [-h] [-a A] -b B (-c C | -d D) file {foo} ...\n", ap.formatUsage());
+        assertEquals("usage: argparse4j -b B (-c C | -d D) file foo [-h] hash\n", foosub.formatUsage());
         Subparser bazsub = foosub.addSubparsers().addParser("baz");
-        assertEquals("usage: argparse4j -b B file foo hash baz [-h]\n", bazsub.formatUsage());
+        assertEquals("usage: argparse4j -b B (-c C | -d D) file foo hash baz [-h]\n", bazsub.formatUsage());
     }
 
     @Test
@@ -588,6 +661,23 @@ public class ArgumentParserImplTest {
   
     }
     
+    @Test
+    public void testFormatHelpWithMutexGroup()
+            throws ArgumentParserException {
+        ap.description("This is argparser4j.").epilog("This is epilog.");
+        MutuallyExclusiveGroup group = ap.addMutuallyExclusiveGroup("group1")
+                .description("group1 description");
+        group.addArgument("--foo");
+        group.addArgument("--bar");
+        assertEquals("usage: argparse4j [-h] [--foo FOO | --bar BAR]\n" + "\n"
+                + "This is argparser4j.\n" + "\n" + "optional arguments:\n"
+                + "  -h, --help             show this help message and exit\n"
+                + "\n" + "group1:\n" + "  group1 description\n" + "\n"
+                + "  --foo FOO              \n"
+                + "  --bar BAR              \n"
+                + "\n" + "This is epilog.\n",
+                ap.formatHelp());
+    }
 
     @Test
     public void testFormatHelp() throws ArgumentParserException {

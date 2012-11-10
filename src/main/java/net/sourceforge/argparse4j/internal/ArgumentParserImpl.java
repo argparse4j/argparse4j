@@ -50,6 +50,7 @@ import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.ArgumentGroup;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.MutuallyExclusiveGroup;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparsers;
 
@@ -138,7 +139,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         return addArgument(null, nameOrFlags);
     }
 
-    public ArgumentImpl addArgument(ArgumentGroup group, String... nameOrFlags) {
+    public ArgumentImpl addArgument(ArgumentGroupImpl group, String... nameOrFlags) {
         ArgumentImpl arg = new ArgumentImpl(prefixPattern_, group, nameOrFlags);
         if (arg.isOptionalArgument()) {
             for (String flag : arg.getFlags()) {
@@ -179,6 +180,16 @@ public final class ArgumentParserImpl implements ArgumentParser {
     @Override
     public ArgumentGroup addArgumentGroup(String title) {
         ArgumentGroupImpl group = new ArgumentGroupImpl(this, title);
+        group.setIndex(arggroups_.size());
+        arggroups_.add(group);
+        return group;
+    }
+
+    @Override
+    public MutuallyExclusiveGroup addMutuallyExclusiveGroup(String title) {
+        ArgumentGroupImpl group = new ArgumentGroupImpl(this, title);
+        group.setIndex(arggroups_.size());
+        group.setMutex(true);
         arggroups_.add(group);
         return group;
     }
@@ -347,7 +358,36 @@ public final class ArgumentParserImpl implements ArgumentParser {
             opts.add(command_);
         }
         for (ArgumentImpl arg : optargs_) {
-            opts.add(arg.formatShortSyntax());
+            if (arg.getArgumentGroup() == null
+                    || !arg.getArgumentGroup().isMutex()) {
+                opts.add(arg.formatShortSyntax());
+            }
+        }
+        for (ArgumentGroupImpl group : arggroups_) {
+            int numArgs = group.getArgs().size();
+            if (group.isMutex()) {
+                if (numArgs > 1) {
+                    opts.add((group.isRequired() ? "(" : "[")
+                            + group.getArgs().get(0)
+                                    .formatShortSyntaxNoBracket());
+                    for (int i = 1; i < numArgs - 1; ++i) {
+                        ArgumentImpl arg = group.getArgs().get(i);
+                        opts.add("|");
+                        opts.add(arg.formatShortSyntaxNoBracket());
+                    }
+                    opts.add("|");
+                    opts.add(group.getArgs().get(numArgs - 1)
+                            .formatShortSyntaxNoBracket()
+                            + (group.isRequired() ? ")" : "]"));
+                } else if (numArgs == 1) {
+                    if (group.isRequired()) {
+                        opts.add(group.getArgs().get(0)
+                                        .formatShortSyntaxNoBracket());
+                    } else {
+                        opts.add(group.getArgs().get(0).formatShortSyntax());
+                    }
+                }
+            }
         }
         for (ArgumentImpl arg : posargs_) {
             opts.add(arg.formatShortSyntax());
@@ -379,10 +419,42 @@ public final class ArgumentParserImpl implements ArgumentParser {
             opts.add(parser.command_);
         }
         for (ArgumentImpl arg : parser.optargs_) {
-            if (arg.isRequired()) {
+            if (arg.isRequired() &&
+                    (arg.getArgumentGroup() == null ||
+                    !arg.getArgumentGroup().isMutex())) {
                 opts.add(arg.formatShortSyntax());
             }
         }
+
+        for (ArgumentGroupImpl group : parser.arggroups_) {
+            int numArgs = group.getArgs().size();
+            if (group.isMutex()) {
+                if (numArgs > 1) {
+                    if (group.isRequired()) {
+                        opts.add("("
+                                + group.getArgs().get(0)
+                                        .formatShortSyntaxNoBracket());
+                        for (int i = 1; i < numArgs - 1; ++i) {
+                            ArgumentImpl arg = group.getArgs().get(i);
+                            opts.add("|");
+                            opts.add(arg.formatShortSyntaxNoBracket());
+                        }
+                        opts.add("|");
+                        opts.add(group.getArgs().get(numArgs - 1)
+                                .formatShortSyntaxNoBracket()
+                                + ")");
+                    }
+                } else if (numArgs == 1) {
+                    if (group.isRequired()) {
+                        opts.add(group.getArgs().get(0)
+                                .formatShortSyntaxNoBracket());
+                    } else if (group.getArgs().get(0).isRequired()) {
+                        opts.add(group.getArgs().get(0).formatShortSyntax());
+                    }
+                }
+            }
+        }
+
         for (ArgumentImpl arg : parser.posargs_) {
             opts.add(arg.formatShortSyntax());
         }
@@ -537,6 +609,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
             throws ArgumentParserException {
         populateDefaults(attrs);
         Set<ArgumentImpl> used = new HashSet<ArgumentImpl>();
+        ArgumentImpl groupUsed[] = new ArgumentImpl[arggroups_.size()];
         int posargIndex = 0;
         int posargsLen = posargs_.size();
         while (state.isArgAvail()) {
@@ -574,6 +647,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                                 embeddedValue = term.substring(i + 1);
                                 break;
                             }
+                            checkMutex(arg, groupUsed);
                             arg.run(this, attrs, shortFlag, null);
                             used.add(arg);
                         }
@@ -585,6 +659,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 }
                 assert (arg.getAction() != null);
                 ++state.index;
+                checkMutex(arg, groupUsed);
                 processArg(attrs, state, arg, flag, embeddedValue);
                 used.add(arg);
             } else if ("--".equals(state.getArg()) && !state.consumedSeparator) {
@@ -596,6 +671,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 processArg(attrs, state, arg, null, null);
             } else if (!state.consumedSeparator && subparsers_.hasSubCommand()) {
                 checkRequiredArgument(used, posargIndex);
+                checkRequiredMutex(groupUsed);
                 subparsers_.parseArg(state, attrs);
                 return;
             } else {
@@ -612,6 +688,36 @@ public final class ArgumentParserImpl implements ArgumentParser {
             processArg(attrs, state, arg, null, null);
         }
         checkRequiredArgument(used, posargIndex);
+        checkRequiredMutex(groupUsed);
+    }
+
+    /**
+     * Check that another option in mutually exclusive group has already been
+     * specified. If so, throw an exception.
+     * 
+     * @param arg
+     *            The argument currently processed
+     * @param groupUsed
+     *            The cache of used argument in each groups.
+     * @throws ArgumentParserException
+     *             If another option in mutually exclusive group has already
+     *             been used.
+     */
+    private void checkMutex(ArgumentImpl arg, ArgumentImpl[] groupUsed)
+            throws ArgumentParserException {
+        if (arg.getArgumentGroup() != null) {
+            if (arg.getArgumentGroup().isMutex()) {
+                ArgumentImpl usedMutexArg = groupUsed[arg.getArgumentGroup()
+                        .getIndex()];
+                if (usedMutexArg == null) {
+                    groupUsed[arg.getArgumentGroup().getIndex()] = arg;
+                } else if(usedMutexArg != arg) {
+                    throw new ArgumentParserException(String.format(
+                            "not allowed with argument %s",
+                            usedMutexArg.textualName()), this, arg);
+                }
+            }
+        }
     }
 
     /**
@@ -773,6 +879,22 @@ public final class ArgumentParserImpl implements ArgumentParser {
             throw new ArgumentParserException("too few arguments", this);
         }
 
+    }
+
+    private void checkRequiredMutex(ArgumentImpl[] used)
+            throws ArgumentParserException {
+        for (int i = 0; i < arggroups_.size(); ++i) {
+            ArgumentGroupImpl group = arggroups_.get(i);
+            if (group.isMutex() && group.isRequired() && used[i] == null) {
+                StringBuilder sb = new StringBuilder();
+                for (ArgumentImpl arg : group.getArgs()) {
+                    sb.append(arg.textualName()).append(" ");
+                }
+                throw new ArgumentParserException(String.format(
+                        "one of the arguments %sis required", sb.toString()),
+                        this);
+            }
+        }
     }
 
     private void populateDefaults(Map<String, Object> opts) {

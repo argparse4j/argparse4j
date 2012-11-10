@@ -41,8 +41,10 @@ import net.sourceforge.argparse4j.annotation.Arg;
  * make a conceptual group of arguments, first call
  * {@link #addArgumentGroup(String)} to create {@link ArgumentGroup} object. And
  * add argument to that group using {@link ArgumentGroup#addArgument(String...)}
- * . To parse command-line arguments, call {@link #parseArgs(String[])} or
- * several overloaded methods.
+ * . Similarly, to add the mutually exclusive group of arguments, use
+ * {@link #addMutuallyExclusiveGroup(String)} to create
+ * {@link MutuallyExclusiveGroup} object. To parse command-line arguments, call
+ * {@link #parseArgs(String[])} or several overloaded methods.
  * </p>
  */
 public interface ArgumentParser {
@@ -80,6 +82,24 @@ public interface ArgumentParser {
      * @return {@link ArgumentGroup} object.
      */
     ArgumentGroup addArgumentGroup(String title);
+
+    /**
+     * <p>
+     * Creates new mutually exclusive group, {@link MutuallyExclusiveGroup}
+     * object, and adds to this parser and returns the object.
+     * </p>
+     * <p>
+     * The arguments added to this group are mutually exclusive; if more than
+     * one argument belong to the group are specified, an error will be
+     * reported. The {@code title} is printed in help message as a title of this
+     * group.
+     * </p>
+     * 
+     * @param title
+     *            The title printed in help message.
+     * @return The {@link MutuallyExclusiveGroup} object.
+     */
+    MutuallyExclusiveGroup addMutuallyExclusiveGroup(String title);
 
     /**
      * <p>

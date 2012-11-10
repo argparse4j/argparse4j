@@ -39,7 +39,6 @@ import net.sourceforge.argparse4j.impl.type.StringArgumentType;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentAction;
 import net.sourceforge.argparse4j.inf.ArgumentChoice;
-import net.sourceforge.argparse4j.inf.ArgumentGroup;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.ArgumentType;
 import net.sourceforge.argparse4j.inf.FeatureControl;
@@ -64,17 +63,21 @@ public final class ArgumentImpl implements Argument {
     private int minNumArg_ = -1;
     private int maxNumArg_ = -1;
     private String help_ = "";
-    private ArgumentGroup argumentGroup_;
+    private ArgumentGroupImpl argumentGroup_;
 
     public ArgumentImpl(PrefixPattern prefixPattern, String... nameOrFlags) {
         this(prefixPattern, null, nameOrFlags);
     }
 
     public ArgumentImpl(PrefixPattern prefixPattern,
-            ArgumentGroup argumentGroup, String... nameOrFlags) {
+            ArgumentGroupImpl argumentGroup, String... nameOrFlags) {
         assert (nameOrFlags.length > 0);
         argumentGroup_ = argumentGroup;
         if (nameOrFlags.length == 1 && !prefixPattern.match(nameOrFlags[0])) {
+            if(argumentGroup_ != null && argumentGroup_.isMutex()) {
+                throw new IllegalArgumentException(
+                        "mutually exclusive arguments must be optional");
+            }
             name_ = nameOrFlags[0];
             dest_ = name_;
         } else {
@@ -130,6 +133,26 @@ public final class ArgumentImpl implements Argument {
             }
             if (!required_) {
                 sb.append("]");
+            }
+            return sb.toString();
+        } else {
+            return formatMetavar();
+        }
+    }
+
+    /**
+     * Short syntax is used in usage message, e.g. --foo BAR,
+     * but without bracket when this is not required option.
+     * 
+     * @return short syntax
+     */
+    public String formatShortSyntaxNoBracket() {
+        if (name_ == null) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(flags_[0]);
+            String mv = formatMetavar();
+            if (!mv.isEmpty()) {
+                sb.append(" ").append(mv);
             }
             return sb.toString();
         } else {
@@ -437,7 +460,7 @@ public final class ArgumentImpl implements Argument {
         return metavar_;
     }
 
-    public ArgumentGroup getArgumentGroup() {
+    public ArgumentGroupImpl getArgumentGroup() {
         return argumentGroup_;
     }
 

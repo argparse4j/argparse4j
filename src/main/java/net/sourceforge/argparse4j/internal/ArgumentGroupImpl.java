@@ -29,17 +29,32 @@ import java.util.List;
 
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.inf.ArgumentGroup;
+import net.sourceforge.argparse4j.inf.MutuallyExclusiveGroup;
 
 /**
  * <strong>The application code must not use this class directly.</strong>
- *
+ * 
+ * This class implements both mutually exclusive group and just a conceptual
+ * group.
  */
-public final class ArgumentGroupImpl implements ArgumentGroup {
+public final class ArgumentGroupImpl implements ArgumentGroup, MutuallyExclusiveGroup {
 
+    /**
+     * Index in {@link ArgumentParserImpl}.
+     */
+    private int index_;
     private String title_ = "";
     private String description_ = "";
     private ArgumentParserImpl argumentParser_;
     private List<ArgumentImpl> args_ = new ArrayList<ArgumentImpl>();
+    /**
+     * true if this is a mutually exclusive group.
+     */
+    private boolean mutex_ = false;
+    /**
+     * true if one of the arguments in this group must be specified.
+     */
+    private boolean required_ = false;
 
     public ArgumentGroupImpl(ArgumentParserImpl argumentParser, String title) {
         argumentParser_ = argumentParser;
@@ -47,7 +62,7 @@ public final class ArgumentGroupImpl implements ArgumentGroup {
     }
 
     @Override
-    public ArgumentGroup description(String description) {
+    public ArgumentGroupImpl description(String description) {
         description_ = TextHelper.nonNull(description);
         return this;
     }
@@ -57,6 +72,12 @@ public final class ArgumentGroupImpl implements ArgumentGroup {
         ArgumentImpl arg = argumentParser_.addArgument(this, nameOrFlags);
         args_.add(arg);
         return arg;
+    }
+
+    @Override
+    public ArgumentGroupImpl required(boolean required) {
+        required_ = required;
+        return this;
     }
 
     public void printHelp(PrintWriter writer) {
@@ -73,5 +94,29 @@ public final class ArgumentGroupImpl implements ArgumentGroup {
                     argumentParser_.getTextWidthCounter(),
                     ArgumentParserImpl.FORMAT_WIDTH);
         }
+    }
+
+    public int getIndex() {
+        return index_;
+    }
+
+    public void setIndex(int index) {
+        index_ = index;
+    }
+
+    public boolean isMutex() {
+        return mutex_;
+    }
+
+    public void setMutex(boolean mutex) {
+        mutex_ = mutex;
+    }
+
+    public boolean isRequired() {
+        return required_;
+    }
+
+    public List<ArgumentImpl> getArgs() {
+        return args_;
     }
 }
