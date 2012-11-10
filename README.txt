@@ -7,8 +7,8 @@ based on Python's argparse.
 To see how to use argparse4j, see http://argparse4j.sourceforge.net/
 
 There are still missing features which exist in argparse but not in
-argparse4j, such as mutual exclusion group. On the other hand, there
-are also new features only exist in argparse4j.
+argparse4j, but there are also new features which only exist in
+argparse4j.
 
 Here is a summary of features:
 
@@ -29,4 +29,5 @@ Here is a summary of features:
   annotation.
 * Group arguments so that it will be printed in help message in more
   readable way.
+* Mutually exclusive argument group.
 * Read additional arguments from file.
