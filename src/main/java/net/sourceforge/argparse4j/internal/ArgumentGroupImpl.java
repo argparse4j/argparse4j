@@ -80,19 +80,19 @@ public final class ArgumentGroupImpl implements ArgumentGroup, MutuallyExclusive
         return this;
     }
 
-    public void printHelp(PrintWriter writer) {
+    public void printHelp(PrintWriter writer, int format_width) {
         if (!title_.isEmpty()) {
             writer.format("%s:\n", title_);
         }
         if (!description_.isEmpty()) {
             writer.format("  %s\n\n", TextHelper.wrap(
                     argumentParser_.getTextWidthCounter(), description_,
-                    ArgumentParserImpl.FORMAT_WIDTH, 2, "", "  "));
+                    format_width, 2, "", "  "));
         }
         for (ArgumentImpl arg : args_) {
             arg.printHelp(writer, argumentParser_.isDefaultHelp(),
                     argumentParser_.getTextWidthCounter(),
-                    ArgumentParserImpl.FORMAT_WIDTH);
+                    format_width);
         }
     }
 

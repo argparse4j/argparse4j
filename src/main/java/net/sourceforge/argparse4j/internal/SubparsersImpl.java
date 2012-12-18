@@ -160,12 +160,11 @@ public final class SubparsersImpl implements Subparsers {
         }
     }
 
-    public void printSubparserHelp(PrintWriter writer) {
+    public void printSubparserHelp(PrintWriter writer, int format_width) {
         TextHelper.printHelp(writer, formatShortSyntax(), help_,
-                mainParser_.getTextWidthCounter(),
-                ArgumentParserImpl.FORMAT_WIDTH);
+                mainParser_.getTextWidthCounter(), format_width);
         for (Map.Entry<String, SubparserImpl> entry : parsers_.entrySet()) {
-            entry.getValue().printSubparserHelp(writer);
+            entry.getValue().printSubparserHelp(writer, format_width);
         }
     }
 

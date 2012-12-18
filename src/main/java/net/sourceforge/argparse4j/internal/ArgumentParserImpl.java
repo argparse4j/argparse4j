@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.annotation.Arg;
 import net.sourceforge.argparse4j.helper.ASCIITextWidthCounter;
 import net.sourceforge.argparse4j.helper.PrefixPattern;
@@ -229,11 +230,29 @@ public final class ArgumentParserImpl implements ArgumentParser {
         return defaultHelp_;
     }
 
-    private void printArgumentHelp(PrintWriter writer, List<ArgumentImpl> args) {
+    /**
+     * Returns the width of formatted text. If the terminal width detection is
+     * enabled, this method will autodetect the terminal width and calculate the
+     * width based on it. If it is not enabled or auto-detection was failed, the
+     * {@link FORMAT_WIDTH} is returned.
+     * 
+     * @return
+     */
+    private int getFormatWidth() {
+        if (ArgumentParsers.getTerminalWidthDetection()) {
+            int w = new TerminalWidth().getTerminalWidth() - 5;
+            return w == -1 ? FORMAT_WIDTH : w;
+        } else {
+            return FORMAT_WIDTH;
+        }
+    }
+
+    private void printArgumentHelp(PrintWriter writer, List<ArgumentImpl> args,
+            int format_width) {
         for (ArgumentImpl arg : args) {
             if (arg.getArgumentGroup() == null) {
                 arg.printHelp(writer, defaultHelp_, textWidthCounter_,
-                        FORMAT_WIDTH);
+                        format_width);
             }
         }
     }
@@ -247,24 +266,25 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     @Override
     public void printHelp(PrintWriter writer) {
-        printUsage(writer);
+        int format_width = getFormatWidth();
+        printUsage(writer, format_width);
         if (!description_.isEmpty()) {
             writer.format("\n%s\n", TextHelper.wrap(textWidthCounter_,
-                    description_, FORMAT_WIDTH, 0, "", ""));
+                    description_, format_width, 0, "", ""));
         }
         boolean subparsersUntitled = subparsers_.getTitle().isEmpty()
                 && subparsers_.getDescription().isEmpty();
         if (checkDefaultGroup(posargs_)
                 || (subparsers_.hasSubCommand() && subparsersUntitled)) {
             writer.print("\npositional arguments:\n");
-            printArgumentHelp(writer, posargs_);
+            printArgumentHelp(writer, posargs_, format_width);
             if (subparsers_.hasSubCommand() && subparsersUntitled) {
-                subparsers_.printSubparserHelp(writer);
+                subparsers_.printSubparserHelp(writer, format_width);
             }
         }
         if (checkDefaultGroup(optargs_)) {
             writer.print("\noptional arguments:\n");
-            printArgumentHelp(writer, optargs_);
+            printArgumentHelp(writer, optargs_, format_width);
         }
         if (subparsers_.hasSubCommand() && !subparsersUntitled) {
             writer.format("\n%s:\n",
@@ -273,17 +293,17 @@ public final class ArgumentParserImpl implements ArgumentParser {
             if (!subparsers_.getDescription().isEmpty()) {
                 writer.format("  %s\n\n", TextHelper
                         .wrap(textWidthCounter_, subparsers_.getDescription(),
-                                FORMAT_WIDTH, 2, "", "  "));
+                                format_width, 2, "", "  "));
             }
-            subparsers_.printSubparserHelp(writer);
+            subparsers_.printSubparserHelp(writer, format_width);
         }
         for (ArgumentGroupImpl group : arggroups_) {
             writer.print("\n");
-            group.printHelp(writer);
+            group.printHelp(writer, format_width);
         }
         if (!epilog_.isEmpty()) {
             writer.format("\n%s\n", TextHelper.wrap(textWidthCounter_, epilog_,
-                    FORMAT_WIDTH, 0, "", ""));
+                    format_width, 0, "", ""));
         }
         writer.flush();
     }
@@ -308,12 +328,13 @@ public final class ArgumentParserImpl implements ArgumentParser {
     }
 
     private void printArgumentUsage(PrintWriter writer, List<String> opts,
-            int offset, String firstIndent, String subsequentIndent) {
+            int offset, String firstIndent, String subsequentIndent,
+            int format_width) {
         int currentWidth = offset + firstIndent.length();
         writer.print(firstIndent);
         boolean first = true;
         for (String syntax : opts) {
-            if (!first && currentWidth + syntax.length() + 1 > FORMAT_WIDTH) {
+            if (!first && currentWidth + syntax.length() + 1 > format_width) {
                 writer.print("\n");
                 writer.print(subsequentIndent);
                 writer.print(" ");
@@ -336,6 +357,10 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     @Override
     public void printUsage(PrintWriter writer) {
+        printUsage(writer, getFormatWidth());
+    }
+
+    private void printUsage(PrintWriter writer, int format_width) {
         String usageprog = String.format("usage: %s", prog_);
         writer.print(usageprog);
         int offset;
@@ -396,7 +421,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
             opts.add(subparsers_.formatShortSyntax());
             opts.add("...");
         }
-        printArgumentUsage(writer, opts, offset, firstIndent, subsequentIndent);
+        printArgumentUsage(writer, opts, offset, firstIndent, subsequentIndent,
+                format_width);
     }
 
     /**

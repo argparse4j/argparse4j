@@ -199,11 +199,10 @@ public final class SubparserImpl implements Subparser {
         parser_.parseArgs(state, opts);
     }
 
-    public void printSubparserHelp(PrintWriter writer) {
+    public void printSubparserHelp(PrintWriter writer, int format_width) {
         if (!help_.isEmpty()) {
             TextHelper.printHelp(writer, "  " + command_, help_,
-                    parser_.getTextWidthCounter(),
-                    ArgumentParserImpl.FORMAT_WIDTH);
+                    parser_.getTextWidthCounter(), format_width);
         }
     }
 

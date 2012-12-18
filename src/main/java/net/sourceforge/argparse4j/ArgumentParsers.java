@@ -170,4 +170,32 @@ public final class ArgumentParsers {
     public static boolean getCjkWidthHack() {
         return cjkWidthHack_;
     }
+
+    private static boolean terminalWidthDetection_ = true;
+
+    /**
+     * <p>
+     * Set {@code true} to enable terminal width detection.
+     * </p>
+     * 
+     * <p>
+     * If this feature is enabled, argparse4j will automatically detect the
+     * terminal width and use it to format help messages.
+     * </p>
+     * 
+     * @param flag
+     *            {@code true} or {@code false}
+     */
+    public static void setTerminalWidthDetection(boolean flag) {
+        terminalWidthDetection_ = flag;
+    }
+
+    /**
+     * Returns true iff terminal width detection is enabled.
+     * 
+     * @return {@code true} or {@code false}
+     */
+    public static boolean getTerminalWidthDetection() {
+        return terminalWidthDetection_;
+    }
 }
