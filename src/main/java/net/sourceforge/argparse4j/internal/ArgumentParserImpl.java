@@ -241,7 +241,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     private int getFormatWidth() {
         if (ArgumentParsers.getTerminalWidthDetection()) {
             int w = new TerminalWidth().getTerminalWidth() - 5;
-            return w == -1 ? FORMAT_WIDTH : w;
+            return w <= 0 ? FORMAT_WIDTH : w;
         } else {
             return FORMAT_WIDTH;
         }
