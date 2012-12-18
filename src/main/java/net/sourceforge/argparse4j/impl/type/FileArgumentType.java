@@ -97,87 +97,87 @@ public class FileArgumentType implements ArgumentType<File> {
   public File convert(ArgumentParser parser, Argument arg, String value) throws ArgumentParserException {
     File file = new File(value);
     if (verifyExists && !isSystemIn(file)) {
-      verifyExists(parser, file);
+      verifyExists(parser, arg, file);
     }
     if (verifyNotExists && !isSystemIn(file)) {
-      verifyNotExists(parser, file);
+      verifyNotExists(parser, arg, file);
     }
     if (verifyIsFile && !isSystemIn(file)) {
-      verifyIsFile(parser, file);
+      verifyIsFile(parser, arg, file);
     }
     if (verifyIsDirectory && !isSystemIn(file)) {
-      verifyIsDirectory(parser, file);
+      verifyIsDirectory(parser, arg, file);
     }
     if (verifyCanRead && !isSystemIn(file)) {
-      verifyCanRead(parser, file);
+      verifyCanRead(parser, arg, file);
     }
     if (verifyCanWrite && !isSystemIn(file)) {
-      verifyCanWrite(parser, file);
+      verifyCanWrite(parser, arg, file);
     }
     if (verifyCanWriteParent && !isSystemIn(file)) {
-      verifyCanWriteParent(parser, file);
+      verifyCanWriteParent(parser, arg, file);
     }
     if (verifyCanExecute && !isSystemIn(file)) {
-      verifyCanExecute(parser, file);
+      verifyCanExecute(parser, arg, file);
     }
     if (verifyIsAbsolute && !isSystemIn(file)) {
-      verifyIsAbsolute(parser, file);
+      verifyIsAbsolute(parser, arg, file);
     }
     return file;
   }
   
-  private void verifyExists(ArgumentParser parser, File file) throws ArgumentParserException {
+  private void verifyExists(ArgumentParser parser, Argument arg, File file) throws ArgumentParserException {
     if (!file.exists()) {
-      throw new ArgumentParserException("File not found: " + file, parser);
+      throw new ArgumentParserException(String.format("File not found: '%s'", file), parser, arg);
     }
   }    
   
-  private void verifyNotExists(ArgumentParser parser, File file) throws ArgumentParserException {
+  private void verifyNotExists(ArgumentParser parser, Argument arg, File file) throws ArgumentParserException {
     if (file.exists()) {
-      throw new ArgumentParserException("File found: " + file, parser);
+      throw new ArgumentParserException(String.format("File found: '%s'", file), parser, arg);
     }
   }    
   
-  private void verifyIsFile(ArgumentParser parser, File file) throws ArgumentParserException {
+  private void verifyIsFile(ArgumentParser parser, Argument arg, File file) throws ArgumentParserException {
     if (!file.isFile()) {
-      throw new ArgumentParserException("Not a file: " + file, parser);
+      throw new ArgumentParserException(String.format("Not a file: '%s'", file), parser, arg);
     }
   }    
   
-  private void verifyIsDirectory(ArgumentParser parser, File file) throws ArgumentParserException {
+  private void verifyIsDirectory(ArgumentParser parser, Argument arg, File file) throws ArgumentParserException {
     if (!file.isDirectory()) {
-      throw new ArgumentParserException("Not a directory: " + file, parser);
+      throw new ArgumentParserException(String.format("Not a directory: '%s'", file), parser, arg);
     }
   }    
   
-  private void verifyCanRead(ArgumentParser parser, File file) throws ArgumentParserException {
+  private void verifyCanRead(ArgumentParser parser, Argument arg, File file) throws ArgumentParserException {
     if (!file.canRead()) {
-      throw new ArgumentParserException("Insufficient permissions to read file: " + file, parser);
+      throw new ArgumentParserException(String.format("Insufficient permissions to read file: '%s'", file), parser, arg);
     }
   }    
   
-  private void verifyCanWrite(ArgumentParser parser, File file) throws ArgumentParserException {
+  private void verifyCanWrite(ArgumentParser parser, Argument arg, File file) throws ArgumentParserException {
     if (!file.canWrite()) {
-      throw new ArgumentParserException("Insufficient permissions to write file: " + file, parser);
+      throw new ArgumentParserException(String.format("Insufficient permissions to write file: '%s'", file), parser, arg);
     }
   }    
   
-  private void verifyCanWriteParent(ArgumentParser parser, File file) throws ArgumentParserException {
+  private void verifyCanWriteParent(ArgumentParser parser, Argument arg, File file) throws ArgumentParserException {
     File parent = file.getParentFile();
     if (parent == null || !parent.canWrite()) {
-      throw new ArgumentParserException("Cannot write parent of file: " + file, parser);
+      throw new ArgumentParserException(String.format("Cannot write parent of file: '%s'", file), parser, arg);
     }
   }    
   
-  private void verifyCanExecute(ArgumentParser parser, File file) throws ArgumentParserException {
+  private void verifyCanExecute(ArgumentParser parser, Argument arg, File file) throws ArgumentParserException {
     if (!file.canExecute()) {
-      throw new ArgumentParserException("Insufficient permissions to execute file: " + file, parser);
+      throw new ArgumentParserException(String.format("Insufficient permissions to execute file: '%s'", file), parser, arg);
     }
   }    
   
-  private void verifyIsAbsolute(ArgumentParser parser, File file) throws ArgumentParserException {
+  private void verifyIsAbsolute(ArgumentParser parser, Argument arg, File file) throws ArgumentParserException {
     if (!file.isAbsolute()) {
-      throw new ArgumentParserException("Not an absolute file: " + file, parser);
+      throw new ArgumentParserException(String.format("Not an absolute file: '%s'", file), parser, arg);
     }
   }    
 

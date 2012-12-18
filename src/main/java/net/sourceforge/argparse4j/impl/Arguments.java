@@ -35,6 +35,7 @@ import net.sourceforge.argparse4j.impl.action.StoreTrueArgumentAction;
 import net.sourceforge.argparse4j.impl.action.VersionArgumentAction;
 import net.sourceforge.argparse4j.impl.choice.RangeArgumentChoice;
 import net.sourceforge.argparse4j.impl.type.EnumArgumentType;
+import net.sourceforge.argparse4j.impl.type.FileArgumentType;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.FeatureControl;
@@ -234,5 +235,16 @@ public final class Arguments {
      */
     public static <T extends Enum<T>> EnumArgumentType<T> enumType(Class<T> type) {
         return new EnumArgumentType<T>(type);
+    }
+
+    /**
+     * <p>
+     * Returns new {@link FileArgumentType} object.
+     * </p>
+     *
+     * @return {@link FileArgumentType} object
+     */
+    public static FileArgumentType fileType() {
+        return new FileArgumentType();
     }
 }
