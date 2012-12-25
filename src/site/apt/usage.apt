@@ -2142,6 +2142,46 @@ optional arguments:
   -x {FOO,BAZ}           
 +---
 
+** fileType()
+
+  The <<<Arguments.fileType()>>> will convert an argument to
+  <<<File>>> object. It has several convenient verification features
+  such as checking readability or existence of a given path.  The
+  command-line programs traditionally accept <<<->>> as standard
+  input.  The <<<Arguments.fileType()>>> supports this tradition
+  too. To enable this, just use <<<acceptSystemIn()>>> method.
+
++---
+
+    public static void main(String[] args) {
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog")
+                .defaultHelp(true);
+        parser.addArgument("-i", "--in")
+                .type(Arguments.fileType().acceptSystemIn().verifyCanRead())
+                .setDefault("-");
+        parser.addArgument("-o", "--out").type(Arguments.fileType());
+        try {
+            Namespace ns = parser.parseArgs(args);
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+        }
+    }
+
++---
+
++---
+$ java Demo -h
+usage: prog [-h] [-i IN] [-o OUT]
+
+optional arguments:
+  -h, --help             show this help message and exit
+  -i IN, --in IN         (default: -)
+  -o OUT, --out OUT
+$ java Demo -i not-found
+usage: prog [-h] [-i IN] [-o OUT]
+prog: error: argument -i/--in: Insufficient permissions to read file: 'not-found'
++---
+
 ** Argument groups
 
   By default, <<<ArgumentParser>>> groups command line arguments into
