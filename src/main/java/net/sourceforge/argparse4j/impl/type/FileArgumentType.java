@@ -27,6 +27,12 @@ import net.sourceforge.argparse4j.inf.ArgumentType;
 
 /**
  * ArgumentType subclass for File type, using fluent style API.
+ * 
+ * This object can convert path string to {@link java.io.File} object. The
+ * command-line programs traditionally accept the file path "-" as standard
+ * input. This object supports this when
+ * {@link FileArgumentType#acceptSystemIn()} is used. Also there are several
+ * convenient verification features such as checking readability or existence.
  */
 public class FileArgumentType implements ArgumentType<File> {
 
@@ -44,51 +50,111 @@ public class FileArgumentType implements ArgumentType<File> {
     public FileArgumentType() {
     }
 
+    /**
+     * If the argument is "-", accept it as standard input. If this method is
+     * used, all verification methods will be ignored.
+     * 
+     * @return this
+     */
     public FileArgumentType acceptSystemIn() {
         acceptSystemIn = true;
         return this;
     }
 
+    /**
+     * Verifies that the specified path exists. If the verification fails, error
+     * will be reported.
+     * 
+     * @return this
+     */
     public FileArgumentType verifyExists() {
         verifyExists = true;
         return this;
     }
 
+    /**
+     * Verifies that the specified path does not exist. If the verification
+     * fails, error will be reported.
+     * 
+     * @return this
+     */
     public FileArgumentType verifyNotExists() {
         verifyNotExists = true;
         return this;
     }
 
+    /**
+     * Verifies that the specified path is a regular file. If the verification
+     * fails, error will be reported.
+     * 
+     * @return this
+     */
     public FileArgumentType verifyIsFile() {
         verifyIsFile = true;
         return this;
     }
 
+    /**
+     * Verifies that the specified path is a directory. If the verification
+     * fails, error will be reported.
+     * 
+     * @return this
+     */
     public FileArgumentType verifyIsDirectory() {
         verifyIsDirectory = true;
         return this;
     }
 
+    /**
+     * Verifies that the specified path is readable. If the verification fails,
+     * error will be reported.
+     * 
+     * @return this
+     */
     public FileArgumentType verifyCanRead() {
         verifyCanRead = true;
         return this;
     }
 
+    /**
+     * Verifies that the specified path is writable. If the verification fails,
+     * error will be reported.
+     * 
+     * @return this
+     */
     public FileArgumentType verifyCanWrite() {
         verifyCanWrite = true;
         return this;
     }
 
+    /**
+     * Verifies that the parent directory of the specified path is writable. If
+     * the verification fails, error will be reported.
+     * 
+     * @return this
+     */
     public FileArgumentType verifyCanWriteParent() {
         verifyCanWriteParent = true;
         return this;
     }
 
+    /**
+     * Verifies that the specified path is executable. If the verification
+     * fails, error will be reported.
+     * 
+     * @return this
+     */
     public FileArgumentType verifyCanExecute() {
         verifyCanExecute = true;
         return this;
     }
 
+    /**
+     * Verifies that the specified path is an absolute path. If the verification
+     * fails, error will be reported.
+     * 
+     * @return this
+     */
     public FileArgumentType verifyIsAbsolute() {
         verifyIsAbsolute = true;
         return this;
