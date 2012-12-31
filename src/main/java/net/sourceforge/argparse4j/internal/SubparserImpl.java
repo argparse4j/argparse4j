@@ -167,6 +167,11 @@ public final class SubparserImpl implements Subparser {
     }
 
     @Override
+    public Namespace parseArgsOrFail(String args[]) {
+        return parser_.parseArgsOrFail(args);
+    }
+
+    @Override
     public Namespace parseArgs(String[] args) throws ArgumentParserException {
         return parser_.parseArgs(args);
     }

@@ -532,6 +532,18 @@ public final class ArgumentParserImpl implements ArgumentParser {
     }
 
     @Override
+    public Namespace parseArgsOrFail(String args[]) {
+        try {
+            Namespace ns = parseArgs(args);
+            return ns;
+        } catch (ArgumentParserException e) {
+            handleError(e);
+            System.exit(1);
+        }
+        return null;
+    }
+
+    @Override
     public Namespace parseArgs(String args[]) throws ArgumentParserException {
         Map<String, Object> attrs = new HashMap<String, Object>();
         parseArgs(args, attrs);
