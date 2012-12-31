@@ -77,6 +77,18 @@ public class ArgumentParserImplTest {
     }
 
     @Test
+    public void testEmbeddedValueWithNargsWrongValue() {
+        ap.addArgument("--foo").nargs("+").choices("bar", "baz");
+        try {
+            ap.parseArgs("--foo=abc".split(" "));
+            fail();
+        } catch(ArgumentParserException e) {
+            assertEquals("argument --foo: invalid choice: 'abc' (choose from {bar,baz})",
+                         e.getMessage());
+        }
+    }
+
+    @Test
     public void testRequiredOptargWithSubcommand()
             throws ArgumentParserException {
         ap.addArgument("--foo").required(true);

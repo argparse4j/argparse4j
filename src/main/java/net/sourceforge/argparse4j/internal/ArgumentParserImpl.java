@@ -806,7 +806,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     list.add(arg.convert(this, state.getArg()));
                 }
             } else {
-                list.add(embeddedValue);
+                list.add(arg.convert(this, embeddedValue));
             }
             if (list.size() < arg.getMinNumArg()) {
                 if (arg.isOptionalArgument()) {
