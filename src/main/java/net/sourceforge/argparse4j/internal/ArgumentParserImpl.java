@@ -82,7 +82,6 @@ public final class ArgumentParserImpl implements ArgumentParser {
     private static final Pattern SHORT_OPTS_PATTERN = Pattern
             .compile("-[^-].*");
 
-    public static final int FORMAT_WIDTH = 75;
     public static final String PREFIX_CHARS = "-";
 
     public ArgumentParserImpl(String prog) {
@@ -230,23 +229,6 @@ public final class ArgumentParserImpl implements ArgumentParser {
         return defaultHelp_;
     }
 
-    /**
-     * Returns the width of formatted text. If the terminal width detection is
-     * enabled, this method will autodetect the terminal width and calculate the
-     * width based on it. If it is not enabled or auto-detection was failed, the
-     * {@link FORMAT_WIDTH} is returned.
-     * 
-     * @return
-     */
-    private int getFormatWidth() {
-        if (ArgumentParsers.getTerminalWidthDetection()) {
-            int w = new TerminalWidth().getTerminalWidth() - 5;
-            return w <= 0 ? FORMAT_WIDTH : w;
-        } else {
-            return FORMAT_WIDTH;
-        }
-    }
-
     private void printArgumentHelp(PrintWriter writer, List<ArgumentImpl> args,
             int format_width) {
         for (ArgumentImpl arg : args) {
@@ -266,7 +248,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     @Override
     public void printHelp(PrintWriter writer) {
-        int format_width = getFormatWidth();
+        int format_width = ArgumentParsers.getFormatWidth();
         printUsage(writer, format_width);
         if (!description_.isEmpty()) {
             writer.format("\n%s\n", TextHelper.wrap(textWidthCounter_,
@@ -357,7 +339,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     @Override
     public void printUsage(PrintWriter writer) {
-        printUsage(writer, getFormatWidth());
+        printUsage(writer, ArgumentParsers.getFormatWidth());
     }
 
     private void printUsage(PrintWriter writer, int format_width) {

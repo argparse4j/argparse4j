@@ -31,6 +31,7 @@ import net.sourceforge.argparse4j.helper.ASCIITextWidthCounter;
 import net.sourceforge.argparse4j.helper.CJKTextWidthCounter;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.internal.ArgumentParserImpl;
+import net.sourceforge.argparse4j.internal.TerminalWidth;
 
 /**
  * Factory class to create new ArgumentParser.
@@ -198,4 +199,27 @@ public final class ArgumentParsers {
     public static boolean getTerminalWidthDetection() {
         return terminalWidthDetection_;
     }
+
+    /**
+     * Default format width of text output.
+     */
+    public static final int DEFAULT_FORMAT_WIDTH = 75;
+
+    /**
+     * Returns the width of formatted text. If the terminal width detection is
+     * enabled, this method will detect the terminal width automatically and
+     * calculate the width based on it. If it is not enabled or auto-detection
+     * was failed, the {@link ArgumentParsers#DEFAULT_FORMAT_WIDTH} is returned.
+     * 
+     * @return the width of formatted text
+     */
+    public static int getFormatWidth() {
+        if (terminalWidthDetection_) {
+            int w = new TerminalWidth().getTerminalWidth() - 5;
+            return w <= 0 ? DEFAULT_FORMAT_WIDTH : w;
+        } else {
+            return DEFAULT_FORMAT_WIDTH;
+        }
+    }
+
 }
