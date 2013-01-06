@@ -58,6 +58,7 @@ public final class ArgumentImpl implements Argument {
     private Object const_;
     private Object default_;
     private FeatureControl defaultControl_;
+    private FeatureControl helpControl_;
     private boolean required_;
     private String metavar_[];
     private int minNumArg_ = -1;
@@ -228,6 +229,9 @@ public final class ArgumentImpl implements Argument {
 
     public void printHelp(PrintWriter writer, boolean defaultHelp,
             TextWidthCounter textWidthCounter, int width) {
+        if (helpControl_ == Arguments.SUPPRESS) {
+            return;
+        }
         String help;
         if (defaultHelp && default_ != null) {
             StringBuilder sb = new StringBuilder(help_);
@@ -405,6 +409,12 @@ public final class ArgumentImpl implements Argument {
         return this;
     }
 
+    @Override
+    public ArgumentImpl help(FeatureControl ctrl) {
+        helpControl_ = ctrl;
+        return this;
+    }
+
     public boolean isOptionalArgument() {
         return name_ == null;
     }
@@ -438,6 +448,11 @@ public final class ArgumentImpl implements Argument {
     @Override
     public FeatureControl getDefaultControl() {
         return defaultControl_;
+    }
+
+    @Override
+    public FeatureControl getHelpControl() {
+        return helpControl_;
     }
 
     public String getName() {

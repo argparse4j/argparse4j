@@ -288,6 +288,22 @@ public interface Argument {
 
     /**
      * <p>
+     * Sets special value to control help message handling.
+     * </p>
+     * <p>
+     * Currently, only {@link FeatureControl#SUPPRESS} is available. If it is
+     * given, the help entry for this option is not displayed in the help
+     * message.
+     * </p>
+     * 
+     * @param ctrl
+     *            The special value to control help message handling.
+     * @return this
+     */
+    Argument help(FeatureControl ctrl);
+
+    /**
+     * <p>
      * Returns textual representation of the argument name.
      * </p>
      * 
@@ -330,4 +346,11 @@ public interface Argument {
      * @return The default control
      */
     FeatureControl getDefaultControl();
+
+    /**
+     * Returns help control.
+     * 
+     * @return The help control
+     */
+    FeatureControl getHelpControl();
 }

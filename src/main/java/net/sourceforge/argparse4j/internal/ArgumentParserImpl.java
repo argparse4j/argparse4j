@@ -32,6 +32,7 @@ import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -48,6 +49,7 @@ import net.sourceforge.argparse4j.helper.ReflectHelper;
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.helper.TextWidthCounter;
 import net.sourceforge.argparse4j.impl.Arguments;
+import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentGroup;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
@@ -365,39 +367,40 @@ public final class ArgumentParserImpl implements ArgumentParser {
             opts.add(command_);
         }
         for (ArgumentImpl arg : optargs_) {
-            if (arg.getArgumentGroup() == null
-                    || !arg.getArgumentGroup().isMutex()) {
+            if (arg.getHelpControl() != Arguments.SUPPRESS
+                    && (arg.getArgumentGroup() == null ||
+                        !arg.getArgumentGroup().isMutex())) {
                 opts.add(arg.formatShortSyntax());
             }
         }
         for (ArgumentGroupImpl group : arggroups_) {
-            int numArgs = group.getArgs().size();
+            List<ArgumentImpl> args = filterSuppressedArgs(group.getArgs());
+            int numArgs = args.size();
             if (group.isMutex()) {
                 if (numArgs > 1) {
                     opts.add((group.isRequired() ? "(" : "[")
-                            + group.getArgs().get(0)
-                                    .formatShortSyntaxNoBracket());
+                            + args.get(0).formatShortSyntaxNoBracket());
                     for (int i = 1; i < numArgs - 1; ++i) {
-                        ArgumentImpl arg = group.getArgs().get(i);
+                        ArgumentImpl arg = args.get(i);
                         opts.add("|");
                         opts.add(arg.formatShortSyntaxNoBracket());
                     }
                     opts.add("|");
-                    opts.add(group.getArgs().get(numArgs - 1)
-                            .formatShortSyntaxNoBracket()
+                    opts.add(args.get(numArgs - 1).formatShortSyntaxNoBracket()
                             + (group.isRequired() ? ")" : "]"));
                 } else if (numArgs == 1) {
                     if (group.isRequired()) {
-                        opts.add(group.getArgs().get(0)
-                                        .formatShortSyntaxNoBracket());
+                        opts.add(args.get(0).formatShortSyntaxNoBracket());
                     } else {
-                        opts.add(group.getArgs().get(0).formatShortSyntax());
+                        opts.add(args.get(0).formatShortSyntax());
                     }
                 }
             }
         }
         for (ArgumentImpl arg : posargs_) {
-            opts.add(arg.formatShortSyntax());
+            if (arg.getHelpControl() != Arguments.SUPPRESS) {
+                opts.add(arg.formatShortSyntax());
+            }
         }
         if (subparsers_.hasSubCommand()) {
             opts.add(subparsers_.formatShortSyntax());
@@ -405,6 +408,24 @@ public final class ArgumentParserImpl implements ArgumentParser {
         }
         printArgumentUsage(writer, opts, offset, firstIndent, subsequentIndent,
                 format_width);
+    }
+
+    /**
+     * Returns arguments in {@code args} whose {@link Argument#getHelpControl()}
+     * do not return {@link Arguments#SUPPRESS}.
+     * 
+     * @param args
+     * @return filtered list of arguments
+     */
+    private static List<ArgumentImpl> filterSuppressedArgs(
+            Collection<ArgumentImpl> args) {
+        ArrayList<ArgumentImpl> res = new ArrayList<ArgumentImpl>();
+        for (ArgumentImpl arg : args) {
+            if (arg.getHelpControl() != Arguments.SUPPRESS) {
+                res.add(arg);
+            }
+        }
+        return res;
     }
 
     /**
@@ -427,44 +448,44 @@ public final class ArgumentParserImpl implements ArgumentParser {
             opts.add(parser.command_);
         }
         for (ArgumentImpl arg : parser.optargs_) {
-            if (arg.isRequired() &&
-                    (arg.getArgumentGroup() == null ||
-                    !arg.getArgumentGroup().isMutex())) {
+            if (arg.getHelpControl() != Arguments.SUPPRESS
+                    && arg.isRequired()
+                    && (arg.getArgumentGroup() == null ||
+                        !arg.getArgumentGroup().isMutex())) {
                 opts.add(arg.formatShortSyntax());
             }
         }
 
         for (ArgumentGroupImpl group : parser.arggroups_) {
-            int numArgs = group.getArgs().size();
+            List<ArgumentImpl> args = filterSuppressedArgs(group.getArgs());
+            int numArgs = args.size();
             if (group.isMutex()) {
                 if (numArgs > 1) {
                     if (group.isRequired()) {
-                        opts.add("("
-                                + group.getArgs().get(0)
-                                        .formatShortSyntaxNoBracket());
+                        opts.add("(" + args.get(0).formatShortSyntaxNoBracket());
                         for (int i = 1; i < numArgs - 1; ++i) {
-                            ArgumentImpl arg = group.getArgs().get(i);
+                            ArgumentImpl arg = args.get(i);
                             opts.add("|");
                             opts.add(arg.formatShortSyntaxNoBracket());
                         }
                         opts.add("|");
-                        opts.add(group.getArgs().get(numArgs - 1)
-                                .formatShortSyntaxNoBracket()
-                                + ")");
+                        opts.add(args.get(numArgs - 1)
+                                .formatShortSyntaxNoBracket() + ")");
                     }
                 } else if (numArgs == 1) {
                     if (group.isRequired()) {
-                        opts.add(group.getArgs().get(0)
-                                .formatShortSyntaxNoBracket());
-                    } else if (group.getArgs().get(0).isRequired()) {
-                        opts.add(group.getArgs().get(0).formatShortSyntax());
+                        opts.add(args.get(0).formatShortSyntaxNoBracket());
+                    } else if (args.get(0).isRequired()) {
+                        opts.add(args.get(0).formatShortSyntax());
                     }
                 }
             }
         }
 
         for (ArgumentImpl arg : parser.posargs_) {
-            opts.add(arg.formatShortSyntax());
+            if (arg.getHelpControl() != Arguments.SUPPRESS) {
+                opts.add(arg.formatShortSyntax());
+            }
         }
     }
 

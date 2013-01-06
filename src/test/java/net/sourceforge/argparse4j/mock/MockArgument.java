@@ -113,6 +113,11 @@ public class MockArgument implements Argument {
     }
 
     @Override
+    public Argument help(FeatureControl help) {
+        return null;
+    }
+
+    @Override
     public String textualName() {
         // TODO Auto-generated method stub
         return null;
@@ -142,4 +147,8 @@ public class MockArgument implements Argument {
         return null;
     }
 
+    @Override
+    public FeatureControl getHelpControl() {
+        return null;
+    }
 }

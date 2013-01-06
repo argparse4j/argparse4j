@@ -711,6 +711,62 @@ public class ArgumentParserImplTest {
     }
 
     @Test
+    public void testFormatHelpWithSuppress()
+            throws ArgumentParserException {
+        ArgumentGroup group = ap.addArgumentGroup("group");
+        group.addArgument("--foo");
+        group.addArgument("--bar").help(Arguments.SUPPRESS);
+        ap.addArgument("-a").help(Arguments.SUPPRESS).required(true);
+        ap.addArgument("-b");
+        MutuallyExclusiveGroup mutex1 = ap.addMutuallyExclusiveGroup("mutex1");
+        mutex1.addArgument("-c").help(Arguments.SUPPRESS);
+        mutex1.addArgument("-d");
+        MutuallyExclusiveGroup mutex2 = ap.addMutuallyExclusiveGroup("mutex2")
+                .required(true);
+        mutex2.addArgument("-e").help(Arguments.SUPPRESS);
+        mutex2.addArgument("-f");
+        mutex2.addArgument("-g");
+        ap.addArgument("s");
+        ap.addArgument("t");
+        ap.addArgument("u").help(Arguments.SUPPRESS);
+        Subparsers subparsers = ap.addSubparsers();
+        Subparser sap = subparsers.addParser("add");
+        sap.addArgument("-i").help(Arguments.SUPPRESS);
+        sap.addArgument("-j");
+
+        assertEquals("usage: argparse4j [-h] [--foo FOO] [-b B] [-d D] (-f F | -g G) s t {add}\n"
+                   + "                  ...\n"
+                   + "\n"
+                   + "positional arguments:\n"
+                   + "  s\n"
+                   + "  t\n"
+                   + "  {add}\n"
+                   + "\n"
+                   + "optional arguments:\n"
+                   + "  -h, --help             show this help message and exit\n"
+                   + "  -b B\n"
+                   + "\n"
+                   + "group:\n"
+                   + "  --foo FOO\n"
+                   + "\n"
+                   + "mutex1:\n"
+                   + "  -d D\n"
+                   + "\n"
+                   + "mutex2:\n"
+                   + "  -f F\n"
+                   + "  -g G\n",
+                   ap.formatHelp());
+        // Check upper parsers's suppressed required arguments are not shown. 
+        assertEquals("usage: argparse4j (-f F | -g G) s t add [-h] [-j J]\n"
+                   + "\n"
+                   + "optional arguments:\n"
+                   + "  -h, --help             show this help message and exit\n"
+                   + "  -j J\n",
+                sap.formatHelp());
+    }
+
+
+    @Test
     public void testSubparserFormatHelp() throws ArgumentParserException {
         ap.addArgument("--bar");
         Subparsers subparsers = ap.addSubparsers();
