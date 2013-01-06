@@ -105,20 +105,24 @@ public final class TextHelper {
 
     public static void printHelp(PrintWriter writer, String title, String help,
             TextWidthCounter textWidthCounter, int width) {
-        if (textWidthCounter.width(title) <= 21) {
+        int INDENT_WIDTH = 25;
+        writer.format("  %s", title);
+        if (!help.isEmpty()) {
+            int titleWidth = textWidthCounter.width(title);
+            int indentWidth = INDENT_WIDTH;
+            if (titleWidth <= 21) {
+                indentWidth -= titleWidth + 2;
+            } else {
+                writer.write("\n");
+            }
+            String fmt = String.format("%%%ds%%s\n", indentWidth);
             writer.format(
-                    "  %-22s %s\n",
-                    title,
-                    wrap(textWidthCounter, help, width, 25, "",
+                    fmt,// "  %-22s %s\n",
+                    "",
+                    wrap(textWidthCounter, help, width, INDENT_WIDTH, "",
                             "                         "));
         } else {
-            writer.format("  %s\n", title);
-            if (!help.isEmpty()) {
-                writer.format(
-                        "                         %s\n",
-                        wrap(textWidthCounter, help, width, 25, "",
-                                "                         "));
-            }
+            writer.write("\n");
         }
     }
 

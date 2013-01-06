@@ -643,7 +643,7 @@ public class ArgumentParserImplTest {
                 + "This is argparser4j.\n" + "\n" + "optional arguments:\n"
                 + "  -h, --help             show this help message and exit\n"
                 + "\n" + "group1:\n" + "  group1 description\n" + "\n"
-                + "  --foo FOO              \n" + "\n" + "This is epilog.\n",
+                + "  --foo FOO\n" + "\n" + "This is epilog.\n",
                 ap.formatHelp());
     }
 
@@ -685,8 +685,8 @@ public class ArgumentParserImplTest {
                 + "This is argparser4j.\n" + "\n" + "optional arguments:\n"
                 + "  -h, --help             show this help message and exit\n"
                 + "\n" + "group1:\n" + "  group1 description\n" + "\n"
-                + "  --foo FOO              \n"
-                + "  --bar BAR              \n"
+                + "  --foo FOO\n"
+                + "  --bar BAR\n"
                 + "\n" + "This is epilog.\n",
                 ap.formatHelp());
     }
@@ -722,7 +722,7 @@ public class ArgumentParserImplTest {
                 + "This is sub-command of argparser4j.\n" + "\n"
                 + "optional arguments:\n"
                 + "  -h, --help             show this help message and exit\n"
-                + "  --foo FOO              \n" + "\n"
+                + "  --foo FOO\n" + "\n"
                 + "This is epilog of sub-command.\n", parser.formatHelp());
     }
 
