@@ -164,6 +164,9 @@ public class FileArgumentType implements ArgumentType<File> {
     public File convert(ArgumentParser parser, Argument arg, String value)
             throws ArgumentParserException {
         File file = new File(value);
+        if (verifyIsAbsolute && !isSystemIn(file)) {
+            verifyIsAbsolute(parser, arg, file);
+        }
         if (verifyExists && !isSystemIn(file)) {
             verifyExists(parser, arg, file);
         }
@@ -187,9 +190,6 @@ public class FileArgumentType implements ArgumentType<File> {
         }
         if (verifyCanExecute && !isSystemIn(file)) {
             verifyCanExecute(parser, arg, file);
-        }
-        if (verifyIsAbsolute && !isSystemIn(file)) {
-            verifyIsAbsolute(parser, arg, file);
         }
         return file;
     }
