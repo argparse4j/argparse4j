@@ -1331,6 +1331,30 @@ Namespace(foo=100)
   The help strings are used as is: no special string replacement will not be
 done.
 
+  The argparse4j supports silencing the help entry for certain
+  options, by passing <<<Arguments.SUPPRESS>>> to
+  <<<Argument.help()>>>:
+
++---
+    public static void main(String[] args) {
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("--foo").help(Arguments.SUPPRESS);
+        try {
+            Namespace ns = parser.parseArgs(args);
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+        }
+    }
++---
+
++---
+$ java Demo -h
+usage: prog [-h]
+
+optional arguments:
+  -h, --help             show this help message and exit
++---
+
 ** metavar()
 
   When <<<ArgumentParser>>> generates help messages, it need some way
