@@ -316,11 +316,17 @@ public class ArgumentParserImplTest {
         ap.addArgument("--baz").nargs(2);
         ap.addArgument("x");
         ap.addArgument("y").nargs(2);
-        Namespace res = ap.parseArgs("-f foo @target/test-classes/args.txt --baz alpha @target/test-classes/args2.txt x y1 @target/test-classes/args3.txt".split(" "));
+        Subparsers subparsers = ap.addSubparsers();
+        Subparser subparser = subparsers.addParser("add");
+        subparser.addArgument("--foo");
+        subparser.addArgument("--bar").action(Arguments.storeTrue());
+
+        Namespace res = ap.parseArgs("-f foo @target/test-classes/args.txt --baz alpha @target/test-classes/args2.txt x y1 @target/test-classes/args3.txt add --bar @target/test-classes/args4.txt".split(" "));
         assertEquals("bar", res.getString("f"));
         assertEquals(list("alpha", "bravo"), res.getList("baz"));
         assertEquals("x", res.getString("x"));
         assertEquals(list("y1", "y2"), res.getList("y"));
+        assertEquals("HELLO", res.getString("foo"));
     }
     
     @Test
