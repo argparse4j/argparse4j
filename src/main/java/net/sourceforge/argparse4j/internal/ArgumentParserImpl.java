@@ -889,7 +889,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     private String[] extendArgs(String file, String oldargs[], int offset)
             throws ArgumentParserException {
         List<String> list = new ArrayList<String>();
-        BufferedReader reader;
+        BufferedReader reader = null;
         try {
             reader = new BufferedReader(new InputStreamReader(
                     new FileInputStream(file), "utf-8"));
@@ -900,6 +900,12 @@ public final class ArgumentParserImpl implements ArgumentParser {
         } catch (IOException e) {
             throw new ArgumentParserException(String.format(
                     "Could not read arguments from file '%s'", file), e, this);
+        } finally {
+            try {
+                if(reader != null) {
+                    reader.close();
+                }
+            } catch(IOException e) {}
         }
         String newargs[] = new String[list.size() + oldargs.length - offset];
         list.toArray(newargs);
