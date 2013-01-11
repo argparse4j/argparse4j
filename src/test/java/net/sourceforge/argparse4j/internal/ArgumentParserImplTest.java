@@ -511,6 +511,29 @@ public class ArgumentParserImplTest {
     }
 
     @Test
+    public void testParseArgsWithMutualExclusiveGroupAndSuppressHelp()
+            throws ArgumentParserException {
+        MutuallyExclusiveGroup mutex1 = ap.addMutuallyExclusiveGroup("mutex1")
+                .required(true);
+        mutex1.addArgument("-a").help(Arguments.SUPPRESS);
+        Argument b = mutex1.addArgument("-b");
+        // Check the suppressed argument is not shown in the error message
+        try {
+            ap.parseArgs(new String[]{});
+            fail();
+        } catch(ArgumentParserException e) {
+            assertEquals("one of the arguments -b is required", e.getMessage());
+        }
+        b.help(Arguments.SUPPRESS);
+        try {
+            ap.parseArgs(new String[]{});
+            fail();
+        } catch(ArgumentParserException e) {
+            assertEquals("one of the arguments is required", e.getMessage());
+        }
+    }
+
+    @Test
     public void testSubparserInheritPrefixChars() throws ArgumentParserException {
         ap = new ArgumentParserImpl("argparse4j", true, "+");
         ap.addSubparsers().addParser("install").addArgument("+f");

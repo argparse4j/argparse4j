@@ -935,7 +935,9 @@ public final class ArgumentParserImpl implements ArgumentParser {
             if (group.isMutex() && group.isRequired() && used[i] == null) {
                 StringBuilder sb = new StringBuilder();
                 for (ArgumentImpl arg : group.getArgs()) {
-                    sb.append(arg.textualName()).append(" ");
+                    if(arg.getHelpControl() != Arguments.SUPPRESS) {
+                        sb.append(arg.textualName()).append(" ");
+                    }
                 }
                 throw new ArgumentParserException(String.format(
                         "one of the arguments %sis required", sb.toString()),
