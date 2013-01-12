@@ -586,7 +586,7 @@ Namespace(f=bar)
   method specifies how the command line arguments should be
   handled. The supported actions follow.
 
-*** store()
+*** store action
 
   <<<Arguments.store()>>> just stores the argument's value. This is
   the default action. For example:
@@ -609,7 +609,7 @@ Namespace(f=bar)
  
 +---
 
-*** storeConst()
+*** storeConst action
 
   <<<Arguments.storeConst()>>> stores the value specified by the
   {{setConst}}. (Note that by default const value is the rather
@@ -635,15 +635,15 @@ Namespace(f=bar)
  
 +---
 
-*** storeTrue()
+*** storeTrue action
 
-*** storeFalse()
+*** storeFalse action
 
   <<<Arguments.storeTrue()>>> and <<<Arguments.storeFalse()>>> are
-  special cases of {{{storeConst}}} using for storing values
-  <<<true>>> and <<<false>>> respectively. In addition, they create
-  default values of <<<false>>> and <<<true>>> respectively. For
-  example:
+  special cases of {{{storeConst_action}storeConst}} using for storing
+  values <<<true>>> and <<<false>>> respectively. In addition, they
+  create default values of <<<false>>> and <<<true>>>
+  respectively. For example:
 
 +---
 
@@ -665,7 +665,7 @@ Namespace(f=bar)
  
 +---
 
-*** append()
+*** append action
 
   <<<Arguments.append()>>> stores a list, and appends each argument
   value to the list. The list is of type <<<List>>>. This is useful to
@@ -689,7 +689,7 @@ Namespace(f=bar)
  
 +---
 
-*** appendConst()
+*** appendConst action
 
   <<<Arguments.appendConst()>>> stores a list, and appends the value
   specified by {{setConst}} to the list. (Note that the const value
@@ -719,7 +719,7 @@ Namespace(f=bar)
  
 +---
 
-*** version()
+*** version action
 
   <<<Arguments.version()>>> prints version string specified by
   <<<ArgumentParser.version()>>> and exists when invoked.
@@ -742,7 +742,7 @@ Namespace(f=bar)
  
 +---
 
-*** help()
+*** help action
 
   <<<Arguments.help()>>> prints help message and exits when invoked.
 
@@ -979,10 +979,11 @@ Namespace(f=bar)
   is determined by the {{action}}.  Generally this means a single
   command line argument will be consumed and a single item(not a
   <<<List>>>) will be produced.  Please note that <<<nargs()>>> are
-  ignored if one of {{storeConst}}, {{appendConst}}, {{storeTrue}} and
-  {{storeFalse}} is provided. More specifically, subclass of
-  <<<ArgumentAction>>> whose <<<consumeArgument()>>> returns
-  <<<false>>> ignores <<<nargs()>>>.
+  ignored if one of {{{storeConst_action}storeConst}},
+  {{{appendConst_action}appendConst}}, {{{storeTrue_action}storeTrue}}
+  and {{{storeFalse_action}storeFalse}} is provided. More
+  specifically, subclass of <<<ArgumentAction>>> whose
+  <<<consumeArgument()>>> returns <<<false>>> ignores <<<nargs()>>>.
 
 ** setConst()
 
@@ -990,8 +991,9 @@ Namespace(f=bar)
   are not read from the command line but are required for the various
   actions.  The two most common uses of it are:
 
-   * When {{storeConst}} and {{appendConst}} are specified.  These
-     actions add the value spcified by <<<setConst()>>> to one of the
+   * When {{{storeConst_action}storeConst}} and
+     {{{appendConst_action}appendConst}} are specified.  These actions
+     add the value spcified by <<<setConst()>>> to one of the
      attributes of the object returned by
      <<<ArgumentParser.parseArgs()>>>.  See the {{action}} for
      examples.
