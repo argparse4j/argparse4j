@@ -694,8 +694,16 @@ public final class ArgumentParserImpl implements ArgumentParser {
                         }
                     }
                     if (!shortOptsFound) {
-                        throw new UnrecognizedArgumentException(String.format(
-                                "unrecognized arguments: %s", term), this, term);
+                        throw new UnrecognizedArgumentException(
+                                String.format(
+                                        "unrecognized arguments: '%s'%s",
+                                        term,
+                                        state.index > state.lastFromFileArgIndex ? ""
+                                                : String.format(
+                                                        "\nChecking trailing white spaces or new lines in %sfile may help.",
+                                                        fromFilePrefixPattern_
+                                                                .getPrefixChars())),
+                                this, term);
                     }
                 }
                 assert (arg.getAction() != null);
@@ -717,7 +725,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 return;
             } else {
                 throw new ArgumentParserException(String.format(
-                        "unrecognized arguments: %s",
+                        "unrecognized arguments: '%s'",
                         TextHelper.concat(state.args, state.index, " ")), this);
             }
         }
@@ -850,9 +858,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
      */
     private boolean flagFound(ParseState state) throws ArgumentParserException {
         while (fromFileFound(state)) {
-            state.resetArgs(extendArgs(
-                    fromFilePrefixPattern_.removePrefix(state.getArg()),
-                    state.args, state.index + 1));
+            extendArgs(state,
+                    fromFilePrefixPattern_.removePrefix(state.getArg()));
         }
         String term = state.getArg();
         if (state.consumedSeparator) {
@@ -876,6 +883,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
      * the file. We discard [0,offset) in oldargs. So the returned array starts
      * with oldargs[offset].
      * 
+     * @param state
+     *            Current parser state.
      * @param file
      *            File from which additional arguments are read.
      * @param oldargs
@@ -886,7 +895,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
      * @return The extended new argument array.
      * @throws ArgumentParserException
      */
-    private String[] extendArgs(String file, String oldargs[], int offset)
+    private void extendArgs(ParseState state, String file)
             throws ArgumentParserException {
         List<String> list = new ArrayList<String>();
         BufferedReader reader = null;
@@ -902,16 +911,23 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     "Could not read arguments from file '%s'", file), e, this);
         } finally {
             try {
-                if(reader != null) {
+                if (reader != null) {
                     reader.close();
                 }
-            } catch(IOException e) {}
+            } catch (IOException e) {
+            }
         }
-        String newargs[] = new String[list.size() + oldargs.length - offset];
+        int offset = state.index + 1;
+        String newargs[] = new String[list.size() + state.args.length - offset];
         list.toArray(newargs);
-        System.arraycopy(oldargs, offset, newargs, list.size(), oldargs.length
-                - offset);
-        return newargs;
+        System.arraycopy(state.args, offset, newargs, list.size(),
+                state.args.length - offset);
+        if (state.lastFromFileArgIndex < offset) {
+            state.lastFromFileArgIndex = list.size() - 1;
+        } else {
+            state.lastFromFileArgIndex += -offset + list.size();
+        }
+        state.resetArgs(newargs);
     }
 
     private void checkRequiredArgument(Set<ArgumentImpl> used, int posargIndex)

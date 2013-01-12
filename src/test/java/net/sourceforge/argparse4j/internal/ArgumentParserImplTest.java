@@ -170,7 +170,7 @@ public class ArgumentParserImplTest {
             ap.parseArgs("-2".split(" "));
             fail();
         } catch (ArgumentParserException e) {
-            assertEquals("unrecognized arguments: -2", e.getMessage());
+            assertEquals("unrecognized arguments: '-2'", e.getMessage());
         }
         try {
             ap.parseArgs("-1 -1".split(" "));
@@ -310,6 +310,50 @@ public class ArgumentParserImplTest {
     }
 
     @Test
+    public void testParseArgsWithFromFilePrefixAndUnrecognizedArgs() throws ArgumentParserException {
+        ap = new ArgumentParserImpl("argparse4j", true, ArgumentParserImpl.PREFIX_CHARS, "@");
+        ap.addArgument("-a").action(Arguments.storeTrue());
+        ap.addArgument("-b").action(Arguments.storeTrue());
+        ap.addArgument("-c").action(Arguments.storeTrue());
+        ap.addArgument("-d").action(Arguments.storeTrue());
+        try {
+            // If unrecognized arguments was found in arguments from file, add
+            // additional help message.
+            ap.parseArgs("-a @target/test-classes/args5.txt".split(" "));
+            fail();
+        } catch(ArgumentParserException e) {
+            assertEquals("unrecognized arguments: '-x'\nChecking trailing white spaces or new lines in @file may help.", e.getMessage());
+        }
+        try {
+            // -x is not from file, so no additional help.
+            ap.parseArgs("@target/test-classes/args6.txt -x".split(" "));
+            fail();
+        } catch(ArgumentParserException e) {
+            assertEquals("unrecognized arguments: '-x'", e.getMessage());
+        }
+        try {
+            // Check @file inside @file extends check range (overlap case).
+            ap.parseArgs("@target/test-classes/args7.txt".split(" "));
+            fail();
+        } catch(ArgumentParserException e) {
+            assertEquals("unrecognized arguments: '-x'\nChecking trailing white spaces or new lines in @file may help.", e.getMessage());
+        }
+        try {
+            // Check range is updated by args5.txt (non-overlap case).
+            ap.parseArgs("@target/test-classes/args6.txt @target/test-classes/args5.txt".split(" "));
+            fail();
+        } catch(ArgumentParserException e) {
+            assertEquals("unrecognized arguments: '-x'\nChecking trailing white spaces or new lines in @file may help.", e.getMessage());
+        }
+        try {
+            ap.parseArgs("@target/test-classes/args6.txt @target/test-classes/args5.txt".split(" "));
+        } catch(ArgumentParserException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+    @Test
     public void testParseArgsWithFromFilePrefix() throws ArgumentParserException {
         ap = new ArgumentParserImpl("argparse4j", true, ArgumentParserImpl.PREFIX_CHARS, "@");
         ap.addArgument("-f");
@@ -328,7 +372,7 @@ public class ArgumentParserImplTest {
         assertEquals(list("y1", "y2"), res.getList("y"));
         assertEquals("HELLO", res.getString("foo"));
     }
-    
+
     @Test
     public void testParseArgsWithSubparsers() throws ArgumentParserException {
         ap.addArgument("-f");
@@ -402,7 +446,7 @@ public class ArgumentParserImplTest {
             ap.parseArgs("alpha bravo charlie".split(" "));
             fail();
         } catch (ArgumentParserException e) {
-            assertEquals("unrecognized arguments: bravo charlie",
+            assertEquals("unrecognized arguments: 'bravo charlie'",
                     e.getMessage());
         }
     }
@@ -494,7 +538,7 @@ public class ArgumentParserImplTest {
             ap.parseArgs("-- install".split(" "));
             fail();
         } catch(ArgumentParserException e) {
-            assertEquals("unrecognized arguments: install", e.getMessage());
+            assertEquals("unrecognized arguments: 'install'", e.getMessage());
         }
     }
 
@@ -564,7 +608,7 @@ public class ArgumentParserImplTest {
             ap.parseArgs("-h".split(" "));
             fail();
         } catch (ArgumentParserException e) {
-            assertEquals("unrecognized arguments: -h", e.getMessage());
+            assertEquals("unrecognized arguments: '-h'", e.getMessage());
         }
     }
 
@@ -576,7 +620,7 @@ public class ArgumentParserImplTest {
             ap.parseArgs("install -h".split(" "));
             fail();
         } catch (ArgumentParserException e) {
-            assertEquals("unrecognized arguments: -h", e.getMessage());
+            assertEquals("unrecognized arguments: '-h'", e.getMessage());
         }
     }
 
