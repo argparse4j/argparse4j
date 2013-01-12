@@ -37,8 +37,8 @@
 	</developers>
 
 	<issueManagement>
-		<system>sourceforge.net</system>
-		<url>http://sourceforge.net/p/argparse4j/tickets/</url>
+		<system>github.com</system>
+		<url>https://github.com/tatsuhiro-t/argparse4j/issues</url>
 	</issueManagement>
 
 	<scm>
