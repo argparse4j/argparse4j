@@ -377,6 +377,11 @@ $ java Demo -f foo @args.txt
 Namespace(f=bar)
 +---
 
+  The each line of the file is treated as one argument. Please be
+  aware that trailing empty lines or line with only white spaces are
+  also considered as arguments, although it is not readily noticeable
+  to the user. The empty line is treated as empty string.
+
   By default, <<<fromFilePrefixChars>>> is <<<null>>>, which means no
   argument is treated as file path.
 
