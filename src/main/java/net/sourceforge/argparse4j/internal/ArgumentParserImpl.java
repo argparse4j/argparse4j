@@ -1004,7 +1004,9 @@ public final class ArgumentParserImpl implements ArgumentParser {
         }
         PrintWriter writer = new PrintWriter(System.err);
         printUsage(writer);
-        writer.format("%s: error: %s\n", prog_, e.getMessage());
+        writer.write(TextHelper.wrap(textWidthCounter_,
+                String.format("%s: error: %s\n", prog_, e.getMessage()),
+                ArgumentParsers.getFormatWidth(), 0, "", ""));
         if (e instanceof UnrecognizedArgumentException) {
             UnrecognizedArgumentException ex = (UnrecognizedArgumentException) e;
             String argument = ex.getArgument();
