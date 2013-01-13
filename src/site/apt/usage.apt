@@ -339,7 +339,8 @@ ArgumentParser object:
  
 +---
 
-  The <<<prefixChars>>> argument defaults to <<<"-">>> . Supplying a
+  The <<<prefixChars>>> argument defaults to <<<"-">>> (you can use
+  <<<ArgumentParsers.DEFAULT_PREFIX_CHARS>>> for this). Supplying a
   set of characters that does not include <<<->>> will cause
   <<<-f/--foo>>> options to be disallowed.
 
