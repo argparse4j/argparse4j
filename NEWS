@@ -1,47 +1,72 @@
-argparse4j 0.2.2
+argparse4j 0.3.0
 ================
 
 Release Note
 ------------
 
-This release brings several enhancements to the existing features. In
-Arg annotation, 'dest' argument is now optional. Also inheritance
-chain is queried when searching fields and methods. When dealing with
-variable number of positional arguments, the default value is not
-overridden with empty list if no argument is given.
+This release adds terminal width detection, Arguments.fileType()
+conversion and mutually exclusive group support. Now Argument#help()
+can take FeatureControl#SUPPRESS to hide certain options from help
+message. The convenient method ArgumentParser#parseArgsOrFail() was
+added, which handles errors and exits the program.
 
 Changes
 -------
 
-* Only override default for posArgs when there is at least one given.
-  - Don't call the action with an empty list if no parameter was given
-    for a posArgs with nArgs("*")
-  - In case default has not been set, an empty list should be returned
-    (ensured by #testParseArgsWithPosargOutOfIndex())
-  Patch from Brice Jaglin.
+* Format error message according to column width in
+  ArguemtnParserImpl#handleError()
 
-* Included superclasses containing annotations.  Modified the method
-  that queries for the Arg annotation so that it also includes the
-  fields and methods declared in superclasses.
-  Patch from Juan Manuel Caicedo Carvajal.
+* Add public static ArgumentParsers.DEFAULT_PREFIX_CHARS
 
-* Arg annotation - Made the 'dest' argument optional.  The 'dest'
-  argument of the Arg annotation now it's optional. The parser will
-  use the name of the annotated field or method in case that the
-  argument was not provided. Patch from Juan Manuel Caicedo Carvajal.
+  It is the default value of prefixChars which can be passed to
+  ArgumentParsers.newArgumentParser().
 
-
+* Add additional help message for unrecognized args from file
 
-argparse4j 0.2.1
-================
+  If trailing empty lines or white spaces exist in argument file
+  accidentally, the error message is typically only "unrecognized
+  arguments" and it may be hard to notice that the problem is in a
+  file. To help the user in this situation, if the unrecognized
+  argument was coming from a file, add additional help message to the
+  exception message to alert user that the problem may exist in
+  argument file. This change also quotes unrecognized arguments in
+  exception message.
 
-Release Note
-------------
+* Add "hidden" argument support
 
-This release fixes the bug that empty line is printed if help message
-for argument is empty and flag is longer than certain length.
+  If Argument#help(FeatureControl) is invoked with parameter
+  Arguments.SUPPRESS, the help entry of that option will not be
+  displayed.
 
-Changes
--------
+* Don't print trailing white spaces when no argument help is provided
 
-* Don't print empty line if help message for argument is empty.
+* Added shortcut method to parse arguments and handle errors
+
+  Contributed by Juan Manuel Caicedo Carvajal.
+
+* Fix bug that type conversion is not called with nargs and embedded
+  value
+
+* Ability to detect terminal width
+
+  If terminal width was detected, then use it to format help and usage
+  messages. The terminal width can be retrieved using
+  ArgumentParsers#getFormatWidth() if application code needs it.  The
+  code to detect terminal width was contributed by Wolfgang Hoschek.
+
+* Add ArgumentType subclass for File type, using fluent style API
+
+  It can be accessed using Arguments.fileType(). Contributed by
+  Wolfgang Hoschek.
+
+* Add mutually exclusive argument support
+
+  The mutually exclusive group can be added using
+  ArgumentParser#addMutuallyExclusiveGroup. The returned object from
+  this method implements MutuallyExclusiveGroup interface. It has
+  similar interface with ArgumentGroup, but it additionally has
+  required() method, which toggles the restriction that one of the
+  argument in this group must be specified or not.  Usually, more than
+  1 argument are added to mutually exclusive group and only one of
+  them can be specified. The arguments are specially formatted in
+  usage and help messages.
