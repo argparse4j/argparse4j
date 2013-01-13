@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.annotation.Arg;
 import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.Argument;
@@ -311,7 +312,7 @@ public class ArgumentParserImplTest {
 
     @Test
     public void testParseArgsWithFromFilePrefixAndUnrecognizedArgs() throws ArgumentParserException {
-        ap = new ArgumentParserImpl("argparse4j", true, ArgumentParserImpl.PREFIX_CHARS, "@");
+        ap = new ArgumentParserImpl("argparse4j", true, ArgumentParsers.DEFAULT_PREFIX_CHARS, "@");
         ap.addArgument("-a").action(Arguments.storeTrue());
         ap.addArgument("-b").action(Arguments.storeTrue());
         ap.addArgument("-c").action(Arguments.storeTrue());
@@ -355,7 +356,7 @@ public class ArgumentParserImplTest {
 
     @Test
     public void testParseArgsWithFromFilePrefix() throws ArgumentParserException {
-        ap = new ArgumentParserImpl("argparse4j", true, ArgumentParserImpl.PREFIX_CHARS, "@");
+        ap = new ArgumentParserImpl("argparse4j", true, ArgumentParsers.DEFAULT_PREFIX_CHARS, "@");
         ap.addArgument("-f");
         ap.addArgument("--baz").nargs(2);
         ap.addArgument("x");
@@ -615,7 +616,7 @@ public class ArgumentParserImplTest {
     @Test
     public void testSubparserWithoutAddHelp() throws ArgumentParserException {
         Subparsers subparsers = ap.addSubparsers();
-        subparsers.addParser("install", false, ArgumentParserImpl.PREFIX_CHARS);
+        subparsers.addParser("install", false, ArgumentParsers.DEFAULT_PREFIX_CHARS);
         try {
             ap.parseArgs("install -h".split(" "));
             fail();

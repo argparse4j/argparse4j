@@ -84,16 +84,14 @@ public final class ArgumentParserImpl implements ArgumentParser {
     private static final Pattern SHORT_OPTS_PATTERN = Pattern
             .compile("-[^-].*");
 
-    public static final String PREFIX_CHARS = "-";
-
     public ArgumentParserImpl(String prog) {
-        this(prog, true, PREFIX_CHARS, null, new ASCIITextWidthCounter(), null,
-                null);
+        this(prog, true, ArgumentParsers.DEFAULT_PREFIX_CHARS, null,
+                new ASCIITextWidthCounter(), null, null);
     }
 
     public ArgumentParserImpl(String prog, boolean addHelp) {
-        this(prog, addHelp, PREFIX_CHARS, null, new ASCIITextWidthCounter(),
-                null, null);
+        this(prog, addHelp, ArgumentParsers.DEFAULT_PREFIX_CHARS, null,
+                new ASCIITextWidthCounter(), null, null);
     }
 
     public ArgumentParserImpl(String prog, boolean addHelp, String prefixChars) {

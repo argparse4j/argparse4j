@@ -3,6 +3,7 @@ package net.sourceforge.argparse4j.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
+import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.helper.PrefixPattern;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 
@@ -16,7 +17,7 @@ public class ArgumentImplTest {
 
     @Before
     public void setup() {
-        prefix = new PrefixPattern(ArgumentParserImpl.PREFIX_CHARS);
+        prefix = new PrefixPattern(ArgumentParsers.DEFAULT_PREFIX_CHARS);
     }
 
     @Test

@@ -47,6 +47,11 @@ public final class ArgumentParsers {
     }
 
     /**
+     * Default prefix characters.
+     */
+    public static final String DEFAULT_PREFIX_CHARS = "-";
+
+    /**
      * <p>
      * Creates {@link ArgumentParser} with given program name.
      * </p>
@@ -60,8 +65,7 @@ public final class ArgumentParsers {
      * @return ArgumentParser object
      */
     public static ArgumentParser newArgumentParser(String prog) {
-        return newArgumentParser(prog, true, ArgumentParserImpl.PREFIX_CHARS,
-                null);
+        return newArgumentParser(prog, true, DEFAULT_PREFIX_CHARS, null);
     }
 
     /**
@@ -81,8 +85,7 @@ public final class ArgumentParsers {
      * @return ArgumentParser object
      */
     public static ArgumentParser newArgumentParser(String prog, boolean addHelp) {
-        return newArgumentParser(prog, addHelp,
-                ArgumentParserImpl.PREFIX_CHARS, null);
+        return newArgumentParser(prog, addHelp, DEFAULT_PREFIX_CHARS, null);
     }
 
     /**
@@ -221,5 +224,4 @@ public final class ArgumentParsers {
             return DEFAULT_FORMAT_WIDTH;
         }
     }
-
 }
