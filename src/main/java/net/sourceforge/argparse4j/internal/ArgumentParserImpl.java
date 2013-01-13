@@ -700,7 +700,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                                         term,
                                         state.index > state.lastFromFileArgIndex ? ""
                                                 : String.format(
-                                                        "\nChecking trailing white spaces or new lines in %sfile may help.",
+                                                        "\nChecking trailing white spaces or new lines in [%s]file may help.",
                                                         fromFilePrefixPattern_
                                                                 .getPrefixChars())),
                                 this, term);
