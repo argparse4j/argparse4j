@@ -698,9 +698,15 @@ public final class ArgumentParserImpl implements ArgumentParser {
                                         term,
                                         state.index > state.lastFromFileArgIndex ? ""
                                                 : String.format(
-                                                        "\nChecking trailing white spaces or new lines in [%s]file may help.",
+                                                        "\nChecking trailing white spaces or new lines in %sfile may help.",
                                                         fromFilePrefixPattern_
-                                                                .getPrefixChars())),
+                                                                .getPrefixChars()
+                                                                .length() == 1 ? fromFilePrefixPattern_
+                                                                .getPrefixChars()
+                                                                : "["
+                                                                        + fromFilePrefixPattern_
+                                                                                .getPrefixChars()
+                                                                        + "]")),
                                 this, term);
                     }
                 }

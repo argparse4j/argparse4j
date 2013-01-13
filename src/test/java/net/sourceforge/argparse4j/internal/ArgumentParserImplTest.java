@@ -330,7 +330,7 @@ public class ArgumentParserImplTest {
             ap.parseArgs("-a @target/test-classes/args5.txt".split(" "));
             fail();
         } catch(ArgumentParserException e) {
-            assertEquals("unrecognized arguments: '-x'\nChecking trailing white spaces or new lines in [@]file may help.", e.getMessage());
+            assertEquals("unrecognized arguments: '-x'\nChecking trailing white spaces or new lines in @file may help.", e.getMessage());
         }
         try {
             // -x is not from file, so no additional help.
@@ -344,21 +344,29 @@ public class ArgumentParserImplTest {
             ap.parseArgs("@target/test-classes/args7.txt".split(" "));
             fail();
         } catch(ArgumentParserException e) {
-            assertEquals("unrecognized arguments: '-x'\nChecking trailing white spaces or new lines in [@]file may help.", e.getMessage());
+            assertEquals("unrecognized arguments: '-x'\nChecking trailing white spaces or new lines in @file may help.", e.getMessage());
         }
         try {
             // Check range is updated by args5.txt (non-overlap case).
             ap.parseArgs("@target/test-classes/args6.txt @target/test-classes/args5.txt".split(" "));
             fail();
         } catch(ArgumentParserException e) {
-            assertEquals("unrecognized arguments: '-x'\nChecking trailing white spaces or new lines in [@]file may help.", e.getMessage());
+            assertEquals("unrecognized arguments: '-x'\nChecking trailing white spaces or new lines in @file may help.", e.getMessage());
         }
         try {
             ap.parseArgs("@target/test-classes/args6.txt @target/test-classes/args5.txt".split(" "));
         } catch(ArgumentParserException e) {
             System.out.println(e.getMessage());
         }
-
+        // Multiple fromFilePrefix
+        ap = new ArgumentParserImpl("argparse4j", true, ArgumentParsers.DEFAULT_PREFIX_CHARS, "@/");
+        ap.addArgument("-a").action(Arguments.storeTrue());
+        try {
+            ap.parseArgs("-a @target/test-classes/args5.txt".split(" "));
+            fail();
+        } catch(ArgumentParserException e) {
+            assertEquals("unrecognized arguments: '-x'\nChecking trailing white spaces or new lines in [@/]file may help.", e.getMessage());
+        }
     }
 
     @Test
