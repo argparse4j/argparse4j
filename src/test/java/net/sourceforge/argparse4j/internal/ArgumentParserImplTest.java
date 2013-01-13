@@ -33,11 +33,18 @@ import net.sourceforge.argparse4j.inf.Subparser;
 import net.sourceforge.argparse4j.inf.Subparsers;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class ArgumentParserImplTest {
 
     private ArgumentParserImpl ap;
+
+    @BeforeClass
+    public static void init()
+    {
+        ArgumentParsers.setTerminalWidthDetection(false);
+    }
 
     @Before
     public void setup() {
