@@ -354,9 +354,10 @@ public class ArgumentParserImplTest {
             assertEquals("unrecognized arguments: '-x'\nChecking trailing white spaces or new lines in @file may help.", e.getMessage());
         }
         try {
-            ap.parseArgs("@target/test-classes/args6.txt @target/test-classes/args5.txt".split(" "));
+            // Unrecognized non-flag arguments
+            ap.parseArgs("@target/test-classes/args8.txt".split(" "));
         } catch(ArgumentParserException e) {
-            System.out.println(e.getMessage());
+            assertEquals("unrecognized arguments: ' b'\nChecking trailing white spaces or new lines in @file may help.", e.getMessage());
         }
         // Multiple fromFilePrefix
         ap = new ArgumentParserImpl("argparse4j", true, ArgumentParsers.DEFAULT_PREFIX_CHARS, "@/");

@@ -693,21 +693,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     }
                     if (!shortOptsFound) {
                         throw new UnrecognizedArgumentException(
-                                String.format(
-                                        "unrecognized arguments: '%s'%s",
-                                        term,
-                                        state.index > state.lastFromFileArgIndex ? ""
-                                                : String.format(
-                                                        "\nChecking trailing white spaces or new lines in %sfile may help.",
-                                                        fromFilePrefixPattern_
-                                                                .getPrefixChars()
-                                                                .length() == 1 ? fromFilePrefixPattern_
-                                                                .getPrefixChars()
-                                                                : "["
-                                                                        + fromFilePrefixPattern_
-                                                                                .getPrefixChars()
-                                                                        + "]")),
-                                this, term);
+                                formatUnrecognizedArgumentErrorMessage(state,
+                                        term), this, term);
                     }
                 }
                 assert (arg.getAction() != null);
@@ -728,9 +715,10 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 subparsers_.parseArg(state, attrs);
                 return;
             } else {
-                throw new ArgumentParserException(String.format(
-                        "unrecognized arguments: '%s'",
-                        TextHelper.concat(state.args, state.index, " ")), this);
+                throw new ArgumentParserException(
+                        formatUnrecognizedArgumentErrorMessage(state,
+                                TextHelper.concat(state.args, state.index, " ")),
+                        this);
             }
         }
         if (subparsers_.hasSubCommand()) {
@@ -742,6 +730,31 @@ public final class ArgumentParserImpl implements ArgumentParser {
         }
         checkRequiredArgument(used, posargIndex);
         checkRequiredMutex(groupUsed);
+    }
+
+    /**
+     * Format message for "Unrecognized arguments" error.
+     * 
+     * @param state
+     *            Current parser state
+     * @param args
+     *            Textual representation of unrecognized arguments to be
+     *            included in the message as is.
+     * @return formatted error message
+     */
+    private String formatUnrecognizedArgumentErrorMessage(ParseState state,
+            String args) {
+        return String
+                .format("unrecognized arguments: '%s'%s",
+                        args,
+                        state.index > state.lastFromFileArgIndex ? ""
+                                : String.format(
+                                        "\nChecking trailing white spaces or new lines in %sfile may help.",
+                                        fromFilePrefixPattern_.getPrefixChars()
+                                                .length() == 1 ? fromFilePrefixPattern_
+                                                .getPrefixChars() : "["
+                                                + fromFilePrefixPattern_
+                                                        .getPrefixChars() + "]"));
     }
 
     /**
