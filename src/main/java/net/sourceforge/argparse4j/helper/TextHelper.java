@@ -26,6 +26,7 @@ package net.sourceforge.argparse4j.helper;
 import java.io.PrintWriter;
 import java.text.BreakIterator;
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * <p>
@@ -45,11 +46,11 @@ public final class TextHelper {
             String start, String end) {
         StringBuilder sb = new StringBuilder();
         sb.append(start);
-        for (int i = offset, len = a.length; i < len; ++i) {
-            sb.append(a[i]).append(sep);
-        }
-        if (sb.length() > sep.length()) {
-            sb.delete(sb.length() - sep.length(), sb.length());
+        if (a.length - offset > 0) {
+            sb.append(a[offset]);
+            for (int i = offset + 1, len = a.length; i < len; ++i) {
+                sb.append(sep).append(a[i]);
+            }
         }
         sb.append(end);
         return sb.toString();
@@ -63,11 +64,14 @@ public final class TextHelper {
             String start, String end) {
         StringBuilder sb = new StringBuilder();
         sb.append(start);
-        for (T o : a) {
-            sb.append(o).append(sep);
-        }
-        if (sb.length() > sep.length()) {
-            sb.delete(sb.length() - sep.length(), sb.length());
+        Iterator<T> it;
+        for (it = a.iterator(); offset > 0 && it.hasNext(); --offset, it.next())
+            ;
+        if (offset == 0 && it.hasNext()) {
+            sb.append(it.next());
+            while (it.hasNext()) {
+                sb.append(sep).append(it.next());
+            }
         }
         sb.append(end);
         return sb.toString();
