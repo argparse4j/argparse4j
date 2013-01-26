@@ -1,3 +1,26 @@
+argparse4j 0.3.1
+================
+
+Release Note
+------------
+
+This release fixes formatting bug when an empty string argument is
+involved. The additional help message is now printed for non-flag
+unrecognized arguments coming from file.
+
+Changes
+-------
+
+* Print additional message for non-flag unrecognized arguments
+
+* Fix TextHelper.concat() bug
+
+  The bug makes TextHelper.concat(new String[] {""}, 0, ",") produce
+  "," instead of "". Also now Collection version can handle offset
+  argument properly.
+
+
+
 argparse4j 0.3.0
 ================
 
