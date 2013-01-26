@@ -4,7 +4,7 @@ public class ParseState {
     /**
      * Array of arguments.
      */
-    public String args[];
+    public String[] args;
     /**
      * Index in args array, which points next argument to process.
      */

@@ -31,9 +31,5 @@ import net.sourceforge.argparse4j.inf.ArgumentParser;
  */
 public enum FeatureControl {
 
-    /**
-     * Default value will not be added before
-     * {@link ArgumentParser#parseArgs(String[])}
-     */
     SUPPRESS
 }

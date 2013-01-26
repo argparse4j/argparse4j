@@ -111,7 +111,7 @@ public class CJKTextWidthCounter implements TextWidthCounter {
      * # EastAsianWidth-6.0.0.txt
      * # Date: 2010-08-17, 12:17:00 PDT [KW]
       */
-    private static final CpRange ranges_[] = {
+    private static final CpRange[] ranges_ = {
             new CpRange(0x00A1, 0x00A2, EastAsianWidth.A),
             new CpRange(0x00A4, 0x00A5, EastAsianWidth.A),
             new CpRange(0x00A7, 0x00A9, EastAsianWidth.A),

@@ -248,25 +248,25 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     @Override
     public void printHelp(PrintWriter writer) {
-        int format_width = ArgumentParsers.getFormatWidth();
-        printUsage(writer, format_width);
+        int formatWidth = ArgumentParsers.getFormatWidth();
+        printUsage(writer, formatWidth);
         if (!description_.isEmpty()) {
             writer.format("\n%s\n", TextHelper.wrap(textWidthCounter_,
-                    description_, format_width, 0, "", ""));
+                    description_, formatWidth, 0, "", ""));
         }
         boolean subparsersUntitled = subparsers_.getTitle().isEmpty()
                 && subparsers_.getDescription().isEmpty();
         if (checkDefaultGroup(posargs_)
                 || (subparsers_.hasSubCommand() && subparsersUntitled)) {
             writer.print("\npositional arguments:\n");
-            printArgumentHelp(writer, posargs_, format_width);
+            printArgumentHelp(writer, posargs_, formatWidth);
             if (subparsers_.hasSubCommand() && subparsersUntitled) {
-                subparsers_.printSubparserHelp(writer, format_width);
+                subparsers_.printSubparserHelp(writer, formatWidth);
             }
         }
         if (checkDefaultGroup(optargs_)) {
             writer.print("\noptional arguments:\n");
-            printArgumentHelp(writer, optargs_, format_width);
+            printArgumentHelp(writer, optargs_, formatWidth);
         }
         if (subparsers_.hasSubCommand() && !subparsersUntitled) {
             writer.format("\n%s:\n",
@@ -275,17 +275,17 @@ public final class ArgumentParserImpl implements ArgumentParser {
             if (!subparsers_.getDescription().isEmpty()) {
                 writer.format("  %s\n\n", TextHelper
                         .wrap(textWidthCounter_, subparsers_.getDescription(),
-                                format_width, 2, "", "  "));
+                                formatWidth, 2, "", "  "));
             }
-            subparsers_.printSubparserHelp(writer, format_width);
+            subparsers_.printSubparserHelp(writer, formatWidth);
         }
         for (ArgumentGroupImpl group : arggroups_) {
             writer.print("\n");
-            group.printHelp(writer, format_width);
+            group.printHelp(writer, formatWidth);
         }
         if (!epilog_.isEmpty()) {
             writer.format("\n%s\n", TextHelper.wrap(textWidthCounter_, epilog_,
-                    format_width, 0, "", ""));
+                    formatWidth, 0, "", ""));
         }
         writer.flush();
     }
@@ -366,8 +366,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
         }
         for (ArgumentImpl arg : optargs_) {
             if (arg.getHelpControl() != Arguments.SUPPRESS
-                    && (arg.getArgumentGroup() == null ||
-                        !arg.getArgumentGroup().isMutex())) {
+                    && (arg.getArgumentGroup() == null || !arg
+                            .getArgumentGroup().isMutex())) {
                 opts.add(arg.formatShortSyntax());
             }
         }
@@ -448,8 +448,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
         for (ArgumentImpl arg : parser.optargs_) {
             if (arg.getHelpControl() != Arguments.SUPPRESS
                     && arg.isRequired()
-                    && (arg.getArgumentGroup() == null ||
-                        !arg.getArgumentGroup().isMutex())) {
+                    && (arg.getArgumentGroup() == null || !arg
+                            .getArgumentGroup().isMutex())) {
                 opts.add(arg.formatShortSyntax());
             }
         }
@@ -610,7 +610,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 						continue;
 					}
 					Object val = attrs.get(argDest);
-					Class<?> fargs[] = method.getParameterTypes();
+					Class<?>[] fargs = method.getParameterTypes();
 					if (fargs.length != 1) {
 						throw new IllegalArgumentException(String.format(
 								"Method %s must have one formal parameter",
@@ -648,7 +648,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
             throws ArgumentParserException {
         populateDefaults(attrs);
         Set<ArgumentImpl> used = new HashSet<ArgumentImpl>();
-        ArgumentImpl groupUsed[] = new ArgumentImpl[arggroups_.size()];
+        ArgumentImpl[] groupUsed = new ArgumentImpl[arggroups_.size()];
         int posargIndex = 0;
         int posargsLen = posargs_.size();
         while (state.isArgAvail()) {
@@ -777,7 +777,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                         .getIndex()];
                 if (usedMutexArg == null) {
                     groupUsed[arg.getArgumentGroup().getIndex()] = arg;
-                } else if(usedMutexArg != arg) {
+                } else if (usedMutexArg != arg) {
                     throw new ArgumentParserException(String.format(
                             "not allowed with argument %s",
                             usedMutexArg.textualName()), this, arg);
@@ -895,21 +895,12 @@ public final class ArgumentParserImpl implements ArgumentParser {
     }
 
     /**
-     * Extends arguments by reading additional arguments from file. The length
-     * of returned array is oldargs.length - offset + the number of arguments in
-     * the file. We discard [0,offset) in oldargs. So the returned array starts
-     * with oldargs[offset].
+     * Extends arguments by reading additional arguments from file.
      * 
      * @param state
      *            Current parser state.
      * @param file
      *            File from which additional arguments are read.
-     * @param oldargs
-     *            Old arguments
-     * @param offset
-     *            Offset in old arguments. This is typically the argument next
-     *            to fromFilePrefix argument.
-     * @return The extended new argument array.
      * @throws ArgumentParserException
      */
     private void extendArgs(ParseState state, String file)
@@ -935,7 +926,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
             }
         }
         int offset = state.index + 1;
-        String newargs[] = new String[list.size() + state.args.length - offset];
+        String[] newargs = new String[list.size() + state.args.length - offset];
         list.toArray(newargs);
         System.arraycopy(state.args, offset, newargs, list.size(),
                 state.args.length - offset);
@@ -968,7 +959,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
             if (group.isMutex() && group.isRequired() && used[i] == null) {
                 StringBuilder sb = new StringBuilder();
                 for (ArgumentImpl arg : group.getArgs()) {
-                    if(arg.getHelpControl() != Arguments.SUPPRESS) {
+                    if (arg.getHelpControl() != Arguments.SUPPRESS) {
                         sb.append(arg.textualName()).append(" ");
                     }
                 }
@@ -1065,7 +1056,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
             int del) {
         int alen = a.length();
         int blen = b.length();
-        int dp[][] = new int[3][blen + 1];
+        int[][] dp = new int[3][blen + 1];
         for (int i = 0; i <= blen; ++i) {
             dp[1][i] = i;
         }
@@ -1082,7 +1073,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 dp[0][j] = Math.min(dp[0][j],
                         Math.min(dp[1][j] + del, dp[0][j - 1] + add));
             }
-            int temp[] = dp[2];
+            int[] temp = dp[2];
             dp[2] = dp[1];
             dp[1] = dp[0];
             dp[0] = temp;
@@ -1124,7 +1115,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     private void printFlagCandidates(String flagBody, PrintWriter writer) {
         List<SubjectBody> subjects = new ArrayList<SubjectBody>();
         for (ArgumentImpl arg : optargs_) {
-            String flags[] = arg.getFlags();
+            String[] flags = arg.getFlags();
             for (int i = 0, len = flags.length; i < len; ++i) {
                 String body = prefixPattern_.removePrefix(flags[i]);
                 if (body.length() <= 1) {

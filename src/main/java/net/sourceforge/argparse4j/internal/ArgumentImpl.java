@@ -75,7 +75,7 @@ public final class ArgumentImpl implements Argument {
         assert (nameOrFlags.length > 0);
         argumentGroup_ = argumentGroup;
         if (nameOrFlags.length == 1 && !prefixPattern.match(nameOrFlags[0])) {
-            if(argumentGroup_ != null && argumentGroup_.isMutex()) {
+            if (argumentGroup_ != null && argumentGroup_.isMutex()) {
                 throw new IllegalArgumentException(
                         "mutually exclusive arguments must be optional");
             }
@@ -163,8 +163,8 @@ public final class ArgumentImpl implements Argument {
 
     public String[] resolveMetavar() {
         if (metavar_ == null) {
-            String metavar[] = new String[1];
-            if(choice_ == null) {
+            String[] metavar = new String[1];
+            if (choice_ == null) {
                 metavar[0] = isOptionalArgument() ? dest_
                         .toUpperCase() : dest_;
             } else {
@@ -179,7 +179,7 @@ public final class ArgumentImpl implements Argument {
     public String formatMetavar() {
         StringBuffer sb = new StringBuffer();
         if (action_.consumeArgument()) {
-            String metavar[] = resolveMetavar();
+            String[] metavar = resolveMetavar();
             if (minNumArg_ == 0 && maxNumArg_ == 1) {
                 sb.append("[").append(metavar[0]).append("]");
             } else if (minNumArg_ == 0 && maxNumArg_ == Integer.MAX_VALUE) {

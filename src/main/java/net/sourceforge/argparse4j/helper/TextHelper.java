@@ -121,7 +121,7 @@ public final class TextHelper {
             }
             String fmt = String.format("%%%ds%%s\n", indentWidth);
             writer.format(
-                    fmt,// "  %-22s %s\n",
+                    fmt,
                     "",
                     wrap(textWidthCounter, help, width, INDENT_WIDTH, "",
                             "                         "));
