@@ -75,25 +75,25 @@ public final class SubparserImpl implements Subparser {
     }
 
     @Override
-    public Subparser description(String description) {
+    public SubparserImpl description(String description) {
         parser_.description(description);
         return this;
     }
 
     @Override
-    public Subparser epilog(String epilog) {
+    public SubparserImpl epilog(String epilog) {
         parser_.epilog(epilog);
         return this;
     }
 
     @Override
-    public Subparser version(String version) {
+    public SubparserImpl version(String version) {
         parser_.version(version);
         return this;
     }
 
     @Override
-    public Subparser defaultHelp(boolean defaultHelp) {
+    public SubparserImpl defaultHelp(boolean defaultHelp) {
         parser_.defaultHelp(defaultHelp);
         return this;
     }
@@ -144,13 +144,13 @@ public final class SubparserImpl implements Subparser {
     }
 
     @Override
-    public Subparser setDefault(String dest, Object value) {
+    public SubparserImpl setDefault(String dest, Object value) {
         parser_.setDefault(dest, value);
         return this;
     }
 
     @Override
-    public Subparser setDefaults(Map<String, Object> attrs) {
+    public SubparserImpl setDefaults(Map<String, Object> attrs) {
         parser_.setDefaults(attrs);
         return this;
     }
@@ -161,7 +161,7 @@ public final class SubparserImpl implements Subparser {
     }
 
     @Override
-    public Subparser help(String help) {
+    public SubparserImpl help(String help) {
         help_ = TextHelper.nonNull(help);
         return this;
     }

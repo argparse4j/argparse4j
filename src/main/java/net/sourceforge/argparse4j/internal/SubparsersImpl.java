@@ -85,19 +85,19 @@ public final class SubparsersImpl implements Subparsers {
     }
 
     @Override
-    public Subparsers dest(String dest) {
+    public SubparsersImpl dest(String dest) {
         dest_ = TextHelper.nonNull(dest);
         return this;
     }
 
     @Override
-    public Subparsers help(String help) {
+    public SubparsersImpl help(String help) {
         help_ = TextHelper.nonNull(help);
         return this;
     }
 
     @Override
-    public Subparsers title(String title) {
+    public SubparsersImpl title(String title) {
         title_ = TextHelper.nonNull(title);
         return this;
     }
@@ -107,7 +107,7 @@ public final class SubparsersImpl implements Subparsers {
     }
 
     @Override
-    public Subparsers description(String description) {
+    public SubparsersImpl description(String description) {
         description_ = TextHelper.nonNull(description);
         return this;
     }
@@ -117,7 +117,7 @@ public final class SubparsersImpl implements Subparsers {
     }
 
     @Override
-    public Subparsers metavar(String metavar) {
+    public SubparsersImpl metavar(String metavar) {
         metavar_ = TextHelper.nonNull(metavar);
         return this;
     }

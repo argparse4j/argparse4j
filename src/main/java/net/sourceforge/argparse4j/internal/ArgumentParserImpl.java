@@ -501,7 +501,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     }
 
     @Override
-    public ArgumentParser setDefaults(Map<String, Object> attrs) {
+    public ArgumentParserImpl setDefaults(Map<String, Object> attrs) {
         defaults_.putAll(attrs);
         return this;
     }
