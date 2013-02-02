@@ -2003,6 +2003,26 @@ subcommands:
     bar                  bar help
 +---
 
+  Furthermore, <<<Subparser>>> supports alias names, which allows
+  multiple strings to refer to the same subparser. This example, like
+  <<<svn>>>, aliases <<<co>>> as a shorthand for <<<checkout>>>:
+
++---
+    public static void main(String[] args) {
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        Subparsers subparsers = parser.addSubparsers();
+        Subparser checkout = subparsers.addParser("checkout").aliases("co");
+        checkout.addArgument("foo");
+        Namespace ns = parser.parseArgsOrFail(args);
+        System.out.println(ns);
+    }
++---
+
++---
+$ java Demo co bar
+Namespace(foo=bar)
++---
+
   One particularly effective way of handling sub-commands is to
   combine the use of <<<Subparser.setDefault()>>> so that each
   subparser knows which function it should execute. For example:
