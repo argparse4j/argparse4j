@@ -39,6 +39,7 @@ public interface Subparsers {
     /**
      * <p>
      * Adds and returns {@link Subparser} object with given sub-command name.
+     * The given command must be unique for each Subparsers instance.
      * </p>
      * <p>
      * The prefixChars is inherited from main ArgumentParser.
@@ -53,7 +54,7 @@ public interface Subparsers {
     /**
      * <p>
      * Adds and returns {@link Subparser} object with given sub-command name and
-     * addHelp.
+     * addHelp. The given command must be unique for each Subparsers instance.
      * </p>
      * <p>
      * For {@code addHelp}, see
@@ -73,7 +74,8 @@ public interface Subparsers {
     /**
      * <p>
      * Adds and returns {@link Subparser} object with given sub-command name,
-     * addHelp and prefixChars.
+     * addHelp and prefixChars. The given command must be unique for each
+     * Subparsers instance.
      * </p>
      * <p>
      * For {@code addHelp}, see

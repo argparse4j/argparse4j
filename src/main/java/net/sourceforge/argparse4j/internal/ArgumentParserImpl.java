@@ -173,7 +173,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     }
 
     @Override
-    public Subparsers addSubparsers() {
+    public SubparsersImpl addSubparsers() {
         return subparsers_;
     }
 
@@ -1192,5 +1192,14 @@ public final class ArgumentParserImpl implements ArgumentParser {
     public String getFromFilePrefixChars() {
         return fromFilePrefixPattern_ == null ? null : fromFilePrefixPattern_
                 .getPrefixChars();
+    }
+
+    /**
+     * Returns main (parent) parser.
+     * 
+     * @return The main (parent) parser. null if this object is a root parser.
+     */
+   public ArgumentParserImpl getMainParser() {
+        return mainParser_;
     }
 }

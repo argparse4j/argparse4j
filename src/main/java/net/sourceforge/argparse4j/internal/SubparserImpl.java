@@ -199,6 +199,12 @@ public final class SubparserImpl implements Subparser {
         parser_.handleError(e);
     }
 
+    @Override
+    public SubparserImpl aliases(String... alias) {
+        parser_.getMainParser().addSubparsers().addAlias(this, alias);
+        return this;
+    }
+
     public void parseArgs(ParseState state, Map<String, Object> opts)
             throws ArgumentParserException {
         parser_.parseArgs(state, opts);

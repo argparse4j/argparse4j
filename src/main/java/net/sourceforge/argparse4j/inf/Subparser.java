@@ -59,4 +59,14 @@ public interface Subparser extends ArgumentParser {
      * @return this
      */
     Subparser help(String help);
+
+    /**
+     * Sets alias names for this Subparser. The alias names must be unique for
+     * each {@link Subparsers} instance which this object belongs to.
+     * 
+     * @param alias
+     *            Alias name for this Subparser.
+     * @return this
+     */
+    Subparser aliases(String... alias);
 }

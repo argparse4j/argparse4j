@@ -40,6 +40,12 @@ import net.sourceforge.argparse4j.inf.Subparsers;
 public final class SubparsersImpl implements Subparsers {
 
     private ArgumentParserImpl mainParser_;
+    /**
+     * The key is subparser command or alias name and value is subparser object.
+     * The real command and alias names share the same subparser object. To
+     * identify the aliases, check key equals to
+     * {@link SubparserImpl#getCommand()}. If they are equal, it is not alias.
+     */
     private Map<String, SubparserImpl> parsers_ = new LinkedHashMap<String, SubparserImpl>();
     private String help_ = "";
     private String title_ = "";
@@ -52,21 +58,24 @@ public final class SubparsersImpl implements Subparsers {
     }
 
     @Override
-    public Subparser addParser(String command) {
+    public SubparserImpl addParser(String command) {
         return addParser(command, true, mainParser_.getPrefixChars());
     }
 
     @Override
-    public Subparser addParser(String command, boolean addHelp) {
+    public SubparserImpl addParser(String command, boolean addHelp) {
         return addParser(command, addHelp, mainParser_.getPrefixChars());
     }
 
     @Override
-    public Subparser addParser(String command, boolean addHelp,
+    public SubparserImpl addParser(String command, boolean addHelp,
             String prefixChars) {
         if (command == null || command.isEmpty()) {
             throw new IllegalArgumentException(
                     "command cannot be null or empty");
+        } else if (parsers_.containsKey(command)) {
+            throw new IllegalArgumentException(String.format(
+                    "command '%s' has been already used", command));
         }
         SubparserImpl parser = new SubparserImpl(mainParser_.getProg(),
                 addHelp, prefixChars, mainParser_.getFromFilePrefixChars(),
@@ -160,15 +169,48 @@ public final class SubparsersImpl implements Subparsers {
         }
     }
 
+    /**
+     * Writes the help message for this and descendants.
+     * @param writer The writer to output
+     * @param format_width column width
+     */
     public void printSubparserHelp(PrintWriter writer, int format_width) {
         TextHelper.printHelp(writer, formatShortSyntax(), help_,
                 mainParser_.getTextWidthCounter(), format_width);
         for (Map.Entry<String, SubparserImpl> entry : parsers_.entrySet()) {
-            entry.getValue().printSubparserHelp(writer, format_width);
+            // Don't generate help for aliases.
+            if (entry.getKey().equals(entry.getValue().getCommand())) {
+                entry.getValue().printSubparserHelp(writer, format_width);
+            }
         }
     }
 
+    /**
+     * Returns collection of the sub-command name under this object.
+     * @return collection of the sub-comman name
+     */
     public Collection<String> getCommands() {
         return parsers_.keySet();
+    }
+
+    /**
+     * Adds Subparser alias names for given Subparser. For each SubparsersImpl
+     * instance, alias names and commands must be unique. If duplication is
+     * found, {@link IllegalArgumentException} is thrown.
+     * 
+     * @param subparser
+     *            Subparser to add alias names
+     * @param alias
+     *            alias name
+     */
+    public void addAlias(SubparserImpl subparser, String... alias) {
+        for (String command : alias) {
+            if (parsers_.containsKey(command)) {
+                throw new IllegalArgumentException(String.format(
+                        "command '%s' has been already used", command));
+            } else {
+                parsers_.put(command, subparser);
+            }
+        }
     }
 }

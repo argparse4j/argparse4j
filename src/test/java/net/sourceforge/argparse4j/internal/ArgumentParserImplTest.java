@@ -406,6 +406,15 @@ public class ArgumentParserImplTest {
     }
 
     @Test
+    public void testParseArgsWithSubparsersAlias() throws ArgumentParserException {
+        Subparsers subparsers = ap.addSubparsers();
+        Subparser checkout = subparsers.addParser("checkout").aliases("co");
+        checkout.setDefault("func", "checkout");
+        Namespace res = ap.parseArgs("co".split(" "));
+        assertEquals("checkout", res.get("func"));
+    }
+
+    @Test
     public void testParseArgsWithDefaults() throws ArgumentParserException {
         ap.addArgument("-f").setDefault("foo");
         ap.addArgument("-g").setDefault("bar");
@@ -600,7 +609,7 @@ public class ArgumentParserImplTest {
         ap.addSubparsers().addParser("install").addArgument("+f");
         ap.addSubparsers().addParser("check", true, "-").addArgument("-f");
         try {
-            ap.addSubparsers().addParser("check", true, "-").addArgument("+f", "++f");
+            ap.addSubparsers().addParser("test", true, "-").addArgument("+f", "++f");
             fail();
         } catch(IllegalArgumentException e) {
             assertEquals("invalid option string '+f': must start with a character '-'",
@@ -898,6 +907,24 @@ public class ArgumentParserImplTest {
                 + "\n" + "mysubcommands:\n" + "  valid subcommands\n" + "\n"
                 + "  {install}              subcommand help\n"
                 + "    install              install help\n", ap.formatHelp());
+    }
+
+    @Test
+    public void testFormatHelpWithSubparserAlias()
+            throws ArgumentParserException {
+        Subparsers subparsers = ap.addSubparsers().help("subcommand help")
+                .title("mysubcommands").description("valid subcommands");
+        subparsers.addParser("checkout").aliases("co").help("checkout help");
+        assertEquals("usage: argparse4j [-h] {checkout,co} ...\n"
+                + "\n"
+                + "optional arguments:\n"
+                + "  -h, --help             show this help message and exit\n"
+                + "\n"
+                + "mysubcommands:\n"
+                + "  valid subcommands\n"
+                + "\n"
+                + "  {checkout,co}          subcommand help\n"
+                + "    checkout             checkout help\n", ap.formatHelp());
     }
 
     @Test
