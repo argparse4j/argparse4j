@@ -86,7 +86,8 @@ public final class TextHelper {
             String subsequentIndent) {
         BreakIterator iter = BreakIterator.getLineInstance();
         iter.setText(s);
-        StringBuilder sb = new StringBuilder(initialIndent);
+        StringBuilder res = new StringBuilder(initialIndent);
+        StringBuilder sb = new StringBuilder();
         int currentWidth = initialOffset + initialIndent.length();
         for (int start = iter.first(), end = iter.next(); end != BreakIterator.DONE; start = end, end = iter
                 .next()) {
@@ -94,17 +95,91 @@ public final class TextHelper {
             int subwidth = textWidthCounter.width(sub);
             currentWidth += subwidth;
             if (currentWidth > width) {
-                sb.append("\n").append(subsequentIndent);
+                res.append(adjustSpace(sb, width, currentWidth - subwidth))
+                    .append("\n").append(subsequentIndent);
+                sb.delete(0, sb.length());
                 currentWidth = subsequentIndent.length() + subwidth;
             }
             sb.append(sub);
             if (sub.endsWith("\n")) {
-                sb.append(subsequentIndent);
+                res.append(sb).append(subsequentIndent);
+                sb.delete(0, sb.length());
                 currentWidth = subsequentIndent.length();
             }
         }
+        res.append(sb);
+        return res.toString();
+    }
 
-        return sb.toString();
+    /**
+     * Given the maximum line width and current line width in sb, insert white
+     * spaces in sb to make it look more "natural". The insertion points are the
+     * contagious block of white spaces. Before the processing, leading and
+     * trailing white spaces are removed from sb.
+     * 
+     * @param sb
+     *            String to adjust
+     * @param width
+     *            maximum line width
+     * @param curwidth
+     *            current line width
+     * @return adjusted sb
+     */
+    public static StringBuilder adjustSpace(StringBuilder sb, int width,
+            int curwidth) {
+        int i, len = sb.length();
+        int origLen = len;
+        for (i = 0; i < len && sb.charAt(i) == ' '; ++i)
+            ;
+        sb.delete(0, i);
+        len = sb.length();
+        for (i = len - 1; i >= 0 && sb.charAt(i) == ' '; --i)
+            ;
+        sb.delete(i + 1, len);
+        len = sb.length();
+        curwidth -= origLen - len;
+
+        int numWsBlock = 0;
+        boolean cont = false;
+        for (i = 0; i < len; ++i) {
+            if (sb.charAt(i) == ' ') {
+                if (!cont) {
+                    cont = true;
+                    ++numWsBlock;
+                }
+            } else {
+                cont = false;
+            }
+        }
+        if (numWsBlock == 0) {
+            return sb;
+        }
+        // Distribute needWs white spaces to numWsBlock blocks.
+        // Put one more space to the middle of the blocks to look nicer if
+        // needWs is not divisible by numWsBlock.
+        int needWs = width - curwidth;
+        int eachWs = needWs / numWsBlock;
+        int rem = needWs % numWsBlock;
+        int remStart = (numWsBlock - rem + 1) / 2;
+        int remEnd = remStart + rem;
+        cont = false;
+        int b = 0;
+        for (i = 0; i < len; ++i) {
+            if (sb.charAt(i) == ' ') {
+                if (!cont) {
+                    cont = true;
+                    int add = eachWs + (remStart <= b && b < remEnd ? 1 : 0);
+                    for (int j = 0; j < add; ++j) {
+                        sb.insert(i, ' ');
+                    }
+                    len = sb.length();
+                    ++b;
+                }
+            } else {
+                cont = false;
+            }
+        }
+        return sb;
     }
 
     public static void printHelp(PrintWriter writer, String title, String help,

@@ -39,11 +39,28 @@ public class TextHelperTest {
 
     @Test
     public void testTextWrap() {
-        String s = "alpha bravo charlie delta echo foxtrot golf hotel india\njuliet kilo lima";
-        assertEquals("        alpha bravo \n" + "    charlie delta \n"
-                + "    echo foxtrot \n" + "    golf hotel \n" + "    india\n"
-                + "    juliet kilo lima", TextHelper.wrap(
-                new ASCIITextWidthCounter(), s, 20, 0, "        ", "    "));
+        String s = "alpha bravo charlie delta echo foxtrot golf hotel india\n"
+                 + "juliet kilo lima";
+        assertEquals("        alpha  bravo\n"
+                   + "    charlie    delta\n"
+                   + "    echo     foxtrot\n"
+                   + "    golf       hotel\n"
+                   + "    india\n"
+                   + "    juliet kilo lima",
+                   TextHelper.wrap(
+                           new ASCIITextWidthCounter(), s, 20, 0, "        ", "    "));
     }
 
+    @Test
+    public void testAdjustSpace() {
+        StringBuilder s1 = new StringBuilder("  Do you like Java language?  ");
+        assertEquals("Do  you  like  Java  language?",
+                TextHelper.adjustSpace(s1, 30, 30).toString());
+        assertEquals("Do  you  like   Java  language?",
+                TextHelper.adjustSpace(s1, 31, 30).toString());
+        StringBuilder s2 = new StringBuilder();
+        assertEquals("", TextHelper.adjustSpace(s2, 30, 30).toString());
+        StringBuilder s3 = new StringBuilder("The Argparse4j");
+        assertEquals("The       Argparse4j", TextHelper.adjustSpace(s3, 20, 14).toString());
+    }
 }
