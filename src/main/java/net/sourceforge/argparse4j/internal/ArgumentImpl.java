@@ -177,7 +177,7 @@ public final class ArgumentImpl implements Argument {
     }
 
     public String formatMetavar() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (action_.consumeArgument()) {
             String[] metavar = resolveMetavar();
             if (minNumArg_ == 0 && maxNumArg_ == 1) {
@@ -209,7 +209,7 @@ public final class ArgumentImpl implements Argument {
     private String formatHelpTitle() {
         if (isOptionalArgument()) {
             String mv = formatMetavar();
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             sb.setLength(0);
             for (String flag : flags_) {
                 sb.append(flag);

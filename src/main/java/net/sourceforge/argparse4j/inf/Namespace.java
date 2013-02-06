@@ -195,7 +195,7 @@ public class Namespace {
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer(getClass().getSimpleName())
+        StringBuilder sb = new StringBuilder(getClass().getSimpleName())
                 .append("(");
         for (Map.Entry<String, Object> entry : attrs_.entrySet()) {
             sb.append(entry.getKey()).append("=").append(entry.getValue())

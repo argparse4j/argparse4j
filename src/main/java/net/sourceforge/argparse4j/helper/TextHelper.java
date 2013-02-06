@@ -86,7 +86,7 @@ public final class TextHelper {
             String subsequentIndent) {
         BreakIterator iter = BreakIterator.getLineInstance();
         iter.setText(s);
-        StringBuffer sb = new StringBuffer(initialIndent);
+        StringBuilder sb = new StringBuilder(initialIndent);
         int currentWidth = initialOffset + initialIndent.length();
         for (int start = iter.first(), end = iter.next(); end != BreakIterator.DONE; start = end, end = iter
                 .next()) {
