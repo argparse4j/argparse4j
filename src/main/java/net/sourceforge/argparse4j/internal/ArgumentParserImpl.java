@@ -668,6 +668,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 }
                 ArgumentImpl arg = optargIndex_.get(flag);
                 if (arg == null) {
+                    // Assign null for clarity
+                    embeddedValue = null;
                     boolean shortOptsFound = false;
                     if (SHORT_OPTS_PATTERN.matcher(term).matches()
                             && optargIndex_.get(term) == null) {
@@ -683,7 +685,9 @@ public final class ArgumentParserImpl implements ArgumentParser {
                             if (arg.getAction().consumeArgument()) {
                                 flag = shortFlag;
                                 shortOptsFound = true;
-                                embeddedValue = term.substring(i + 1);
+                                if (term.length() > i + 1) {
+                                    embeddedValue = term.substring(i + 1);
+                                }
                                 break;
                             }
                             checkMutex(arg, groupUsed);

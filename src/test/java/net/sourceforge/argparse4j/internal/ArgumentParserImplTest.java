@@ -260,10 +260,29 @@ public class ArgumentParserImplTest {
         ap.addArgument("-3");
         ap.addArgument("-ff");
         ap.addArgument("-f");
-        Namespace res = ap.parseArgs("-123=x -ff=a".split(" "));
+        Namespace res = ap.parseArgs("-123=x -ff=a -fx".split(" "));
         assertEquals(true, res.get("1"));
         assertEquals("3=x", res.get("2"));
         assertEquals("a", res.get("ff"));
+        assertEquals("x", res.get("f"));
+        // If last option requires argument but the argument is not
+        // embedded in the same term, it must take next term as an
+        // argument.
+        res = ap.parseArgs("-12 foo".split(" "));
+        assertEquals(true, res.get("1"));
+        assertEquals("foo", res.get("2"));
+        // If -12" " is given in the terminal, program get this
+        res = ap.parseArgs(new String[] { "-12 "});
+        assertEquals(true, res.get("1"));
+        assertEquals(" ", res.get("2"));
+        // This is error case because the next term -fx is flag.
+        try {
+            res = ap.parseArgs("-12 -fx".split(" "));
+            fail();
+        } catch(ArgumentParserException e) {
+            assertEquals("argument -2: expected one argument", e.getMessage());
+        }
+
     }
 
     @Test
