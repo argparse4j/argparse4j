@@ -2,14 +2,14 @@
   on Python's
   {{{http://docs.python.org/library/argparse.html}argparse}}.
 
-  {{{http://sourceforge.net/projects/argparse4j/files/argparse4j-0.3.1}Download 0.3.1}}
+  {{{http://sourceforge.net/projects/argparse4j/files/argparse4j-0.3.2}Download 0.3.2}}
   Argparse4j is also available in Maven central repository:
 
 +---
 <dependency>
   <groupId>net.sourceforge.argparse4j</groupId>
   <artifactId>argparse4j</artifactId>
-  <version>0.3.1</version>
+  <version>0.3.2</version>
 </dependency>
 +---
 
