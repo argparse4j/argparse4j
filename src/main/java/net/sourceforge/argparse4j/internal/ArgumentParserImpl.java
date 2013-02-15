@@ -818,6 +818,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         }
         if (arg.getMinNumArg() == -1
                 || (arg.getMinNumArg() == 0 && arg.getMaxNumArg() == 1)) {
+            // In case of: option takes exactly one argument, or nargs("?")
             String argval = null;
             if (embeddedValue == null) {
                 if (state.isArgAvail() && !flagFound(state)) {
@@ -837,6 +838,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
                                 this);
                     }
                 } else if (arg.isOptionalArgument()) {
+                    // This is a special treatment for nargs("?"). If flag is
+                    // given but no argument follows, produce const value.
                     arg.run(this, res, flag, arg.getConst());
                 }
             } else {
