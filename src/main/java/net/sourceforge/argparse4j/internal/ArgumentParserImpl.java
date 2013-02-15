@@ -693,6 +693,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
                             checkMutex(arg, groupUsed);
                             arg.run(this, attrs, shortFlag, null);
                             used.add(arg);
+                            // Set null to avoid using it twice.
+                            arg = null;
                         }
                     }
                     if (!shortOptsFound) {
@@ -701,11 +703,12 @@ public final class ArgumentParserImpl implements ArgumentParser {
                                         term), this, term);
                     }
                 }
-                assert (arg.getAction() != null);
                 ++state.index;
-                checkMutex(arg, groupUsed);
-                processArg(attrs, state, arg, flag, embeddedValue);
-                used.add(arg);
+                if (arg != null) {
+                    checkMutex(arg, groupUsed);
+                    processArg(attrs, state, arg, flag, embeddedValue);
+                    used.add(arg);
+                }
             } else if ("--".equals(state.getArg()) && !state.consumedSeparator) {
                 state.consumedSeparator = true;
                 state.negNumFlag = false;

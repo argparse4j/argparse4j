@@ -260,11 +260,13 @@ public class ArgumentParserImplTest {
         ap.addArgument("-3");
         ap.addArgument("-ff");
         ap.addArgument("-f");
-        Namespace res = ap.parseArgs("-123=x -ff=a -fx".split(" "));
+        ap.addArgument("-c").action(appendConst()).setConst(true);
+        Namespace res = ap.parseArgs("-123=x -ff=a -fx -cccc".split(" "));
         assertEquals(true, res.get("1"));
         assertEquals("3=x", res.get("2"));
         assertEquals("a", res.get("ff"));
         assertEquals("x", res.get("f"));
+        assertEquals(list(true, true, true, true), res.get("c"));
         // If last option requires argument but the argument is not
         // embedded in the same term, it must take next term as an
         // argument.
