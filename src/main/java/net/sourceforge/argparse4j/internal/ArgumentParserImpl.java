@@ -671,8 +671,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     // Assign null for clarity
                     embeddedValue = null;
                     boolean shortOptsFound = false;
-                    if (SHORT_OPTS_PATTERN.matcher(term).matches()
-                            && optargIndex_.get(term) == null) {
+                    if (SHORT_OPTS_PATTERN.matcher(term).matches()) {
                         shortOptsFound = true;
                         // Possible concatenated short options
                         for (int i = 1, termlen = term.length(); i < termlen; ++i) {
