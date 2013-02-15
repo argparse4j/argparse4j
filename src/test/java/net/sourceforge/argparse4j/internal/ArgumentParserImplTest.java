@@ -39,6 +39,7 @@ import org.junit.Test;
 public class ArgumentParserImplTest {
 
     private ArgumentParserImpl ap;
+    private String[] zeroargs;
 
     @BeforeClass
     public static void init()
@@ -49,6 +50,7 @@ public class ArgumentParserImplTest {
     @Before
     public void setup() {
         ap = new ArgumentParserImpl("argparse4j");
+        zeroargs = new String[]{};
     }
 
     @Test
@@ -445,6 +447,73 @@ public class ArgumentParserImplTest {
         assertEquals("FOO", res.get("foo"));
         assertEquals("bar", res.get("g"));
         assertEquals("input", res.get("i"));
+    }
+
+    @Test
+    public void testParseArgsWithNargsEmptyList() throws ArgumentParserException {
+        ap.addArgument("--foo").nargs("*");
+        ap.addArgument("--bar").nargs("*").setDefault("bar");
+        ap.addArgument("--baz").nargs("*").action(append());
+        ap.addArgument("--buzz").nargs("*").action(append()).setDefault("buzz");
+
+        Namespace res = ap.parseArgs(zeroargs);
+        assertEquals(null, res.get("foo"));
+        assertEquals("bar", res.get("bar"));
+        assertEquals(null, res.get("baz"));
+        assertEquals("buzz", res.get("buzz"));
+
+        // Make sure that empty list overwrites previous arguments.
+        res = ap.parseArgs("--foo 1 2 --foo".split(" "));
+        assertEquals(list(), res.get("foo"));
+
+        // Make sure that empty list overwrites default value.
+        res = ap.parseArgs("--bar".split(" "));
+        assertEquals(list(), res.get("bar"));
+
+        // Make sure that empty list is appended
+        res = ap.parseArgs("--baz".split(" "));
+        assertEquals(list(list()), res.get("baz"));
+
+        // Make sure that empty list overwrites default value
+        res = ap.parseArgs("--buzz".split(" "));
+        assertEquals(list(list()), res.get("buzz"));
+
+        // sanity check: Make sure that given list overwrites default value
+        res = ap.parseArgs("--buzz 1 2".split(" "));
+        assertEquals(list(list("1", "2")), res.get("buzz"));
+    }
+
+    @Test
+    public void testParseArgsWithPosargNargsEmptyList() throws ArgumentParserException {
+        Namespace res;
+
+        ap.addArgument("foo").nargs("*");
+        res = ap.parseArgs(zeroargs);
+        assertEquals(list(), res.get("foo"));
+
+        ap = new ArgumentParserImpl("argparse4j");
+        ap.addArgument("foo").nargs("*").setDefault("foo");
+        // Make sure that default value is kept
+        res = ap.parseArgs(zeroargs);
+        assertEquals("foo", res.get("foo"));
+        // Make sure that given argument list overwrites default.
+        res = ap.parseArgs("a b".split(" "));
+        assertEquals(list("a", "b"), res.get("foo"));
+
+        ap = new ArgumentParserImpl("argparse4j");
+        ap.addArgument("foo").nargs("*").action(append());
+        // Make sure that empty list is returned.
+        res = ap.parseArgs(zeroargs);
+        assertEquals(list(), res.get("foo"));
+
+        ap = new ArgumentParserImpl("argparse4j");
+        ap.addArgument("foo").nargs("*").action(append()).setDefault("foo");
+        // Make sure that default stays intact without positional argument
+        res = ap.parseArgs(zeroargs);
+        assertEquals("foo", res.get("foo"));
+        // Make sure that given argument list overwrites default.
+        res = ap.parseArgs("a b".split(" "));
+        assertEquals(list(list("a", "b")), res.get("foo"));
     }
 
     @Test

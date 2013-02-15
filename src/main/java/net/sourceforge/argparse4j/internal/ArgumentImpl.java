@@ -438,7 +438,7 @@ public final class ArgumentImpl implements Argument {
 
     @Override
     public Object getDefault() {
-        if (default_ == null && maxNumArg_ > 1) {
+        if (!isOptionalArgument() && default_ == null && maxNumArg_ > 1) {
             return new ArrayList<Object>();
         } else {
             return default_;

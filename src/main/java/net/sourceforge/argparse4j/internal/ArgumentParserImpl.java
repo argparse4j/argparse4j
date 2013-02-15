@@ -864,7 +864,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     throw new ArgumentParserException("too few arguments", this);
                 }
             }
-            if (!list.isEmpty()) {
+            if (arg.isOptionalArgument() || !list.isEmpty()) {
                 arg.run(this, res, flag, list);
             }
         }
