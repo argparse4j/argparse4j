@@ -438,6 +438,9 @@ public final class ArgumentImpl implements Argument {
 
     @Override
     public Object getDefault() {
+        // For positional arguments, we perform special treatment if
+        // they are configured with nargs("*") and default is null.
+        // In this case, return empty list.
         if (!isOptionalArgument() && default_ == null && maxNumArg_ > 1) {
             return new ArrayList<Object>();
         } else {

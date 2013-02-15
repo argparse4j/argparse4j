@@ -864,6 +864,11 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     throw new ArgumentParserException("too few arguments", this);
                 }
             }
+            // For optional arguments, always process the list even if it is
+            // empty.
+            // For positional arguments, empty list means no positional argument
+            // is given. In this case, we want to keep default value, so
+            // don't process the list.
             if (arg.isOptionalArgument() || !list.isEmpty()) {
                 arg.run(this, res, flag, list);
             }
