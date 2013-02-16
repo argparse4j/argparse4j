@@ -37,8 +37,10 @@
 
    * Sub-commands like, <<<git add>>>.
 
-   * Customizable option prefix characters, e.g. <<<'+f'>>> and
-     <<<'/h'>>>.
+   * Sub-command alias names, e.g., <<<co>>> for <<<checkout>>>.
+
+   * Customizable option prefix characters, e.g. <<<+f>>> and
+     <<</h>>>.
 
    * Print default values in help message.
 
@@ -56,6 +58,7 @@
 
    * Read additional arguments from file.
 
+   * Argument/sub-command abbreviations.
 
   Here is the working demo program to calculate checksum. Argparse4j
   is used to parse command line arguments (Java 7 required to compile
