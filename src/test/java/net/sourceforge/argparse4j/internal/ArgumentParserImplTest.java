@@ -734,7 +734,7 @@ public class ArgumentParserImplTest {
             res = ap.parseArgs("-aa".split(" "));
             fail();
         } catch(ArgumentParserException e) {
-            assertEquals("ambiguous option: -aa could match -aaa, -a",
+            assertEquals("ambiguous option: -aa could match -a, -aaa",
                     e.getMessage());
         }
         // Exact match -b
@@ -747,7 +747,7 @@ public class ArgumentParserImplTest {
             res = ap.parseArgs("-bb".split(" "));
             fail();
         } catch(ArgumentParserException e) {
-            assertEquals("ambiguous option: -bb could match -bbb, -b",
+            assertEquals("ambiguous option: -bb could match -b, -bbb",
                     e.getMessage());
         }
     }

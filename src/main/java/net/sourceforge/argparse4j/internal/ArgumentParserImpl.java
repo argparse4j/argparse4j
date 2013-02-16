@@ -700,6 +700,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
         }
         // At this point, more than 1 flags were found from optargIndex_
         // and/or flag forms concatenated short options.
+        // Sort in order to make unit test easier.
+        Collections.sort(cand);
         throw new ArgumentParserException(String.format(
                 "ambiguous option: %s could match %s", flag,
                 TextHelper.concat(cand, 0, ", ")), this);
