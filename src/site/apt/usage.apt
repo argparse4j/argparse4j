@@ -2148,6 +2148,37 @@ Namespace(foo=bar)
  
 +---
 
+  Subparsers allows sub-command names to be abbreviated as long as the
+  abbreviation is unambiguous, just like long options:
+
++---
+    enum Command {
+        CLONE, CLEAN
+    };
+
+    public static void main(String[] args) {
+        ArgumentParser ap = ArgumentParsers.newArgumentParser("prog");
+        Subparsers subparsers = ap.addSubparsers();
+        subparsers.addParser("clone").setDefault("command", Command.CLONE);
+        subparsers.addParser("clean").setDefault("command", Command.CLEAN);
+        Namespace res = ap.parseArgsOrFail(args);
+        System.out.println(res);
+    }
++---
+
++---
+$ java Demo clo
+Namespace(command=CLONE)
+$ java Demo cle
+Namespace(command=CLEAN)
+$ java Demo cl
+usage: prog [-h] {clone,clean} ...
+prog: error: ambiguous command: cl could match clean, clone
++---
+
+  An error is produced for arguments that could produce more than one
+  sub-commands.
+
 ** enumType()
 
   In argparse4j, you can specify type of argument using
