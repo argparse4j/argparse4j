@@ -644,6 +644,67 @@ public final class ArgumentParserImpl implements ArgumentParser {
         parseArgs(state, attrs);
     }
 
+    /**
+     * Check that term forms a valid concatenated short options. Note that this
+     * option does not actually process arguments. Therefore, true from this
+     * function does not mean all arguments in term are acceptable.
+     * 
+     * @param term
+     *            string to inspect
+     * @return true if term forms a valid concatenated short options.
+     */
+    private boolean checkConcatenatedShortOpts(String term) {
+        if (SHORT_OPTS_PATTERN.matcher(term).matches()) {
+            for (int i = 1, termlen = term.length(); i < termlen; ++i) {
+                String shortFlag = "-" + term.charAt(i);
+                ArgumentImpl arg = optargIndex_.get(shortFlag);
+                if (arg == null) {
+                    return false;
+                }
+                if (arg.getAction().consumeArgument()) {
+                    return true;
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Returns optional argument ArgumentImpl which matches given flag. This
+     * function handles abbreviation as well. If flag is ambiguous,
+     * {@link ArgumentParserException} will be thrown. If flag does not match
+     * nay ArgumentImpl, this function returns null.
+     * 
+     * @param flag
+     *            flag to match
+     * @return ArgumentImpl which matches flag if it succeeds, or null
+     * @throws ArgumentParserException
+     *             if flag is ambiguous
+     */
+    private ArgumentImpl resolveNextFlag(String flag)
+            throws ArgumentParserException {
+        ArgumentImpl arg = optargIndex_.get(flag);
+        if (arg != null) {
+            return arg;
+        }
+        List<String> cand = TextHelper.findPrefix(optargIndex_.keySet(), flag);
+        if (cand.isEmpty()) {
+            return null;
+        } else if (checkConcatenatedShortOpts(flag)) {
+            // Get first short option
+            cand.add(flag.substring(0, 2));
+        } else if (cand.size() == 1) {
+            return optargIndex_.get(cand.get(0));
+        }
+        // At this point, more than 1 flags were found from optargIndex_
+        // and/or flag forms concatenated short options.
+        throw new ArgumentParserException(String.format(
+                "ambiguous option: %s could match %s", flag,
+                TextHelper.concat(cand, 0, ", ")), this);
+    }
+
     public void parseArgs(ParseState state, Map<String, Object> attrs)
             throws ArgumentParserException {
         populateDefaults(attrs);
@@ -666,7 +727,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     flag = term.substring(0, p);
                     embeddedValue = term.substring(p + 1);
                 }
-                ArgumentImpl arg = optargIndex_.get(flag);
+                ArgumentImpl arg = resolveNextFlag(flag);
                 if (arg == null) {
                     // Assign null for clarity
                     embeddedValue = null;

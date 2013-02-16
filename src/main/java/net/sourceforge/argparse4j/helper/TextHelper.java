@@ -25,8 +25,10 @@ package net.sourceforge.argparse4j.helper;
 
 import java.io.PrintWriter;
 import java.text.BreakIterator;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * <p>
@@ -213,4 +215,23 @@ public final class TextHelper {
         }
     }
 
+    /**
+     * From src, find string whose prefix is prefix and store them in List and
+     * return it.
+     * 
+     * @param src
+     *            collection contains strings to inspect
+     * @param prefix
+     *            prefix
+     * @return List of strings matched
+     */
+    public static List<String> findPrefix(Collection<String> src, String prefix) {
+        List<String> res = new ArrayList<String>();
+        for (String s : src) {
+            if (s.startsWith(prefix)) {
+                res.add(s);
+            }
+        }
+        return res;
+    }
 }

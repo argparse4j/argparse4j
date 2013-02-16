@@ -7,6 +7,7 @@ import static net.sourceforge.argparse4j.impl.Arguments.range;
 import static net.sourceforge.argparse4j.impl.Arguments.storeConst;
 import static net.sourceforge.argparse4j.impl.Arguments.storeFalse;
 import static net.sourceforge.argparse4j.impl.Arguments.storeTrue;
+import static net.sourceforge.argparse4j.test.TestHelper.list;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -15,8 +16,6 @@ import static org.junit.Assert.fail;
 
 import java.io.FileInputStream;
 import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.argparse4j.ArgumentParsers;
@@ -694,6 +693,43 @@ public class ArgumentParserImplTest {
     }
 
     @Test
+    public void testParseArgsWithAmbiguousOpts() throws ArgumentParserException {
+        Namespace res;
+        ap.addArgument("-a").action(storeTrue());
+        ap.addArgument("-b");
+        ap.addArgument("-aaa").action(storeTrue());
+        ap.addArgument("-bbb").action(storeTrue());
+
+        // Exact match -aaa
+        res = ap.parseArgs("-aaa".split(" "));
+        assertTrue(res.getBoolean("aaa"));
+        // Exact match -a
+        res = ap.parseArgs("-a".split(" "));
+        assertTrue(res.getBoolean("a"));
+        // -aa is ambiguous
+        try {
+            res = ap.parseArgs("-aa".split(" "));
+            fail();
+        } catch(ArgumentParserException e) {
+            assertEquals("ambiguous option: -aa could match -aaa, -a",
+                    e.getMessage());
+        }
+        // Exact match -b
+        res = ap.parseArgs("-bx".split(" "));
+        assertEquals("x", res.get("b"));
+        // Exact match -bbb
+        res = ap.parseArgs("-bbb".split(" "));
+        assertTrue(res.getBoolean("bbb"));
+        try {
+            res = ap.parseArgs("-bb".split(" "));
+            fail();
+        } catch(ArgumentParserException e) {
+            assertEquals("ambiguous option: -bb could match -bbb, -b",
+                    e.getMessage());
+        }
+    }
+
+    @Test
     public void testSubparserInheritPrefixChars() throws ArgumentParserException {
         ap = new ArgumentParserImpl("argparse4j", true, "+");
         ap.addSubparsers().addParser("install").addArgument("+f");
@@ -1034,10 +1070,6 @@ public class ArgumentParserImplTest {
 
         // StringWriter out = new StringWriter();
         ap.printHelp(new PrintWriter(System.out));
-    }
-
-    private <T> List<T> list(T... args) {
-        return Arrays.asList(args);
     }
 
 }
