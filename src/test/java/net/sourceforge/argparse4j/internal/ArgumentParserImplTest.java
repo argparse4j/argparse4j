@@ -437,6 +437,29 @@ public class ArgumentParserImplTest {
     }
 
     @Test
+    public void testParseArgsWithSubparsersAmbiguousCommand() throws ArgumentParserException {
+        Namespace res;
+        Subparsers subparsers = ap.addSubparsers();
+        Subparser checkout = subparsers.addParser("clone")
+                .setDefault("func", "clone");
+        Subparser clean = subparsers.addParser("clean")
+                .setDefault("func", "clean");
+
+        res = ap.parseArgs("clo".split(" "));
+        assertEquals("clone", res.get("func"));
+
+        res = ap.parseArgs("cle".split(" "));
+        assertEquals("clean", res.get("func"));
+        try {
+            ap.parseArgs("cl".split(" "));
+            fail();
+        } catch(ArgumentParserException e) {
+            assertEquals("ambiguous command: cl could match clean, clone",
+                    e.getMessage());
+        }
+    }
+
+    @Test
     public void testParseArgsWithDefaults() throws ArgumentParserException {
         ap.addArgument("-f").setDefault("foo");
         ap.addArgument("-g").setDefault("bar");

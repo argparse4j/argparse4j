@@ -25,7 +25,9 @@ package net.sourceforge.argparse4j.internal;
 
 import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.argparse4j.helper.TextHelper;
@@ -126,12 +128,43 @@ public final class SubparsersImpl implements Subparsers {
         return !parsers_.isEmpty();
     }
 
+    /**
+     * Get next SubparserImpl from given command and state. This function
+     * resolves abbreviated command input as well. If the given command is
+     * ambiguous, {@link ArgumentParserException} will be thrown. If no matching
+     * SubparserImpl is found, this function returns null.
+     * 
+     * @param state
+     * @param command
+     * @return next SubparserImpl or null
+     * @throws ArgumentParserException
+     */
+    private SubparserImpl resolveNextSubparser(ParseState state, String command)
+            throws ArgumentParserException {
+        SubparserImpl ap = parsers_.get(state.getArg());
+        if (ap == null) {
+            List<String> cand = TextHelper.findPrefix(parsers_.keySet(),
+                    command);
+            int size = cand.size();
+            if (size == 1) {
+                ap = parsers_.get(cand.get(0));
+            } else if (size > 1) {
+                // Sort it to make unit test easier
+                Collections.sort(cand);
+                throw new ArgumentParserException(String.format(
+                        "ambiguous command: %s could match %s", command,
+                        TextHelper.concat(cand, 0, ", ")), mainParser_);
+            }
+        }
+        return ap;
+    }
+
     public void parseArg(ParseState state, Map<String, Object> opts)
             throws ArgumentParserException {
         if (parsers_.isEmpty()) {
             throw new IllegalArgumentException("too many arguments");
         }
-        SubparserImpl ap = parsers_.get(state.getArg());
+        SubparserImpl ap = resolveNextSubparser(state, state.getArg());
         if (ap == null) {
             StringBuilder sb = new StringBuilder();
             for (Map.Entry<String, SubparserImpl> entry : parsers_.entrySet()) {
