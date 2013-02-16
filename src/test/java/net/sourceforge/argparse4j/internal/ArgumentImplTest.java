@@ -29,6 +29,16 @@ public class ArgumentImplTest {
     }
 
     @Test
+    public void testArgumentWithNoNameOrFlags() {
+        try {
+            new ArgumentImpl(prefix);
+            fail();
+        } catch(IllegalArgumentException e) {
+            // success
+        }
+    }
+
+    @Test
     public void testArgumentWithFlags() {
         ArgumentImpl arg = new ArgumentImpl(prefix, "-f", "--foo-bar", "--foo");
         assertNull(arg.getName());

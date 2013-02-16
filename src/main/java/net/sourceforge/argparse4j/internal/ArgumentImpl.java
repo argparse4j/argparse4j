@@ -72,7 +72,9 @@ public final class ArgumentImpl implements Argument {
 
     public ArgumentImpl(PrefixPattern prefixPattern,
             ArgumentGroupImpl argumentGroup, String... nameOrFlags) {
-        assert (nameOrFlags.length > 0);
+        if (nameOrFlags.length == 0) {
+            throw new IllegalArgumentException("no nameOrFlags was specified");
+        }
         argumentGroup_ = argumentGroup;
         if (nameOrFlags.length == 1 && !prefixPattern.match(nameOrFlags[0])) {
             if (argumentGroup_ != null && argumentGroup_.isMutex()) {
