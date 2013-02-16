@@ -1759,6 +1759,34 @@ optional arguments:
 
   After <<<-->>>, sub-command cannot be recognized.
 
+** Argument abbreviations
+
+  The <<<ArgumentParser.parseArgs()>>> allows long options to be
+  abbreviated if the abbreviation is unambiguous:
+
++---
+    public static void main(String[] args) {
+        ArgumentParser ap = ArgumentParsers.newArgumentParser("prog");
+        ap.addArgument("-bacon");
+        ap.addArgument("-badger");
+        Namespace res = ap.parseArgsOrFail(args);
+        System.out.println(res);
+    }
++---
+
++---
+$ java Demo -bac MMM
+Namespace(bacon=MMM, badger=null)
+$ java Demo -bad WOOD
+Namespace(bacon=null, badger=WOOD)
+$ java Demo -ba BA
+usage: prog [-h] [-bacon BACON] [-badger BADGER]
+prog: error: ambiguous option: -ba could match -bacon, -badger
++---
+
+  An error is produced for arguments that could produce more than one
+  options.
+
 * The Namespace object
 
   <<<Namespace>>> object is used to store attributes as a result of
