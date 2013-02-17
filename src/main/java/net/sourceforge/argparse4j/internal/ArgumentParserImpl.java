@@ -107,7 +107,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     public ArgumentParserImpl(String prog, boolean addHelp, String prefixChars,
             String fromFilePrefix, TextWidthCounter textWidthCounter) {
-        this(prog, addHelp, prefixChars, fromFilePrefix, textWidthCounter, null, null);
+        this(prog, addHelp, prefixChars, fromFilePrefix, textWidthCounter,
+                null, null);
     }
 
     public ArgumentParserImpl(String prog, boolean addHelp, String prefixChars,
@@ -139,7 +140,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
         return addArgument(null, nameOrFlags);
     }
 
-    public ArgumentImpl addArgument(ArgumentGroupImpl group, String... nameOrFlags) {
+    public ArgumentImpl addArgument(ArgumentGroupImpl group,
+            String... nameOrFlags) {
         ArgumentImpl arg = new ArgumentImpl(prefixPattern_, group, nameOrFlags);
         if (arg.isOptionalArgument()) {
             for (String flag : arg.getFlags()) {
@@ -273,9 +275,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     subparsers_.getTitle().isEmpty() ? "subcommands"
                             : subparsers_.getTitle());
             if (!subparsers_.getDescription().isEmpty()) {
-                writer.format("  %s\n\n", TextHelper
-                        .wrap(textWidthCounter_, subparsers_.getDescription(),
-                                formatWidth, 2, "", "  "));
+                writer.format("  %s\n\n", TextHelper.wrap(textWidthCounter_,
+                        subparsers_.getDescription(), formatWidth, 2, "", "  "));
             }
             subparsers_.printSubparserHelp(writer, formatWidth);
         }
@@ -564,79 +565,79 @@ public final class ArgumentParserImpl implements ArgumentParser {
         parseArgs(args, opts, userData);
     }
 
-	@Override
-	public void parseArgs(String[] args, Map<String, Object> attrs,
-			Object userData) throws ArgumentParserException {
-		parseArgs(args, 0, attrs);
+    @Override
+    public void parseArgs(String[] args, Map<String, Object> attrs,
+            Object userData) throws ArgumentParserException {
+        parseArgs(args, 0, attrs);
 
-		Class userClass = userData.getClass();
-		while (userClass != null) {
-			for (Field field : userClass.getDeclaredFields()) {
-				Arg ann = field.getAnnotation(Arg.class);
-				if (ann != null) {
-					String argDest = ann.dest();
-					if (argDest.isEmpty()) {
-						argDest = field.getName();
-					}
-					if (!attrs.containsKey(argDest)) {
-						continue;
-					}
-					Object val = attrs.get(argDest);
-					try {
-						field.setAccessible(true);
-						field.set(userData,
-								ReflectHelper.list2Array(field.getType(), val));
-					} catch (RuntimeException e) {
-						if (!ann.ignoreError()) {
-							throw e;
-						}
-					} catch (Exception e) {
-						if (!ann.ignoreError()) {
-							throw new IllegalArgumentException(String.format(
-									"Could not set %s to field %s", val,
-									field.getName()), e);
-						}
-					}
-				}
-			}
-			for (Method method : userClass.getDeclaredMethods()) {
-				Arg ann = method.getAnnotation(Arg.class);
-				if (ann != null) {
-					String argDest = ann.dest();
-					if (argDest.isEmpty()) {
-						argDest = method.getName();
-					}
-					if (!attrs.containsKey(argDest)) {
-						continue;
-					}
-					Object val = attrs.get(argDest);
-					Class<?>[] fargs = method.getParameterTypes();
-					if (fargs.length != 1) {
-						throw new IllegalArgumentException(String.format(
-								"Method %s must have one formal parameter",
-								method.getName()));
-					}
-					try {
-						method.setAccessible(true);
-						method.invoke(userData,
-								ReflectHelper.list2Array(fargs[0], val));
-					} catch (RuntimeException e) {
-						if (!ann.ignoreError()) {
-							throw e;
-						}
-					} catch (Exception e) {
-						if (!ann.ignoreError()) {
-							throw new IllegalArgumentException(String.format(
-									"Could not call method %s with %s",
-									method.getName(), val), e);
-						}
-					}
-				}
-			}
-			userClass = userClass.getSuperclass();
-		}
+        Class userClass = userData.getClass();
+        while (userClass != null) {
+            for (Field field : userClass.getDeclaredFields()) {
+                Arg ann = field.getAnnotation(Arg.class);
+                if (ann != null) {
+                    String argDest = ann.dest();
+                    if (argDest.isEmpty()) {
+                        argDest = field.getName();
+                    }
+                    if (!attrs.containsKey(argDest)) {
+                        continue;
+                    }
+                    Object val = attrs.get(argDest);
+                    try {
+                        field.setAccessible(true);
+                        field.set(userData,
+                                ReflectHelper.list2Array(field.getType(), val));
+                    } catch (RuntimeException e) {
+                        if (!ann.ignoreError()) {
+                            throw e;
+                        }
+                    } catch (Exception e) {
+                        if (!ann.ignoreError()) {
+                            throw new IllegalArgumentException(String.format(
+                                    "Could not set %s to field %s", val,
+                                    field.getName()), e);
+                        }
+                    }
+                }
+            }
+            for (Method method : userClass.getDeclaredMethods()) {
+                Arg ann = method.getAnnotation(Arg.class);
+                if (ann != null) {
+                    String argDest = ann.dest();
+                    if (argDest.isEmpty()) {
+                        argDest = method.getName();
+                    }
+                    if (!attrs.containsKey(argDest)) {
+                        continue;
+                    }
+                    Object val = attrs.get(argDest);
+                    Class<?>[] fargs = method.getParameterTypes();
+                    if (fargs.length != 1) {
+                        throw new IllegalArgumentException(String.format(
+                                "Method %s must have one formal parameter",
+                                method.getName()));
+                    }
+                    try {
+                        method.setAccessible(true);
+                        method.invoke(userData,
+                                ReflectHelper.list2Array(fargs[0], val));
+                    } catch (RuntimeException e) {
+                        if (!ann.ignoreError()) {
+                            throw e;
+                        }
+                    } catch (Exception e) {
+                        if (!ann.ignoreError()) {
+                            throw new IllegalArgumentException(String.format(
+                                    "Could not call method %s with %s",
+                                    method.getName(), val), e);
+                        }
+                    }
+                }
+            }
+            userClass = userClass.getSuperclass();
+        }
 
-	}
+    }
 
     public void parseArgs(String args[], int offset, Map<String, Object> attrs)
             throws ArgumentParserException {
@@ -1276,7 +1277,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
      * 
      * @return The main (parent) parser. null if this object is a root parser.
      */
-   public ArgumentParserImpl getMainParser() {
+    public ArgumentParserImpl getMainParser() {
         return mainParser_;
     }
 }

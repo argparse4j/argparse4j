@@ -29,17 +29,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * <p> 
+ * <p>
  * Annotation specifies location where attribute should be stored.
  * </p>
  * <p>
- * You can annotate fields and methods.
- * For methods, it must have only 1 format argument.
- * Use {@link #dest()} to specify which attribute to be assigned. If it is
- * empty, the name of the attribute or method will be used instead.
- * If the attribute value cannot be assigned to designated location,
- * error will be issued. If you want to ignore this error,
- * use {@link #ignoreError()}.
+ * You can annotate fields and methods. For methods, it must have only 1 format
+ * argument. Use {@link #dest()} to specify which attribute to be assigned. If
+ * it is empty, the name of the attribute or method will be used instead. If the
+ * attribute value cannot be assigned to designated location, error will be
+ * issued. If you want to ignore this error, use {@link #ignoreError()}.
  * </p>
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -47,12 +45,14 @@ import java.lang.annotation.Target;
 public @interface Arg {
     /**
      * The name of attribute to be assigned.
+     * 
      * @return The name of attribute
      */
     String dest() default "";
 
     /**
      * Set {@code true} if you want to ignore the error in assignment.
+     * 
      * @return {@code true} or {@code false}
      */
     boolean ignoreError() default false;

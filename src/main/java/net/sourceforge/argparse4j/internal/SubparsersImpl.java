@@ -204,8 +204,11 @@ public final class SubparsersImpl implements Subparsers {
 
     /**
      * Writes the help message for this and descendants.
-     * @param writer The writer to output
-     * @param format_width column width
+     * 
+     * @param writer
+     *            The writer to output
+     * @param format_width
+     *            column width
      */
     public void printSubparserHelp(PrintWriter writer, int format_width) {
         TextHelper.printHelp(writer, formatShortSyntax(), help_,
@@ -220,6 +223,7 @@ public final class SubparsersImpl implements Subparsers {
 
     /**
      * Returns collection of the sub-command name under this object.
+     * 
      * @return collection of the sub-comman name
      */
     public Collection<String> getCommands() {

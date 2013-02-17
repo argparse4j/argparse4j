@@ -37,7 +37,8 @@ import net.sourceforge.argparse4j.inf.MutuallyExclusiveGroup;
  * This class implements both mutually exclusive group and just a conceptual
  * group.
  */
-public final class ArgumentGroupImpl implements ArgumentGroup, MutuallyExclusiveGroup {
+public final class ArgumentGroupImpl implements ArgumentGroup,
+        MutuallyExclusiveGroup {
 
     /**
      * Index in {@link ArgumentParserImpl}.
@@ -91,8 +92,7 @@ public final class ArgumentGroupImpl implements ArgumentGroup, MutuallyExclusive
         }
         for (ArgumentImpl arg : args_) {
             arg.printHelp(writer, argumentParser_.isDefaultHelp(),
-                    argumentParser_.getTextWidthCounter(),
-                    format_width);
+                    argumentParser_.getTextWidthCounter(), format_width);
         }
     }
 

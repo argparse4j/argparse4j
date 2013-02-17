@@ -241,7 +241,7 @@ public final class Arguments {
      * <p>
      * Returns new {@link FileArgumentType} object.
      * </p>
-     *
+     * 
      * @return {@link FileArgumentType} object
      */
     public static FileArgumentType fileType() {

@@ -284,11 +284,11 @@ public interface ArgumentParser {
      * Parses command line arguments, handling any errors.
      * </p>
      * <p>
-     * This is a shortcut method that combines {@link #parseArgs} and 
-     * {@link #handleError }. If the arguments can be successfully parsed,
-     * the resulted attributes are returned as a {@link Namespace} object.
+     * This is a shortcut method that combines {@link #parseArgs} and
+     * {@link #handleError }. If the arguments can be successfully parsed, the
+     * resulted attributes are returned as a {@link Namespace} object.
      * Otherwise, the program exits with a <code>1</code> return code.
-     *
+     * 
      * </p>
      * 
      * @param args

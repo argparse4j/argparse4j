@@ -144,8 +144,8 @@ public final class ArgumentImpl implements Argument {
     }
 
     /**
-     * Short syntax is used in usage message, e.g. --foo BAR,
-     * but without bracket when this is not required option.
+     * Short syntax is used in usage message, e.g. --foo BAR, but without
+     * bracket when this is not required option.
      * 
      * @return short syntax
      */
@@ -167,8 +167,7 @@ public final class ArgumentImpl implements Argument {
         if (metavar_ == null) {
             String[] metavar = new String[1];
             if (choice_ == null) {
-                metavar[0] = isOptionalArgument() ? dest_
-                        .toUpperCase() : dest_;
+                metavar[0] = isOptionalArgument() ? dest_.toUpperCase() : dest_;
             } else {
                 metavar[0] = choice_.textualFormat();
             }

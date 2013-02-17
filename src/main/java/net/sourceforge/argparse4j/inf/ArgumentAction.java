@@ -33,12 +33,16 @@ import java.util.Map;
 public interface ArgumentAction {
 
     /**
-     * <p>Executes this action.</p>
-     * <p>If the objects derived from
-     * {@link RuntimeException} are thrown in this method because of invalid
-     * input from command line, subclass must catch these exceptions and wrap
-     * them in {@link ArgumentParserException} and give simple error message to
-     * explain what happened briefly.</p>
+     * <p>
+     * Executes this action.
+     * </p>
+     * <p>
+     * If the objects derived from {@link RuntimeException} are thrown in this
+     * method because of invalid input from command line, subclass must catch
+     * these exceptions and wrap them in {@link ArgumentParserException} and
+     * give simple error message to explain what happened briefly.
+     * </p>
+     * 
      * @param parser
      *            The parser.
      * @param arg

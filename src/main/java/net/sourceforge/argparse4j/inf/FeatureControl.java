@@ -23,11 +23,9 @@
  */
 package net.sourceforge.argparse4j.inf;
 
-import net.sourceforge.argparse4j.inf.ArgumentParser;
-
 /**
  * This enum defines constants to be used throughout the argparse4j package.
- *
+ * 
  */
 public enum FeatureControl {
 

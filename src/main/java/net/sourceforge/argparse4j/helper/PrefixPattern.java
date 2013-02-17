@@ -80,8 +80,7 @@ public class PrefixPattern {
      * Removes prefixChars from given flag string.
      * </p>
      * <p>
-     * If given flag string does not
-     * contains prefixChars, it is returned as is.
+     * If given flag string does not contains prefixChars, it is returned as is.
      * </p>
      * 
      * @param str

@@ -98,7 +98,7 @@ public final class TextHelper {
             currentWidth += subwidth;
             if (currentWidth > width) {
                 res.append(adjustSpace(sb, width, currentWidth - subwidth))
-                    .append("\n").append(subsequentIndent);
+                        .append("\n").append(subsequentIndent);
                 sb.delete(0, sb.length());
                 currentWidth = subsequentIndent.length() + subwidth;
             }
