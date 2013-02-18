@@ -898,7 +898,8 @@ single command line argument will be consumed and a single item(not a
 are ignored if one of :ref:`Arguments-storeConst`,
 :ref:`Arguments-appendConst`, :ref:`Arguments-storeBool` is
 provided. More specifically, subclass of :javadoc:`inf.ArgumentAction`
-whose `consumeArgument()` returns ``false`` ignores |Argument.nargs|.
+whose :javafunc:`consumeArgument()` returns ``false`` ignores
+|Argument.nargs|.
 
 .. _Argument-setConst:
 
@@ -991,7 +992,8 @@ arguments in as simple strings. However, quite often the command line
 string should instead be interpreted as another type, like a
 :javatype:`Float` or :javatype:`Integer`. The |Argument.type| allows
 any necessary type-checking and type conversions to be performed.  The
-Classes which have a constructor with 1 String argument can be passed
+Classes which have :javafunc:`valueOf()` static method with 1 String
+argument or a constructor with 1 String argument can be passed
 directly::
 
     public static void main(String[] args) {
@@ -1008,6 +1010,68 @@ directly::
 
     $ java Demo 100
     Namespace(foo=100)
+
+Since enums have :javafunc:`valueOf()` static method, it can be passed
+to |Argument.type|.  Since enums have limited number of members, type
+conversion effectively acts like a choice from members. For example::
+
+    enum Enums {
+        FOO, BAR, BAZ
+    }
+
+    public static void main(String[] args) {
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("-x").type(Enums.class);
+        try {
+            Namespace res = parser.parseArgs(args);
+            System.out.println(res);
+            Enums x = (Enums) res.get("x");
+            System.out.printf("x=%s\n", x.name());
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+            System.exit(1);
+        }
+    }
+
+.. code-block:: console
+
+    $ java Demo -x BAR
+    Namespace(x=BAR)
+    x=BAR
+    $ java Demo -h
+    usage: prog [-h] [-x X]
+
+    optional arguments:
+      -h, --help             show this help message and exit
+      -x X
+
+To show available enum values in help message, use
+|Argument.choices|::
+
+    parser.addArgument("-x").type(Enums.class).choices(Enums.values());
+
+.. code-block:: console
+
+    $ java Demo -h
+    usage: prog [-h] [-x {FOO,BAR,BAZ}]
+
+    optional arguments:
+      -h, --help             show this help message and exit
+      -x {FOO,BAR,BAZ}
+
+To limit enum values to choose from, specify them in
+|Argument.choices|::
+
+    parser.addArgument("-x").type(Enums.class).choices(Enums.FOO, Enums.BAZ);
+
+.. code-block:: console
+
+    $ java Demo -h
+    usage: prog [-h] [-x {FOO,BAZ}]
+
+    optional arguments:
+      -h, --help             show this help message and exit
+      -x {FOO,BAZ}
 
 The |Argument.type| has a version which accepts an object which
 implements :javadoc:`inf.ArgumentType` interface::
@@ -1951,78 +2015,6 @@ abbreviation is unambiguous, just like long options::
 
 An error is produced for arguments that could produce more than one
 sub-commands.
-
-
-enumType()
-^^^^^^^^^^
-
-In argparse4j, you can specify type of argument using |Argument.type|.
-But you cannot use it directly for enum. Instead, you can use
-|Arguments.enumType| for enums.  Since enums have limited number of
-members, type conversion effectively acts like a choice from
-members. For example::
-
-
-    enum Enums {
-        FOO, BAR, BAZ
-    }
-
-    public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-        parser.addArgument("-x").type(Arguments.enumType(Enums.class));
-        try {
-            Namespace res = parser.parseArgs(args);
-            System.out.println(res);
-            Enums x = (Enums) res.get("x");
-            System.out.printf("x=%s\n", x.name());
-        } catch (ArgumentParserException e) {
-            parser.handleError(e);
-            System.exit(1);
-        }
-    }
-
-.. code-block:: console
-
-    $ java Demo -x BAR
-    Namespace(x=BAR)
-    x=BAR
-    $ java Demo -h
-    usage: prog [-h] [-x X]
-
-    optional arguments:
-      -h, --help             show this help message and exit
-      -x X
-
-To show available enum values in help message, use
-|Argument.choices|::
-
-    parser.addArgument("-x").type(Arguments.enumType(Enums.class))
-            .choices(Enums.values());
-
-.. code-block:: console
-
-    $ java Demo -h
-    usage: prog [-h] [-x {FOO,BAR,BAZ}]
-
-    optional arguments:
-      -h, --help             show this help message and exit
-      -x {FOO,BAR,BAZ}
-
-To limit enum values to choose from, specify them in
-|Argument.choices|::
-
-
-    parser.addArgument("-x").type(Arguments.enumType(Enums.class))
-            .choices(Enums.FOO, Enums.BAZ);
-
-.. code-block:: console
-
-    $ java Demo -h
-    usage: prog [-h] [-x {FOO,BAZ}]
-
-    optional arguments:
-      -h, --help             show this help message and exit
-      -x {FOO,BAZ}
 
 fileType()
 ^^^^^^^^^^

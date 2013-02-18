@@ -274,21 +274,16 @@ def _ap4j_javadocfunc_role(name, rawtext, text, lineno, inliner, options={},
     lit += node
     return [lit], []
 
-def _ap4j_javafield_role(name, rawtext, text, lineno, inliner, options={},
+def _ap4j_literal_role(name, rawtext, text, lineno, inliner, options={},
                          content=[]):
-    ''' Literal node for Java field, making it just look like cross
+    ''' Literal node, making it just look like cross
     reference. '''
-    return [_ap4j_genliteral(rawtext, text)], []
-
-def _ap4j_javatype_role(name, rawtext, text, lineno, inliner, options={},
-                        content=[]):
-    ''' Literal node for Java type, making it just look like cross
-    reference.'''
     return [_ap4j_genliteral(rawtext, text)], []
 
 def setup(app):
     app.add_stylesheet('default2.css')
     app.add_role('javadoc', _ap4j_javadoc_role)
     app.add_role('javadocfunc', _ap4j_javadocfunc_role)
-    app.add_role('javatype', _ap4j_javatype_role)
-    app.add_role('javafield', _ap4j_javafield_role)
+    app.add_role('javatype', _ap4j_literal_role)
+    app.add_role('javafunc', _ap4j_literal_role)
+    app.add_role('javafield', _ap4j_literal_role)
