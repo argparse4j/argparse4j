@@ -10,13 +10,15 @@ import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.ArgumentType;
 
+/**
+ * <p>
+ * This implementation converts String value into given type using type's
+ * {@code valueOf(java.lang.String)} static method or its constructor.
+ * </p>
+ */
 public class ReflectArgumentType<T> implements ArgumentType<T> {
 
     private Class<T> type_;
-
-    public ReflectArgumentType(Class<T> type) {
-        type_ = type;
-    }
 
     /**
      * <p>
@@ -24,9 +26,15 @@ public class ReflectArgumentType<T> implements ArgumentType<T> {
      * </p>
      * <p>
      * This object first tries to convert given String using
-     * {@code valueOf(java.langString)} static method of given {@code type}. If
+     * {@code valueOf(java.lang.String)} static method of given {@code type}. If
      * that failed, then use constructor of given {@code type} for conversion.
-     * The constructor of {@code type} must have 1 String argument.
+     * The constructor of {@code type} must accept 1 String argument.
+     * </p>
+     * <p>
+     * If error occurred inside the {@code valueOf} static method or
+     * constructor, {@link ArgumentParserException} will be thrown. If error
+     * occurred in other locations, subclass of {@link RuntimeException} will be
+     * thrown.
      * </p>
      * <p>
      * Because the enums have {@code valueOf} static method, this object works
@@ -41,6 +49,10 @@ public class ReflectArgumentType<T> implements ArgumentType<T> {
      * @param type
      *            The type String value should be converted to.
      */
+    public ReflectArgumentType(Class<T> type) {
+        type_ = type;
+    }
+
     @Override
     public T convert(ArgumentParser parser, Argument arg, String value)
             throws ArgumentParserException {
