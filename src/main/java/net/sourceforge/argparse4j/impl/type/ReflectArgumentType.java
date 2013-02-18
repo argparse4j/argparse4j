@@ -58,11 +58,16 @@ public class ReflectArgumentType<T> implements ArgumentType<T> {
                 || !type_.isAssignableFrom(m.getReturnType())) {
             return convertUsingConstructor(parser, arg, value);
         }
+        try {
+            m.setAccessible(true);
+        } catch (SecurityException e) {
+            return convertUsingConstructor(parser, arg, value);
+        }
         Object obj = null;
         try {
             obj = m.invoke(null, value);
         } catch (IllegalAccessException e) {
-            handleInstatiationError(e);
+            return convertUsingConstructor(parser, arg, value);
         } catch (IllegalArgumentException e) {
             handleInstatiationError(e);
         } catch (InvocationTargetException e) {
