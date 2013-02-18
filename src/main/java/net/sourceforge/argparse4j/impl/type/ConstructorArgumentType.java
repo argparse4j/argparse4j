@@ -42,6 +42,7 @@ import net.sourceforge.argparse4j.inf.ArgumentType;
  * thrown.
  * </p>
  * 
+ * @deprecated Use {@link ReflectArgumentType} instead.
  */
 public class ConstructorArgumentType<T> implements ArgumentType<T> {
 

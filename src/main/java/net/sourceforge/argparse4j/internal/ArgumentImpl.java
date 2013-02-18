@@ -34,7 +34,7 @@ import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.helper.TextWidthCounter;
 import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.impl.choice.CollectionArgumentChoice;
-import net.sourceforge.argparse4j.impl.type.ConstructorArgumentType;
+import net.sourceforge.argparse4j.impl.type.ReflectArgumentType;
 import net.sourceforge.argparse4j.impl.type.StringArgumentType;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentAction;
@@ -325,7 +325,7 @@ public final class ArgumentImpl implements Argument {
         if (type == null) {
             throw new IllegalArgumentException("type cannot be null");
         }
-        type_ = new ConstructorArgumentType<T>(type);
+        type_ = new ReflectArgumentType<T>(type);
         return this;
     }
 

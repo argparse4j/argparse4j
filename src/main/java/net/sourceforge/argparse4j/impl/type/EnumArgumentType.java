@@ -21,6 +21,7 @@ import net.sourceforge.argparse4j.inf.ArgumentType;
  * {@link Argument#choices(Object...)}.
  * </p>
  * 
+ * @deprecated Use {@link ReflectArgumentType} instead.
  * @param <T>
  *            Type of enum
  */
