@@ -285,9 +285,11 @@ addHelp_ argument to |ArgumentParsers.newArgumentParser|::
       --foo FOO              foo help
 
 The help option is typically ``-h/--help``. The exception to this is
-if the prefixChars_ is specified and does not include ``-``, in which
-case ``-h`` and ``--help`` are not valid options. In this case, the
-first character in prefixChars_ is used to prefix the help options::
+if the :ref:`ArgumentParsers-newArgumentParser-prefixChars` is
+specified and does not include ``-``, in which case ``-h`` and
+``--help`` are not valid options. In this case, the first character in
+:ref:`ArgumentParsers-newArgumentParser-prefixChars` is used to prefix
+the help options::
 
     public static void main(String[] args) throws ArgumentParserException {
         ArgumentParser parser = ArgumentParsers
@@ -312,7 +314,7 @@ prefixChars
 Most command line options will use ``-`` as the prefix, e.g.
 ``-f/--foo``. Parsers that need to support different or additional
 prefix characters, e.g. for options like ``+f`` or ``/foo``, may
-specify them using the prefixChars_ to
+specify them using the *prefixChars* to
 |ArgumentParsers.newArgumentParser|::
 
     public static void main(String[] args) throws ArgumentParserException {
@@ -328,7 +330,7 @@ specify them using the prefixChars_ to
     $ java Demo +f X ++bar Y
     Namespace(f=X, bar=Y)
 
-The prefixChars_ argument defaults to ``-`` (you can use
+The *prefixChars* argument defaults to ``-`` (you can use
 :javafield:`ArgumentParsers.DEFAULT_PREFIX_CHARS` for this). Supplying
 a set of characters that does not include ``-`` will cause
 ``-f/--foo`` options to be disallowed.
@@ -340,10 +342,9 @@ fromFilePrefixChars
 
 It is sometimes useful to read arguments from file other than typing
 them in command line, for example, when lots of arguments are needed.
-If fromFilePrefixChars_ is given as non ``null`` string,
-arguments starts with one of these characters are treated as file path
-and ArgumentParser reads additional arguments from the file.
-For example:
+If *fromFilePrefixChars* is given as non ``null`` string, arguments
+starts with one of these characters are treated as file path and
+ArgumentParser reads additional arguments from the file.  For example:
 
 .. code-block:: console
 
@@ -375,17 +376,18 @@ that trailing empty lines or line with only white spaces are also
 considered as arguments, although it is not readily noticeable to the
 user. The empty line is treated as empty string.
 
-By default, fromFilePrefixChars_ is ``null``, which means no
-argument is treated as file path.
+By default, *fromFilePrefixChars* is ``null``, which means no argument
+is treated as file path.
 
 .. _ArgumentParser-description:
 
 ArgumentParser.description()
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-It gives a brief description of what the program does and how it
-works. In help message, the description is displayed between command
-line usage string and the help messages for the various arguments::
+The |ArgumentParser.description| gives a brief description of what the
+program does and how it works. In help message, the description is
+displayed between command line usage string and the help messages for
+the various arguments::
 
     public static void main(String[] args) throws ArgumentParserException {
         ArgumentParser parser = ArgumentParsers.newArgumentParser("prog")
@@ -413,7 +415,7 @@ ArgumentParser.epilog()
 
 Some programs like to display additional description of the program
 after the description of the arguments. Such text can be specified
-using :ref:`ArgumentParser-epilog` method::
+using |ArgumentParser.epilog| method::
 
     public static void main(String[] args) throws ArgumentParserException {
         ArgumentParser parser = ArgumentParsers.newArgumentParser("prog")
@@ -435,7 +437,7 @@ using :ref:`ArgumentParser-epilog` method::
     And that's how you'd foo a bar
 
 As with the :ref:`ArgumentParser-description` method, text specified
-in :ref:`ArgumentParser-epilog` is by default line-wrapped.
+in |ArgumentParser.epilog| is by default line-wrapped.
 
 .. _ArgumentParser-defaultHelp:
 
@@ -443,9 +445,8 @@ ArgumentParser.defaultHelp()
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The default value of each argument is not by default displayed in help
-message. Specifying ``true`` to :ref:`ArgumentParser-defaultHelp`
-method will display the default value of each argument in help
-message::
+message. Specifying ``true`` to |ArgumentParser.defaultHelp| method
+will display the default value of each argument in help message::
 
 
     public static void main(String[] args) throws ArgumentParserException {
@@ -1011,9 +1012,9 @@ directly::
     $ java Demo 100
     Namespace(foo=100)
 
-Since enums have :javafunc:`valueOf()` static method, it can be passed
-to |Argument.type|.  Since enums have limited number of members, type
-conversion effectively acts like a choice from members. For example::
+The |Argument.type| can accept enums.  Since enums have limited number
+of members, type conversion effectively acts like a choice from
+members. For example::
 
     enum Enums {
         FOO, BAR, BAZ
@@ -2285,6 +2286,9 @@ available:
 .. |ArgumentParser.addArgument| replace:: :javadocfunc:`inf.ArgumentParser.addArgument(java.lang.String...)`
 .. |ArgumentParser.addMutuallyExclusiveGroup| replace:: :javadocfunc:`inf.ArgumentParser.addMutuallyExclusiveGroup(java.lang.String)`
 .. |ArgumentParser.addSubparsers| replace:: :javadocfunc:`inf.ArgumentParser.addSubparsers()`
+.. |ArgumentParser.defaultHelp| replace:: :javadocfunc:`inf.ArgumentParser.defaultHelp(boolean)`
+.. |ArgumentParser.description| replace:: :javadocfunc:`inf.ArgumentParser.description(java.lang.String)`
+.. |ArgumentParser.epilog| replace:: :javadocfunc:`inf.ArgumentParser.epilog(java.lang.String)`
 .. |ArgumentParser.getDefault| replace:: :javadocfunc:`inf.ArgumentParser.getDefault(java.lang.String)`
 .. |ArgumentParser.handleError| replace:: :javadocfunc:`inf.ArgumentParser.handleError(net.sourceforge.argparse4j.inf.ArgumentParserException)`
 .. |ArgumentParser.parseArgs| replace:: :javadocfunc:`inf.ArgumentParser.parseArgs(java.lang.String[])`
