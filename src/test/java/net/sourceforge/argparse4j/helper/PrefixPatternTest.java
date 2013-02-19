@@ -16,6 +16,8 @@ public class PrefixPatternTest {
         assertTrue(pat.match("+-f"));
         assertTrue(pat.match("+f"));
         assertTrue(!pat.match("f"));
+        assertTrue(!pat.match("-"));
+        assertTrue(!pat.match("--"));
     }
 
     @Test
@@ -25,6 +27,9 @@ public class PrefixPatternTest {
         assertTrue(!pat.matchLongFlag("-f"));
         assertTrue(!pat.matchLongFlag("-flag"));
         assertTrue(!pat.matchLongFlag("flag"));
+        assertTrue(!pat.match("-"));
+        assertTrue(!pat.match("--"));
+        assertTrue(!pat.match("---"));
     }
 
     @Test
@@ -32,5 +37,7 @@ public class PrefixPatternTest {
         assertEquals("foo", pat.removePrefix("--foo"));
         assertEquals("f", pat.removePrefix("+f"));
         assertEquals("foo", pat.removePrefix("foo"));
+        assertEquals("-", pat.removePrefix("-"));
+        assertEquals("--", pat.removePrefix("--"));
     }
 }

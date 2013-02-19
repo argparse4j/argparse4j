@@ -59,7 +59,7 @@ public class PrefixPattern {
      */
     public boolean match(String str) {
         Matcher m = prefixPattern_.matcher(str);
-        return m.find() && m.group(0) != str;
+        return m.find() && !m.group(0).equals(str);
     }
 
     /**
@@ -72,7 +72,7 @@ public class PrefixPattern {
      */
     public boolean matchLongFlag(String str) {
         Matcher m = prefixPattern_.matcher(str);
-        return m.find() && m.group(0) != str && m.group(0).length() >= 2;
+        return m.find() && !m.group(0).equals(str) && m.group(0).length() >= 2;
     }
 
     /**
@@ -89,7 +89,7 @@ public class PrefixPattern {
      */
     public String removePrefix(String str) {
         Matcher m = prefixPattern_.matcher(str);
-        if (m.find() && m.group(0) != str) {
+        if (m.find() && !m.group(0).equals(str)) {
             return m.replaceFirst("");
         } else {
             return str;
