@@ -45,8 +45,7 @@ public class ReflectArgumentTypeTest {
             at.convert(null, ma, "C");
             fail();
         } catch(ArgumentParserException e) {
-            assertEquals("argument null: could not convert 'C' (choose from {PYTHON,CPP,JAVA})",
-                    e.getMessage());
+            assertTrue(e.getMessage().startsWith("argument null: could not convert 'C' to Lang ("));
         }
     }
 

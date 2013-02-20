@@ -88,11 +88,7 @@ public class ReflectArgumentType<T> implements ArgumentType<T> {
             try {
                 return (T) Enum.valueOf((Class<Enum>) type_, value);
             } catch (IllegalArgumentException e) {
-                String choices = TextHelper.concat(type_.getEnumConstants(), 0,
-                        ",", "{", "}");
-                throw new ArgumentParserException(String.format(
-                        "could not convert '%s' (choose from %s)", value,
-                        choices), e, parser, arg);
+                throwArgumentParserException(parser, arg, value, e);
             }
         }
         Method m = null;
