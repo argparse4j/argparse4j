@@ -1478,11 +1478,10 @@ to |ArgumentParser.addArgument| method::
 For optional arguments, the value of dest is normally inferred from
 the option strings. :javadoc:`inf.ArgumentParser` generates the value
 of dest by taking the first long option string and stripping away the
-initial ``--`` string. If no long option strings were supplied,
-dest>>> will be derived from the first short option string by
-stripping the initial ``-`` character. Any internal ``-`` characters
-will be converted to ``_``. The example below illustrate this
-behavior::
+initial ``--`` string. If no long option strings were supplied, dest
+will be derived from the first short option string by stripping the
+initial ``-`` character. Any internal ``-`` characters will be
+converted to ``_``. The example below illustrate this behavior::
 
     public static void main(String[] args) throws ArgumentParserException {
 	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
