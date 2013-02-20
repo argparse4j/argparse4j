@@ -1210,14 +1210,14 @@ The :ref:`Argument-choices` may be more convenient for type checkers
 that simply check against a range of values::
 
     public static void main(String[] args) {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	parser.addArgument("foo").type(Integer.class)
-		.choices(Arguments.range(5, 10));
-	try {
-	    System.out.println(parser.parseArgs(args));
-	} catch (ArgumentParserException e) {
-	    parser.handleError(e);
-	}
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("foo").type(Integer.class)
+                .choices(Arguments.range(5, 10));
+        try {
+            System.out.println(parser.parseArgs(args));
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+        }
     }
 
 .. code-block:: console
@@ -1242,13 +1242,13 @@ will be checked, and an error message will be displayed if the
 argument was not one of the accepted values::
 
     public static void main(String[] args) {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	parser.addArgument("foo").choices("a", "b", "c");
-	try {
-	    System.out.println(parser.parseArgs(args));
-	} catch (ArgumentParserException e) {
-	    parser.handleError(e);
-	}
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("foo").choices("a", "b", "c");
+        try {
+            System.out.println(parser.parseArgs(args));
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+        }
     }
 
 .. code-block:: console
@@ -1266,14 +1266,14 @@ example, argparse4j provides |Arguments.range| to check whether an
 integer is in specified range::
 
     public static void main(String[] args) {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	parser.addArgument("foo").type(Integer.class)
-		.choices(Arguments.range(1, 10));
-	try {
-	    System.out.println(parser.parseArgs(args));
-	} catch (ArgumentParserException e) {
-	    parser.handleError(e);
-	}
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("foo").type(Integer.class)
+                .choices(Arguments.range(1, 10));
+        try {
+            System.out.println(parser.parseArgs(args));
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+        }
     }
 
 
@@ -1301,13 +1301,13 @@ be omitted at the command line. To make an option required, ``true``
 can be specified for |Argument.required|::
 
     public static void main(String[] args) {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	parser.addArgument("--foo").required(true);
-	try {
-	    System.out.println(parser.parseArgs(args));
-	} catch (ArgumentParserException e) {
-	    parser.handleError(e);
-	}
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("--foo").required(true);
+        try {
+            System.out.println(parser.parseArgs(args));
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+        }
     }
 
 .. code-block:: console
@@ -1340,15 +1340,15 @@ of the argument. When a user requests help (usually by using ``-h`` or
 displayed with each argument::
 
     public static void main(String[] args) {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	parser.addArgument("--foo").action(Arguments.storeTrue())
-		.help("foo the bars before frobbling");
-	parser.addArgument("bar").nargs("+").help("one of the bars to be frobbled");
-	try {
-	    System.out.println(parser.parseArgs(args));
-	} catch (ArgumentParserException e) {
-	    parser.handleError(e);
-	}
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("--foo").action(Arguments.storeTrue())
+                .help("foo the bars before frobbling");
+        parser.addArgument("bar").nargs("+").help("one of the bars to be frobbled");
+        try {
+            System.out.println(parser.parseArgs(args));
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+        }
     }
 
 .. code-block:: console
@@ -1404,10 +1404,10 @@ by a single command line argument will be referred to as ``FOO``. For
 example::
 
     public static void main(String[] args) throws ArgumentParserException {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	parser.addArgument("--foo");
-	parser.addArgument("bar");
-	parser.printHelp();
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("--foo");
+        parser.addArgument("bar");
+        parser.printHelp();
     }
 
 .. code-block:: console
@@ -1426,10 +1426,10 @@ An alternative name can be specified with |Argument.metavar|
 method::
 
     public static void main(String[] args) throws ArgumentParserException {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	parser.addArgument("--foo").metavar("YY");
-	parser.addArgument("bar").metavar("XX");
-	parser.printHelp();
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("--foo").metavar("YY");
+        parser.addArgument("bar").metavar("XX");
+        parser.printHelp();
     }
 
 .. code-block:: console
@@ -1453,10 +1453,10 @@ metavar to be used multiple times. Providing multiple values to
 the arguments::
 
     public static void main(String[] args) throws ArgumentParserException {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	parser.addArgument("-x").nargs(2);
-	parser.addArgument("--foo").nargs(2).metavar("bar", "baz");
-	parser.printHelp();
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("-x").nargs(2);
+        parser.addArgument("--foo").nargs(2).metavar("bar", "baz");
+        parser.printHelp();
     }
 
 .. code-block:: console
@@ -1485,9 +1485,9 @@ positional arguments, dest is normally supplied as the first argument
 to |ArgumentParser.addArgument| method::
 
     public static void main(String[] args) throws ArgumentParserException {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	parser.addArgument("bar");
-	System.out.println(parser.parseArgs(args));
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("bar");
+        System.out.println(parser.parseArgs(args));
     }
 
 .. code-block:: console
@@ -1504,10 +1504,10 @@ initial ``-`` character. Any internal ``-`` characters will be
 converted to ``_``. The example below illustrate this behavior::
 
     public static void main(String[] args) throws ArgumentParserException {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	parser.addArgument("-f", "--foo-bar", "--foo");
-	parser.addArgument("-x", "-y");
-	System.out.println(parser.parseArgs(args));
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("-f", "--foo-bar", "--foo");
+        parser.addArgument("-x", "-y");
+        System.out.println(parser.parseArgs(args));
     }
 
 
@@ -1521,9 +1521,9 @@ converted to ``_``. The example below illustrate this behavior::
 |Argument.dest| method allows a custom attribute name to be provided::
 
     public static void main(String[] args) throws ArgumentParserException {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	parser.addArgument("--foo").dest("bar");
-	System.out.println(parser.parseArgs(args));
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("--foo").dest("bar");
+        System.out.println(parser.parseArgs(args));
     }
 
 .. code-block:: console
@@ -1555,10 +1555,10 @@ the value of an option (if it takes one). In the simplest case, the
 option and its value are passed as two separate arguments::
 
     public static void main(String[] args) throws ArgumentParserException {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	parser.addArgument("-x");
-	parser.addArgument("--foo");
-	System.out.println(parser.parseArgs(args));
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("-x");
+        parser.addArgument("--foo");
+        System.out.println(parser.parseArgs(args));
     }
 
 .. code-block:: console
@@ -1590,11 +1590,11 @@ Several short options can be joined together, using only a single
 requires a value::
 
     public static void main(String[] args) throws ArgumentParserException {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	parser.addArgument("-x").action(Arguments.storeTrue());
-	parser.addArgument("-y").action(Arguments.storeTrue());
-	parser.addArgument("-z");
-	System.out.println(parser.parseArgs(args));
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("-x").action(Arguments.storeTrue());
+        parser.addArgument("-y").action(Arguments.storeTrue());
+        parser.addArgument("-z");
+        System.out.println(parser.parseArgs(args));
     }
 
 .. code-block:: console
@@ -1614,15 +1614,15 @@ typical error handling is catch the exception and use
 the program::
 
     public static void main(String[] args) {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	parser.addArgument("--foo").type(Integer.class);
-	parser.addArgument("bar").nargs("?");
-	try {
-	    System.out.println(parser.parseArgs(args));
-	} catch (ArgumentParserException e) {
-	    parser.handleError(e);
-	    System.exit(1);
-	}
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("--foo").type(Integer.class);
+        parser.addArgument("bar").nargs("?");
+        try {
+            System.out.println(parser.parseArgs(args));
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+            System.exit(1);
+        }
     }
 
 .. code-block:: console
@@ -1650,15 +1650,15 @@ negative numbers and there are no options in the parser that look like
 negative numbers::
 
     public static void main(String[] args) {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	parser.addArgument("-x");
-	parser.addArgument("foo").nargs("?");
-	try {
-	    System.out.println(parser.parseArgs(args));
-	} catch (ArgumentParserException e) {
-	    parser.handleError(e);
-	    System.exit(1);
-	}
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("-x");
+        parser.addArgument("foo").nargs("?");
+        try {
+            System.out.println(parser.parseArgs(args));
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+            System.exit(1);
+        }
     }
 
 .. code-block:: console
@@ -1673,15 +1673,15 @@ negative numbers::
 ::
 
     public static void main(String[] args) {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	parser.addArgument("-1").dest("one");
-	parser.addArgument("foo").nargs("?");
-	try {
-	    System.out.println(parser.parseArgs(args));
-	} catch (ArgumentParserException e) {
-	    parser.handleError(e);
-	    System.exit(1);
-	}
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("-1").dest("one");
+        parser.addArgument("foo").nargs("?");
+        try {
+            System.out.println(parser.parseArgs(args));
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+            System.exit(1);
+        }
     }
 
 
@@ -1808,8 +1808,8 @@ attribute or the method will be used instead.  For example::
    $ java Demo --rows 1 2 3 --rows 4 5 6 --filename out --url http://example.com
    outusername=out
    http://example.com
-   1	2	3
-   4	5	6
+   1    2       3
+   4    5       6
 
 As shown above, argparse4j supports simple :javatype:`List` to array
 conversion.  This is useful if you want primitive int array instead of
@@ -1841,21 +1841,21 @@ can take *prefixChars* argument just like
 *prefixChars* is inherited from main parser. Some example usage::
 
     public static void main(String[] args) {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	parser.addArgument("--foo").action(Arguments.storeTrue()).help("foo help");
-	Subparsers subparsers = parser.addSubparsers().help("sub-command help");
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("--foo").action(Arguments.storeTrue()).help("foo help");
+        Subparsers subparsers = parser.addSubparsers().help("sub-command help");
 
-	Subparser parserA = subparsers.addParser("a").help("a help");
-	parserA.addArgument("bar").type(Integer.class).help("bar help");
+        Subparser parserA = subparsers.addParser("a").help("a help");
+        parserA.addArgument("bar").type(Integer.class).help("bar help");
 
-	Subparser parserB = subparsers.addParser("b").help("b help");
-	parserB.addArgument("--baz").choices("X", "Y", "Z").help("baz help");
-	try {
-	    System.out.println(parser.parseArgs(args));
-	} catch (ArgumentParserException e) {
-	    parser.handleError(e);
-	    System.exit(1);
-	}
+        Subparser parserB = subparsers.addParser("b").help("b help");
+        parserB.addArgument("--baz").choices("X", "Y", "Z").help("baz help");
+        try {
+            System.out.println(parser.parseArgs(args));
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+            System.exit(1);
+        }
     }
 
 .. code-block:: console
@@ -1884,8 +1884,8 @@ can be given using |Subparser.help| method.):
 
     positional arguments:
       {a,b}                  sub-command help
-	a                    a help
-	b                    b help
+        a                    a help
+        b                    b help
 
     optional arguments:
       -h, --help             show this help message and exit
@@ -1913,19 +1913,19 @@ subparser's commands will appear in their own group in the help
 output. For example::
 
     public static void main(String[] args) {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	Subparsers subparsers = parser.addSubparsers()
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        Subparsers subparsers = parser.addSubparsers()
                 .title("subcommands")
-		.description("valid subcommands")
+                .description("valid subcommands")
                 .help("additional help");
-	subparsers.addParser("foo");
-	subparsers.addParser("bar");
-	try {
-	    System.out.println(parser.parseArgs(args));
-	} catch (ArgumentParserException e) {
-	    parser.handleError(e);
-	    System.exit(1);
-	}
+        subparsers.addParser("foo");
+        subparsers.addParser("bar");
+        try {
+            System.out.println(parser.parseArgs(args));
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+            System.exit(1);
+        }
     }
 
 .. code-block:: console
@@ -1974,8 +1974,8 @@ sub-command names. For example::
       valid subcommands
 
       COMMAND                additional help
-	foo                  foo help
-	bar                  bar help
+        foo                  foo help
+        bar                  bar help
 
 Furthermore, :javadoc:`inf.Subparser` supports alias names, which
 allows multiple strings to refer to the same subparser. This example,
@@ -2000,53 +2000,53 @@ the use of |Subparser.setDefault| method so that each subparser knows
 which function it should execute. For example::
 
     private static interface Accumulate {
-	int accumulate(Collection<Integer> ints);
+        int accumulate(Collection<Integer> ints);
     }
 
     private static class Sum implements Accumulate {
-	@Override
-	public int accumulate(Collection<Integer> ints) {
-	    int sum = 0;
-	    for (Integer i : ints) {
-		sum += i;
-	    }
-	    return sum;
-	}
+        @Override
+        public int accumulate(Collection<Integer> ints) {
+            int sum = 0;
+            for (Integer i : ints) {
+                sum += i;
+            }
+            return sum;
+        }
 
-	@Override
-	public String toString() {
-	    return getClass().getSimpleName();
-	}
+        @Override
+        public String toString() {
+            return getClass().getSimpleName();
+        }
     }
 
     private static class Max implements Accumulate {
-	@Override
-	public int accumulate(Collection<Integer> ints) {
-	    return Collections.max(ints);
-	}
+        @Override
+        public int accumulate(Collection<Integer> ints) {
+            return Collections.max(ints);
+        }
 
-	@Override
-	public String toString() {
-	    return getClass().getSimpleName();
-	}
+        @Override
+        public String toString() {
+            return getClass().getSimpleName();
+        }
     }
 
     public static void main(String[] args) {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	Subparsers subparsers = parser.addSubparsers();
-	Subparser parserSum = subparsers.addParser("sum")
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        Subparsers subparsers = parser.addSubparsers();
+        Subparser parserSum = subparsers.addParser("sum")
                 .setDefault("func", new Sum());
-	parserSum.addArgument("ints").type(Integer.class).nargs("*");
-	Subparser parserMax = subparsers.addParser("max")
+        parserSum.addArgument("ints").type(Integer.class).nargs("*");
+        Subparser parserMax = subparsers.addParser("max")
                 .setDefault("func", new Max());
-	parserMax.addArgument("ints").type(Integer.class).nargs("+");
-	try {
-	    Namespace res = parser.parseArgs(args);
-	    System.out.println(((Accumulate) res.get("func"))
-		    .accumulate((Collection<Integer>) res.get("ints")));
-	} catch (ArgumentParserException e) {
-	    parser.handleError(e);
-	}
+        parserMax.addArgument("ints").type(Integer.class).nargs("+");
+        try {
+            Namespace res = parser.parseArgs(args);
+            System.out.println(((Accumulate) res.get("func"))
+                    .accumulate((Collection<Integer>) res.get("ints")));
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+        }
     }
 
 .. code-block:: console
@@ -2060,17 +2060,17 @@ The alternative way is use |Subparsers.dest| method. With this dest
 value, the selected command name is stored as an attribute::
 
     public static void main(String[] args) {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	Subparsers subparsers = parser.addSubparsers().dest("subparser_name");
-	Subparser subparser1 = subparsers.addParser("1");
-	subparser1.addArgument("-x");
-	Subparser subparser2 = subparsers.addParser("2");
-	subparser2.addArgument("y");
-	try {
-	    System.out.println(parser.parseArgs(args));
-	} catch (ArgumentParserException e) {
-	    parser.handleError(e);
-	}
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        Subparsers subparsers = parser.addSubparsers().dest("subparser_name");
+        Subparser subparser1 = subparsers.addParser("1");
+        subparser1.addArgument("-x");
+        Subparser subparser2 = subparsers.addParser("2");
+        subparser2.addArgument("y");
+        try {
+            System.out.println(parser.parseArgs(args));
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+        }
     }
 
 .. code-block:: console
@@ -2155,15 +2155,15 @@ of arguments than this default one, appropriate groups can be created
 using the |ArgumentParser.addArgumentGroup|::
 
     public static void main(String[] args) {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	ArgumentGroup group = parser.addArgumentGroup("group");
-	group.addArgument("--foo").help("foo help");
-	group.addArgument("bar").help("bar help");
-	try {
-	    System.out.println(parser.parseArgs(args));
-	} catch (ArgumentParserException e) {
-	    parser.handleError(e);
-	}
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentGroup group = parser.addArgumentGroup("group");
+        group.addArgument("--foo").help("foo help");
+        group.addArgument("bar").help("bar help");
+        try {
+            System.out.println(parser.parseArgs(args));
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+        }
     }
 
 .. code-block:: console
@@ -2190,14 +2190,14 @@ specified in |ArgumentGroup.description|, you can customize the help
 message::
 
     public static void main(String[] args) {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog", false);
-	ArgumentGroup group1 = parser.addArgumentGroup("group1")
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog", false);
+        ArgumentGroup group1 = parser.addArgumentGroup("group1")
                 .description("group1 description");
-	group1.addArgument("foo").help("foo help");
-	ArgumentGroup group2 = parser.addArgumentGroup("group2")
+        group1.addArgument("foo").help("foo help");
+        ArgumentGroup group2 = parser.addArgumentGroup("group2")
                 .description("group2 description");
-	group2.addArgument("--bar").help("bar help");
-	parser.printHelp();
+        group2.addArgument("--bar").help("bar help");
+        parser.printHelp();
     }
 
 .. code-block:: console
@@ -2228,15 +2228,15 @@ only one of the arguments in the mutually exclusive group was present
 on the command line::
 
     public static void main(String[] args) {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	MutuallyExclusiveGroup group = parser.addMutuallyExclusiveGroup();
-	group.addArgument("--foo").action(Arguments.storeTrue());
-	group.addArgument("--bar").action(Arguments.storeFalse());
-	try {
-	    System.out.println(parser.parseArgs(args));
-	} catch (ArgumentParserException e) {
-	    parser.handleError(e);
-	}
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        MutuallyExclusiveGroup group = parser.addMutuallyExclusiveGroup();
+        group.addArgument("--foo").action(Arguments.storeTrue());
+        group.addArgument("--bar").action(Arguments.storeFalse());
+        try {
+            System.out.println(parser.parseArgs(args));
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+        }
     }
 
 .. code-block:: console
@@ -2251,16 +2251,16 @@ Specifying ``true`` to |MutuallyExclusiveGroup.required| indicates
 that at least one of the mutually exclusive arguments is required::
 
     public static void main(String[] args) {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	MutuallyExclusiveGroup group = parser.addMutuallyExclusiveGroup("group")
-		.required(true);
-	group.addArgument("--foo").action(Arguments.storeTrue());
-	group.addArgument("--bar").action(Arguments.storeFalse());
-	try {
-	    System.out.println(parser.parseArgs(args));
-	} catch (ArgumentParserException e) {
-	    parser.handleError(e);
-	}
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        MutuallyExclusiveGroup group = parser.addMutuallyExclusiveGroup("group")
+                .required(true);
+        group.addArgument("--foo").action(Arguments.storeTrue());
+        group.addArgument("--bar").action(Arguments.storeFalse());
+        try {
+            System.out.println(parser.parseArgs(args));
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+        }
     }
 
 .. code-block:: console
@@ -2276,16 +2276,16 @@ group is merged into the other optional arguments. With either or both
 title and description, the help message is in separate group::
 
     public static void main(String[] args) {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	MutuallyExclusiveGroup group = parser.addMutuallyExclusiveGroup("group");
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        MutuallyExclusiveGroup group = parser.addMutuallyExclusiveGroup("group");
                 .description("group description");
-	group.addArgument("--foo").action(Arguments.storeTrue());
-	group.addArgument("--bar").action(Arguments.storeFalse());
-	try {
-	    System.out.println(parser.parseArgs(args));
-	} catch (ArgumentParserException e) {
-	    parser.handleError(e);
-	}
+        group.addArgument("--foo").action(Arguments.storeTrue());
+        group.addArgument("--bar").action(Arguments.storeFalse());
+        try {
+            System.out.println(parser.parseArgs(args));
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+        }
     }
 
 .. code-block:: console
@@ -2312,14 +2312,14 @@ command line arguments and the argument actions.
 determined without any inspection of the command line to be added::
 
     public static void main(String[] args) {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	parser.addArgument("foo").type(Integer.class);
-	parser.setDefault("bar", 42).setDefault("baz", "badger");
-	try {
-	    System.out.println(parser.parseArgs(args));
-	} catch (ArgumentParserException e) {
-	    parser.handleError(e);
-	}
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("foo").type(Integer.class);
+        parser.setDefault("bar", 42).setDefault("baz", "badger");
+        try {
+            System.out.println(parser.parseArgs(args));
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+        }
     }
 
 .. code-block:: console
@@ -2331,14 +2331,14 @@ Note that parser-level defaults always override argument-level
 defaults::
 
     public static void main(String[] args) {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	parser.addArgument("--foo").setDefault("bar");
-	parser.setDefault("foo", "spam");
-	try {
-	    System.out.println(parser.parseArgs(args));
-	} catch (ArgumentParserException e) {
-	    parser.handleError(e);
-	}
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("--foo").setDefault("bar");
+        parser.setDefault("foo", "spam");
+        try {
+            System.out.println(parser.parseArgs(args));
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+        }
     }
 
 .. code-block:: console
@@ -2353,9 +2353,9 @@ as set by either |Argument.setDefault| or by
 |ArgumentParser.setDefault|::
 
     public static void main(String[] args) {
-	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	parser.addArgument("--foo").setDefault("badger");
-	System.out.println(parser.getDefault("foo"));
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("--foo").setDefault("badger");
+        System.out.println(parser.getDefault("foo"));
     }
 
 .. code-block:: console
