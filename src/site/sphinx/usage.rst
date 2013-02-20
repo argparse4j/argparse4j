@@ -230,6 +230,9 @@ specified using following methods:
 * :ref:`ArgumentParser-usage` - The string describing the program
   usage (default: generated)
 
+* :ref:`ArgumentParser-version` - The string describing the program
+  version.
+
 The following sections describes how each of these are used.
 
 .. _ArgumentParsers-newArgumentParser-prog:
@@ -532,6 +535,18 @@ The ``${prog}`` literal string in the given usage message will be
 replaced with the program name
 :ref:`ArgumentParsers-newArgumentParser-prog`.
 
+.. _ArgumentParser-version:
+
+ArgumentParser.version()
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+The |ArgumentParser.version| method sets the string
+describing program version. It will be displayed when
+:ref:`Arguments-version` action is used.
+
+The ``${prog}`` literal string in the given string will be replaced
+with the program name :ref:`ArgumentParsers-newArgumentParser-prog`.
+
 .. _ArgumentParser-addArgument:
 
 The ArgumentParser.addArgument() method
@@ -749,17 +764,17 @@ arguments need to store constants to the same list. For example::
     $ java Demo --str --int
     Namespace(types=[class java.lang.String, class java.lang.Integer])
 
-.. _Arguments.version:
+.. _Arguments-version:
 
 Arguments.version()
 ~~~~~~~~~~~~~~~~~~~
 
 |Arguments.version| prints version string specified by
-`ArgumentParser.version()` and exists when invoked::
+:ref:`ArgumentParser-version` and exists when invoked::
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog")
-            .version("prog 2.0");
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("PROG")
+            .version("${prog} 2.0");
         parser.addArgument("--version").action(Arguments.version());
         System.out.println(parser.parseArgs(args));
     }
@@ -767,9 +782,9 @@ Arguments.version()
 .. code-block:: console
 
     $ java Demo --version
-    prog 2.0
+    PROG 2.0
 
-.. _Arguments.help:
+.. _Arguments-help:
 
 Arguments.help()
 ~~~~~~~~~~~~~~~~
@@ -2371,6 +2386,7 @@ available:
 .. |ArgumentParser.printUsage| replace:: :javadocfunc:`inf.ArgumentParser.printUsage()`
 .. |ArgumentParser.setDefault| replace:: :javadocfunc:`inf.ArgumentParser.setDefault(java.lang.String, java.lang.Object)`
 .. |ArgumentParser.usage| replace:: :javadocfunc:`inf.ArgumentParser.usage(java.lang.String)`
+.. |ArgumentParser.version| replace:: :javadocfunc:`inf.ArgumentParser.version(java.lang.String)`
 .. |ArgumentParsers.newArgumentParser| replace:: :javadocfunc:`ArgumentParsers.newArgumentParser(java.lang.String)`
 .. |Arguments.appendConst| replace:: :javadocfunc:`impl.Arguments.appendConst()`
 .. |Arguments.append| replace:: :javadocfunc:`impl.Arguments.append()`

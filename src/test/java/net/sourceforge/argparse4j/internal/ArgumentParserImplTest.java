@@ -1142,4 +1142,9 @@ public class ArgumentParserImplTest {
         ap.printHelp(new PrintWriter(System.out));
     }
 
+    @Test
+    public void testFormatVersion() throws ArgumentParserException {
+        ap.version("${prog} version 7.8.7 (Dreamliner)");
+        assertEquals("argparse4j version 7.8.7 (Dreamliner)", ap.formatVersion());
+    }
 }

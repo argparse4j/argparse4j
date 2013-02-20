@@ -164,11 +164,13 @@ public interface ArgumentParser {
 
     /**
      * <p>
-     * Sets version string.
+     * Sets version string. It will be displayed {@link #printVersion()}.
      * </p>
      * <p>
-     * It will be displayed {@link #printVersion()}. Please note that given
-     * version string is displayed as is: no text-wrapping will be made.
+     * If the given usage contains <tt>${prog}</tt> string, it will be replaced
+     * with the program name given in
+     * {@link ArgumentParsers#newArgumentParser(String)}. This processed text
+     * will be printed without text-wrapping.
      * </p>
      * 
      * @param version

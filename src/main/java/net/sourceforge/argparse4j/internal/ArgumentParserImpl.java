@@ -361,8 +361,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     private void printUsage(PrintWriter writer, int format_width) {
         if (!usage_.isEmpty()) {
-            writer.printf("usage: %s\n",
-                    usage_.replaceAll(Pattern.quote("${prog}"), prog_));
+            writer.printf("usage: %s\n", substitutePlaceholder(usage_));
             return;
         }
         String usageprog = String.format("usage: %s", prog_);
@@ -1096,13 +1095,13 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     @Override
     public void printVersion(PrintWriter writer) {
-        writer.format("%s\n", version_);
+        writer.format("%s\n", formatVersion());
         writer.flush();
     }
 
     @Override
     public String formatVersion() {
-        return version_;
+        return substitutePlaceholder(version_);
     }
 
     @Override
@@ -1274,6 +1273,18 @@ public final class ArgumentParserImpl implements ArgumentParser {
             }
             writer.format("\t%s\n", cand.subject);
         }
+    }
+
+    /**
+     * Replace placeholder in src with actual value. The only known placeholder
+     * is <tt>${prog}</tt>, which is replaced with {@link #prog_}.
+     * 
+     * @param src
+     *            string to be processed
+     * @return the substituted string
+     */
+    private String substitutePlaceholder(String src) {
+        return src.replaceAll(Pattern.quote("${prog}"), prog_);
     }
 
     public String getCommand() {
