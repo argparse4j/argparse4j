@@ -27,6 +27,7 @@ import java.util.List;
 
 import net.sourceforge.argparse4j.impl.action.AppendArgumentAction;
 import net.sourceforge.argparse4j.impl.action.AppendConstArgumentAction;
+import net.sourceforge.argparse4j.impl.action.CountArgumentAction;
 import net.sourceforge.argparse4j.impl.action.HelpArgumentAction;
 import net.sourceforge.argparse4j.impl.action.StoreArgumentAction;
 import net.sourceforge.argparse4j.impl.action.StoreConstArgumentAction;
@@ -86,6 +87,7 @@ public final class Arguments {
     private static final AppendConstArgumentAction appendConst_ = new AppendConstArgumentAction();
     private static final HelpArgumentAction help_ = new HelpArgumentAction();
     private static final VersionArgumentAction version_ = new VersionArgumentAction();
+    private static final CountArgumentAction count_ = new CountArgumentAction();
 
     /**
      * <p>
@@ -218,6 +220,21 @@ public final class Arguments {
      */
     public static VersionArgumentAction version() {
         return version_;
+    }
+
+    /**
+     * <p>
+     * Returns count action.
+     * </p>
+     * <p>
+     * This action counts the number of occurrence of the option. This action
+     * does not consume argument.
+     * </p>
+     * 
+     * @return {@link CountArgumentAction} object.
+     */
+    public static CountArgumentAction count() {
+        return count_;
     }
 
     /**

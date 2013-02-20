@@ -764,6 +764,26 @@ arguments need to store constants to the same list. For example::
     $ java Demo --str --int
     Namespace(types=[class java.lang.String, class java.lang.Integer])
 
+.. _Arguments-count:
+
+Arguments.count()
+~~~~~~~~~~~~~~~~~
+
+|Arguments.count| counts the number of times an option occurs. For
+example, this is useful for increasing verbosity levels::
+
+    public static void main(String[] args) {
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("--verbose", "-v").action(Arguments.count());
+        Namespace res = parser.parseArgsOrFail(args);
+        System.out.println(res);
+    }
+
+.. code-block:: console
+
+    $ java Demo -vvv
+    Namespace(verbose=3)
+
 .. _Arguments-version:
 
 Arguments.version()
@@ -2389,6 +2409,7 @@ available:
 .. |ArgumentParsers.newArgumentParser| replace:: :javadocfunc:`ArgumentParsers.newArgumentParser(java.lang.String)`
 .. |Arguments.appendConst| replace:: :javadocfunc:`impl.Arguments.appendConst()`
 .. |Arguments.append| replace:: :javadocfunc:`impl.Arguments.append()`
+.. |Arguments.count| replace:: :javadocfunc:`impl.Arguments.count()`
 .. |Arguments.enumType| replace:: :javadocfunc:`impl.Arguments.enumType(java.lang.Class)`
 .. |Arguments.fileType| replace:: :javadocfunc:`impl.Arguments.fileType()`
 .. |Arguments.help| replace:: :javadocfunc:`impl.Arguments.help()`

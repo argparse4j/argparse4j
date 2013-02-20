@@ -3,6 +3,7 @@ package net.sourceforge.argparse4j.internal;
 import static net.sourceforge.argparse4j.impl.Arguments.SUPPRESS;
 import static net.sourceforge.argparse4j.impl.Arguments.append;
 import static net.sourceforge.argparse4j.impl.Arguments.appendConst;
+import static net.sourceforge.argparse4j.impl.Arguments.count;
 import static net.sourceforge.argparse4j.impl.Arguments.range;
 import static net.sourceforge.argparse4j.impl.Arguments.storeConst;
 import static net.sourceforge.argparse4j.impl.Arguments.storeFalse;
@@ -229,6 +230,14 @@ public class ArgumentParserImplTest {
         Namespace res = ap.parseArgs("--foo --foo bar".split(" "));
         assertEquals(list("X", "X"), res.get("foo"));
         assertEquals("bar", res.get("bar"));
+    }
+
+    @Test
+    public void testParseArgsWithCount() throws ArgumentParserException {
+        ap.addArgument("-v", "--verbose").action(count());
+        ap.addArgument("--foo");
+        Namespace res = ap.parseArgs("-v -vv -vvvv".split(" "));
+        assertEquals(7, res.get("verbose"));
     }
 
     @Test
