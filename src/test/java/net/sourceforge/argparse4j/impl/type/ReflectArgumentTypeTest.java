@@ -23,7 +23,7 @@ public class ReflectArgumentTypeTest {
 
     @Test
     public void testConvertInteger() throws ArgumentParserException {
-        ReflectArgumentType<Integer> at = new ReflectArgumentType<Integer>(Integer.class);
+        ReflectArgumentType<Integer> at = createRA(Integer.class);
         assertEquals((Integer)100, at.convert(null, null, "100"));
         try {
             at.convert(null, ma, "0x100");
@@ -39,7 +39,7 @@ public class ReflectArgumentTypeTest {
     }
     @Test
     public void testConvertEnum() throws ArgumentParserException {
-        ReflectArgumentType<Lang> at = new ReflectArgumentType<Lang>(Lang.class);
+        ReflectArgumentType<Lang> at = createRA(Lang.class);
         assertEquals(Lang.CPP, at.convert(null, null, "CPP"));
         try {
             at.convert(null, ma, "C");
@@ -54,7 +54,7 @@ public class ReflectArgumentTypeTest {
 
     @Test
     public void testConvertNoValueOfNoCtor() throws ArgumentParserException {
-        ReflectArgumentType<NoValueOfNoCtor> at = new ReflectArgumentType<NoValueOfNoCtor>(NoValueOfNoCtor.class);
+        ReflectArgumentType<NoValueOfNoCtor> at = createRA(NoValueOfNoCtor.class);
         try {
             at.convert(null,  ma, "foo");
             fail();
@@ -70,7 +70,7 @@ public class ReflectArgumentTypeTest {
 
     @Test
     public void testConvertNoValueOf() throws ArgumentParserException {
-        ReflectArgumentType<NoValueOf> at = new ReflectArgumentType<NoValueOf>(NoValueOf.class);
+        ReflectArgumentType<NoValueOf> at = createRA(NoValueOf.class);
         assertNotNull(at.convert(null, null, "foo"));
     }
 
@@ -82,7 +82,7 @@ public class ReflectArgumentTypeTest {
 
     @Test
     public void testConvertNoCtor() throws ArgumentParserException {
-        ReflectArgumentType<NoCtor> at = new ReflectArgumentType<NoCtor>(NoCtor.class);
+        ReflectArgumentType<NoCtor> at = createRA(NoCtor.class);
         assertNotNull(at.convert(null, null, "foo"));
     }
 
@@ -102,7 +102,7 @@ public class ReflectArgumentTypeTest {
 
     @Test
     public void testConvertNonStaticValueOf() throws ArgumentParserException {
-        ReflectArgumentType<NonStaticValueOf> at = new ReflectArgumentType<NonStaticValueOf>(NonStaticValueOf.class);
+        ReflectArgumentType<NonStaticValueOf> at = createRA(NonStaticValueOf.class);
         assertEquals("From ctor", at.convert(null, null, "UNUSED").arg_);
     }
 
@@ -120,7 +120,7 @@ public class ReflectArgumentTypeTest {
 
     @Test
     public void testConvertWrongReturnTypeValueOf() throws ArgumentParserException {
-        ReflectArgumentType<WrongReturnTypeValueOf> at = new ReflectArgumentType<WrongReturnTypeValueOf>(WrongReturnTypeValueOf.class);
+        ReflectArgumentType<WrongReturnTypeValueOf> at = createRA(WrongReturnTypeValueOf.class);
         assertEquals("Good", at.convert(null, null, "Good").arg_);
     }
 
