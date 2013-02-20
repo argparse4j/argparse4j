@@ -881,6 +881,13 @@ public class ArgumentParserImplTest {
     }
 
     @Test
+    public void testUsage() {
+        ap.usage("<${prog}> [OPTIONS] ${prog}FILES");
+        assertEquals("usage: <argparse4j> [OPTIONS] argparse4jFILES\n",
+                ap.formatUsage());
+    }
+
+    @Test
     public void testFormatHelpWithArgumentGroup()
             throws ArgumentParserException {
         ap.description("This is argparser4j.").epilog("This is epilog.");

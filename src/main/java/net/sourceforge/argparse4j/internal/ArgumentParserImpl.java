@@ -72,6 +72,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     private ArgumentParserImpl mainParser_;
     private String command_;
     private String prog_;
+    private String usage_ = "";
     private String description_ = "";
     private String epilog_ = "";
     private String version_ = "";
@@ -199,6 +200,12 @@ public final class ArgumentParserImpl implements ArgumentParser {
         group.setMutex(true);
         arggroups_.add(group);
         return group;
+    }
+
+    @Override
+    public ArgumentParserImpl usage(String usage) {
+        usage_ = TextHelper.nonNull(usage);
+        return this;
     }
 
     /**
@@ -353,6 +360,11 @@ public final class ArgumentParserImpl implements ArgumentParser {
     }
 
     private void printUsage(PrintWriter writer, int format_width) {
+        if (!usage_.isEmpty()) {
+            writer.printf("usage: %s\n",
+                    usage_.replaceAll(Pattern.quote("${prog}"), prog_));
+            return;
+        }
         String usageprog = String.format("usage: %s", prog_);
         writer.print(usageprog);
         int offset;

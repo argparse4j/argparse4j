@@ -27,6 +27,7 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.annotation.Arg;
 
 /**
@@ -125,6 +126,23 @@ public interface ArgumentParser {
      * @return {@link Subparsers} object.
      */
     Subparsers addSubparsers();
+
+    /**
+     * <p>
+     * Sets the text to display as usage line. By default, the usage line is
+     * calculated from the arguments this object contains.
+     * </p>
+     * <p>
+     * If the given usage contains <tt>${prog}</tt> string, it will be replaced
+     * with the program name given in
+     * {@link ArgumentParsers#newArgumentParser(String)}.
+     * </p>
+     * 
+     * @param usage
+     *            usage text
+     * @return this
+     */
+    ArgumentParser usage(String usage);
 
     /**
      * Sets the text to display before the argument help.

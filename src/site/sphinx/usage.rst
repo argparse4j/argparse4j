@@ -227,6 +227,9 @@ specified using following methods:
 * :ref:`ArgumentParser-defaultHelp` - Display default value to help
   message. (default: ``false``)
 
+* :ref:`ArgumentParser-usage` - The string describing the program
+  usage (default: generated)
+
 The following sections describes how each of these are used.
 
 .. _ArgumentParsers-newArgumentParser-prog:
@@ -474,6 +477,60 @@ will display the default value of each argument in help message::
     optional arguments:
       -h, --help             show this help message and exit
       -f FOO, --foo FOO      FOO! (default: 42)
+
+.. _ArgumentParser-usage:
+
+ArgumentParser.usage()
+^^^^^^^^^^^^^^^^^^^^^^
+
+By default, :javadoc:`inf.ArgumentParser` calculates the usage message
+from the arguments it contains::
+
+    public static void main(String[] args) {
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        parser.addArgument("--foo").nargs("?").help("foo help");
+        parser.addArgument("bar").nargs("+").help("bar help");
+        Namespace res = parser.parseArgsOrFail(args);
+    }
+
+.. code-block:: console
+
+    $ java Demo -h
+    usage: prog [-h] [--foo [FOO]] bar [bar ...]
+
+    positional arguments:
+      bar                    bar help
+
+    optional arguments:
+      -h, --help             show this help message and exit
+      --foo [FOO]            foo help
+
+The default message can be overridden with the |ArgumentParser.usage|
+method::
+
+    public static void main(String[] args) {
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog")
+                .usage("${prog} [OPTIONS]");
+        parser.addArgument("--foo").nargs("?").help("foo help");
+        parser.addArgument("bar").nargs("+").help("bar help");
+        Namespace res = parser.parseArgsOrFail(args);
+    }
+
+.. code-block:: console
+
+    $ java Demo -h
+    usage: prog [OPTIONS]
+
+    positional arguments:
+      bar                    bar help
+
+    optional arguments:
+      -h, --help             show this help message and exit
+      --foo [FOO]            foo help
+
+The ``${prog}`` literal string in the given usage message will be
+replaced with the program name
+:ref:`ArgumentParsers-newArgumentParser-prog`.
 
 .. _ArgumentParser-addArgument:
 
@@ -2313,6 +2370,7 @@ available:
 .. |ArgumentParser.printHelp| replace:: :javadocfunc:`inf.ArgumentParser.printHelp()`
 .. |ArgumentParser.printUsage| replace:: :javadocfunc:`inf.ArgumentParser.printUsage()`
 .. |ArgumentParser.setDefault| replace:: :javadocfunc:`inf.ArgumentParser.setDefault(java.lang.String, java.lang.Object)`
+.. |ArgumentParser.usage| replace:: :javadocfunc:`inf.ArgumentParser.usage(java.lang.String)`
 .. |ArgumentParsers.newArgumentParser| replace:: :javadocfunc:`ArgumentParsers.newArgumentParser(java.lang.String)`
 .. |Arguments.appendConst| replace:: :javadocfunc:`impl.Arguments.appendConst()`
 .. |Arguments.append| replace:: :javadocfunc:`impl.Arguments.append()`

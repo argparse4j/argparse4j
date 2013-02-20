@@ -80,6 +80,12 @@ public final class SubparserImpl implements Subparser {
     }
 
     @Override
+    public SubparserImpl usage(String usage) {
+        parser_.usage(usage);
+        return this;
+    }
+
+    @Override
     public SubparserImpl description(String description) {
         parser_.description(description);
         return this;
