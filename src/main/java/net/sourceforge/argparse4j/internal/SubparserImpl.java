@@ -65,6 +65,11 @@ public final class SubparserImpl implements Subparser {
     }
 
     @Override
+    public MutuallyExclusiveGroup addMutuallyExclusiveGroup() {
+        return parser_.addMutuallyExclusiveGroup();
+    }
+
+    @Override
     public MutuallyExclusiveGroup addMutuallyExclusiveGroup(String title) {
         return parser_.addMutuallyExclusiveGroup(title);
     }

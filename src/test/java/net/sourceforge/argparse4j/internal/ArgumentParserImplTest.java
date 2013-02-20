@@ -895,7 +895,25 @@ public class ArgumentParserImplTest {
                 ap.formatHelp());
     }
 
-    
+    @Test
+    public void testFormatHelpWithArgumentGroupWithoutTitleAndDescription()
+            throws ArgumentParserException {
+        ap.description("This is argparser4j.").epilog("This is epilog.");
+        ArgumentGroup group = ap.addArgumentGroup("");
+        group.addArgument("--foo");
+        assertEquals("usage: argparse4j [-h] [--foo FOO]\n"
+                + "\n"
+                + "This is argparser4j.\n"
+                + "\n"
+                + "optional arguments:\n"
+                + "  -h, --help             show this help message and exit\n"
+                + "\n"
+                + "  --foo FOO\n"
+                + "\n"
+                + "This is epilog.\n",
+                ap.formatHelp());
+    }
+
     @Test
     public void testFormatHelpWithArgumentGroupWithoutHelp() throws ArgumentParserException {
         ArgumentParserImpl ap = new ArgumentParserImpl("argparse4j", false);
@@ -936,6 +954,28 @@ public class ArgumentParserImplTest {
                 + "  --foo FOO\n"
                 + "  --bar BAR\n"
                 + "\n" + "This is epilog.\n",
+                ap.formatHelp());
+    }
+
+    @Test
+    public void testFormatHelpWithMutexGroupWithoutTitleAndDescription()
+            throws ArgumentParserException {
+        ap.description("This is argparser4j.").epilog("This is epilog.");
+        MutuallyExclusiveGroup group = ap.addMutuallyExclusiveGroup();
+        group.addArgument("--foo");
+        ap.addArgument("-b").action(Arguments.storeTrue());
+        // Without title and description, options in mutually exclusive group
+        // is merged into other optional arguments.
+        assertEquals("usage: argparse4j [-h] [-b] [--foo FOO]\n"
+                + "\n"
+                + "This is argparser4j.\n"
+                + "\n"
+                + "optional arguments:\n"
+                + "  -h, --help             show this help message and exit\n"
+                + "  --foo FOO\n"
+                + "  -b\n"
+                + "\n"
+                + "This is epilog.\n",
                 ap.formatHelp());
     }
 

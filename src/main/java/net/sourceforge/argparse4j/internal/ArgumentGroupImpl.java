@@ -119,4 +119,15 @@ public final class ArgumentGroupImpl implements ArgumentGroup,
     public List<ArgumentImpl> getArgs() {
         return args_;
     }
+
+    /**
+     * Returns true if the help message for this group should be in separate
+     * group.
+     * 
+     * @return true if the help message for this group should be in separate
+     *         group.
+     */
+    public boolean isSeparateHelp() {
+        return !mutex_ || !title_.isEmpty() || !description_.isEmpty();
+    }
 }

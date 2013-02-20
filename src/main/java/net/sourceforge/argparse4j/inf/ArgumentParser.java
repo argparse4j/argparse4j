@@ -86,6 +86,16 @@ public interface ArgumentParser {
     /**
      * <p>
      * Creates new mutually exclusive group, {@link MutuallyExclusiveGroup}
+     * object, without title and adds to this parser and returns the object.
+     * </p>
+     * 
+     * @return {@link MutuallyExclusiveGroup} object.
+     */
+    MutuallyExclusiveGroup addMutuallyExclusiveGroup();
+
+    /**
+     * <p>
+     * Creates new mutually exclusive group, {@link MutuallyExclusiveGroup}
      * object, and adds to this parser and returns the object.
      * </p>
      * <p>

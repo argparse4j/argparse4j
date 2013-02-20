@@ -188,6 +188,11 @@ public final class ArgumentParserImpl implements ArgumentParser {
     }
 
     @Override
+    public MutuallyExclusiveGroup addMutuallyExclusiveGroup() {
+        return addMutuallyExclusiveGroup("");
+    }
+
+    @Override
     public MutuallyExclusiveGroup addMutuallyExclusiveGroup(String title) {
         ArgumentGroupImpl group = new ArgumentGroupImpl(this, title);
         group.setIndex(arggroups_.size());
@@ -234,7 +239,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
     private void printArgumentHelp(PrintWriter writer, List<ArgumentImpl> args,
             int format_width) {
         for (ArgumentImpl arg : args) {
-            if (arg.getArgumentGroup() == null) {
+            if (arg.getArgumentGroup() == null
+                    || !arg.getArgumentGroup().isSeparateHelp()) {
                 arg.printHelp(writer, defaultHelp_, textWidthCounter_,
                         format_width);
             }
@@ -281,8 +287,10 @@ public final class ArgumentParserImpl implements ArgumentParser {
             subparsers_.printSubparserHelp(writer, formatWidth);
         }
         for (ArgumentGroupImpl group : arggroups_) {
-            writer.print("\n");
-            group.printHelp(writer, formatWidth);
+            if (group.isSeparateHelp()) {
+                writer.print("\n");
+                group.printHelp(writer, formatWidth);
+            }
         }
         if (!epilog_.isEmpty()) {
             writer.format("\n%s\n", TextHelper.wrap(textWidthCounter_, epilog_,
@@ -296,7 +304,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
             return false;
         }
         for (ArgumentImpl arg : args) {
-            if (arg.getArgumentGroup() == null) {
+            if (arg.getArgumentGroup() == null
+                    || !arg.getArgumentGroup().isSeparateHelp()) {
                 return true;
             }
         }

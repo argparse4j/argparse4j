@@ -2138,7 +2138,7 @@ on the command line::
 
     public static void main(String[] args) {
 	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
-	MutuallyExclusiveGroup group = parser.addMutuallyExclusiveGroup("group");
+	MutuallyExclusiveGroup group = parser.addMutuallyExclusiveGroup();
 	group.addArgument("--foo").action(Arguments.storeTrue());
 	group.addArgument("--bar").action(Arguments.storeFalse());
 	try {
@@ -2179,7 +2179,23 @@ that at least one of the mutually exclusive arguments is required::
     prog: error: one of the arguments --foo --bar is required
 
 The :javadoc:`inf.MutuallyExclusiveGroup` support the title and
-description just like :javadoc:`inf.ArgumentGroup` object:
+description just like :javadoc:`inf.ArgumentGroup` object.  If both
+title and description are not specified, the help message for this
+group is merged into the other optional arguments. With either or both
+title and description, the help message is in separate group::
+
+    public static void main(String[] args) {
+	ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+	MutuallyExclusiveGroup group = parser.addMutuallyExclusiveGroup("group");
+                .description("group description");
+	group.addArgument("--foo").action(Arguments.storeTrue());
+	group.addArgument("--bar").action(Arguments.storeFalse());
+	try {
+	    System.out.println(parser.parseArgs(args));
+	} catch (ArgumentParserException e) {
+	    parser.handleError(e);
+	}
+    }
 
 .. code-block:: console
 
@@ -2190,6 +2206,8 @@ description just like :javadoc:`inf.ArgumentGroup` object:
       -h, --help             show this help message and exit
 
     group:
+      group description
+
       --foo
       --bar
 
@@ -2284,7 +2302,7 @@ available:
 .. |ArgumentGroup.description| replace:: :javadocfunc:`inf.ArgumentGroup.description(java.lang.String)`
 .. |ArgumentParser.addArgumentGroup| replace:: :javadocfunc:`inf.ArgumentParser.addArgumentGroup(java.lang.String)`
 .. |ArgumentParser.addArgument| replace:: :javadocfunc:`inf.ArgumentParser.addArgument(java.lang.String...)`
-.. |ArgumentParser.addMutuallyExclusiveGroup| replace:: :javadocfunc:`inf.ArgumentParser.addMutuallyExclusiveGroup(java.lang.String)`
+.. |ArgumentParser.addMutuallyExclusiveGroup| replace:: :javadocfunc:`inf.ArgumentParser.addMutuallyExclusiveGroup()`
 .. |ArgumentParser.addSubparsers| replace:: :javadocfunc:`inf.ArgumentParser.addSubparsers()`
 .. |ArgumentParser.defaultHelp| replace:: :javadocfunc:`inf.ArgumentParser.defaultHelp(boolean)`
 .. |ArgumentParser.description| replace:: :javadocfunc:`inf.ArgumentParser.description(java.lang.String)`
