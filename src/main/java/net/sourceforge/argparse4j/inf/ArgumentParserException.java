@@ -35,7 +35,7 @@ public class ArgumentParserException extends Exception {
      * 
      */
     private static final long serialVersionUID = 1L;
-    private ArgumentParser parser_;
+    private transient ArgumentParser parser_;
 
     public ArgumentParserException(ArgumentParser parser) {
         super();
