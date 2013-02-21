@@ -1174,9 +1174,11 @@ public class ArgumentParserImplTest {
             throws ArgumentParserException {
         Subparsers subparsers = ap.addSubparsers().help("subcommand help")
                 .title("mysubcommands").description("valid subcommands");
+        subparsers.addParser("clone").help("clone help");
         subparsers.addParser("checkout").aliases("co").help("checkout help");
+        subparsers.addParser("remove").aliases("rm","del").help("remove help");
         assertEquals(String.format(
-                  "usage: argparse4j [-h] {checkout,co} ...%n"
+                  "usage: argparse4j [-h] {clone,checkout,co,remove,rm,del} ...%n"
                 + "%n"
                 + "optional arguments:%n"
                 + "  -h, --help             show this help message and exit%n"
@@ -1184,8 +1186,11 @@ public class ArgumentParserImplTest {
                 + "mysubcommands:%n"
                 + "  valid subcommands%n"
                 + "%n"
-                + "  {checkout,co}          subcommand help%n"
-                + "    checkout             checkout help%n"),
+                + "  {clone,checkout,co,remove,rm,del}%n"
+                + "                         subcommand help%n"
+                + "    clone                clone help%n"
+                + "    checkout (co)        checkout help%n"
+                + "    remove (rm,del)      remove help%n"),
                 ap.formatHelp());
     }
 

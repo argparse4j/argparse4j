@@ -24,6 +24,8 @@
 package net.sourceforge.argparse4j.internal;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.argparse4j.helper.TextHelper;
@@ -43,6 +45,7 @@ import net.sourceforge.argparse4j.inf.Subparsers;
 public final class SubparserImpl implements Subparser {
 
     private String command_;
+    private List<String> aliases_ = new ArrayList<String>();
     private ArgumentParserImpl parser_;
     private String help_ = "";
 
@@ -213,6 +216,9 @@ public final class SubparserImpl implements Subparser {
     @Override
     public SubparserImpl aliases(String... alias) {
         parser_.getMainParser().addSubparsers().addAlias(this, alias);
+        for (String s : alias) {
+            aliases_.add(s);
+        }
         return this;
     }
 
@@ -223,7 +229,11 @@ public final class SubparserImpl implements Subparser {
 
     public void printSubparserHelp(PrintWriter writer, int format_width) {
         if (!help_.isEmpty()) {
-            TextHelper.printHelp(writer, "  " + command_, help_,
+            String title = "  " + command_;
+            if (!aliases_.isEmpty()) {
+                title += " (" + TextHelper.concat(aliases_, 0, ",") + ")";
+            }
+            TextHelper.printHelp(writer, title, help_,
                     parser_.getTextWidthCounter(), format_width);
         }
     }
