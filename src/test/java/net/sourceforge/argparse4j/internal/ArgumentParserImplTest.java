@@ -361,7 +361,9 @@ public class ArgumentParserImplTest {
             ap.parseArgs("-a @target/test-classes/args5.txt".split(" "));
             fail();
         } catch(ArgumentParserException e) {
-            assertEquals("unrecognized arguments: '-x'\nChecking trailing white spaces or new lines in @file may help.", e.getMessage());
+            assertEquals(String.format("unrecognized arguments: '-x'%n" +
+            		"Checking trailing white spaces or new lines in @file may help."),
+            		e.getMessage());
         }
         try {
             // -x is not from file, so no additional help.
@@ -375,20 +377,26 @@ public class ArgumentParserImplTest {
             ap.parseArgs("@target/test-classes/args7.txt".split(" "));
             fail();
         } catch(ArgumentParserException e) {
-            assertEquals("unrecognized arguments: '-x'\nChecking trailing white spaces or new lines in @file may help.", e.getMessage());
+            assertEquals(String.format("unrecognized arguments: '-x'%n" +
+            		"Checking trailing white spaces or new lines in @file may help."),
+            		e.getMessage());
         }
         try {
             // Check range is updated by args5.txt (non-overlap case).
             ap.parseArgs("@target/test-classes/args6.txt @target/test-classes/args5.txt".split(" "));
             fail();
         } catch(ArgumentParserException e) {
-            assertEquals("unrecognized arguments: '-x'\nChecking trailing white spaces or new lines in @file may help.", e.getMessage());
+            assertEquals(String.format("unrecognized arguments: '-x'%n" +
+            		"Checking trailing white spaces or new lines in @file may help."),
+            		e.getMessage());
         }
         try {
             // Unrecognized non-flag arguments
             ap.parseArgs("@target/test-classes/args8.txt".split(" "));
         } catch(ArgumentParserException e) {
-            assertEquals("unrecognized arguments: ' b'\nChecking trailing white spaces or new lines in @file may help.", e.getMessage());
+            assertEquals(String.format("unrecognized arguments: ' b'%n" +
+            		"Checking trailing white spaces or new lines in @file may help."),
+            		e.getMessage());
         }
         // Multiple fromFilePrefix
         ap = new ArgumentParserImpl("argparse4j", true, ArgumentParsers.DEFAULT_PREFIX_CHARS, "@/");
@@ -397,7 +405,9 @@ public class ArgumentParserImplTest {
             ap.parseArgs("-a @target/test-classes/args5.txt".split(" "));
             fail();
         } catch(ArgumentParserException e) {
-            assertEquals("unrecognized arguments: '-x'\nChecking trailing white spaces or new lines in [@/]file may help.", e.getMessage());
+            assertEquals(String.format("unrecognized arguments: '-x'%n" +
+            		"Checking trailing white spaces or new lines in [@/]file may help."),
+            		e.getMessage());
         }
     }
 
@@ -873,26 +883,30 @@ public class ArgumentParserImplTest {
 
     @Test
     public void testFormatUsage() {
-        assertEquals("usage: argparse4j [-h]\n", ap.formatUsage());
+        assertEquals(String.format("usage: argparse4j [-h]%n"), ap.formatUsage());
         ap.addArgument("-a");
         ap.addArgument("-b").required(true);
         MutuallyExclusiveGroup group = ap.addMutuallyExclusiveGroup("mutex").required(true);
         group.addArgument("-c").required(true);
         group.addArgument("-d").required(true);
         ap.addArgument("file");
-        assertEquals("usage: argparse4j [-h] [-a A] -b B (-c C | -d D) file\n", ap.formatUsage());
+        assertEquals(String.format("usage: argparse4j [-h] [-a A] -b B (-c C | -d D) file%n"),
+                ap.formatUsage());
         Subparser foosub = ap.addSubparsers().addParser("foo");
         foosub.addArgument("hash");
-        assertEquals("usage: argparse4j [-h] [-a A] -b B (-c C | -d D) file {foo} ...\n", ap.formatUsage());
-        assertEquals("usage: argparse4j -b B (-c C | -d D) file foo [-h] hash\n", foosub.formatUsage());
+        assertEquals(String.format("usage: argparse4j [-h] [-a A] -b B (-c C | -d D) file {foo} ...%n"),
+                ap.formatUsage());
+        assertEquals(String.format("usage: argparse4j -b B (-c C | -d D) file foo [-h] hash%n"),
+                foosub.formatUsage());
         Subparser bazsub = foosub.addSubparsers().addParser("baz");
-        assertEquals("usage: argparse4j -b B (-c C | -d D) file foo hash baz [-h]\n", bazsub.formatUsage());
+        assertEquals(String.format("usage: argparse4j -b B (-c C | -d D) file foo hash baz [-h]%n"),
+                bazsub.formatUsage());
     }
 
     @Test
     public void testUsage() {
         ap.usage("<${prog}> [OPTIONS] ${prog}FILES");
-        assertEquals("usage: <argparse4j> [OPTIONS] argparse4jFILES\n",
+        assertEquals(String.format("usage: <argparse4j> [OPTIONS] argparse4jFILES%n"),
                 ap.formatUsage());
     }
 
@@ -903,11 +917,19 @@ public class ArgumentParserImplTest {
         ArgumentGroup group = ap.addArgumentGroup("group1")
                 .description("group1 description");
         group.addArgument("--foo");
-        assertEquals("usage: argparse4j [-h] [--foo FOO]\n" + "\n"
-                + "This is argparser4j.\n" + "\n" + "optional arguments:\n"
-                + "  -h, --help             show this help message and exit\n"
-                + "\n" + "group1:\n" + "  group1 description\n" + "\n"
-                + "  --foo FOO\n" + "\n" + "This is epilog.\n",
+        assertEquals(String.format(
+                  "usage: argparse4j [-h] [--foo FOO]%n"
+                + "%n"
+                + "This is argparser4j.%n"
+                + "%n"
+                + "optional arguments:%n"
+                + "  -h, --help             show this help message and exit%n"
+                + "%n"
+                + "group1:%n"
+                + "  group1 description%n"
+                + "%n"
+                + "  --foo FOO%n"
+                + "%n" + "This is epilog.%n"),
                 ap.formatHelp());
     }
 
@@ -917,16 +939,17 @@ public class ArgumentParserImplTest {
         ap.description("This is argparser4j.").epilog("This is epilog.");
         ArgumentGroup group = ap.addArgumentGroup("");
         group.addArgument("--foo");
-        assertEquals("usage: argparse4j [-h] [--foo FOO]\n"
-                + "\n"
-                + "This is argparser4j.\n"
-                + "\n"
-                + "optional arguments:\n"
-                + "  -h, --help             show this help message and exit\n"
-                + "\n"
-                + "  --foo FOO\n"
-                + "\n"
-                + "This is epilog.\n",
+        assertEquals(String.format(
+                  "usage: argparse4j [-h] [--foo FOO]%n"
+                + "%n"
+                + "This is argparser4j.%n"
+                + "%n"
+                + "optional arguments:%n"
+                + "  -h, --help             show this help message and exit%n"
+                + "%n"
+                + "  --foo FOO%n"
+                + "%n"
+                + "This is epilog.%n"),
                 ap.formatHelp());
     }
 
@@ -939,19 +962,19 @@ public class ArgumentParserImplTest {
         ArgumentGroup group2 = ap.addArgumentGroup("group2").description(
                 "group2 description");
         group2.addArgument("--bar").help("bar help");
-        assertEquals(
-"usage: argparse4j [--bar BAR] foo\n"+
-"\n"+
-"group1:\n"+
-"  group1 description\n"+
-"\n"+
-"  foo                    foo help\n"+
-"\n"+
-"group2:\n"+
-"  group2 description\n"+
-"\n"+
-"  --bar BAR              bar help\n",
-    ap.formatHelp());
+        assertEquals(String.format(
+                  "usage: argparse4j [--bar BAR] foo%n"
+                + "%n"
+                + "group1:%n"
+                + "  group1 description%n"
+                + "%n"
+                + "  foo                    foo help%n"
+                + "%n"
+                + "group2:%n"
+                + "  group2 description%n"
+                + "%n"
+                + "  --bar BAR              bar help%n"),
+                ap.formatHelp());
   
     }
     
@@ -963,13 +986,21 @@ public class ArgumentParserImplTest {
                 .description("group1 description");
         group.addArgument("--foo");
         group.addArgument("--bar");
-        assertEquals("usage: argparse4j [-h] [--foo FOO | --bar BAR]\n" + "\n"
-                + "This is argparser4j.\n" + "\n" + "optional arguments:\n"
-                + "  -h, --help             show this help message and exit\n"
-                + "\n" + "group1:\n" + "  group1 description\n" + "\n"
-                + "  --foo FOO\n"
-                + "  --bar BAR\n"
-                + "\n" + "This is epilog.\n",
+        assertEquals(String.format(
+                  "usage: argparse4j [-h] [--foo FOO | --bar BAR]%n"
+                + "%n"
+                + "This is argparser4j.%n"
+                + "%n"
+                + "optional arguments:%n"
+                + "  -h, --help             show this help message and exit%n"
+                + "%n"
+                + "group1:%n"
+                + "  group1 description%n"
+                + "%n"
+                + "  --foo FOO%n"
+                + "  --bar BAR%n"
+                + "%n"
+                + "This is epilog.%n"),
                 ap.formatHelp());
     }
 
@@ -982,35 +1013,43 @@ public class ArgumentParserImplTest {
         ap.addArgument("-b").action(Arguments.storeTrue());
         // Without title and description, options in mutually exclusive group
         // is merged into other optional arguments.
-        assertEquals("usage: argparse4j [-h] [-b] [--foo FOO]\n"
-                + "\n"
-                + "This is argparser4j.\n"
-                + "\n"
-                + "optional arguments:\n"
-                + "  -h, --help             show this help message and exit\n"
-                + "  --foo FOO\n"
-                + "  -b\n"
-                + "\n"
-                + "This is epilog.\n",
+        assertEquals(String.format(
+                  "usage: argparse4j [-h] [-b] [--foo FOO]%n"
+                + "%n"
+                + "This is argparser4j.%n"
+                + "%n"
+                + "optional arguments:%n"
+                + "  -h, --help             show this help message and exit%n"
+                + "  --foo FOO%n"
+                + "  -b%n"
+                + "%n"
+                + "This is epilog.%n"),
                 ap.formatHelp());
     }
 
     @Test
     public void testFormatHelp() throws ArgumentParserException {
         ap.description("This is argparser4j.").epilog("This is epilog.");
-        assertEquals("usage: argparse4j [-h]\n" + "\n"
-                + "This is argparser4j.\n" + "\n" + "optional arguments:\n"
-                + "  -h, --help             show this help message and exit\n"
-                + "\n" + "This is epilog.\n", ap.formatHelp());
+        assertEquals(String.format(
+                  "usage: argparse4j [-h]%n"
+                + "%n"
+                + "This is argparser4j.%n"
+                + "%n" + "optional arguments:%n"
+                + "  -h, --help             show this help message and exit%n"
+                + "%n"
+                + "This is epilog.%n"),
+                ap.formatHelp());
     }
 
     @Test
     public void testFormatHelpWithDefaultHelp() throws ArgumentParserException {
         ap.defaultHelp(true).addArgument("--foo").setDefault("alpha");
-        assertEquals("usage: argparse4j [-h] [--foo FOO]\n" + "\n"
-                + "optional arguments:\n"
-                + "  -h, --help             show this help message and exit\n"
-                + "  --foo FOO              (default: alpha)\n",
+        assertEquals(String.format(
+                  "usage: argparse4j [-h] [--foo FOO]%n"
+                + "%n"
+                + "optional arguments:%n"
+                + "  -h, --help             show this help message and exit%n"
+                + "  --foo FOO              (default: alpha)%n"),
                 ap.formatHelp());
     }
 
@@ -1038,34 +1077,36 @@ public class ArgumentParserImplTest {
         sap.addArgument("-i").help(Arguments.SUPPRESS);
         sap.addArgument("-j");
 
-        assertEquals("usage: argparse4j [-h] [--foo FOO] [-b B] [-d D] (-f F | -g G) s t {add}\n"
-                   + "                  ...\n"
-                   + "\n"
-                   + "positional arguments:\n"
-                   + "  s\n"
-                   + "  t\n"
-                   + "  {add}\n"
-                   + "\n"
-                   + "optional arguments:\n"
-                   + "  -h, --help             show this help message and exit\n"
-                   + "  -b B\n"
-                   + "\n"
-                   + "group:\n"
-                   + "  --foo FOO\n"
-                   + "\n"
-                   + "mutex1:\n"
-                   + "  -d D\n"
-                   + "\n"
-                   + "mutex2:\n"
-                   + "  -f F\n"
-                   + "  -g G\n",
+        assertEquals(String.format(
+                     "usage: argparse4j [-h] [--foo FOO] [-b B] [-d D] (-f F | -g G) s t {add}%n"
+                   + "                  ...%n"
+                   + "%n"
+                   + "positional arguments:%n"
+                   + "  s%n"
+                   + "  t%n"
+                   + "  {add}%n"
+                   + "%n"
+                   + "optional arguments:%n"
+                   + "  -h, --help             show this help message and exit%n"
+                   + "  -b B%n"
+                   + "%n"
+                   + "group:%n"
+                   + "  --foo FOO%n"
+                   + "%n"
+                   + "mutex1:%n"
+                   + "  -d D%n"
+                   + "%n"
+                   + "mutex2:%n"
+                   + "  -f F%n"
+                   + "  -g G%n"),
                    ap.formatHelp());
         // Check upper parsers's suppressed required arguments are not shown. 
-        assertEquals("usage: argparse4j (-f F | -g G) s t add [-h] [-j J]\n"
-                   + "\n"
-                   + "optional arguments:\n"
-                   + "  -h, --help             show this help message and exit\n"
-                   + "  -j J\n",
+        assertEquals(String.format(
+                     "usage: argparse4j (-f F | -g G) s t add [-h] [-j J]%n"
+                   + "%n"
+                   + "optional arguments:%n"
+                   + "  -h, --help             show this help message and exit%n"
+                   + "  -j J%n"),
                 sap.formatHelp());
     }
 
@@ -1078,12 +1119,17 @@ public class ArgumentParserImplTest {
         parser.description("This is sub-command of argparser4j.").epilog(
                 "This is epilog of sub-command.");
         parser.addArgument("--foo");
-        assertEquals("usage: argparse4j install [-h] [--foo FOO]\n" + "\n"
-                + "This is sub-command of argparser4j.\n" + "\n"
-                + "optional arguments:\n"
-                + "  -h, --help             show this help message and exit\n"
-                + "  --foo FOO\n" + "\n"
-                + "This is epilog of sub-command.\n", parser.formatHelp());
+        assertEquals(String.format(
+                  "usage: argparse4j install [-h] [--foo FOO]%n"
+                + "%n"
+                + "This is sub-command of argparser4j.%n"
+                + "%n"
+                + "optional arguments:%n"
+                + "  -h, --help             show this help message and exit%n"
+                + "  --foo FOO%n"
+                + "%n"
+                + "This is epilog of sub-command.%n"),
+                parser.formatHelp());
     }
 
     @Test
@@ -1093,10 +1139,12 @@ public class ArgumentParserImplTest {
         Subparsers subparsers = ap.addSubparsers();
         Subparser parser = subparsers.addParser("install").defaultHelp(true);
         parser.addArgument("--foo").setDefault("alpha");
-        assertEquals("usage: argparse4j install [-h] [--foo FOO]\n" + "\n"
-                + "optional arguments:\n"
-                + "  -h, --help             show this help message and exit\n"
-                + "  --foo FOO              (default: alpha)\n",
+        assertEquals(String.format(
+                  "usage: argparse4j install [-h] [--foo FOO]%n"
+                + "%n"
+                + "optional arguments:%n"
+                + "  -h, --help             show this help message and exit%n"
+                + "  --foo FOO              (default: alpha)%n"),
                 parser.formatHelp());
     }
 
@@ -1106,12 +1154,18 @@ public class ArgumentParserImplTest {
         Subparsers subparsers = ap.addSubparsers().help("subcommand help")
                 .title("mysubcommands").description("valid subcommands");
         subparsers.addParser("install").help("install help");
-        assertEquals("usage: argparse4j [-h] {install} ...\n" + "\n"
-                + "optional arguments:\n"
-                + "  -h, --help             show this help message and exit\n"
-                + "\n" + "mysubcommands:\n" + "  valid subcommands\n" + "\n"
-                + "  {install}              subcommand help\n"
-                + "    install              install help\n", ap.formatHelp());
+        assertEquals(String.format(
+                  "usage: argparse4j [-h] {install} ...%n"
+                + "%n"
+                + "optional arguments:%n"
+                + "  -h, --help             show this help message and exit%n"
+                + "%n"
+                + "mysubcommands:%n"
+                + "  valid subcommands%n"
+                + "%n"
+                + "  {install}              subcommand help%n"
+                + "    install              install help%n"),
+                ap.formatHelp());
     }
 
     @Test
@@ -1120,16 +1174,18 @@ public class ArgumentParserImplTest {
         Subparsers subparsers = ap.addSubparsers().help("subcommand help")
                 .title("mysubcommands").description("valid subcommands");
         subparsers.addParser("checkout").aliases("co").help("checkout help");
-        assertEquals("usage: argparse4j [-h] {checkout,co} ...\n"
-                + "\n"
-                + "optional arguments:\n"
-                + "  -h, --help             show this help message and exit\n"
-                + "\n"
-                + "mysubcommands:\n"
-                + "  valid subcommands\n"
-                + "\n"
-                + "  {checkout,co}          subcommand help\n"
-                + "    checkout             checkout help\n", ap.formatHelp());
+        assertEquals(String.format(
+                  "usage: argparse4j [-h] {checkout,co} ...%n"
+                + "%n"
+                + "optional arguments:%n"
+                + "  -h, --help             show this help message and exit%n"
+                + "%n"
+                + "mysubcommands:%n"
+                + "  valid subcommands%n"
+                + "%n"
+                + "  {checkout,co}          subcommand help%n"
+                + "    checkout             checkout help%n"),
+                ap.formatHelp());
     }
 
     @Test

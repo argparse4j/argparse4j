@@ -266,41 +266,41 @@ public final class ArgumentParserImpl implements ArgumentParser {
         int formatWidth = ArgumentParsers.getFormatWidth();
         printUsage(writer, formatWidth);
         if (!description_.isEmpty()) {
-            writer.format("\n%s\n", TextHelper.wrap(textWidthCounter_,
+            writer.format("%n%s%n", TextHelper.wrap(textWidthCounter_,
                     description_, formatWidth, 0, "", ""));
         }
         boolean subparsersUntitled = subparsers_.getTitle().isEmpty()
                 && subparsers_.getDescription().isEmpty();
         if (checkDefaultGroup(posargs_)
                 || (subparsers_.hasSubCommand() && subparsersUntitled)) {
-            writer.print("\npositional arguments:\n");
+            writer.format("%npositional arguments:%n");
             printArgumentHelp(writer, posargs_, formatWidth);
             if (subparsers_.hasSubCommand() && subparsersUntitled) {
                 subparsers_.printSubparserHelp(writer, formatWidth);
             }
         }
         if (checkDefaultGroup(optargs_)) {
-            writer.print("\noptional arguments:\n");
+            writer.format("%noptional arguments:%n");
             printArgumentHelp(writer, optargs_, formatWidth);
         }
         if (subparsers_.hasSubCommand() && !subparsersUntitled) {
-            writer.format("\n%s:\n",
+            writer.format("%n%s:%n",
                     subparsers_.getTitle().isEmpty() ? "subcommands"
                             : subparsers_.getTitle());
             if (!subparsers_.getDescription().isEmpty()) {
-                writer.format("  %s\n\n", TextHelper.wrap(textWidthCounter_,
+                writer.format("  %s%n%n", TextHelper.wrap(textWidthCounter_,
                         subparsers_.getDescription(), formatWidth, 2, "", "  "));
             }
             subparsers_.printSubparserHelp(writer, formatWidth);
         }
         for (ArgumentGroupImpl group : arggroups_) {
             if (group.isSeparateHelp()) {
-                writer.print("\n");
+                writer.println();
                 group.printHelp(writer, formatWidth);
             }
         }
         if (!epilog_.isEmpty()) {
-            writer.format("\n%s\n", TextHelper.wrap(textWidthCounter_, epilog_,
+            writer.format("%n%s%n", TextHelper.wrap(textWidthCounter_, epilog_,
                     formatWidth, 0, "", ""));
         }
         writer.flush();
@@ -334,7 +334,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         boolean first = true;
         for (String syntax : opts) {
             if (!first && currentWidth + syntax.length() + 1 > format_width) {
-                writer.print("\n");
+                writer.println();
                 writer.print(subsequentIndent);
                 writer.print(" ");
                 writer.print(syntax);
@@ -346,7 +346,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 first = false;
             }
         }
-        writer.print("\n");
+        writer.println();
     }
 
     @Override
@@ -361,7 +361,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     private void printUsage(PrintWriter writer, int format_width) {
         if (!usage_.isEmpty()) {
-            writer.printf("usage: %s\n", substitutePlaceholder(usage_));
+            writer.format("usage: %s%n", substitutePlaceholder(usage_));
             return;
         }
         String usageprog = String.format("usage: %s", prog_);
@@ -372,7 +372,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         String indent = "                              ";
         int usageprogWidth = textWidthCounter_.width(usageprog);
         if (usageprogWidth > indent.length()) {
-            writer.print("\n");
+            writer.println();
             offset = 6;
             firstIndent = subsequentIndent = indent.substring(0, offset);
         } else {
@@ -839,7 +839,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                         args,
                         state.index > state.lastFromFileArgIndex ? ""
                                 : String.format(
-                                        "\nChecking trailing white spaces or new lines in %sfile may help.",
+                                        "%nChecking trailing white spaces or new lines in %sfile may help.",
                                         fromFilePrefixPattern_.getPrefixChars()
                                                 .length() == 1 ? fromFilePrefixPattern_
                                                 .getPrefixChars() : "["
@@ -1095,7 +1095,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     @Override
     public void printVersion(PrintWriter writer) {
-        writer.format("%s\n", formatVersion());
+        writer.format("%s%n", formatVersion());
         writer.flush();
     }
 
@@ -1113,7 +1113,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         PrintWriter writer = new PrintWriter(System.err);
         printUsage(writer);
         writer.write(TextHelper.wrap(textWidthCounter_,
-                String.format("%s: error: %s\n", prog_, e.getMessage()),
+                String.format("%s: error: %s%n", prog_, e.getMessage()),
                 ArgumentParsers.getFormatWidth(), 0, "", ""));
         if (e instanceof UnrecognizedArgumentException) {
             UnrecognizedArgumentException ex = (UnrecognizedArgumentException) e;
@@ -1266,12 +1266,12 @@ public final class ArgumentParserImpl implements ArgumentParser {
         if (threshold >= 7) {
             return;
         }
-        writer.write("\nDid you mean:\n");
+        writer.format("%nDid you mean:%n");
         for (Candidate cand : candidates) {
             if (cand.similarity > threshold) {
                 break;
             }
-            writer.format("\t%s\n", cand.subject);
+            writer.format("\t%s%n", cand.subject);
         }
     }
 

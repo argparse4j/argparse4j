@@ -44,6 +44,8 @@ public final class TextHelper {
     private TextHelper() {
     }
 
+    public static final String LINESEP = System.getProperty("line.separator");
+
     public static <T> String concat(T a[], int offset, String sep,
             String start, String end) {
         StringBuilder sb = new StringBuilder();
@@ -98,12 +100,16 @@ public final class TextHelper {
             currentWidth += subwidth;
             if (currentWidth > width) {
                 res.append(adjustSpace(sb, width, currentWidth - subwidth))
-                        .append("\n").append(subsequentIndent);
+                        .append(TextHelper.LINESEP).append(subsequentIndent);
                 sb.delete(0, sb.length());
                 currentWidth = subsequentIndent.length() + subwidth;
             }
             sb.append(sub);
-            if (sub.endsWith("\n")) {
+            // What if the application specifies text with line separator \n,
+            // while TextHelper.LINESEP is not \n (e.g., \r\n)? Historically, we
+            // just checked only \n here. For backward compatibility, We also
+            // check that line ends with \n too.
+            if (sub.endsWith(TextHelper.LINESEP) || sub.endsWith("\n")) {
                 res.append(sb).append(subsequentIndent);
                 sb.delete(0, sb.length());
                 currentWidth = subsequentIndent.length();
@@ -194,16 +200,16 @@ public final class TextHelper {
             if (titleWidth <= 21) {
                 indentWidth -= titleWidth + 2;
             } else {
-                writer.write("\n");
+                writer.println();
             }
-            String fmt = String.format("%%%ds%%s\n", indentWidth);
+            String fmt = String.format("%%%ds%%s%n", indentWidth);
             writer.format(
                     fmt,
                     "",
                     wrap(textWidthCounter, help, width, INDENT_WIDTH, "",
                             "                         "));
         } else {
-            writer.write("\n");
+            writer.println();
         }
     }
 

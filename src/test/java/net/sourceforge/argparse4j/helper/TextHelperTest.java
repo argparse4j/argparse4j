@@ -39,14 +39,15 @@ public class TextHelperTest {
 
     @Test
     public void testTextWrap() {
-        String s = "alpha bravo charlie delta echo foxtrot golf hotel india\n"
-                 + "juliet kilo lima";
-        assertEquals("        alpha  bravo\n"
-                   + "    charlie    delta\n"
-                   + "    echo     foxtrot\n"
-                   + "    golf       hotel\n"
-                   + "    india\n"
-                   + "    juliet kilo lima",
+        String s = String.format("alpha bravo charlie delta echo foxtrot golf hotel india%n"
+                 + "juliet kilo lima");
+        assertEquals(String.format(
+                     "        alpha  bravo%n"
+                   + "    charlie    delta%n"
+                   + "    echo     foxtrot%n"
+                   + "    golf       hotel%n"
+                   + "    india%n"
+                   + "    juliet kilo lima"),
                    TextHelper.wrap(
                            new ASCIITextWidthCounter(), s, 20, 0, "        ", "    "));
     }
