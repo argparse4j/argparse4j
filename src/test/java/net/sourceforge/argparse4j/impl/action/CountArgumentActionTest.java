@@ -26,7 +26,7 @@ public class CountArgumentActionTest {
     private CountArgumentAction act;
 
     @Before
-    public void setUp() throws Exception {
+    public void setup() throws Exception {
         act = new CountArgumentAction();
         arg = new MyMockArgument();
         attrs = new HashMap<String, Object>();

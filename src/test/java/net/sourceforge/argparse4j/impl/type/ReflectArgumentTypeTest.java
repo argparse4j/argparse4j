@@ -13,7 +13,7 @@ public class ReflectArgumentTypeTest {
     private MockArgument ma;
 
     @Before
-    public void setUp() throws Exception {
+    public void setup() throws Exception {
         ma = new MockArgument();
     }
 
