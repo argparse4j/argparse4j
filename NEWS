@@ -8,7 +8,7 @@ This release fixes the bug that argument is processed twice with
 concatenated short options.  The following new features were added:
 argument/sub-command abbreviations, usage text override, ${prog}
 substitution in version text, sub-command aliases and count() action.
-If neither title and description are specified to
+If neither title nor description are specified to
 MutuallyExclusiveGroup, the help message for the group is merged into
 other optinal arguments. The Argument.type(Class) now supports
 valueOf(String) static method for conversion. It also now supports
