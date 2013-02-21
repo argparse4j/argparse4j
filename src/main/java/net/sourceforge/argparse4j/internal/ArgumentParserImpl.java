@@ -31,6 +31,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -592,7 +594,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
         Class userClass = userData.getClass();
         while (userClass != null) {
-            for (Field field : userClass.getDeclaredFields()) {
+            for (final Field field : userClass.getDeclaredFields()) {
                 Arg ann = field.getAnnotation(Arg.class);
                 if (ann != null) {
                     String argDest = ann.dest();
@@ -604,7 +606,15 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     }
                     Object val = attrs.get(argDest);
                     try {
-                        field.setAccessible(true);
+                        AccessController
+                                .doPrivileged(new PrivilegedAction<Void>() {
+
+                                    @Override
+                                    public Void run() {
+                                        field.setAccessible(true);
+                                        return null;
+                                    }
+                                });
                         field.set(userData,
                                 ReflectHelper.list2Array(field.getType(), val));
                     } catch (RuntimeException e) {
@@ -620,7 +630,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     }
                 }
             }
-            for (Method method : userClass.getDeclaredMethods()) {
+            for (final Method method : userClass.getDeclaredMethods()) {
                 Arg ann = method.getAnnotation(Arg.class);
                 if (ann != null) {
                     String argDest = ann.dest();
@@ -638,7 +648,15 @@ public final class ArgumentParserImpl implements ArgumentParser {
                                 method.getName()));
                     }
                     try {
-                        method.setAccessible(true);
+                        AccessController
+                                .doPrivileged(new PrivilegedAction<Void>() {
+
+                                    @Override
+                                    public Void run() {
+                                        method.setAccessible(true);
+                                        return null;
+                                    }
+                                });
                         method.invoke(userData,
                                 ReflectHelper.list2Array(fargs[0], val));
                     } catch (RuntimeException e) {
