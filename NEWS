@@ -1,126 +1,71 @@
-argparse4j 0.3.2
+argparse4j 0.4.0
 ================
 
 Release Note
 ------------
 
-This release fixes the wrong handling of concatenated short options
-and adds Subparser alias name support.
+This release fixes the bug that argument is processed twice with
+concatenated short options.  The following new features were added:
+argument/sub-command abbreviations, usage text override, ${prog}
+substitution in version text, sub-command aliases and count() action.
+If neither title and description are specified to
+MutuallyExclusiveGroup, the help message for the group is merged into
+other optinal arguments. The Argument.type(Class) now supports
+valueOf(String) static method for conversion. It also now supports
+enums directly. The behavior of nargs("*") for optional arguments are
+slightly changed for some corner-cases. See the changes for details.
 
 Changes
 -------
 
-* Fix last short option in concatenated form does not consume next argument
+* Show command aliases in help message
 
-  If -1 does not consume argument and -2 does, in the old
-  implementation, command line "-12 foo" does not parse because -2 is
-  assumed to take empty string as an argument and foo is unrecognized
-  argument.  With this change, -2 correctly takes foo as an argument.
+* Avoid ``\n`` and use %n or TextHelper.LINESEP instead
 
-* Insert spaces in the middle of the help message to  make them look nicer
+* Add CountArgumentAction
 
-  Simple hack to make help message look like groff output.
+  CountArgumentAction counts the number of occurrence of an option.
+  Arguments.count() returns the instance of this object for shortcut.
 
-* Add Subparser alias names support
+* Support ${prog} substitution in version string
 
-  The alias names can be set for Subparser using Subparser#aliases().
+* Add ArgumentParser.usage()
 
-* Added the compiler plugin for Maven
+  By default, the program usage is generated from the arguments
+  the ArgumentParser object contains. This method overrides it.
 
-
+* Add ArgumentParser.addMutuallyExclusiveGroup() without title arg
 
-argparse4j 0.3.1
-================
+  If both title and description are empty, the help message for the
+  group is merged into other optional arguments.
 
-Release Note
-------------
+* Don't show available enum constants when conversion failed
 
-This release fixes formatting bug when an empty string argument is
-involved. The additional help message is now printed for non-flag
-unrecognized arguments coming from file.
+  If they are shown, user may be confused with choices because choices
+  may be more limited.
 
-Changes
--------
+* Add ReflectArgumentType
 
-* Print additional message for non-flag unrecognized arguments
+  ReflectArgumentType is an enhanced version of
+  ConstructorArgumentType.  It first tries to convert given String to
+  desired type using valueOf static method of the type. If it failed,
+  use the constructor of given type just like a
+  ConstructorArgumentType. Since enums have valueOf static method,
+  ReflectArgumentType works with enums as well.  The
+  ReflectArgumentType effectively deprecates ConstructorArgumentType
+  and EnumArgumentType.
 
-* Fix TextHelper.concat() bug
+* Throw exception if no nameOrFlags is given
 
-  The bug makes TextHelper.concat(new String[] {""}, 0, ",") produce
-  "," instead of "". Also now Collection version can handle offset
-  argument properly.
+* Support argument/sub-command abbreviations
 
-
+* Adjust narg("*") handling for optinal arguments
 
-argparse4j 0.3.0
-================
+  The optional argument with nargs("*") and without default set is not
+  given in command-line, the result is now null instead of empty list.
 
-Release Note
-------------
+  The optional argument with nargs("*") is given in command-line with
+  emtpy list, the result is now empty list. It will overwrite existing
+  value or appened to the existing list in case of append() action.
 
-This release adds terminal width detection, Arguments.fileType()
-conversion and mutually exclusive group support. Now Argument#help()
-can take FeatureControl#SUPPRESS to hide certain options from help
-message. The convenient method ArgumentParser#parseArgsOrFail() was
-added, which handles errors and exits the program.
-
-Changes
--------
-
-* Format error message according to column width in
-  ArguemtnParserImpl#handleError()
-
-* Add public static ArgumentParsers.DEFAULT_PREFIX_CHARS
-
-  It is the default value of prefixChars which can be passed to
-  ArgumentParsers.newArgumentParser().
-
-* Add additional help message for unrecognized args from file
-
-  If trailing empty lines or white spaces exist in argument file
-  accidentally, the error message is typically only "unrecognized
-  arguments" and it may be hard to notice that the problem is in a
-  file. To help the user in this situation, if the unrecognized
-  argument was coming from a file, add additional help message to the
-  exception message to alert user that the problem may exist in
-  argument file. This change also quotes unrecognized arguments in
-  exception message.
-
-* Add "hidden" argument support
-
-  If Argument#help(FeatureControl) is invoked with parameter
-  Arguments.SUPPRESS, the help entry of that option will not be
-  displayed.
-
-* Don't print trailing white spaces when no argument help is provided
-
-* Added shortcut method to parse arguments and handle errors
-
-  Contributed by Juan Manuel Caicedo Carvajal.
-
-* Fix bug that type conversion is not called with nargs and embedded
-  value
-
-* Ability to detect terminal width
-
-  If terminal width was detected, then use it to format help and usage
-  messages. The terminal width can be retrieved using
-  ArgumentParsers#getFormatWidth() if application code needs it.  The
-  code to detect terminal width was contributed by Wolfgang Hoschek.
-
-* Add ArgumentType subclass for File type, using fluent style API
-
-  It can be accessed using Arguments.fileType(). Contributed by
-  Wolfgang Hoschek.
-
-* Add mutually exclusive argument support
-
-  The mutually exclusive group can be added using
-  ArgumentParser#addMutuallyExclusiveGroup. The returned object from
-  this method implements MutuallyExclusiveGroup interface. It has
-  similar interface with ArgumentGroup, but it additionally has
-  required() method, which toggles the restriction that one of the
-  argument in this group must be specified or not.  Usually, more than
-  1 argument are added to mutually exclusive group and only one of
-  them can be specified. The arguments are specially formatted in
-  usage and help messages.
+* Fix bug that argument is processed twice with concatenated short options
