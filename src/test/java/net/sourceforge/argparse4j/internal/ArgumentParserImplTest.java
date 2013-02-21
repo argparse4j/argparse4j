@@ -31,6 +31,7 @@ import net.sourceforge.argparse4j.inf.MutuallyExclusiveGroup;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import net.sourceforge.argparse4j.inf.Subparsers;
+import net.sourceforge.argparse4j.internal.ArgumentParserImpl.Candidate;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -1211,5 +1212,27 @@ public class ArgumentParserImplTest {
     public void testFormatVersion() throws ArgumentParserException {
         ap.version("${prog} version 7.8.7 (Dreamliner)");
         assertEquals("argparse4j version 7.8.7 (Dreamliner)", ap.formatVersion());
+    }
+
+    @Test
+    public void testCandidateEquality() {
+        Candidate foo = new Candidate(15, "foo");
+        Candidate fooCopy = new Candidate(15, "foo");
+        Candidate bar = new Candidate(15, "bar");
+        Candidate foo2 = new Candidate(16, "foo");
+        assertTrue(foo.equals(foo));
+        assertTrue(foo.equals(fooCopy));
+        assertFalse(foo.equals(bar));
+        assertFalse(foo.equals(foo2));
+        assertFalse(foo.equals(null));
+        assertFalse(foo.equals("foo"));
+        Candidate subNull = new Candidate(15, null);
+        assertFalse(foo.equals(subNull));
+        assertFalse(subNull.equals(foo));
+
+        assertEquals(foo.hashCode(), fooCopy.hashCode());
+        assertFalse(foo.hashCode() == foo2.hashCode());
+        assertFalse(foo.hashCode() == bar.hashCode());
+        assertFalse(foo.hashCode() == subNull.hashCode());
     }
 }

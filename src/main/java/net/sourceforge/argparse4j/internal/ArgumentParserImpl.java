@@ -1189,13 +1189,50 @@ public final class ArgumentParserImpl implements ArgumentParser {
         }
     }
 
-    private static class Candidate implements Comparable<Candidate> {
+    // Made public for unit test
+    public static class Candidate implements Comparable<Candidate> {
         public int similarity;
         public String subject;
 
         public Candidate(int similarity, String subject) {
             this.similarity = similarity;
             this.subject = subject;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (!this.getClass().equals(obj.getClass())) {
+                return false;
+            }
+            Candidate other = (Candidate) obj;
+            if (subject == null) {
+                if (other.subject != null) {
+                    return false;
+                }
+            } else if (other.subject == null) {
+                return false;
+            } else if (!subject.equals(other.subject)) {
+                return false;
+            }
+            if (similarity != other.similarity) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int prime = 31;
+            int hash = 1;
+            hash = hash * prime + (subject == null ? 0 : subject.hashCode());
+            hash = hash * prime + similarity;
+            return hash;
         }
 
         @Override
