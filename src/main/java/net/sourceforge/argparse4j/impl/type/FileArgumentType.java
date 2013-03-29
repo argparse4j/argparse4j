@@ -19,6 +19,7 @@
 package net.sourceforge.argparse4j.impl.type;
 
 import java.io.File;
+import java.io.IOException;
 
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
@@ -44,6 +45,7 @@ public class FileArgumentType implements ArgumentType<File> {
     private boolean verifyCanRead = false;
     private boolean verifyCanWrite = false;
     private boolean verifyCanWriteParent = false;
+    private boolean verifyCanCreate = false;
     private boolean verifyCanExecute = false;
     private boolean verifyIsAbsolute = false;
 
@@ -139,6 +141,17 @@ public class FileArgumentType implements ArgumentType<File> {
     }
 
     /**
+     * Verifies that the specified path is writable. If the verification 
+     * fails, error will be reported.
+     * 
+     * @return this
+     */
+    public FileArgumentType verifyCanCreate() {
+        verifyCanCreate = true;
+        return this;
+    }
+
+    /**
      * Verifies that the specified path is executable. If the verification
      * fails, error will be reported.
      * 
@@ -187,6 +200,9 @@ public class FileArgumentType implements ArgumentType<File> {
         }
         if (verifyCanWriteParent && !isSystemIn(file)) {
             verifyCanWriteParent(parser, arg, file);
+        }
+        if (verifyCanCreate && !isSystemIn(file)) {
+            verifyCanCreate(parser, arg, file);
         }
         if (verifyCanExecute && !isSystemIn(file)) {
             verifyCanExecute(parser, arg, file);
@@ -251,6 +267,22 @@ public class FileArgumentType implements ArgumentType<File> {
             throw new ArgumentParserException(String.format(
                     "Cannot write parent of file: '%s'", file), parser, arg);
         }
+    }
+
+    private void verifyCanCreate(ArgumentParser parser, Argument arg,
+            File file) throws ArgumentParserException {
+        try {
+            File parent = file.getCanonicalFile().getParentFile();
+            if (parent != null && parent.canWrite()){
+                return;
+            }
+        } catch (IOException e) {
+        }
+
+        // An exception was thrown or the parent directory can't be written
+        throw new ArgumentParserException(String.format(
+                    "Cannot create file: '%s'", file), parser, arg);
+
     }
 
     private void verifyCanExecute(ArgumentParser parser, Argument arg, File file)
