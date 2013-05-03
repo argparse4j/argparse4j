@@ -141,7 +141,10 @@ public final class SubparsersImpl implements Subparsers {
      */
     private SubparserImpl resolveNextSubparser(ParseState state, String command)
             throws ArgumentParserException {
-        SubparserImpl ap = parsers_.get(state.getArg());
+        if (command.isEmpty()) {
+            return null;
+        }
+        SubparserImpl ap = parsers_.get(command);
         if (ap == null) {
             List<String> cand = TextHelper.findPrefix(parsers_.keySet(),
                     command);
