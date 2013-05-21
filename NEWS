@@ -1,3 +1,25 @@
+argparse4j 0.4.1
+================
+
+Release Note
+------------
+
+This release changes error message when matching empty string for
+subcommand. It adds the method to verify that a file argument can be
+created.
+
+Changes
+-------
+
+* Throw "invalid choice" error when matching empty string for
+  subcommand
+
+* Added method to verify that a file argument can be created.
+
+  Contributed by Juan Manuel Caicedo Carvajal
+
+
+
 argparse4j 0.4.0
 ================
 
