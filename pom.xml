@@ -3,7 +3,7 @@
 
 	<groupId>net.sourceforge.argparse4j</groupId>
 	<artifactId>argparse4j</artifactId>
-	<version>0.4.1-SNAPSHOT</version>
+	<version>0.4.1</version>
 	<packaging>jar</packaging>
 
 	<name>argparse4j</name>
