@@ -260,7 +260,6 @@ public final class ArgumentParserImpl implements ArgumentParser {
     public void printHelp() {
         PrintWriter writer = new PrintWriter(System.out);
         printHelp(writer);
-        writer.close();
     }
 
     @Override
