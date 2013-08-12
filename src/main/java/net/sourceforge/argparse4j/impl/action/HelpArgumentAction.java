@@ -29,6 +29,7 @@ import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentAction;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.internal.HelpScreenException;
 
 /**
  * <p>
@@ -36,9 +37,9 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
  * </p>
  * <p>
  * Please note that this
- * {@link #run(ArgumentParser, Argument, Map, String, Object)} terminates
- * program after printing the help message. {@link #consumeArgument()} always
- * returns {@code false}.
+ * {@link #run(ArgumentParser, Argument, Map, String, Object)} always throws a
+ * {@code HelpScreenException} exception after printing the help message.
+ * {@link #consumeArgument()} always returns {@code false}.
  * </p>
  * 
  */
@@ -49,7 +50,7 @@ public class HelpArgumentAction implements ArgumentAction {
             Map<String, Object> attrs, String flag, Object value)
             throws ArgumentParserException {
         parser.printHelp();
-        System.exit(0);
+        throw new HelpScreenException(parser);
     }
 
     @Override
