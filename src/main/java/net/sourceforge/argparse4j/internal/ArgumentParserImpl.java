@@ -57,7 +57,6 @@ import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.MutuallyExclusiveGroup;
 import net.sourceforge.argparse4j.inf.Namespace;
-import net.sourceforge.argparse4j.inf.Subparsers;
 
 /**
  * <strong>The application code must not use this class directly.</strong>
@@ -1125,6 +1124,10 @@ public final class ArgumentParserImpl implements ArgumentParser {
     public void handleError(ArgumentParserException e) {
         if (e.getParser() != this) {
             e.getParser().handleError(e);
+            return;
+        }
+        // if --help triggered, just return (help info displayed by other method)
+        if (e instanceof HelpScreenException) {
             return;
         }
         PrintWriter writer = new PrintWriter(System.err);

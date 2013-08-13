@@ -1,19 +1,8 @@
 package net.sourceforge.argparse4j.internal;
 
-import static net.sourceforge.argparse4j.impl.Arguments.SUPPRESS;
-import static net.sourceforge.argparse4j.impl.Arguments.append;
-import static net.sourceforge.argparse4j.impl.Arguments.appendConst;
-import static net.sourceforge.argparse4j.impl.Arguments.count;
-import static net.sourceforge.argparse4j.impl.Arguments.range;
-import static net.sourceforge.argparse4j.impl.Arguments.storeConst;
-import static net.sourceforge.argparse4j.impl.Arguments.storeFalse;
-import static net.sourceforge.argparse4j.impl.Arguments.storeTrue;
-import static net.sourceforge.argparse4j.test.TestHelper.list;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static net.sourceforge.argparse4j.impl.Arguments.*;
+import static net.sourceforge.argparse4j.test.TestHelper.*;
+import static org.junit.Assert.*;
 
 import java.io.FileInputStream;
 import java.io.PrintWriter;
@@ -1239,5 +1228,10 @@ public class ArgumentParserImplTest {
         assertFalse(foo.hashCode() == foo2.hashCode());
         assertFalse(foo.hashCode() == bar.hashCode());
         assertFalse(foo.hashCode() == subNull.hashCode());
+    }
+    
+    @Test (expected=HelpScreenException.class)
+    public void testHelpThrowsHelpScreenException() throws ArgumentParserException {
+        ap.parseArgs(new String[]{"--help"});
     }
 }
