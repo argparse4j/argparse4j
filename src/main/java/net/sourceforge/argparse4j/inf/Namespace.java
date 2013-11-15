@@ -61,8 +61,9 @@ public class Namespace {
      *            The attribute name
      * @return The attribute value, or {@code null} if it is not found.
      */
-    public Object get(String dest) {
-        return attrs_.get(dest);
+    @SuppressWarnings("unchecked")
+    public <T> T get(String dest) {
+        return (T) attrs_.get(dest);
     }
 
     /**
@@ -75,7 +76,7 @@ public class Namespace {
      *         is not found.
      */
     public String getString(String dest) {
-        return (String) attrs_.get(dest);
+        return get(dest);
     }
 
     /**
@@ -87,7 +88,7 @@ public class Namespace {
      *         is not found.
      */
     public Byte getByte(String dest) {
-        return (Byte) attrs_.get(dest);
+        return get(dest);
     }
 
     /**
@@ -100,7 +101,7 @@ public class Namespace {
      *         it is not found.
      */
     public Short getShort(String dest) {
-        return (Short) attrs_.get(dest);
+        return get(dest);
     }
 
     /**
@@ -113,7 +114,7 @@ public class Namespace {
      *         it is not found.
      */
     public Integer getInt(String dest) {
-        return (Integer) attrs_.get(dest);
+        return get(dest);
     }
 
     /**
@@ -125,7 +126,7 @@ public class Namespace {
      *         is not found.
      */
     public Long getLong(String dest) {
-        return (Long) attrs_.get(dest);
+        return get(dest);
     }
 
     /**
@@ -138,7 +139,7 @@ public class Namespace {
      *         it is not found.
      */
     public Float getFloat(String dest) {
-        return (Float) attrs_.get(dest);
+        return get(dest);
     }
 
     /**
@@ -151,7 +152,7 @@ public class Namespace {
      *         it is not found.
      */
     public Double getDouble(String dest) {
-        return (Double) attrs_.get(dest);
+        return get(dest);
     }
 
     /**
@@ -164,7 +165,7 @@ public class Namespace {
      *         it is not found.
      */
     public Boolean getBoolean(String dest) {
-        return (Boolean) attrs_.get(dest);
+        return get(dest);
     }
 
     /**
@@ -176,7 +177,7 @@ public class Namespace {
      *         is not found.
      */
     public <E> List<E> getList(String dest) {
-        return (List<E>) attrs_.get(dest);
+        return get(dest);
     }
 
     /**
