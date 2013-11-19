@@ -351,7 +351,9 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     @Override
     public void printUsage() {
-        printUsage(new PrintWriter(System.out));
+        PrintWriter writer = new PrintWriter(System.out);
+        printUsage(writer);
+        writer.flush();
     }
 
     @Override
