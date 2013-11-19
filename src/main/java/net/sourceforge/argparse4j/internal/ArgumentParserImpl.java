@@ -259,6 +259,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     public void printHelp() {
         PrintWriter writer = new PrintWriter(System.out);
         printHelp(writer);
+        writer.flush();
     }
 
     @Override
@@ -303,7 +304,6 @@ public final class ArgumentParserImpl implements ArgumentParser {
             writer.format("%n%s%n", TextHelper.wrap(textWidthCounter_, epilog_,
                     formatWidth, 0, "", ""));
         }
-        writer.flush();
     }
 
     private boolean checkDefaultGroup(List<ArgumentImpl> args) {
@@ -1108,13 +1108,14 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     @Override
     public void printVersion() {
-        printVersion(new PrintWriter(System.out));
+        PrintWriter writer = new PrintWriter(System.out);
+        printVersion(writer);
+        writer.flush();
     }
 
     @Override
     public void printVersion(PrintWriter writer) {
         writer.format("%s%n", formatVersion());
-        writer.flush();
     }
 
     @Override
