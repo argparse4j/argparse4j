@@ -1,3 +1,33 @@
+argparse4j 0.4.2
+================
+
+Release Note
+------------
+
+This release fixes several bugs related to help and usage output.  Now
+HelpArgumentAction throws exception instead of quit a program. The
+generic get method was added to Namespace object.
+
+Changes
+-------
+
+* ArgumentParserImpl: Only flush output in methods without PrintWriter
+  parameter
+
+* Added generic get method to Namespace
+
+  Contributed by jon-ruckwood
+
+* Changed HelpArgumentAction to throw exception rather than exit
+
+  Contributed by Adam Parkin
+
+* Fixed bug where System.out got closed in printHelp
+
+  Contributed by Adam Parkin
+
+
+
 argparse4j 0.4.1
 ================
 
