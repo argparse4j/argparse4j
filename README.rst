@@ -12,7 +12,7 @@ Argparse4j is available in Maven central repository:
   <dependency>
     <groupId>net.sourceforge.argparse4j</groupId>
     <artifactId>argparse4j</artifactId>
-    <version>0.4.1</version>
+    <version>0.4.2</version>
   </dependency>
 
 There are still missing features which exist in argparse but not in
