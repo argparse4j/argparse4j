@@ -27,6 +27,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Map;
 
 import net.sourceforge.argparse4j.helper.PrefixPattern;
@@ -89,6 +90,7 @@ public final class ArgumentImpl implements Argument {
                 if (!prefixPattern.match(flag)) {
                     throw new IllegalArgumentException(
                             String.format(
+                                    (Locale) null,
                                     "invalid option string '%s': must start with a character '%s'",
                                     flag, prefixPattern.getPrefixChars()));
                 }
@@ -239,7 +241,7 @@ public final class ArgumentImpl implements Argument {
             if (!help_.isEmpty()) {
                 sb.append(" ");
             }
-            sb.append(String.format("(default: %s)", default_.toString()));
+            sb.append("(default: ").append(default_.toString()).append(")");
             help = sb.toString();
         } else {
             help = help_;
@@ -253,6 +255,7 @@ public final class ArgumentImpl implements Argument {
         Object obj = type_.convert(parser, this, value);
         if (choice_ != null && !choice_.contains(obj)) {
             throw new ArgumentParserException(String.format(
+                    (Locale) null,
                     "invalid choice: '%s' (choose from %s)", value,
                     choice_.textualFormat()), parser, this);
         }

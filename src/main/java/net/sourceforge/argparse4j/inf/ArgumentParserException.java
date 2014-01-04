@@ -23,6 +23,8 @@
  */
 package net.sourceforge.argparse4j.inf;
 
+import java.util.Locale;
+
 /**
  * The exception thrown from {@link ArgumentParser#parseArgs(String[])} if error
  * occurred while processing command line argument. The argument {@code parser}
@@ -71,7 +73,8 @@ public class ArgumentParserException extends Exception {
     }
 
     private static String formatMessage(String message, Argument arg) {
-        return String.format("argument %s: %s", arg.textualName(), message);
+        return String.format(
+                 (Locale) null, "argument %s: %s", arg.textualName(), message);
     }
 
     public ArgumentParser getParser() {

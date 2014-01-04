@@ -23,6 +23,8 @@
  */
 package net.sourceforge.argparse4j.impl.choice;
 
+import java.util.Locale;
+
 import net.sourceforge.argparse4j.inf.ArgumentChoice;
 
 /**
@@ -64,6 +66,7 @@ public class RangeArgumentChoice<T extends Comparable<T>> implements
             return min_.compareTo(v) <= 0 && 0 <= max_.compareTo(v);
         } else {
             throw new IllegalArgumentException(String.format(
+                    (Locale) null,
                     "type mismatch (Make sure that you specified corrent Argument.type()):"
                             + " expected: %s actual: %s", min_.getClass()
                             .getName(), val.getClass().getName()));
@@ -72,7 +75,7 @@ public class RangeArgumentChoice<T extends Comparable<T>> implements
 
     @Override
     public String textualFormat() {
-        return String.format("{%s..%s}", min_, max_);
+        return String.format((Locale) null, "{%s..%s}", min_, max_);
     }
 
     @Override

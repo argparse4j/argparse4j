@@ -83,12 +83,15 @@ public final class ArgumentGroupImpl implements ArgumentGroup,
 
     public void printHelp(PrintWriter writer, int format_width) {
         if (!title_.isEmpty()) {
-            writer.format("%s:%n", title_);
+            writer.print(title_);
+            writer.println(":");
         }
         if (!description_.isEmpty()) {
-            writer.format("  %s%n%n", TextHelper.wrap(
+            writer.print("  ");
+            writer.println(TextHelper.wrap(
                     argumentParser_.getTextWidthCounter(), description_,
                     format_width, 2, "", "  "));
+            writer.println();
         }
         for (ArgumentImpl arg : args_) {
             arg.printHelp(writer, argumentParser_.isDefaultHelp(),

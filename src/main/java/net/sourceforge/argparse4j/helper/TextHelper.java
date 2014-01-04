@@ -193,7 +193,8 @@ public final class TextHelper {
     public static void printHelp(PrintWriter writer, String title, String help,
             TextWidthCounter textWidthCounter, int width) {
         int INDENT_WIDTH = 25;
-        writer.format("  %s", title);
+        writer.print("  ");
+        writer.print(title);
         if (!help.isEmpty()) {
             int titleWidth = textWidthCounter.width(title);
             int indentWidth = INDENT_WIDTH;
@@ -202,12 +203,11 @@ public final class TextHelper {
             } else {
                 writer.println();
             }
-            String fmt = String.format("%%%ds%%s%n", indentWidth);
-            writer.format(
-                    fmt,
-                    "",
-                    wrap(textWidthCounter, help, width, INDENT_WIDTH, "",
-                            "                         "));
+            for(int i = 0; i < indentWidth; ++i) {
+                writer.print(" ");
+            }
+            writer.println(wrap(textWidthCounter, help, width, INDENT_WIDTH,
+                                "", "                         "));
         } else {
             writer.println();
         }

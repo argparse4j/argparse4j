@@ -26,6 +26,7 @@ package net.sourceforge.argparse4j.impl.type;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Locale;
 
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.inf.Argument;
@@ -141,6 +142,7 @@ public class ReflectArgumentType<T> implements ArgumentType<T> {
             Argument arg, String value, Throwable t)
             throws ArgumentParserException {
         throw new ArgumentParserException(String.format(
+                (Locale) null,
                 "could not convert '%s' to %s (%s)", value,
                 type_.getSimpleName(), t.getMessage()), t, parser, arg);
     }
