@@ -1,3 +1,20 @@
+argparse4j 0.4.3
+================
+
+Release Note
+------------
+
+This release fixes a bug that causes unexpected string formatting due
+to the localization using the default locale. Now we use null Locale
+object to avoid the localization.
+
+Changes
+-------
+
+* Use null Locale for format method
+
+
+
 argparse4j 0.4.2
 ================
 
