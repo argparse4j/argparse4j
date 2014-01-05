@@ -141,8 +141,7 @@ public class ReflectArgumentType<T> implements ArgumentType<T> {
     private void throwArgumentParserException(ArgumentParser parser,
             Argument arg, String value, Throwable t)
             throws ArgumentParserException {
-        throw new ArgumentParserException(String.format(
-                (Locale) null,
+        throw new ArgumentParserException(String.format((Locale) null,
                 "could not convert '%s' to %s (%s)", value,
                 type_.getSimpleName(), t.getMessage()), t, parser, arg);
     }

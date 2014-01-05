@@ -254,8 +254,7 @@ public final class ArgumentImpl implements Argument {
             throws ArgumentParserException {
         Object obj = type_.convert(parser, this, value);
         if (choice_ != null && !choice_.contains(obj)) {
-            throw new ArgumentParserException(String.format(
-                    (Locale) null,
+            throw new ArgumentParserException(String.format((Locale) null,
                     "invalid choice: '%s' (choose from %s)", value,
                     choice_.textualFormat()), parser, this);
         }

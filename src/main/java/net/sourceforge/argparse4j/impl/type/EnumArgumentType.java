@@ -43,8 +43,7 @@ public class EnumArgumentType<T extends Enum<T>> implements ArgumentType<T> {
         } catch (IllegalArgumentException e) {
             String choices = TextHelper.concat(type_.getEnumConstants(), 0,
                     ",", "{", "}");
-            throw new ArgumentParserException(String.format(
-                    (Locale) null,
+            throw new ArgumentParserException(String.format((Locale) null,
                     "could not convert '%s' (choose from %s)", value, choices),
                     e, parser, arg);
         }

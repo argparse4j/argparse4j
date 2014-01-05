@@ -203,11 +203,11 @@ public final class TextHelper {
             } else {
                 writer.println();
             }
-            for(int i = 0; i < indentWidth; ++i) {
+            for (int i = 0; i < indentWidth; ++i) {
                 writer.print(" ");
             }
             writer.println(wrap(textWidthCounter, help, width, INDENT_WIDTH,
-                                "", "                         "));
+                    "", "                         "));
         } else {
             writer.println();
         }

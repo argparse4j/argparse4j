@@ -271,9 +271,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
         printUsage(writer, formatWidth);
         if (!description_.isEmpty()) {
             writer.println();
-            writer.println(
-                    TextHelper.wrap(textWidthCounter_,
-                    description_, formatWidth, 0, "", ""));
+            writer.println(TextHelper.wrap(textWidthCounter_, description_,
+                    formatWidth, 0, "", ""));
         }
         boolean subparsersUntitled = subparsers_.getTitle().isEmpty()
                 && subparsers_.getDescription().isEmpty();
@@ -293,14 +292,12 @@ public final class ArgumentParserImpl implements ArgumentParser {
         }
         if (subparsers_.hasSubCommand() && !subparsersUntitled) {
             writer.println();
-            writer.print(
-                    subparsers_.getTitle().isEmpty() ? "subcommands"
-                            : subparsers_.getTitle());
+            writer.print(subparsers_.getTitle().isEmpty() ? "subcommands"
+                    : subparsers_.getTitle());
             writer.println(":");
             if (!subparsers_.getDescription().isEmpty()) {
                 writer.print("  ");
-                writer.println(
-                        TextHelper.wrap(textWidthCounter_,
+                writer.println(TextHelper.wrap(textWidthCounter_,
                         subparsers_.getDescription(), formatWidth, 2, "", "  "));
                 writer.println();
             }
@@ -758,8 +755,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         // and/or flag forms concatenated short options.
         // Sort in order to make unit test easier.
         Collections.sort(cand);
-        throw new ArgumentParserException(String.format(
-                (Locale) null,
+        throw new ArgumentParserException(String.format((Locale) null,
                 "ambiguous option: %s could match %s", flag,
                 TextHelper.concat(cand, 0, ", ")), this);
     }
@@ -871,7 +867,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
     private String formatUnrecognizedArgumentErrorMessage(ParseState state,
             String args) {
         return String
-                .format((Locale) null, "unrecognized arguments: '%s'%s",
+                .format((Locale) null,
+                        "unrecognized arguments: '%s'%s",
                         args,
                         state.index > state.lastFromFileArgIndex ? ""
                                 : String.format(
@@ -906,8 +903,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     groupUsed[arg.getArgumentGroup().getIndex()] = arg;
                 } else if (usedMutexArg != arg) {
                     throw new ArgumentParserException(String.format(
-                            (Locale) null,
-                            "not allowed with argument %s",
+                            (Locale) null, "not allowed with argument %s",
                             usedMutexArg.textualName()), this, arg);
                 }
             }
@@ -933,8 +929,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 arg.run(this, res, flag, null);
                 return;
             } else {
-                throw new ArgumentParserException(String.format(
-                        (Locale) null,
+                throw new ArgumentParserException(String.format((Locale) null,
                         "ignore implicit argument '%s'", embeddedValue), this,
                         arg);
             }
@@ -983,9 +978,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
             if (list.size() < arg.getMinNumArg()) {
                 if (arg.isOptionalArgument()) {
                     throw new ArgumentParserException(String.format(
-                            (Locale) null,
-                            "expected %d argument(s)", arg.getMinNumArg()),
-                            this, arg);
+                            (Locale) null, "expected %d argument(s)",
+                            arg.getMinNumArg()), this, arg);
                 } else {
                     throw new ArgumentParserException("too few arguments", this);
                 }
@@ -1053,8 +1047,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 list.add(line);
             }
         } catch (IOException e) {
-            throw new ArgumentParserException(String.format(
-                    (Locale) null,
+            throw new ArgumentParserException(String.format((Locale) null,
                     "Could not read arguments from file '%s'", file), e, this);
         } finally {
             try {
@@ -1081,8 +1074,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
             throws ArgumentParserException {
         for (ArgumentImpl arg : optargs_) {
             if (arg.isRequired() && !used.contains(arg)) {
-                throw new ArgumentParserException(String.format(
-                        (Locale) null,
+                throw new ArgumentParserException(String.format((Locale) null,
                         "argument %s is required", arg.textualName()), this);
             }
         }
@@ -1103,8 +1095,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                         sb.append(arg.textualName()).append(" ");
                     }
                 }
-                throw new ArgumentParserException(String.format(
-                        (Locale) null,
+                throw new ArgumentParserException(String.format((Locale) null,
                         "one of the arguments %sis required", sb.toString()),
                         this);
             }
@@ -1154,16 +1145,18 @@ public final class ArgumentParserImpl implements ArgumentParser {
             e.getParser().handleError(e);
             return;
         }
-        // if --help triggered, just return (help info displayed by other method)
+        // if --help triggered, just return (help info displayed by other
+        // method)
         if (e instanceof HelpScreenException) {
             return;
         }
         PrintWriter writer = new PrintWriter(System.err);
         printUsage(writer);
-        writer.write(TextHelper.wrap(textWidthCounter_,
-                String.format((Locale) null, "%s: error: %s%n",
-                prog_, e.getMessage()),
-                ArgumentParsers.getFormatWidth(), 0, "", ""));
+        writer.write(TextHelper.wrap(
+                textWidthCounter_,
+                String.format((Locale) null, "%s: error: %s%n", prog_,
+                        e.getMessage()), ArgumentParsers.getFormatWidth(), 0,
+                "", ""));
         if (e instanceof UnrecognizedArgumentException) {
             UnrecognizedArgumentException ex = (UnrecognizedArgumentException) e;
             String argument = ex.getArgument();

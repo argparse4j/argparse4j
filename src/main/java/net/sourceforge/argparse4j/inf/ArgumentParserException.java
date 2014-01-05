@@ -73,8 +73,8 @@ public class ArgumentParserException extends Exception {
     }
 
     private static String formatMessage(String message, Argument arg) {
-        return String.format(
-                 (Locale) null, "argument %s: %s", arg.textualName(), message);
+        return String.format((Locale) null, "argument %s: %s",
+                arg.textualName(), message);
     }
 
     public ArgumentParser getParser() {

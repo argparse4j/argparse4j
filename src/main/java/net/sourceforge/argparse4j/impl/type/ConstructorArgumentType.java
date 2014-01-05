@@ -75,8 +75,7 @@ public class ConstructorArgumentType<T> implements ArgumentType<T> {
         } catch (IllegalAccessException e) {
             handleInstatiationError(e);
         } catch (InvocationTargetException e) {
-            throw new ArgumentParserException(String.format(
-                    (Locale) null,
+            throw new ArgumentParserException(String.format((Locale) null,
                     "could not convert '%s' to %s (%s)", value,
                     type_.getSimpleName(), e.getCause().getMessage()),
                     e.getCause(), parser, arg);
