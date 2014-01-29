@@ -1,5 +1,7 @@
 package net.sourceforge.argparse4j.internal;
 
+import net.sourceforge.argparse4j.inf.ArgumentParserException;
+
 public class ParseState {
     /**
      * Array of arguments.
@@ -26,11 +28,18 @@ public class ParseState {
      */
     public boolean negNumFlag;
 
+    /**
+     * Deferred exception encountered while parsing. This will be thrown after
+     * parsing completed and no other exception was thrown.
+     */
+    public ArgumentParserException deferredException;
+
     public ParseState(String args[], int index, boolean negNumFlag) {
         this.args = args;
         this.index = index;
         this.lastFromFileArgIndex = -1;
         this.negNumFlag = negNumFlag;
+        this.deferredException = null;
     }
 
     void resetArgs(String args[]) {

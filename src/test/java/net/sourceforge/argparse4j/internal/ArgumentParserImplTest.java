@@ -773,6 +773,23 @@ public class ArgumentParserImplTest {
     }
 
     @Test
+    public void testParseArgsWithDeferredException() throws ArgumentParserException {
+        ap = new ArgumentParserImpl("argparse4j");
+        ap.addArgument("-a").required(true);
+        ap.addArgument("b");
+        ap.addMutuallyExclusiveGroup().required(true).addArgument("-c");
+        ap.addSubparsers().addParser("install");
+
+        try {
+            ap.parseArgs("install -h".split(" "));
+        } catch(HelpScreenException e) {
+            // Success
+        } catch(ArgumentParserException e) {
+            fail();
+        }
+    }
+
+    @Test
     public void testSubparserInheritPrefixChars() throws ArgumentParserException {
         ap = new ArgumentParserImpl("argparse4j", true, "+");
         ap.addSubparsers().addParser("install").addArgument("+f");

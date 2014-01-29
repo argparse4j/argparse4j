@@ -695,6 +695,9 @@ public final class ArgumentParserImpl implements ArgumentParser {
             throws ArgumentParserException {
         ParseState state = new ParseState(args, offset, negNumFlag_);
         parseArgs(state, attrs);
+        if (state.deferredException != null) {
+            throw state.deferredException;
+        }
     }
 
     /**
@@ -832,8 +835,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 ArgumentImpl arg = posargs_.get(posargIndex++);
                 processArg(attrs, state, arg, null, null);
             } else if (!state.consumedSeparator && subparsers_.hasSubCommand()) {
-                checkRequiredArgument(used, posargIndex);
-                checkRequiredMutex(groupUsed);
+                checkRequiredArgument(state, used, posargIndex);
+                checkRequiredMutex(state, groupUsed);
                 subparsers_.parseArg(state, attrs);
                 return;
             } else {
@@ -850,8 +853,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
             ArgumentImpl arg = posargs_.get(posargIndex++);
             processArg(attrs, state, arg, null, null);
         }
-        checkRequiredArgument(used, posargIndex);
-        checkRequiredMutex(groupUsed);
+        checkRequiredArgument(state, used, posargIndex);
+        checkRequiredMutex(state, groupUsed);
     }
 
     /**
@@ -1070,22 +1073,31 @@ public final class ArgumentParserImpl implements ArgumentParser {
         state.resetArgs(newargs);
     }
 
-    private void checkRequiredArgument(Set<ArgumentImpl> used, int posargIndex)
+    private void checkRequiredArgument(ParseState state,
+            Set<ArgumentImpl> used, int posargIndex)
             throws ArgumentParserException {
+        if (state.deferredException != null) {
+            return;
+        }
         for (ArgumentImpl arg : optargs_) {
             if (arg.isRequired() && !used.contains(arg)) {
-                throw new ArgumentParserException(String.format((Locale) null,
-                        "argument %s is required", arg.textualName()), this);
+                state.deferredException = new ArgumentParserException(
+                        String.format((Locale) null, "argument %s is required",
+                                arg.textualName()), this);
             }
         }
         if (posargs_.size() > posargIndex) {
-            throw new ArgumentParserException("too few arguments", this);
+            state.deferredException = new ArgumentParserException(
+                    "too few arguments", this);
         }
 
     }
 
-    private void checkRequiredMutex(ArgumentImpl[] used)
+    private void checkRequiredMutex(ParseState state, ArgumentImpl[] used)
             throws ArgumentParserException {
+        if (state.deferredException != null) {
+            return;
+        }
         for (int i = 0; i < arggroups_.size(); ++i) {
             ArgumentGroupImpl group = arggroups_.get(i);
             if (group.isMutex() && group.isRequired() && used[i] == null) {
@@ -1095,9 +1107,10 @@ public final class ArgumentParserImpl implements ArgumentParser {
                         sb.append(arg.textualName()).append(" ");
                     }
                 }
-                throw new ArgumentParserException(String.format((Locale) null,
-                        "one of the arguments %sis required", sb.toString()),
-                        this);
+                state.deferredException = new ArgumentParserException(
+                        String.format((Locale) null,
+                                "one of the arguments %sis required",
+                                sb.toString()), this);
             }
         }
     }
