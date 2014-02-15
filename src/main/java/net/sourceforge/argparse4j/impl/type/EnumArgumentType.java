@@ -1,7 +1,5 @@
 package net.sourceforge.argparse4j.impl.type;
 
-import java.util.Locale;
-
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
@@ -43,7 +41,8 @@ public class EnumArgumentType<T extends Enum<T>> implements ArgumentType<T> {
         } catch (IllegalArgumentException e) {
             String choices = TextHelper.concat(type_.getEnumConstants(), 0,
                     ",", "{", "}");
-            throw new ArgumentParserException(String.format((Locale) null,
+            throw new ArgumentParserException(String.format(
+                    TextHelper.LOCALE_ROOT,
                     "could not convert '%s' (choose from %s)", value, choices),
                     e, parser, arg);
         }

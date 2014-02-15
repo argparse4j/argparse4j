@@ -24,8 +24,8 @@
 package net.sourceforge.argparse4j.impl.type;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Locale;
 
+import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
@@ -75,7 +75,8 @@ public class ConstructorArgumentType<T> implements ArgumentType<T> {
         } catch (IllegalAccessException e) {
             handleInstatiationError(e);
         } catch (InvocationTargetException e) {
-            throw new ArgumentParserException(String.format((Locale) null,
+            throw new ArgumentParserException(String.format(
+                    TextHelper.LOCALE_ROOT,
                     "could not convert '%s' to %s (%s)", value,
                     type_.getSimpleName(), e.getCause().getMessage()),
                     e.getCause(), parser, arg);

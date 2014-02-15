@@ -3,7 +3,6 @@ package net.sourceforge.argparse4j.helper;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
-import java.util.Locale;
 
 import org.junit.Test;
 
@@ -41,11 +40,11 @@ public class TextHelperTest {
     @Test
     public void testTextWrap() {
         String s = String.format(
-                   (Locale) null,
+                   TextHelper.LOCALE_ROOT,
                    "alpha bravo charlie delta echo foxtrot golf hotel india%n"
                  + "juliet kilo lima");
         assertEquals(String.format(
-                     (Locale) null,
+                   TextHelper.LOCALE_ROOT,
                      "        alpha  bravo%n"
                    + "    charlie    delta%n"
                    + "    echo     foxtrot%n"

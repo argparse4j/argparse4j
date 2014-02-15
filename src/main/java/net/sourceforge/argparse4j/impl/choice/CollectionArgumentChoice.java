@@ -25,7 +25,6 @@ package net.sourceforge.argparse4j.impl.choice;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Locale;
 
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.inf.ArgumentChoice;
@@ -74,7 +73,8 @@ public class CollectionArgumentChoice<E> implements ArgumentChoice {
         if (expectedType.equals(val.getClass())) {
             return values_.contains(val);
         } else {
-            throw new IllegalArgumentException(String.format((Locale) null,
+            throw new IllegalArgumentException(String.format(
+                    TextHelper.LOCALE_ROOT,
                     "type mismatch (Make sure that you specified correct Argument.type()):"
                             + " expected: %s actual: %s",
                     expectedType.getName(), val.getClass().getName()));

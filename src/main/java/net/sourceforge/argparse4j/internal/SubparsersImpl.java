@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import net.sourceforge.argparse4j.helper.TextHelper;
@@ -77,7 +76,8 @@ public final class SubparsersImpl implements Subparsers {
             throw new IllegalArgumentException(
                     "command cannot be null or empty");
         } else if (parsers_.containsKey(command)) {
-            throw new IllegalArgumentException(String.format((Locale) null,
+            throw new IllegalArgumentException(String.format(
+                    TextHelper.LOCALE_ROOT,
                     "command '%s' has been already used", command));
         }
         SubparserImpl parser = new SubparserImpl(mainParser_.getProg(),
@@ -155,7 +155,8 @@ public final class SubparsersImpl implements Subparsers {
             } else if (size > 1) {
                 // Sort it to make unit test easier
                 Collections.sort(cand);
-                throw new ArgumentParserException(String.format((Locale) null,
+                throw new ArgumentParserException(String.format(
+                        TextHelper.LOCALE_ROOT,
                         "ambiguous command: %s could match %s", command,
                         TextHelper.concat(cand, 0, ", ")), mainParser_);
             }
@@ -175,7 +176,8 @@ public final class SubparsersImpl implements Subparsers {
                 sb.append("'").append(entry.getKey()).append("', ");
             }
             sb.delete(sb.length() - 2, sb.length());
-            throw new UnrecognizedCommandException(String.format((Locale) null,
+            throw new UnrecognizedCommandException(String.format(
+                    TextHelper.LOCALE_ROOT,
                     "invalid choice: '%s' (choose from %s)", state.getArg(),
                     sb.toString()), mainParser_, state.getArg());
         } else {
@@ -247,7 +249,8 @@ public final class SubparsersImpl implements Subparsers {
     public void addAlias(SubparserImpl subparser, String... alias) {
         for (String command : alias) {
             if (parsers_.containsKey(command)) {
-                throw new IllegalArgumentException(String.format((Locale) null,
+                throw new IllegalArgumentException(String.format(
+                        TextHelper.LOCALE_ROOT,
                         "command '%s' has been already used", command));
             } else {
                 parsers_.put(command, subparser);

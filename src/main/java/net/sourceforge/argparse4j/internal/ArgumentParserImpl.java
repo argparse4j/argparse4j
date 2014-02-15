@@ -39,7 +39,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -152,7 +151,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 if (another != null) {
                     // TODO No conflict handler ATM
                     throw new IllegalArgumentException(String.format(
-                            (Locale) null,
+                            TextHelper.LOCALE_ROOT,
                             "argument %s: conflicting option string(s): %s",
                             flag, another.textualName()));
                 }
@@ -169,7 +168,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 if (arg.getName().equals(another.getName())) {
                     // TODO No conflict handler ATM
                     throw new IllegalArgumentException(String.format(
-                            (Locale) null,
+                            TextHelper.LOCALE_ROOT,
                             "argument %s: conflicting option string(s): %s",
                             arg.getName(), another.textualName()));
                 }
@@ -635,7 +634,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     } catch (Exception e) {
                         if (!ann.ignoreError()) {
                             throw new IllegalArgumentException(String.format(
-                                    (Locale) null,
+                                    TextHelper.LOCALE_ROOT,
                                     "Could not set %s to field %s", val,
                                     field.getName()), e);
                         }
@@ -656,7 +655,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     Class<?>[] fargs = method.getParameterTypes();
                     if (fargs.length != 1) {
                         throw new IllegalArgumentException(String.format(
-                                (Locale) null,
+                                TextHelper.LOCALE_ROOT,
                                 "Method %s must have one formal parameter",
                                 method.getName()));
                     }
@@ -679,7 +678,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     } catch (Exception e) {
                         if (!ann.ignoreError()) {
                             throw new IllegalArgumentException(String.format(
-                                    (Locale) null,
+                                    TextHelper.LOCALE_ROOT,
                                     "Could not call method %s with %s",
                                     method.getName(), val), e);
                         }
@@ -758,7 +757,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         // and/or flag forms concatenated short options.
         // Sort in order to make unit test easier.
         Collections.sort(cand);
-        throw new ArgumentParserException(String.format((Locale) null,
+        throw new ArgumentParserException(String.format(TextHelper.LOCALE_ROOT,
                 "ambiguous option: %s could match %s", flag,
                 TextHelper.concat(cand, 0, ", ")), this);
     }
@@ -870,12 +869,12 @@ public final class ArgumentParserImpl implements ArgumentParser {
     private String formatUnrecognizedArgumentErrorMessage(ParseState state,
             String args) {
         return String
-                .format((Locale) null,
+                .format(TextHelper.LOCALE_ROOT,
                         "unrecognized arguments: '%s'%s",
                         args,
                         state.index > state.lastFromFileArgIndex ? ""
                                 : String.format(
-                                        (Locale) null,
+                                        TextHelper.LOCALE_ROOT,
                                         "%nChecking trailing white spaces or new lines in %sfile may help.",
                                         fromFilePrefixPattern_.getPrefixChars()
                                                 .length() == 1 ? fromFilePrefixPattern_
@@ -906,7 +905,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     groupUsed[arg.getArgumentGroup().getIndex()] = arg;
                 } else if (usedMutexArg != arg) {
                     throw new ArgumentParserException(String.format(
-                            (Locale) null, "not allowed with argument %s",
+                            TextHelper.LOCALE_ROOT,
+                            "not allowed with argument %s",
                             usedMutexArg.textualName()), this, arg);
                 }
             }
@@ -932,7 +932,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 arg.run(this, res, flag, null);
                 return;
             } else {
-                throw new ArgumentParserException(String.format((Locale) null,
+                throw new ArgumentParserException(String.format(
+                        TextHelper.LOCALE_ROOT,
                         "ignore implicit argument '%s'", embeddedValue), this,
                         arg);
             }
@@ -981,7 +982,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
             if (list.size() < arg.getMinNumArg()) {
                 if (arg.isOptionalArgument()) {
                     throw new ArgumentParserException(String.format(
-                            (Locale) null, "expected %d argument(s)",
+                            TextHelper.LOCALE_ROOT, "expected %d argument(s)",
                             arg.getMinNumArg()), this, arg);
                 } else {
                     throw new ArgumentParserException("too few arguments", this);
@@ -1050,7 +1051,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 list.add(line);
             }
         } catch (IOException e) {
-            throw new ArgumentParserException(String.format((Locale) null,
+            throw new ArgumentParserException(String.format(
+                    TextHelper.LOCALE_ROOT,
                     "Could not read arguments from file '%s'", file), e, this);
         } finally {
             try {
@@ -1082,8 +1084,9 @@ public final class ArgumentParserImpl implements ArgumentParser {
         for (ArgumentImpl arg : optargs_) {
             if (arg.isRequired() && !used.contains(arg)) {
                 state.deferredException = new ArgumentParserException(
-                        String.format((Locale) null, "argument %s is required",
-                                arg.textualName()), this);
+                        String.format(TextHelper.LOCALE_ROOT,
+                                "argument %s is required", arg.textualName()),
+                        this);
             }
         }
         if (posargs_.size() > posargIndex) {
@@ -1108,7 +1111,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     }
                 }
                 state.deferredException = new ArgumentParserException(
-                        String.format((Locale) null,
+                        String.format(TextHelper.LOCALE_ROOT,
                                 "one of the arguments %sis required",
                                 sb.toString()), this);
             }
@@ -1165,11 +1168,9 @@ public final class ArgumentParserImpl implements ArgumentParser {
         }
         PrintWriter writer = new PrintWriter(System.err);
         printUsage(writer);
-        writer.write(TextHelper.wrap(
-                textWidthCounter_,
-                String.format((Locale) null, "%s: error: %s%n", prog_,
-                        e.getMessage()), ArgumentParsers.getFormatWidth(), 0,
-                "", ""));
+        writer.write(TextHelper.wrap(textWidthCounter_, String.format(
+                TextHelper.LOCALE_ROOT, "%s: error: %s%n", prog_,
+                e.getMessage()), ArgumentParsers.getFormatWidth(), 0, "", ""));
         if (e instanceof UnrecognizedArgumentException) {
             UnrecognizedArgumentException ex = (UnrecognizedArgumentException) e;
             String argument = ex.getArgument();

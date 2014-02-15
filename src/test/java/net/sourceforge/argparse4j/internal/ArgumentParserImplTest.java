@@ -6,11 +6,11 @@ import static org.junit.Assert.*;
 
 import java.io.FileInputStream;
 import java.io.PrintWriter;
-import java.util.Locale;
 import java.util.Map;
 
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.annotation.Arg;
+import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentAction;
@@ -353,7 +353,7 @@ public class ArgumentParserImplTest {
             fail();
         } catch(ArgumentParserException e) {
             assertEquals(String.format(
-                        (Locale) null,
+                        TextHelper.LOCALE_ROOT,
                         "unrecognized arguments: '-x'%n" +
             		"Checking trailing white spaces or new lines in @file may help."),
             		e.getMessage());
@@ -371,7 +371,7 @@ public class ArgumentParserImplTest {
             fail();
         } catch(ArgumentParserException e) {
             assertEquals(String.format(
-                        (Locale) null,
+                        TextHelper.LOCALE_ROOT,
                         "unrecognized arguments: '-x'%n" +
             		"Checking trailing white spaces or new lines in @file may help."),
             		e.getMessage());
@@ -382,7 +382,7 @@ public class ArgumentParserImplTest {
             fail();
         } catch(ArgumentParserException e) {
             assertEquals(String.format(
-                        (Locale) null,
+                        TextHelper.LOCALE_ROOT,
                         "unrecognized arguments: '-x'%n" +
             		"Checking trailing white spaces or new lines in @file may help."),
             		e.getMessage());
@@ -392,7 +392,7 @@ public class ArgumentParserImplTest {
             ap.parseArgs("@target/test-classes/args8.txt".split(" "));
         } catch(ArgumentParserException e) {
             assertEquals(String.format(
-                        (Locale) null,
+                        TextHelper.LOCALE_ROOT,
                         "unrecognized arguments: ' b'%n" +
             		"Checking trailing white spaces or new lines in @file may help."),
             		e.getMessage());
@@ -405,7 +405,7 @@ public class ArgumentParserImplTest {
             fail();
         } catch(ArgumentParserException e) {
             assertEquals(String.format(
-                        (Locale) null,
+                        TextHelper.LOCALE_ROOT,
                         "unrecognized arguments: '-x'%n" +
             		"Checking trailing white spaces or new lines in [@/]file may help."),
             		e.getMessage());
@@ -902,7 +902,7 @@ public class ArgumentParserImplTest {
     @Test
     public void testFormatUsage() {
         assertEquals(String.format(
-                (Locale) null,
+                TextHelper.LOCALE_ROOT,
                 "usage: argparse4j [-h]%n"), ap.formatUsage());
         ap.addArgument("-a");
         ap.addArgument("-b").required(true);
@@ -911,22 +911,22 @@ public class ArgumentParserImplTest {
         group.addArgument("-d").required(true);
         ap.addArgument("file");
         assertEquals(String.format(
-                (Locale) null,
+                TextHelper.LOCALE_ROOT,
                 "usage: argparse4j [-h] [-a A] -b B (-c C | -d D) file%n"),
                 ap.formatUsage());
         Subparser foosub = ap.addSubparsers().addParser("foo");
         foosub.addArgument("hash");
         assertEquals(String.format(
-                (Locale) null,
+                TextHelper.LOCALE_ROOT,
                 "usage: argparse4j [-h] [-a A] -b B (-c C | -d D) file {foo} ...%n"),
                 ap.formatUsage());
         assertEquals(String.format(
-                (Locale) null,
+                TextHelper.LOCALE_ROOT,
                 "usage: argparse4j -b B (-c C | -d D) file foo [-h] hash%n"),
                 foosub.formatUsage());
         Subparser bazsub = foosub.addSubparsers().addParser("baz");
         assertEquals(String.format(
-                (Locale) null,
+                TextHelper.LOCALE_ROOT,
                 "usage: argparse4j -b B (-c C | -d D) file foo hash baz [-h]%n"),
                 bazsub.formatUsage());
     }
@@ -935,7 +935,7 @@ public class ArgumentParserImplTest {
     public void testUsage() {
         ap.usage("<${prog}> [OPTIONS] ${prog}FILES");
         assertEquals(String.format(
-                (Locale) null,
+                TextHelper.LOCALE_ROOT,
                 "usage: <argparse4j> [OPTIONS] argparse4jFILES%n"),
                 ap.formatUsage());
     }
@@ -948,7 +948,7 @@ public class ArgumentParserImplTest {
                 .description("group1 description");
         group.addArgument("--foo");
         assertEquals(String.format(
-                  (Locale) null,
+                  TextHelper.LOCALE_ROOT,
                   "usage: argparse4j [-h] [--foo FOO]%n"
                 + "%n"
                 + "This is argparser4j.%n"
@@ -971,7 +971,7 @@ public class ArgumentParserImplTest {
         ArgumentGroup group = ap.addArgumentGroup("");
         group.addArgument("--foo");
         assertEquals(String.format(
-                  (Locale) null,
+                  TextHelper.LOCALE_ROOT,
                   "usage: argparse4j [-h] [--foo FOO]%n"
                 + "%n"
                 + "This is argparser4j.%n"
@@ -995,7 +995,7 @@ public class ArgumentParserImplTest {
                 "group2 description");
         group2.addArgument("--bar").help("bar help");
         assertEquals(String.format(
-                  (Locale) null,
+                  TextHelper.LOCALE_ROOT,
                   "usage: argparse4j [--bar BAR] foo%n"
                 + "%n"
                 + "group1:%n"
@@ -1020,7 +1020,7 @@ public class ArgumentParserImplTest {
         group.addArgument("--foo");
         group.addArgument("--bar");
         assertEquals(String.format(
-                  (Locale) null,
+                  TextHelper.LOCALE_ROOT,
                   "usage: argparse4j [-h] [--foo FOO | --bar BAR]%n"
                 + "%n"
                 + "This is argparser4j.%n"
@@ -1048,7 +1048,7 @@ public class ArgumentParserImplTest {
         // Without title and description, options in mutually exclusive group
         // is merged into other optional arguments.
         assertEquals(String.format(
-                  (Locale) null,
+                  TextHelper.LOCALE_ROOT,
                   "usage: argparse4j [-h] [-b] [--foo FOO]%n"
                 + "%n"
                 + "This is argparser4j.%n"
@@ -1066,7 +1066,7 @@ public class ArgumentParserImplTest {
     public void testFormatHelp() throws ArgumentParserException {
         ap.description("This is argparser4j.").epilog("This is epilog.");
         assertEquals(String.format(
-                  (Locale) null,
+                  TextHelper.LOCALE_ROOT,
                   "usage: argparse4j [-h]%n"
                 + "%n"
                 + "This is argparser4j.%n"
@@ -1081,7 +1081,7 @@ public class ArgumentParserImplTest {
     public void testFormatHelpWithDefaultHelp() throws ArgumentParserException {
         ap.defaultHelp(true).addArgument("--foo").setDefault("alpha");
         assertEquals(String.format(
-                  (Locale) null,
+                  TextHelper.LOCALE_ROOT,
                   "usage: argparse4j [-h] [--foo FOO]%n"
                 + "%n"
                 + "optional arguments:%n"
@@ -1115,7 +1115,7 @@ public class ArgumentParserImplTest {
         sap.addArgument("-j");
 
         assertEquals(String.format(
-                     (Locale) null,
+                     TextHelper.LOCALE_ROOT,
                      "usage: argparse4j [-h] [--foo FOO] [-b B] [-d D] (-f F | -g G) s t {add}%n"
                    + "                  ...%n"
                    + "%n"
@@ -1140,7 +1140,7 @@ public class ArgumentParserImplTest {
                    ap.formatHelp());
         // Check upper parsers's suppressed required arguments are not shown. 
         assertEquals(String.format(
-                     (Locale) null,
+                     TextHelper.LOCALE_ROOT,
                      "usage: argparse4j (-f F | -g G) s t add [-h] [-j J]%n"
                    + "%n"
                    + "optional arguments:%n"
@@ -1159,7 +1159,7 @@ public class ArgumentParserImplTest {
                 "This is epilog of sub-command.");
         parser.addArgument("--foo");
         assertEquals(String.format(
-                  (Locale) null,
+                  TextHelper.LOCALE_ROOT,
                   "usage: argparse4j install [-h] [--foo FOO]%n"
                 + "%n"
                 + "This is sub-command of argparser4j.%n"
@@ -1180,7 +1180,7 @@ public class ArgumentParserImplTest {
         Subparser parser = subparsers.addParser("install").defaultHelp(true);
         parser.addArgument("--foo").setDefault("alpha");
         assertEquals(String.format(
-                  (Locale) null,
+                  TextHelper.LOCALE_ROOT,
                   "usage: argparse4j install [-h] [--foo FOO]%n"
                 + "%n"
                 + "optional arguments:%n"
@@ -1196,7 +1196,7 @@ public class ArgumentParserImplTest {
                 .title("mysubcommands").description("valid subcommands");
         subparsers.addParser("install").help("install help");
         assertEquals(String.format(
-                  (Locale) null,
+                  TextHelper.LOCALE_ROOT,
                   "usage: argparse4j [-h] {install} ...%n"
                 + "%n"
                 + "optional arguments:%n"
@@ -1219,7 +1219,7 @@ public class ArgumentParserImplTest {
         subparsers.addParser("checkout").aliases("co").help("checkout help");
         subparsers.addParser("remove").aliases("rm","del").help("remove help");
         assertEquals(String.format(
-                  (Locale) null,
+                  TextHelper.LOCALE_ROOT,
                   "usage: argparse4j [-h] {clone,checkout,co,remove,rm,del} ...%n"
                 + "%n"
                 + "optional arguments:%n"

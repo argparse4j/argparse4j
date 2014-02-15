@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * <p>
@@ -43,6 +44,11 @@ public final class TextHelper {
 
     private TextHelper() {
     }
+
+    /**
+     * Language neutral locale. Defined here for Java5.
+     */
+    public static final Locale LOCALE_ROOT = new Locale("", "", "");
 
     public static final String LINESEP = System.getProperty("line.separator");
 
