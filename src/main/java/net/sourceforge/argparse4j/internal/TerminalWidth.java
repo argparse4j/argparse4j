@@ -120,11 +120,13 @@ public class TerminalWidth {
 
     private File which(String cmd) throws IOException {
         String path = System.getenv("PATH");
-        for (String dir : path.split(Pattern.quote(File.pathSeparator))) {
-            File command = new File(dir.trim(), cmd);
-            if (command.canExecute()) {
-                return command.getAbsoluteFile();
-            }
+        if (path != null) {
+          for (String dir : path.split(Pattern.quote(File.pathSeparator))) {
+              File command = new File(dir.trim(), cmd);
+              if (command.canExecute()) {
+                  return command.getAbsoluteFile();
+              }
+          }
         }
         throw new IOException("No command '" + cmd + "' on path " + path);
     }
