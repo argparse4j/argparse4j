@@ -42,4 +42,40 @@ public class CollectionArgumentChoiceTest {
         assertEquals("{1,2,3}", choice.toString());
     }
 
+
+    @Test
+    public void testSimpleEnum() {
+        CollectionArgumentChoice<Simple> c = new CollectionArgumentChoice<Simple>(Simple.values());
+        assertTrue(c.contains(Simple.B));
+    }
+
+    @Test
+    public void testAbstractEnum() {
+        CollectionArgumentChoice<Fancy> c = new CollectionArgumentChoice<Fancy>(Fancy.values());
+        assertTrue(c.contains(Fancy.B));
+    }
+
+    private static enum Simple {A, B, C}
+
+    private static enum Fancy {
+        A {
+            @Override
+            String getFoo() {
+                return "aaa";
+            }
+        },
+        B {
+            @Override
+            String getFoo() {
+                return "bbb";
+            }
+        },
+        C {
+            @Override
+            String getFoo() {
+                return "ccc";
+            }
+        };
+        abstract String getFoo();
+    }
 }
