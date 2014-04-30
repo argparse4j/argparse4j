@@ -69,15 +69,18 @@ public class CollectionArgumentChoice<E> implements ArgumentChoice {
             // just return false.
             return false;
         }
-        Class<?> expectedType = values_.iterator().next().getClass();
-        if (expectedType.equals(val.getClass())) {
+        Object first = values_.iterator().next();
+        if (first.getClass().equals(val.getClass())
+                || first instanceof Enum && val instanceof Enum
+                && ((Enum) first).getDeclaringClass().equals(((Enum) val).getDeclaringClass())) {
             return values_.contains(val);
         } else {
             throw new IllegalArgumentException(String.format(
                     TextHelper.LOCALE_ROOT,
                     "type mismatch (Make sure that you specified correct Argument.type()):"
                             + " expected: %s actual: %s",
-                    expectedType.getName(), val.getClass().getName()));
+                    first.getClass().getName(), val.getClass().getName()
+            ));
         }
     }
 
