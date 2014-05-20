@@ -214,14 +214,13 @@ public final class ArgumentImpl implements Argument {
             StringBuilder sb = new StringBuilder();
             sb.setLength(0);
             for (String flag : flags_) {
-                sb.append(flag);
-                if (!mv.isEmpty()) {
-                    sb.append(" ").append(mv);
+                if(sb.length() > 1) { 
+                    sb.append(", ");
                 }
-                sb.append(", ");
+                sb.append(flag);
             }
-            if (sb.length() > 2) {
-                sb.delete(sb.length() - 2, sb.length());
+            if (!mv.isEmpty()) {
+                sb.append(" ").append(mv);
             }
             return sb.toString();
         } else {
