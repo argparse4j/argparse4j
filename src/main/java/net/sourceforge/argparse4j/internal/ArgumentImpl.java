@@ -214,7 +214,7 @@ public final class ArgumentImpl implements Argument {
             StringBuilder sb = new StringBuilder();
             sb.setLength(0);
             for (String flag : flags_) {
-                if(sb.length() > 1) { 
+                if(sb.length() > 0) {
                     sb.append(", ");
                 }
                 sb.append(flag);
