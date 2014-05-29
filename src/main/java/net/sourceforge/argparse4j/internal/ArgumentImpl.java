@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
+import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.helper.PrefixPattern;
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.helper.TextWidthCounter;
@@ -212,15 +213,28 @@ public final class ArgumentImpl implements Argument {
         if (isOptionalArgument()) {
             String mv = formatMetavar();
             StringBuilder sb = new StringBuilder();
-            sb.setLength(0);
-            for (String flag : flags_) {
-                if(sb.length() > 0) {
+
+            if(ArgumentParsers.isSingleMetavar()) {
+                for (String flag : flags_) {
+                    if(sb.length() > 0) {
+                        sb.append(", ");
+                    }
+                    sb.append(flag);
+                }
+                if (!mv.isEmpty()) {
+                    sb.append(" ").append(mv);
+                }
+            } else {
+                for (String flag : flags_) {
+                    sb.append(flag);
+                    if (!mv.isEmpty()) {
+                        sb.append(" ").append(mv);
+                    }
                     sb.append(", ");
                 }
-                sb.append(flag);
-            }
-            if (!mv.isEmpty()) {
-                sb.append(" ").append(mv);
+                if (sb.length() > 2) {
+                    sb.delete(sb.length() - 2, sb.length());
+                }
             }
             return sb.toString();
         } else {

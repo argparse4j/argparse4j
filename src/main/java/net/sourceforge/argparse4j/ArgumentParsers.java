@@ -224,4 +224,31 @@ public final class ArgumentParsers {
             return DEFAULT_FORMAT_WIDTH;
         }
     }
+
+    private static boolean singleMetavar_ = false;
+
+    /**
+     * <p>
+     * If singleMetavar is {@code true}, a metavar string in help message is
+     * only shown after the last flag instead of each flag.
+     * </p>
+     * <p>
+     * By default, a metavar is shown after each flag.
+     * </p>
+     * 
+     * @param singleMetavar
+     *            Switch to display a metavar only after the last flag.
+     */
+    public static void setSingleMetavar(boolean singleMetavar) {
+        singleMetavar_ = singleMetavar;
+    }
+
+    /**
+     * Returns true iff a metavar is shown only after the last flag.
+     * 
+     * @return {@code true} or {@code false}
+     */
+    public static boolean isSingleMetavar() {
+        return singleMetavar_;
+    }
 }
