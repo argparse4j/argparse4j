@@ -76,7 +76,13 @@ public class Namespace {
      *         is not found.
      */
     public String getString(String dest) {
-        return get(dest);
+        Object o = get(dest);
+
+        if(o == null) {
+            return null;
+        }
+
+        return o.toString();
     }
 
     /**
