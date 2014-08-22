@@ -138,5 +138,40 @@ public class ArgumentImplTest {
             assertEquals("argument --foo: invalid choice: 'hello' (choose from {world})", e.getMessage());
         }
     }
-    
+
+    @Test
+    public void testPrimitiveTypes() throws ArgumentParserException {
+        ArgumentImpl arg = new ArgumentImpl(prefix, "foo").type(int.class);
+        assertEquals(Integer.MAX_VALUE, arg.convert(null, Integer.toString(Integer.MAX_VALUE)));
+
+        arg.type(boolean.class);
+        assertEquals(true, arg.convert(null, Boolean.toString(Boolean.TRUE)));
+
+        arg.type(byte.class);
+        assertEquals(Byte.MAX_VALUE, arg.convert(null, Byte.toString(Byte.MAX_VALUE)));
+
+        arg.type(short.class);
+        assertEquals(Short.MAX_VALUE, arg.convert(null, Short.toString(Short.MAX_VALUE)));
+
+        arg.type(long.class);
+        assertEquals(Long.MAX_VALUE, arg.convert(null, Long.toString(Long.MAX_VALUE)));
+
+        arg.type(float.class);
+        assertEquals(Float.MAX_VALUE, arg.convert(null, Float.toString(Float.MAX_VALUE)));
+
+        arg.type(double.class);
+        assertEquals(Double.MAX_VALUE, arg.convert(null, Double.toString(Double.MAX_VALUE)));
+
+        try {
+            arg.type(char.class);
+        } catch(IllegalArgumentException e) {
+            assertEquals("unexpected primitive type", e.getMessage());
+        }
+
+        try {
+            arg.type(void.class);
+        } catch(IllegalArgumentException e) {
+            assertEquals("unexpected primitive type", e.getMessage());
+        }
+    }
 }

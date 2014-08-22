@@ -162,6 +162,13 @@ public interface Argument {
      * By default, type is String, which means no conversion is made. The type
      * must have a constructor which takes one String argument.
      * </p>
+     * <p>
+     * As a convenience, if one of following primitive types (boolean.class,
+     * byte.class, short.class, int.class, long.class, float.class and
+     * double.class) is specified, it is converted to its wrapped type
+     * counterpart. For example, if int.class is given, it is silently converted
+     * to Integer.class.
+     * </p>
      * 
      * @param type
      *            The type which the command line argument should be converted

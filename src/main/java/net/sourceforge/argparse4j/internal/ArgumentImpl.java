@@ -335,12 +335,39 @@ public final class ArgumentImpl implements Argument {
         return this;
     }
 
+    private <T> ReflectArgumentType<T> createReflectArgumentType(Class<T> type) {
+        return new ReflectArgumentType<T>(type);
+    }
+
     @Override
     public <T> ArgumentImpl type(Class<T> type) {
         if (type == null) {
             throw new IllegalArgumentException("type cannot be null");
         }
-        type_ = new ReflectArgumentType<T>(type);
+        if (type.isPrimitive()) {
+            // Convert primitive type class to its object counterpart
+            if (type == boolean.class) {
+                type_ = createReflectArgumentType(Boolean.class);
+            } else if (type == byte.class) {
+                type_ = createReflectArgumentType(Byte.class);
+            } else if (type == short.class) {
+                type_ = createReflectArgumentType(Short.class);
+            } else if (type == int.class) {
+                type_ = createReflectArgumentType(Integer.class);
+            } else if (type == long.class) {
+                type_ = createReflectArgumentType(Long.class);
+            } else if (type == float.class) {
+                type_ = createReflectArgumentType(Float.class);
+            } else if (type == double.class) {
+                type_ = createReflectArgumentType(Double.class);
+            } else {
+                // void and char are not supported.
+                // char.class does not have valueOf(String) method
+                throw new IllegalArgumentException("unexpected primitive type");
+            }
+        } else {
+            type_ = createReflectArgumentType(type);
+        }
         return this;
     }
 
