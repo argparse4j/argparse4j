@@ -233,8 +233,21 @@ public final class ArgumentParsers {
      * only shown after the last flag instead of each flag.
      * </p>
      * <p>
-     * By default, a metavar is shown after each flag.
+     * By default and {@code false} is given to this method, a metavar is shown
+     * after each flag:
      * </p>
+     * 
+     * <pre>
+     * -f FOO, --foo FOO
+     * </pre>
+     * <p>
+     * If {@code true} is given to this method, a metavar string is shown only
+     * once:
+     * </p>
+     * 
+     * <pre>
+     * -f, --foo FOO
+     * </pre>
      * 
      * @param singleMetavar
      *            Switch to display a metavar only after the last flag.
