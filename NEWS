@@ -1,3 +1,76 @@
+argparse4j 0.4.4
+================
+
+Release Note
+------------
+
+This release fixes several reported bugs.  It adds some new features.
+ArgumentParsers.setSingleMetavar() was added to show metavar string
+only once instead of printing them for each flag.
+Namespace.getString() now calls toString() of object found instead of
+just casting to String.  Now Argument.type() can take primitive
+classes and they are converted to their wrapped type counterpart to
+ease some work for developers.
+
+Changes
+-------
+
+* Argument.type: Convert primitive type to its wrapped type counterpart
+
+  We only support 7 out of 9 primitive types, that is char.class and
+  void.class are not supported.  char.class is not supported because
+  it lacks valueOf method.  Fixes gh#36
+
+* Namespace.getString() now calls toString() of object found
+
+  Fixes gh#35
+
+* Fixed trailing spaces. Also fixed the condition to add commas at the
+  help message of a series of flags.
+
+  Patch from lekkas
+
+* Optional argument help messages now display the metavar name once.
+
+  The metavar is now printed only once, at the end of the series of flags:
+  -c, --create <name>    Create vault
+  instead of:
+  -c <name>, --create <name>
+                         Create vault
+
+  Patch from lekkas
+
+  This is disabled by default.  Use
+  ArgumentParsers.setSingleMetavar(true) to enable it.
+
+* Handle enums with abstract methods
+
+  Arg parser currently throws IllegalArgumentException if you set
+  choices to .values() of an enum with abstract methods & pass
+  anything other than the first value. Use getDeclaringClass to check
+  enum types instead of getClass.
+
+  Patch from Jenny Williamson
+
+* Fix for NPE if there is no PATH env var
+
+  Patch from Wolfgang Hoschek
+
+* Use language neutral locale object instead of (Locale) null
+
+* Defer exception for missing required argument so that -h for subparser works
+
+  Previously, if -c is required option in main parser and "install" is
+  a subcommand:
+
+  $ prog install -h
+
+  produces exception saying -c is not provided.  This change will
+  defer the throw of the exception for missing required arguments so
+  that -h option works for subcommands.
+
+
+
 argparse4j 0.4.3
 ================
 
