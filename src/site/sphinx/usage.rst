@@ -1104,6 +1104,13 @@ directly::
     $ java Demo 100
     Namespace(foo=100)
 
+As a convenience, if one of following primitive types
+(``boolean.class``, ``byte.class``, ``short.class``, ``int.class``,
+``long.class``, ``float.class`` and ``double.class``) is specified, it
+is converted to its wrapped type counterpart. For example, if
+``int.class`` is given, it is automatically converted to
+``Integer.class``.
+
 The |Argument.type| can accept enums.  Since enums have limited number
 of members, type conversion effectively acts like a choice from
 members. For example::

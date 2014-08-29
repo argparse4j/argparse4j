@@ -68,7 +68,8 @@ public class Namespace {
 
     /**
      * Returns attribute as {@link String} with given attribute name
-     * {@code dest}.
+     * {@code dest}. This method calls {@link Object#toString()} method of a
+     * found object to get string representation unless object is {@code null}.
      * 
      * @param dest
      *            The attribute name
