@@ -50,3 +50,8 @@ Here is summary of features:
 
 The primary documentation is done using `Sphinx
 <http://sphinx-doc.org/>`_.  You need Sphinx to run ``mvn site``.
+
+Upgrading to 0.5.0
+==================
+
+Please consult the documentation section for :doc:`migration`.

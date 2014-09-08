@@ -29,6 +29,14 @@ public class ArgumentImplTest {
     }
 
     @Test
+    public void testArgumentWithDashSeparatedName() {
+        ArgumentImpl arg = new ArgumentImpl(prefix, "foo-bar");
+        assertEquals("foo-bar", arg.getName());
+        assertEquals("foo_bar", arg.getDest());
+        assertEquals("foo-bar", arg.textualName());
+    }
+
+    @Test
     public void testArgumentWithNoNameOrFlags() {
         try {
             new ArgumentImpl(prefix);
