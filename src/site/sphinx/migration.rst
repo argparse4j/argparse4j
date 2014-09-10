@@ -5,8 +5,8 @@ To 0.5.0:
 ---------
 
 The rules for the default :ref:`Argument-dest` for positional arguments has
-been made consistent with options, in that the dash (`-`) character is
-is converted to an underscore (`_`)
+been made consistent with options, in that the dash (``-``) character is
+is converted to an underscore (``_``)
 
 Prior to 0.5.0::
 
