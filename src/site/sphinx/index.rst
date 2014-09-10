@@ -11,6 +11,7 @@ Contents
 
    usage
    examples
+   migration
 
 Demo
 ----

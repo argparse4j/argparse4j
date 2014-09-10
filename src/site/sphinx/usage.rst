@@ -1489,18 +1489,20 @@ Most :javadoc:`inf.ArgumentParser` actions add some values as an
 attribute of the object returned by |ArgumentParser.parseArgs|
 method. The name of this attribute is determined by "dest". For
 positional arguments, dest is normally supplied as the first argument
-to |ArgumentParser.addArgument| method::
+to |ArgumentParser.addArgument| method, with any internal ``-`` converted
+to ``_``::
 
     public static void main(String[] args) throws ArgumentParserException {
         ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
         parser.addArgument("bar");
+        parser.addArgument("foo-bar");
         System.out.println(parser.parseArgs(args));
     }
 
 .. code-block:: console
 
-    $ java Demo  XX
-    Namespace(bar=XX)
+    $ java Demo XX YY
+    Namespace(bar=XX, foo_bar=YY)
 
 For optional arguments, the value of dest is normally inferred from
 the option strings. :javadoc:`inf.ArgumentParser` generates the value
