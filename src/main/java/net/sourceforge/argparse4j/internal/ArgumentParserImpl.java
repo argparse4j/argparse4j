@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -129,10 +130,11 @@ public final class ArgumentParserImpl implements ArgumentParser {
             this.fromFilePrefixPattern_ = new PrefixPattern(fromFilePrefix);
         }
         if (addHelp) {
+            ResourceBundle bundle = ResourceBundle.getBundle(this.getClass().getName());
             String prefix = prefixChars.substring(0, 1);
             addArgument(prefix + "h", prefix + prefix + "help")
                     .action(Arguments.help())
-                    .help("show this help message and exit")
+                    .help(bundle.getString("help"))
                     .setDefault(Arguments.SUPPRESS);
         }
     }
