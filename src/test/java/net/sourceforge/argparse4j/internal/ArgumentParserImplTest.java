@@ -1,11 +1,8 @@
 package net.sourceforge.argparse4j.internal;
 
-import static net.sourceforge.argparse4j.impl.Arguments.*;
-import static net.sourceforge.argparse4j.test.TestHelper.*;
-import static org.junit.Assert.*;
-
 import java.io.FileInputStream;
 import java.io.PrintWriter;
+import java.util.Locale;
 import java.util.Map;
 
 import net.sourceforge.argparse4j.ArgumentParsers;
@@ -22,10 +19,24 @@ import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import net.sourceforge.argparse4j.inf.Subparsers;
 import net.sourceforge.argparse4j.internal.ArgumentParserImpl.Candidate;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static net.sourceforge.argparse4j.impl.Arguments.SUPPRESS;
+import static net.sourceforge.argparse4j.impl.Arguments.append;
+import static net.sourceforge.argparse4j.impl.Arguments.appendConst;
+import static net.sourceforge.argparse4j.impl.Arguments.count;
+import static net.sourceforge.argparse4j.impl.Arguments.range;
+import static net.sourceforge.argparse4j.impl.Arguments.storeConst;
+import static net.sourceforge.argparse4j.impl.Arguments.storeFalse;
+import static net.sourceforge.argparse4j.impl.Arguments.storeTrue;
+import static net.sourceforge.argparse4j.test.TestHelper.list;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class ArgumentParserImplTest {
 
@@ -40,6 +51,7 @@ public class ArgumentParserImplTest {
 
     @Before
     public void setup() {
+        Locale.setDefault(Locale.US);
         ap = new ArgumentParserImpl("argparse4j");
         zeroargs = new String[]{};
     }
