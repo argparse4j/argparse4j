@@ -66,7 +66,9 @@ import net.sourceforge.argparse4j.inf.Namespace;
 public final class ArgumentParserImpl implements ArgumentParser {
 
     private Map<String, ArgumentImpl> optargIndex_ = new HashMap<String, ArgumentImpl>();
+    private List<ArgumentImpl> args_ = new ArrayList<ArgumentImpl>();
     private List<ArgumentImpl> optargs_ = new ArrayList<ArgumentImpl>();
+    private List<ArgumentImpl> reqargs_ = new ArrayList<ArgumentImpl>();
     private List<ArgumentImpl> posargs_ = new ArrayList<ArgumentImpl>();
     private List<ArgumentGroupImpl> arggroups_ = new ArrayList<ArgumentGroupImpl>();
     private Map<String, Object> defaults_ = new HashMap<String, Object>();
@@ -82,6 +84,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     private PrefixPattern fromFilePrefixPattern_;
     private boolean defaultHelp_ = false;
     private boolean negNumFlag_ = false;
+    private boolean isOptReqSet_ = false;
     private TextWidthCounter textWidthCounter_;
     private static final Pattern NEG_NUM_PATTERN = Pattern.compile("-\\d+");
     private static final Pattern SHORT_OPTS_PATTERN = Pattern
@@ -164,7 +167,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 }
                 optargIndex_.put(flag, arg);
             }
-            optargs_.add(arg);
+            args_.add(arg);
         } else {
             for (ArgumentImpl another : posargs_) {
                 if (arg.getName().equals(another.getName())) {
@@ -179,6 +182,19 @@ public final class ArgumentParserImpl implements ArgumentParser {
         }
         return arg;
     }
+
+    private void setOptionalAndRequired() {
+        if (isOptReqSet_) return;
+        for (ArgumentImpl arg : args_) {
+          if (arg.isRequired()) {
+            reqargs_.add(arg);
+          } else {
+            optargs_.add(arg);
+          }
+        }
+        isOptReqSet_ = true;
+    }
+  
 
     @Override
     public SubparsersImpl addSubparsers() {
@@ -248,11 +264,18 @@ public final class ArgumentParserImpl implements ArgumentParser {
         return defaultHelp_;
     }
 
-    private void printArgumentHelp(PrintWriter writer, List<ArgumentImpl> args,
+    private void printArgumentHelp(String header, PrintWriter writer, List<ArgumentImpl> args,
             int format_width) {
+        boolean headerPrinted = false;
         for (ArgumentImpl arg : args) {
             if (arg.getArgumentGroup() == null
                     || !arg.getArgumentGroup().isSeparateHelp()) {
+                if (arg.getHelpControl() == Arguments.SUPPRESS) continue;
+                if (!headerPrinted) {
+                  writer.println();
+                  writer.println(header);
+                  headerPrinted = true;
+                }
                 arg.printHelp(writer, defaultHelp_, textWidthCounter_,
                         format_width);
             }
@@ -279,17 +302,16 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 && subparsers_.getDescription().isEmpty();
         if (checkDefaultGroup(posargs_)
                 || (subparsers_.hasSubCommand() && subparsersUntitled)) {
-            writer.println();
-            writer.println("positional arguments:");
-            printArgumentHelp(writer, posargs_, formatWidth);
+            printArgumentHelp("positional arguments:", writer, posargs_, formatWidth);
             if (subparsers_.hasSubCommand() && subparsersUntitled) {
                 subparsers_.printSubparserHelp(writer, formatWidth);
             }
         }
+        if (checkDefaultGroup(reqargs_)) {
+            printArgumentHelp("required arguments:", writer, reqargs_, formatWidth);
+        }
         if (checkDefaultGroup(optargs_)) {
-            writer.println();
-            writer.println("optional arguments:");
-            printArgumentHelp(writer, optargs_, formatWidth);
+            printArgumentHelp("optional arguments:", writer, optargs_, formatWidth);
         }
         if (subparsers_.hasSubCommand() && !subparsersUntitled) {
             writer.println();
@@ -332,6 +354,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     @Override
     public String formatHelp() {
+        setOptionalAndRequired();
         StringWriter writer = new StringWriter();
         printHelp(new PrintWriter(writer));
         return writer.toString();
@@ -399,7 +422,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         if (command_ != null) {
             opts.add(command_);
         }
-        for (ArgumentImpl arg : optargs_) {
+        for (ArgumentImpl arg : args_) {
             if (arg.getHelpControl() != Arguments.SUPPRESS
                     && (arg.getArgumentGroup() == null || !arg
                             .getArgumentGroup().isMutex())) {
@@ -480,7 +503,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         if (parser.command_ != null) {
             opts.add(parser.command_);
         }
-        for (ArgumentImpl arg : parser.optargs_) {
+        for (ArgumentImpl arg : parser.args_) {
             if (arg.getHelpControl() != Arguments.SUPPRESS
                     && arg.isRequired()
                     && (arg.getArgumentGroup() == null || !arg
@@ -524,6 +547,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     @Override
     public String formatUsage() {
+        setOptionalAndRequired();
         StringWriter writer = new StringWriter();
         printUsage(new PrintWriter(writer));
         return writer.toString();
@@ -554,7 +578,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
      */
     @Override
     public Object getDefault(String dest) {
-        for (ArgumentImpl arg : optargs_) {
+        for (ArgumentImpl arg : args_) {
             if (dest.equals(arg.getDest()) && arg.getDefault() != null) {
                 return arg.getDefault();
             }
@@ -602,6 +626,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     @Override
     public void parseArgs(String[] args, Map<String, Object> attrs,
             Object userData) throws ArgumentParserException {
+        setOptionalAndRequired();
         parseArgs(args, 0, attrs);
 
         Class userClass = userData.getClass();
@@ -694,6 +719,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     public void parseArgs(String args[], int offset, Map<String, Object> attrs)
             throws ArgumentParserException {
+        setOptionalAndRequired();
         ParseState state = new ParseState(args, offset, negNumFlag_);
         parseArgs(state, attrs);
         if (state.deferredException != null) {
@@ -766,6 +792,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     public void parseArgs(ParseState state, Map<String, Object> attrs)
             throws ArgumentParserException {
+        setOptionalAndRequired();
         populateDefaults(attrs);
         Set<ArgumentImpl> used = new HashSet<ArgumentImpl>();
         ArgumentImpl[] groupUsed = new ArgumentImpl[arggroups_.size()];
@@ -1083,8 +1110,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
         if (state.deferredException != null) {
             return;
         }
-        for (ArgumentImpl arg : optargs_) {
-            if (arg.isRequired() && !used.contains(arg)) {
+        for (ArgumentImpl arg : reqargs_) {
+            if (!used.contains(arg)) {
                 state.deferredException = new ArgumentParserException(
                         String.format(TextHelper.LOCALE_ROOT,
                                 "argument %s is required", arg.textualName()),
@@ -1126,7 +1153,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 opts.put(arg.getDest(), arg.getDefault());
             }
         }
-        for (ArgumentImpl arg : optargs_) {
+        for (ArgumentImpl arg : args_) {
             if (arg.getDefaultControl() != Arguments.SUPPRESS) {
                 opts.put(arg.getDest(), arg.getDefault());
             }
@@ -1307,7 +1334,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     private void printFlagCandidates(String flagBody, PrintWriter writer) {
         List<SubjectBody> subjects = new ArrayList<SubjectBody>();
-        for (ArgumentImpl arg : optargs_) {
+        for (ArgumentImpl arg : args_) {
             String[] flags = arg.getFlags();
             for (int i = 0, len = flags.length; i < len; ++i) {
                 String body = prefixPattern_.removePrefix(flags[i]);
