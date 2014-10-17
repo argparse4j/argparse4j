@@ -83,7 +83,9 @@ public final class ArgumentImpl implements Argument {
                         "mutually exclusive arguments must be optional");
             }
             name_ = nameOrFlags[0];
-            dest_ = name_.replace('-', '_');
+            if (ArgumentParsers.getNoDestConversionForPositionalArgs() == false) {
+                dest_ = name_.replace('-', '_');
+            }
         } else {
             flags_ = nameOrFlags;
             for (String flag : flags_) {
