@@ -288,7 +288,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         }
         if (checkDefaultGroup(optargs_)) {
             writer.println();
-            writer.println("optional arguments:");
+            writer.println("arguments:");
             printArgumentHelp(writer, optargs_, formatWidth);
         }
         if (subparsers_.hasSubCommand() && !subparsersUntitled) {
