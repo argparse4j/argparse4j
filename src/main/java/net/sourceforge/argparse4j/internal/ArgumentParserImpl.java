@@ -61,7 +61,6 @@ import net.sourceforge.argparse4j.inf.Namespace;
 
 /**
  * <strong>The application code must not use this class directly.</strong>
- * 
  */
 public final class ArgumentParserImpl implements ArgumentParser {
 
@@ -83,9 +82,10 @@ public final class ArgumentParserImpl implements ArgumentParser {
     private boolean defaultHelp_ = false;
     private boolean negNumFlag_ = false;
     private TextWidthCounter textWidthCounter_;
+    private ResourceBundle resourceBundle = ResourceBundle.getBundle(this.getClass().getName());
+
     private static final Pattern NEG_NUM_PATTERN = Pattern.compile("-\\d+");
-    private static final Pattern SHORT_OPTS_PATTERN = Pattern
-            .compile("-[^-].*");
+    private static final Pattern SHORT_OPTS_PATTERN = Pattern.compile("-[^-].*");
 
     public ArgumentParserImpl(String prog) {
         this(prog, true, ArgumentParsers.DEFAULT_PREFIX_CHARS, null,
@@ -130,11 +130,10 @@ public final class ArgumentParserImpl implements ArgumentParser {
             this.fromFilePrefixPattern_ = new PrefixPattern(fromFilePrefix);
         }
         if (addHelp) {
-            ResourceBundle bundle = ResourceBundle.getBundle(this.getClass().getName());
             String prefix = prefixChars.substring(0, 1);
             addArgument(prefix + "h", prefix + prefix + "help")
                     .action(Arguments.help())
-                    .help(bundle.getString("help"))
+                    .help(resourceBundle.getString("help"))
                     .setDefault(Arguments.SUPPRESS);
         }
     }
@@ -215,7 +214,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     /**
      * Set text to display before the argument help.
-     * 
+     *
      * @param description
      *            text to display before the argument help
      * @return this
@@ -288,13 +287,12 @@ public final class ArgumentParserImpl implements ArgumentParser {
         }
         if (checkDefaultGroup(optargs_)) {
             writer.println();
-            writer.println("optional arguments:");
+            writer.println(resourceBundle.getString("optional.arguments"));
             printArgumentHelp(writer, optargs_, formatWidth);
         }
         if (subparsers_.hasSubCommand() && !subparsersUntitled) {
             writer.println();
-            writer.print(subparsers_.getTitle().isEmpty() ? "subcommands"
-                    : subparsers_.getTitle());
+            writer.print(subparsers_.getTitle().isEmpty() ? resourceBundle.getString("sub-commands") : subparsers_.getTitle());
             writer.println(":");
             if (!subparsers_.getDescription().isEmpty()) {
                 writer.print("  ");
@@ -374,11 +372,11 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     private void printUsage(PrintWriter writer, int format_width) {
         if (!usage_.isEmpty()) {
-            writer.print("usage: ");
+            writer.print(resourceBundle.getString("usage") + " ");
             writer.println(substitutePlaceholder(usage_));
             return;
         }
-        String usageprog = "usage: " + prog_;
+        String usageprog = resourceBundle.getString("usage") + " " + prog_;
         writer.print(usageprog);
         int offset;
         String firstIndent;
@@ -446,7 +444,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     /**
      * Returns arguments in {@code args} whose {@link Argument#getHelpControl()}
      * do not return {@link Arguments#SUPPRESS}.
-     * 
+     *
      * @param args
      * @return filtered list of arguments
      */
@@ -465,7 +463,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
      * Appends command, required optional arguments and positional arguments in
      * {@code parser} to {@code opts} recursively. Most upper parser stores
      * first, just like post order traversal.
-     * 
+     *
      * @param opts
      *            Command, required optional arguments and positional arguments.
      * @param parser
@@ -547,7 +545,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
      * while parser-level defaults always override argument-level defaults while
      * parsing, this method examines argument-level defaults first. If no
      * default value is found, then check parser-level defaults.
-     * 
+     *
      * @param dest
      *            attribute name of default value to get.
      * @return default value of given dest.
@@ -705,7 +703,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
      * Check that term forms a valid concatenated short options. Note that this
      * option does not actually process arguments. Therefore, true from this
      * function does not mean all arguments in term are acceptable.
-     * 
+     *
      * @param term
      *            string to inspect
      * @return true if term forms a valid concatenated short options.
@@ -733,7 +731,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
      * function handles abbreviation as well. If flag is ambiguous,
      * {@link ArgumentParserException} will be thrown. If flag does not match
      * nay ArgumentImpl, this function returns null.
-     * 
+     *
      * @param flag
      *            flag to match
      * @return ArgumentImpl which matches flag if it succeeds, or null
@@ -860,7 +858,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     /**
      * Format message for "Unrecognized arguments" error.
-     * 
+     *
      * @param state
      *            Current parser state
      * @param args
@@ -888,7 +886,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     /**
      * Check that another option in mutually exclusive group has already been
      * specified. If so, throw an exception.
-     * 
+     *
      * @param arg
      *            The argument currently processed
      * @param groupUsed
@@ -1006,7 +1004,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
      * consumed, this function returns true, because "--" is treated as special
      * optional argument. If prefixFileChar is found in prefix of argument, read
      * arguments from that file and expand arguments in state necessary.
-     * 
+     *
      * @param state
      * @return
      * @throws ArgumentParserException
@@ -1034,7 +1032,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     /**
      * Extends arguments by reading additional arguments from file.
-     * 
+     *
      * @param state
      *            Current parser state.
      * @param file
@@ -1193,7 +1191,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     /**
      * Calculates Damerau–Levenshtein distance between string {@code a} and
      * {@code b} with given costs.
-     * 
+     *
      * @param a
      *            String
      * @param b
@@ -1331,7 +1329,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     /**
      * Prints most similar subjects in subjects to body. Similarity is
      * calculated between body and each {@link SubjectBody#body} in subjects.
-     * 
+     *
      * @param body
      *            String to compare.
      * @param subjects
@@ -1375,7 +1373,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     /**
      * Replace placeholder in src with actual value. The only known placeholder
      * is <tt>${prog}</tt>, which is replaced with {@link #prog_}.
-     * 
+     *
      * @param src
      *            string to be processed
      * @return the substituted string
@@ -1403,7 +1401,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     /**
      * Returns main (parent) parser.
-     * 
+     *
      * @return The main (parent) parser. null if this object is a root parser.
      */
     public ArgumentParserImpl getMainParser() {
