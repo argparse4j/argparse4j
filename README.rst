@@ -12,8 +12,13 @@ Argparse4j is available in Maven central repository:
   <dependency>
     <groupId>net.sourceforge.argparse4j</groupId>
     <artifactId>argparse4j</artifactId>
-    <version>0.4.4</version>
+    <version>0.5.0</version>
   </dependency>
+
+**IMPORTANT**: When upgrading from 0.4.4 or ealier version, read
+:doc:`migration`.  There is an important change in 0.5.0 which might
+break you code.  The documentation describes the change and how to
+migrate from earlier versions.
 
 There are still missing features which exist in argparse but not in
 argparse4j, but there are also new features which only exist in

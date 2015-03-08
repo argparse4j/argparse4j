@@ -20,3 +20,7 @@ Starting from 0.5.0::
     Namespace args = parser.parseArgs(args);
     args.get("foo_bar");
 
+We encourage the applications to review about this change and update
+their code, but it is not feasible, use
+``ArgumentParsers.setNoDestConversionForPositionalArgs(true)`` to tell
+the library not to do this conversion.
