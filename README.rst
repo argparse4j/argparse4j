@@ -16,9 +16,10 @@ Argparse4j is available in Maven central repository:
   </dependency>
 
 **IMPORTANT**: When upgrading from 0.4.4 or ealier version, read
-:doc:`migration`.  There is an important change in 0.5.0 which might
-break you code.  The documentation describes the change and how to
-migrate from earlier versions.
+`Migration <http://argparse4j.sourceforge.net/migration.html>`_.
+There is an important change in 0.5.0 which might break you code.  The
+documentation describes the change and how to migrate from earlier
+versions.
 
 There are still missing features which exist in argparse but not in
 argparse4j, but there are also new features which only exist in
@@ -59,4 +60,5 @@ The primary documentation is done using `Sphinx
 Upgrading to 0.5.0
 ==================
 
-Please consult the documentation section for :doc:`migration`.
+Please consult the documentation section for `Migration
+<http://argparse4j.sourceforge.net/migration.html>`_.
