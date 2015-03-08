@@ -1,213 +1,28 @@
-argparse4j 0.4.4
+argparse4j 0.5.0
 ================
 
 Release Note
 ------------
 
-This release fixes several reported bugs.  It adds some new features.
-ArgumentParsers.setSingleMetavar() was added to show metavar string
-only once instead of printing them for each flag.
-Namespace.getString() now calls toString() of object found instead of
-just casting to String.  Now Argument.type() can take primitive
-classes and they are converted to their wrapped type counterpart to
-ease some work for developers.
+This release fixes the bug that "-" inside positional argument name is
+not converted to "_".  We encourage the applications to review about
+this change and update their code, but it is not feasible, use
+ArgumentParsers.setNoDestConversionForPositionalArgs(true) to tell the
+library not to do this conversion.
 
 Changes
 -------
 
-* Argument.type: Convert primitive type to its wrapped type counterpart
+* Add partial localization for German
 
-  We only support 7 out of 9 primitive types, that is char.class and
-  void.class are not supported.  char.class is not supported because
-  it lacks valueOf method.  Fixes gh#36
+  Patch from schoemer
 
-* Namespace.getString() now calls toString() of object found
+* Add ArgumentParsers#{get,set}NoDestConversionForPositionalArgs()
 
-  Fixes gh#35
+  This method was added for applications where migration is not
+  feasible.
 
-* Fixed trailing spaces. Also fixed the condition to add commas at the
-  help message of a series of flags.
+* Convert dashes (-) to underscores (_) in arg dest for pos args to be
+  consistent with options
 
-  Patch from lekkas
-
-* Optional argument help messages now display the metavar name once.
-
-  The metavar is now printed only once, at the end of the series of flags:
-  -c, --create <name>    Create vault
-  instead of:
-  -c <name>, --create <name>
-                         Create vault
-
-  Patch from lekkas
-
-  This is disabled by default.  Use
-  ArgumentParsers.setSingleMetavar(true) to enable it.
-
-* Handle enums with abstract methods
-
-  Arg parser currently throws IllegalArgumentException if you set
-  choices to .values() of an enum with abstract methods & pass
-  anything other than the first value. Use getDeclaringClass to check
-  enum types instead of getClass.
-
-  Patch from Jenny Williamson
-
-* Fix for NPE if there is no PATH env var
-
-  Patch from Wolfgang Hoschek
-
-* Use language neutral locale object instead of (Locale) null
-
-* Defer exception for missing required argument so that -h for subparser works
-
-  Previously, if -c is required option in main parser and "install" is
-  a subcommand:
-
-  $ prog install -h
-
-  produces exception saying -c is not provided.  This change will
-  defer the throw of the exception for missing required arguments so
-  that -h option works for subcommands.
-
-
-
-argparse4j 0.4.3
-================
-
-Release Note
-------------
-
-This release fixes a bug that causes unexpected string formatting due
-to the localization using the default locale. Now we use null Locale
-object to avoid the localization.
-
-Changes
--------
-
-* Use null Locale for format method
-
-
-
-argparse4j 0.4.2
-================
-
-Release Note
-------------
-
-This release fixes several bugs related to help and usage output.  Now
-HelpArgumentAction throws exception instead of quit a program. The
-generic get method was added to Namespace object.
-
-Changes
--------
-
-* ArgumentParserImpl: Only flush output in methods without PrintWriter
-  parameter
-
-* Added generic get method to Namespace
-
-  Contributed by jon-ruckwood
-
-* Changed HelpArgumentAction to throw exception rather than exit
-
-  Contributed by Adam Parkin
-
-* Fixed bug where System.out got closed in printHelp
-
-  Contributed by Adam Parkin
-
-
-
-argparse4j 0.4.1
-================
-
-Release Note
-------------
-
-This release changes error message when matching empty string for
-subcommand. It adds the method to verify that a file argument can be
-created.
-
-Changes
--------
-
-* Throw "invalid choice" error when matching empty string for
-  subcommand
-
-* Added method to verify that a file argument can be created.
-
-  Contributed by Juan Manuel Caicedo Carvajal
-
-
-
-argparse4j 0.4.0
-================
-
-Release Note
-------------
-
-This release fixes the bug that argument is processed twice with
-concatenated short options.  The following new features were added:
-argument/sub-command abbreviations, usage text override, ${prog}
-substitution in version text, sub-command aliases and count() action.
-If neither title nor description are specified to
-MutuallyExclusiveGroup, the help message for the group is merged into
-other optinal arguments. The Argument.type(Class) now supports
-valueOf(String) static method for conversion. It also now supports
-enums directly. The behavior of nargs("*") for optional arguments are
-slightly changed for some corner-cases. See the changes for details.
-
-Changes
--------
-
-* Show command aliases in help message
-
-* Avoid ``\n`` and use %n or TextHelper.LINESEP instead
-
-* Add CountArgumentAction
-
-  CountArgumentAction counts the number of occurrence of an option.
-  Arguments.count() returns the instance of this object for shortcut.
-
-* Support ${prog} substitution in version string
-
-* Add ArgumentParser.usage()
-
-  By default, the program usage is generated from the arguments
-  the ArgumentParser object contains. This method overrides it.
-
-* Add ArgumentParser.addMutuallyExclusiveGroup() without title arg
-
-  If both title and description are empty, the help message for the
-  group is merged into other optional arguments.
-
-* Don't show available enum constants when conversion failed
-
-  If they are shown, user may be confused with choices because choices
-  may be more limited.
-
-* Add ReflectArgumentType
-
-  ReflectArgumentType is an enhanced version of
-  ConstructorArgumentType.  It first tries to convert given String to
-  desired type using valueOf static method of the type. If it failed,
-  use the constructor of given type just like a
-  ConstructorArgumentType. Since enums have valueOf static method,
-  ReflectArgumentType works with enums as well.  The
-  ReflectArgumentType effectively deprecates ConstructorArgumentType
-  and EnumArgumentType.
-
-* Throw exception if no nameOrFlags is given
-
-* Support argument/sub-command abbreviations
-
-* Adjust narg("*") handling for optinal arguments
-
-  The optional argument with nargs("*") and without default set is not
-  given in command-line, the result is now null instead of empty list.
-
-  The optional argument with nargs("*") is given in command-line with
-  emtpy list, the result is now empty list. It will overwrite existing
-  value or appened to the existing list in case of append() action.
-
-* Fix bug that argument is processed twice with concatenated short options
+  Patch from Amr Mostafa
