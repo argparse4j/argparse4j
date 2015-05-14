@@ -82,10 +82,12 @@ public final class ArgumentParserImpl implements ArgumentParser {
     private boolean defaultHelp_ = false;
     private boolean negNumFlag_ = false;
     private TextWidthCounter textWidthCounter_;
-    private ResourceBundle resourceBundle = ResourceBundle.getBundle(this.getClass().getName());
+    private ResourceBundle resourceBundle = ResourceBundle.getBundle(this
+            .getClass().getName());
 
     private static final Pattern NEG_NUM_PATTERN = Pattern.compile("-\\d+");
-    private static final Pattern SHORT_OPTS_PATTERN = Pattern.compile("-[^-].*");
+    private static final Pattern SHORT_OPTS_PATTERN = Pattern
+            .compile("-[^-].*");
 
     public ArgumentParserImpl(String prog) {
         this(prog, true, ArgumentParsers.DEFAULT_PREFIX_CHARS, null,
@@ -214,7 +216,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     /**
      * Set text to display before the argument help.
-     *
+     * 
      * @param description
      *            text to display before the argument help
      * @return this
@@ -292,7 +294,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
         }
         if (subparsers_.hasSubCommand() && !subparsersUntitled) {
             writer.println();
-            writer.print(subparsers_.getTitle().isEmpty() ? resourceBundle.getString("sub-commands") : subparsers_.getTitle());
+            writer.print(subparsers_.getTitle().isEmpty() ? resourceBundle
+                    .getString("sub-commands") : subparsers_.getTitle());
             writer.println(":");
             if (!subparsers_.getDescription().isEmpty()) {
                 writer.print("  ");
@@ -444,7 +447,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     /**
      * Returns arguments in {@code args} whose {@link Argument#getHelpControl()}
      * do not return {@link Arguments#SUPPRESS}.
-     *
+     * 
      * @param args
      * @return filtered list of arguments
      */
@@ -463,7 +466,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
      * Appends command, required optional arguments and positional arguments in
      * {@code parser} to {@code opts} recursively. Most upper parser stores
      * first, just like post order traversal.
-     *
+     * 
      * @param opts
      *            Command, required optional arguments and positional arguments.
      * @param parser
@@ -545,7 +548,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
      * while parser-level defaults always override argument-level defaults while
      * parsing, this method examines argument-level defaults first. If no
      * default value is found, then check parser-level defaults.
-     *
+     * 
      * @param dest
      *            attribute name of default value to get.
      * @return default value of given dest.
@@ -703,7 +706,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
      * Check that term forms a valid concatenated short options. Note that this
      * option does not actually process arguments. Therefore, true from this
      * function does not mean all arguments in term are acceptable.
-     *
+     * 
      * @param term
      *            string to inspect
      * @return true if term forms a valid concatenated short options.
@@ -731,7 +734,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
      * function handles abbreviation as well. If flag is ambiguous,
      * {@link ArgumentParserException} will be thrown. If flag does not match
      * any ArgumentImpl, this function returns null.
-     *
+     * 
      * @param flag
      *            flag to match
      * @return ArgumentImpl which matches flag if it succeeds, or null
@@ -767,7 +770,6 @@ public final class ArgumentParserImpl implements ArgumentParser {
         populateDefaults(attrs);
         Set<ArgumentImpl> used = new HashSet<ArgumentImpl>();
         ArgumentImpl[] groupUsed = new ArgumentImpl[arggroups_.size()];
-        int posargIndex = 0;
         int posargsLen = posargs_.size();
         while (state.isArgAvail()) {
             // We first evaluate flagFound(state) before comparing arg to "--"
@@ -830,12 +832,14 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 state.consumedSeparator = true;
                 state.negNumFlag = false;
                 ++state.index;
-            } else if (posargIndex < posargsLen) {
-                ArgumentImpl arg = posargs_.get(posargIndex++);
-                processArg(attrs, state, arg, null, null);
+            } else if (state.posargIndex < posargsLen) {
+                ArgumentImpl arg = posargs_.get(state.posargIndex);
+                accumulatePositionalArg(state, arg);
             } else if (!state.consumedSeparator && subparsers_.hasSubCommand()) {
-                checkRequiredArgument(state, used, posargIndex);
+                processPositionalArgs(attrs, state);
+                checkRequiredArgument(state, used);
                 checkRequiredMutex(state, groupUsed);
+                state.resetPosargs();
                 subparsers_.parseArg(state, attrs);
                 return;
             } else {
@@ -845,20 +849,18 @@ public final class ArgumentParserImpl implements ArgumentParser {
                         this);
             }
         }
+        // all arguments are consumed here
         if (subparsers_.hasSubCommand()) {
             throw new ArgumentParserException("too few arguments", this);
         }
-        while (posargIndex < posargsLen) {
-            ArgumentImpl arg = posargs_.get(posargIndex++);
-            processArg(attrs, state, arg, null, null);
-        }
-        checkRequiredArgument(state, used, posargIndex);
+        processPositionalArgs(attrs, state);
+        checkRequiredArgument(state, used);
         checkRequiredMutex(state, groupUsed);
     }
 
     /**
      * Format message for "Unrecognized arguments" error.
-     *
+     * 
      * @param state
      *            Current parser state
      * @param args
@@ -886,7 +888,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     /**
      * Check that another option in mutually exclusive group has already been
      * specified. If so, throw an exception.
-     *
+     * 
      * @param arg
      *            The argument currently processed
      * @param groupUsed
@@ -914,9 +916,10 @@ public final class ArgumentParserImpl implements ArgumentParser {
     }
 
     /**
+     * This function only handles an optional argument.
+     * 
      * @param res
      * @param state
-     *            state.offset points to the argument next to flag
      * @param arg
      * @param flag
      * @param embeddedValue
@@ -952,50 +955,149 @@ public final class ArgumentParserImpl implements ArgumentParser {
             }
             if (argval == null) {
                 if (arg.getMinNumArg() == -1) {
-                    if (arg.isOptionalArgument()) {
-                        throw new ArgumentParserException(
-                                "expected one argument", this, arg);
-                    } else {
-                        throw new ArgumentParserException("too few arguments",
-                                this);
-                    }
-                } else if (arg.isOptionalArgument()) {
-                    // This is a special treatment for nargs("?"). If flag is
-                    // given but no argument follows, produce const value.
-                    arg.run(this, res, flag, arg.getConst());
+                    throw new ArgumentParserException("expected one argument",
+                            this, arg);
                 }
+                // This is a special treatment for nargs("?"). If flag is
+                // given but no argument follows, produce const value.
+                arg.run(this, res, flag, arg.getConst());
             } else {
                 arg.run(this, res, flag, arg.convert(this, argval));
             }
+            return;
+        }
+
+        List<Object> list = new ArrayList<Object>();
+        if (embeddedValue == null) {
+            for (int i = 0; i < arg.getMaxNumArg() && state.isArgAvail(); ++i, ++state.index) {
+                if (flagFound(state)) {
+                    break;
+                }
+                list.add(arg.convert(this, state.getArg()));
+            }
         } else {
-            List<Object> list = new ArrayList<Object>();
-            if (embeddedValue == null) {
-                for (int i = 0; i < arg.getMaxNumArg() && state.isArgAvail(); ++i, ++state.index) {
-                    if (flagFound(state)) {
-                        break;
-                    }
-                    list.add(arg.convert(this, state.getArg()));
-                }
-            } else {
-                list.add(arg.convert(this, embeddedValue));
+            list.add(arg.convert(this, embeddedValue));
+        }
+        if (list.size() < arg.getMinNumArg()) {
+            throw new ArgumentParserException(String.format(
+                    TextHelper.LOCALE_ROOT, "expected %d argument(s)",
+                    arg.getMinNumArg()), this, arg);
+        }
+        // For optional arguments, always process the list even if it is
+        // empty.
+        arg.run(this, res, flag, list);
+    }
+
+    /**
+     * This function accumulates arguments for a given positional argument. It
+     * only accumulates arguments based on how many arguments can be consumed
+     * for given Argument object. The actual processing are done later.
+     * 
+     * @param state
+     * @param arg
+     * @throws ArgumentParserException
+     */
+    private void accumulatePositionalArg(ParseState state, ArgumentImpl arg)
+            throws ArgumentParserException {
+        if (!arg.getAction().consumeArgument()) {
+            // This positional argument does not consume argument (is it
+            // useful?)
+            ++state.posargIndex;
+            return;
+        }
+        if (arg.getMinNumArg() == -1
+                || (arg.getMinNumArg() == 0 && arg.getMaxNumArg() == 1)) {
+            // In case of: option takes exactly one argument, or nargs("?")
+            state.posargArgs.add(state.getArg());
+            ++state.index;
+            ++state.posargIndex;
+            return;
+        }
+        for (; state.posargConsumed < arg.getMaxNumArg() && state.isArgAvail(); ++state.posargConsumed, ++state.index) {
+            if (flagFound(state)) {
+                break;
             }
-            if (list.size() < arg.getMinNumArg()) {
-                if (arg.isOptionalArgument()) {
-                    throw new ArgumentParserException(String.format(
-                            TextHelper.LOCALE_ROOT, "expected %d argument(s)",
-                            arg.getMinNumArg()), this, arg);
-                } else {
-                    throw new ArgumentParserException("too few arguments", this);
-                }
+            state.posargArgs.add(state.getArg());
+        }
+        if (state.posargConsumed == arg.getMaxNumArg()) {
+            // all possible parameters are consumed for this positional
+            // argument. Process next one.
+            ++state.posargIndex;
+            state.posargConsumed = 0;
+            return;
+        }
+    }
+
+    /**
+     * This function processes optional arguments accumulated in state.
+     * 
+     * @param res
+     * @param state
+     * @throws ArgumentParserException
+     */
+    private void processPositionalArgs(Map<String, Object> res, ParseState state)
+            throws ArgumentParserException {
+        // we have gathered all available positional parameters in state. Let's
+        // see it can provide enough parameters for positional arguments.
+
+        int[] mustLeft = new int[posargs_.size() + 1];
+        for (int i = 0; i < posargs_.size(); ++i) {
+            ArgumentImpl arg = posargs_.get(i);
+            if (!arg.getAction().consumeArgument()) {
+                mustLeft[i] = 0;
+                continue;
             }
-            // For optional arguments, always process the list even if it is
-            // empty.
+            if (arg.getMinNumArg() == -1) {
+                mustLeft[i] = 1;
+                continue;
+            }
+            mustLeft[i] = arg.getMinNumArg();
+        }
+        // Summing up from the back of the list, we have mustLeft[i + 1]
+        // containing the number of arguments must be left when
+        // processing posargs_.get(i).
+        mustLeft[posargs_.size()] = 0;
+        for (int i = posargs_.size() - 1; i >= 0; --i) {
+            mustLeft[i] += mustLeft[i + 1];
+        }
+        if (mustLeft[0] > state.posargArgs.size()) {
+            throw new ArgumentParserException("too few arguments", this);
+        }
+        int argindex = 0;
+        for (int i = 0; i < posargs_.size(); ++i) {
+            ArgumentImpl arg = posargs_.get(i);
+            if (!arg.getAction().consumeArgument()) {
+                arg.run(this, res, null, null);
+                continue;
+            }
+            if (arg.getMinNumArg() == -1) {
+                // consumes exactly one parameter
+                arg.run(this, res, null,
+                        arg.convert(this, state.posargArgs.get(argindex++)));
+                continue;
+            }
+            if (arg.getMinNumArg() == 0 && arg.getMaxNumArg() == 1) {
+                // consumes 0 or 1 parameter
+                if (mustLeft[i + 1] == state.posargArgs.size() - argindex) {
+                    // cannot consume parameter here
+                    continue;
+                }
+                arg.run(this, res, null,
+                        arg.convert(this, state.posargArgs.get(argindex++)));
+                continue;
+            }
+            int n = Math.min(arg.getMaxNumArg(), state.posargArgs.size()
+                    - argindex - mustLeft[i + 1]);
             // For positional arguments, empty list means no positional argument
-            // is given. In this case, we want to keep default value, so
-            // don't process the list.
-            if (arg.isOptionalArgument() || !list.isEmpty()) {
-                arg.run(this, res, flag, list);
+            // is given. In this case, we want to keep default value, so don't
+            // process the list.
+            if (n == 0) {
+                continue;
             }
+
+            arg.run(this, res, null,
+                    state.posargArgs.subList(argindex, argindex + n));
+            argindex += n;
         }
     }
 
@@ -1004,7 +1106,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
      * consumed, this function returns true, because "--" is treated as special
      * optional argument. If prefixFileChar is found in prefix of argument, read
      * arguments from that file and expand arguments in state necessary.
-     *
+     * 
      * @param state
      * @return
      * @throws ArgumentParserException
@@ -1032,7 +1134,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     /**
      * Extends arguments by reading additional arguments from file.
-     *
+     * 
      * @param state
      *            Current parser state.
      * @param file
@@ -1075,8 +1177,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         state.resetArgs(newargs);
     }
 
-    private void checkRequiredArgument(ParseState state,
-            Set<ArgumentImpl> used, int posargIndex)
+    private void checkRequiredArgument(ParseState state, Set<ArgumentImpl> used)
             throws ArgumentParserException {
         if (state.deferredException != null) {
             return;
@@ -1089,11 +1190,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
                         this);
             }
         }
-        if (posargs_.size() > posargIndex) {
-            state.deferredException = new ArgumentParserException(
-                    "too few arguments", this);
-        }
-
+        // we already handled the case where arguments is too few for positional
+        // arguments.
     }
 
     private void checkRequiredMutex(ParseState state, ArgumentImpl[] used)
@@ -1191,7 +1289,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     /**
      * Calculates Damerau–Levenshtein distance between string {@code a} and
      * {@code b} with given costs.
-     *
+     * 
      * @param a
      *            String
      * @param b
@@ -1329,7 +1427,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     /**
      * Prints most similar subjects in subjects to body. Similarity is
      * calculated between body and each {@link SubjectBody#body} in subjects.
-     *
+     * 
      * @param body
      *            String to compare.
      * @param subjects
@@ -1373,7 +1471,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     /**
      * Replace placeholder in src with actual value. The only known placeholder
      * is <tt>${prog}</tt>, which is replaced with {@link #prog_}.
-     *
+     * 
      * @param src
      *            string to be processed
      * @return the substituted string
@@ -1401,7 +1499,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     /**
      * Returns main (parent) parser.
-     *
+     * 
      * @return The main (parent) parser. null if this object is a root parser.
      */
     public ArgumentParserImpl getMainParser() {

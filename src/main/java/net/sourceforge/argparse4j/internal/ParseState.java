@@ -1,5 +1,8 @@
 package net.sourceforge.argparse4j.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 
 public class ParseState {
@@ -34,12 +37,32 @@ public class ParseState {
      */
     public ArgumentParserException deferredException;
 
+    /**
+     * Index of positional argument (Argument object) we are currently
+     * processing.
+     */
+    public int posargIndex;
+
+    /**
+     * The number of arguments (well, parameters) consumed for the current
+     * positional Argument object.
+     */
+    public int posargConsumed;
+
+    /**
+     * Accumulated positional arguments we have seen so far.
+     */
+    public List<String> posargArgs;
+
     public ParseState(String args[], int index, boolean negNumFlag) {
         this.args = args;
         this.index = index;
         this.lastFromFileArgIndex = -1;
         this.negNumFlag = negNumFlag;
         this.deferredException = null;
+        this.posargIndex = 0;
+        this.posargConsumed = 0;
+        this.posargArgs = new ArrayList<String>();
     }
 
     void resetArgs(String args[]) {
@@ -53,5 +76,13 @@ public class ParseState {
 
     boolean isArgAvail() {
         return index < args.length;
+    }
+
+    void resetPosargs() {
+        this.posargIndex = 0;
+        this.posargConsumed = 0;
+        // create new list, so that we can use sublist method while processing
+        // arguments.
+        this.posargArgs = new ArrayList<String>();
     }
 }

@@ -633,6 +633,46 @@ public class ArgumentParserImplTest {
     }
 
     @Test
+    public void testParseArgsWithRedistributePositional() throws ArgumentParserException {
+        ap.addArgument("a");
+        ap.addArgument("b").nargs("*");
+        ap.addArgument("c").nargs(2);
+        ap.addArgument("d").nargs("?");
+        ap.addArgument("e");
+        ap.addArgument("f").nargs("*").setDefault("f1", "f2");
+        Namespace res = ap.parseArgs("a b1 b2 c1 c2 e".split(" "));
+        assertEquals("a", res.get("a"));
+        // b should take only 2, to leave remaining arguments to c and e.
+        assertEquals(list("b1", "b2"), res.get("b"));
+        assertEquals(list("c1", "c2"), res.get("c"));
+        assertEquals(null, res.get("d"));
+        assertEquals("e", res.get("e"));
+        // f returns default value
+        assertEquals(list("f1", "f2"), res.get("f"));
+    }
+
+    @Test
+    public void testParseArgsWithTooFewPositional() throws ArgumentParserException {
+        ap.addArgument("a");
+        ap.addArgument("b").nargs("+");
+        try {
+            ap.parseArgs("a".split(" "));
+            fail();
+        } catch (ArgumentParserException e) {
+            assertEquals("too few arguments", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testParseArgsWithPositionalArgsSeparatedByFlag() throws ArgumentParserException {
+        ap.addArgument("--foo");
+        ap.addArgument("bar").nargs("*");
+        Namespace res = ap.parseArgs("a --foo b c d e".split(" "));
+        assertEquals("b", res.get("foo"));
+        assertEquals(list("a", "c", "d", "e"), res.get("bar"));
+    }
+
+    @Test
     public void testParseArgsWithMutexGroup() throws ArgumentParserException {
         MutuallyExclusiveGroup group = ap.addMutuallyExclusiveGroup("mutex");
         group.addArgument("--foo");
