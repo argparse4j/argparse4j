@@ -730,7 +730,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
      * Returns optional argument ArgumentImpl which matches given flag. This
      * function handles abbreviation as well. If flag is ambiguous,
      * {@link ArgumentParserException} will be thrown. If flag does not match
-     * nay ArgumentImpl, this function returns null.
+     * any ArgumentImpl, this function returns null.
      *
      * @param flag
      *            flag to match
