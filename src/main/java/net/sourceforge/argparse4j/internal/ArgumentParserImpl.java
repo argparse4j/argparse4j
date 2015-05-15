@@ -1095,9 +1095,11 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 continue;
             }
 
-            arg.run(this, res, null,
-                    state.posargArgs.subList(argindex, argindex + n));
-            argindex += n;
+            List<Object> list = new ArrayList<Object>(n);
+            for (; n > 0; --n) {
+                list.add(arg.convert(this, state.posargArgs.get(argindex++)));
+            }
+            arg.run(this, res, null, list);
         }
     }
 

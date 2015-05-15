@@ -664,6 +664,13 @@ public class ArgumentParserImplTest {
     }
 
     @Test
+    public void testParseArgsWithConvertPositionalArg() throws ArgumentParserException {
+        ap.addArgument("foo").nargs("*").type(int.class);
+        Namespace res = ap.parseArgs("1 2 3".split(" "));
+        assertEquals(list(1, 2, 3), res.get("foo"));
+    }
+
+    @Test
     public void testParseArgsWithPositionalArgsSeparatedByFlag() throws ArgumentParserException {
         ap.addArgument("--foo");
         ap.addArgument("bar").nargs("*");

@@ -81,8 +81,6 @@ public class ParseState {
     void resetPosargs() {
         this.posargIndex = 0;
         this.posargConsumed = 0;
-        // create new list, so that we can use sublist method while processing
-        // arguments.
-        this.posargArgs = new ArrayList<String>();
+        this.posargArgs.clear();
     }
 }
