@@ -1,28 +1,27 @@
-argparse4j 0.5.0
+argparse4j 0.6.0
 ================
 
 Release Note
 ------------
 
-This release fixes the bug that "-" inside positional argument name is
-not converted to "_".  We encourage the applications to review about
-this change and update their code, but it is not feasible, use
-ArgumentParsers.setNoDestConversionForPositionalArgs(true) to tell the
-library not to do this conversion.
+This release fixes the bug that nargs("*") or nargs("+") for
+positional argument consume all arguments, and do not left any
+arguments to the remaining required positional arguments which take at
+least 1 argument.  By the product of this fix, we also fixed the bug
+that positional arguments are effectively separated and stop to
+consume by the existence of a flag.  For example, we define positional
+argument "foo" which has nargs("+"), and optional argument, "-b" which
+takes not argument.  Then previously, giving "a -b c d" to the program
+resulted error, because "d" was not consumed by "foo".  Now "d" is
+identified as one of argument to "foo", and "foo" takes "a" and "d"
+correctly.  This could possibly change the behaviour of the
+application, depending on how arguments are supplied.
 
 Changes
 -------
 
-* Add partial localization for German
+* Fix bug that positional arguments are separated and not consumed if
+  flag exists in between.
 
-  Patch from schoemer
-
-* Add ArgumentParsers#{get,set}NoDestConversionForPositionalArgs()
-
-  This method was added for applications where migration is not
-  feasible.
-
-* Convert dashes (-) to underscores (_) in arg dest for pos args to be
-  consistent with options
-
-  Patch from Amr Mostafa
+* Distribute arguments to positional Argument object to satisfy
+  minimum number of arguments.
