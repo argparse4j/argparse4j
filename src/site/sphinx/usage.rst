@@ -994,6 +994,26 @@ provided. More specifically, subclass of :javadoc:`inf.ArgumentAction`
 whose :javafunc:`consumeArgument()` returns ``false`` ignores
 |Argument.nargs|.
 
+In argparse4j 0.5.0 or earlier, ``nargs("*")`` or ``nargs("+")`` for
+positional argument greedily consume all available positional
+arguments.  For example, if we have the following program::
+
+    public static void main(String[] args) {
+        ArgumentParser ap = ArgumentParsers.newArgumentParser("prog");
+        ap.addArgument("foo").nargs("*");
+        ap.addArgument("bar");
+        ap.parseArgsOrFail(args);
+    }
+
+If we give 1, 2, 3, 4, and 5 as command-line arguments, ``foo``
+consumes everything.  Because ``bar`` is required, the program will
+show error "too few arguments".  Since argparse4j 0.6.0,
+``nargs("*")`` or ``nargs("+")`` for positional argument leave
+arguments to the remaining positional arguments to satisfy them with
+the minimum number of arguments.  In the above example, ``foo`` now
+consumes only 1, 2, 3, and 4, and leaves 5 to ``bar``, because ``bar``
+is required argument, and consumes just 1 argument.
+
 .. _Argument-setConst:
 
 Argument.setConst()
