@@ -36,7 +36,9 @@ import net.sourceforge.argparse4j.impl.action.StoreTrueArgumentAction;
 import net.sourceforge.argparse4j.impl.action.VersionArgumentAction;
 import net.sourceforge.argparse4j.impl.choice.RangeArgumentChoice;
 import net.sourceforge.argparse4j.impl.type.EnumArgumentType;
+import net.sourceforge.argparse4j.impl.type.EnumStringArgumentType;
 import net.sourceforge.argparse4j.impl.type.FileArgumentType;
+import net.sourceforge.argparse4j.impl.type.ReflectArgumentType;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.FeatureControl;
@@ -246,6 +248,8 @@ public final class Arguments {
      * use {@link Argument#type(Class)}. Instead use this convenient function.
      * </p>
      * 
+     * @deprecated
+     * 
      * @param type
      *            The enum type
      * @return {@link EnumArgumentType} object
@@ -263,5 +267,25 @@ public final class Arguments {
      */
     public static FileArgumentType fileType() {
         return new FileArgumentType();
+    }
+
+    /**
+     * <p>
+     * Returns {@link EnumStringArgumentType} with given enum {@code type}.
+     * </p>
+     * <p>
+     * Uses {@link Enum#toString()} instead of {@link Enum#name()} as the String
+     * representation of the enum. For enums that do not override
+     * {@link Enum#toString()}, this behaves the same as
+     * {@link ReflectArgumentType} or just use {@link Argument#type(Class)}.
+     * </p>
+     * 
+     * @param type
+     *            The enum type
+     * @return {@link EnumStringArgumentType} object
+     */
+    public static <T extends Enum<T>> EnumStringArgumentType<T> enumStringType(
+            Class<T> type) {
+        return new EnumStringArgumentType<T>(type);
     }
 }

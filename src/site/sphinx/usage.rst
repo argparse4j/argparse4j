@@ -1193,6 +1193,50 @@ To limit enum values to choose from, specify them in
       -h, --help             show this help message and exit
       -x {FOO,BAZ}
 
+There is a caveat when ``Enum.toString()`` method is overridden.  For
+instance::
+
+    enum Lang {
+        PYTHON, JAVA, CPP {
+            @Override
+            public String toString() {
+                return "C++";
+            }
+        }
+    }
+
+    ...
+
+    parser.addArgument("--lang").type(Lang.class).choices(Lang.values());
+
+We override ``toString()`` method of enum ``CPP``.  The help message
+prints fine::
+
+    usage: prog [-h] [--lang {PYTHON,JAVA,C++}]
+
+But when we supply "C++" as parameter to ``--lang``, argparse4j
+complains like so::
+
+    prog: error: argument --lang:  could  not  convert  'C++'  to  Lang (No enum
+    constant Demo.Lang.C++)
+
+This is because |Argument.type| does not take into account
+``toString()`` method override, and it still accepts "CPP" as
+parameter (e.g., ``--lang CPP``).  We could not fix treatment of enum
+within |Argument.type|, since it could break existing code.  So, we
+introduced |Arguments.enumStringType| method (it returns object
+:javadoc:`impl.type.EnumStringArgumentType` which implements
+:javadoc:`inf.ArgumentType` we will talk abount soon).  It uses solely
+``toString()`` method when converting String to enum value.  If we use
+this new type instead::
+
+    parser.addArgument("--lang")
+            .type(Arguments.enumStringType(Lang.class))
+            .choices(Lang.values());
+
+Passing ``--lang "C++"`` just works as expected.
+Please note that ``--lang CPP`` no longer works in this case.
+
 The |Argument.type| has a version which accepts an object which
 implements :javadoc:`inf.ArgumentType` interface::
 
@@ -2439,7 +2483,7 @@ available:
 .. |Arguments.appendConst| replace:: :javadocfunc:`impl.Arguments.appendConst()`
 .. |Arguments.append| replace:: :javadocfunc:`impl.Arguments.append()`
 .. |Arguments.count| replace:: :javadocfunc:`impl.Arguments.count()`
-.. |Arguments.enumType| replace:: :javadocfunc:`impl.Arguments.enumType(java.lang.Class)`
+.. |Arguments.enumStringType| replace:: :javadocfunc:`impl.Arguments.enumStringType(java.lang.Class)`
 .. |Arguments.fileType| replace:: :javadocfunc:`impl.Arguments.fileType()`
 .. |Arguments.help| replace:: :javadocfunc:`impl.Arguments.help()`
 .. |Arguments.range| replace:: :javadocfunc:`impl.Arguments.range(T, T)`

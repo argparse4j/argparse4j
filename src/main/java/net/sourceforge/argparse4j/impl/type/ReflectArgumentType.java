@@ -68,7 +68,12 @@ public class ReflectArgumentType<T> implements ArgumentType<T> {
      * converted to one of them. If it cannot be converted,
      * {@link #convert(ArgumentParser, Argument, String)} will throw
      * {@link ArgumentParserException}. This means it already act like a
-     * {@link Argument#choices(Object...)}.
+     * {@link Argument#choices(Object...)}. Please note that this conversion
+     * does not take into account {@link Enum#toString()} override. If
+     * application passes enums with toString() overridden with the different
+     * value than enum name, it may not work like it expects. To take into
+     * account {@link Enum#toString()} on conversion, use
+     * {@link Arguments#enumStringType} instead.
      * </p>
      * 
      * @param type
