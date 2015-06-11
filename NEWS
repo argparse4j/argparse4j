@@ -15,10 +15,22 @@ takes not argument.  Then previously, giving "a -b c d" to the program
 resulted error, because "d" was not consumed by "foo".  Now "d" is
 identified as one of argument to "foo", and "foo" takes "a" and "d"
 correctly.  This could possibly change the behaviour of the
-application, depending on how arguments are supplied.
+application, depending on how arguments are supplied.  This release
+also adds EnumStringArgumentType, and its shortcut
+Arguments.enumStringType.  Argument.type() already supports enum
+types, but it does not take into account toString() override for enum.
+EnumStringArgumentType converts strings to enums using toString as the
+enum String representation.
 
 Changes
 -------
+
+* Adds EnumStringArgumentType
+
+  Adds EnumStringArgumentType that converts strings to enums using
+  toString as the enum String representation.
+
+  Patch from andrewj
 
 * Fix bug that positional arguments are separated and not consumed if
   flag exists in between.
