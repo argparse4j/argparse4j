@@ -791,11 +791,11 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     // Assign null for clarity
                     embeddedValue = null;
                     boolean shortOptsFound = false;
-                    if (SHORT_OPTS_PATTERN.matcher(term).matches()) {
+                    if (prefixPattern_.matchShortFlag(term)) {
                         shortOptsFound = true;
                         // Possible concatenated short options
                         for (int i = 1, termlen = term.length(); i < termlen; ++i) {
-                            String shortFlag = "-" + term.charAt(i);
+                            String shortFlag = term.substring(0, 1) + term.charAt(i);
                             arg = optargIndex_.get(shortFlag);
                             if (arg == null) {
                                 shortOptsFound = false;

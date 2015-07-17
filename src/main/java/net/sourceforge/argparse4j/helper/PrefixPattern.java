@@ -76,6 +76,19 @@ public class PrefixPattern {
     }
 
     /**
+     * Returns {@code true} if flag string {@code str} matches prefixChars and
+     * it is short flag, that is, its matched prefix length must be 1.
+     * 
+     * @param str
+     *            The flag string to match
+     * @return {@code true} or {@code false}
+     */
+    public boolean matchShortFlag(String str) {
+        Matcher m = prefixPattern_.matcher(str);
+        return m.find() && !m.group(0).equals(str) && m.group(0).length() == 1;
+    }
+
+    /**
      * <p>
      * Removes prefixChars from given flag string.
      * </p>

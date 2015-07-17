@@ -849,6 +849,19 @@ public class ArgumentParserImplTest {
     }
 
     @Test
+    public void testParseArgsWithConcatShortOptsAndPrefixChars()
+            throws ArgumentParserException {
+        ap = new ArgumentParserImpl("prog", true, "-+");
+        ap.addArgument("+a").action(Arguments.storeTrue());
+        ap.addArgument("+b");
+
+        Namespace res = ap.parseArgs("+abc".split(" "));
+
+        assertEquals(true, res.get("a"));
+        assertEquals("c", res.get("b"));
+    }
+
+    @Test
     public void testSubparserInheritPrefixChars() throws ArgumentParserException {
         ap = new ArgumentParserImpl("argparse4j", true, "+");
         ap.addSubparsers().addParser("install").addArgument("+f");
