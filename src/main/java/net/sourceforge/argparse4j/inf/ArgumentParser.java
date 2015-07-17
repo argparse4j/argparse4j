@@ -413,6 +413,99 @@ public interface ArgumentParser {
 
     /**
      * <p>
+     * Just like {@link #parseArgsOrFail(String[])}, but parses only known
+     * arguments without throwing exception for unrecognized arguments. If
+     * {@code unknown} is not null, unrecognized arguments will be stored in it.
+     * </p>
+     * 
+     * @param args
+     *            Command line arguments.
+     * @param unknown
+     *            Output variable to store unrecognized arguments, or null
+     * @return {@link Namespace} object.
+     */
+    Namespace parseKnownArgsOrFail(String args[], List<String> unknown);
+
+    /**
+     * <p>
+     * Just like {@link #parseArgs(String[])}, but parses only known arguments
+     * without throwing exception for unrecognized arguments. If {@code unknown}
+     * is not null, unrecognized arguments will be stored in it.
+     * </p>
+     * 
+     * @param args
+     *            Command line arguments.
+     * @param unknown
+     *            Output variable to store unrecognized arguments, or null
+     * @return {@link Namespace} object.
+     * @throws ArgumentParserException
+     *             If an error occurred.
+     */
+    Namespace parseKnownArgs(String args[], List<String> unknown)
+            throws ArgumentParserException;
+
+    /**
+     * <p>
+     * Just like {@link #parseArgs(String[], Map)}, but parses only known
+     * arguments without throwing exception for unrecognized arguments. If
+     * {@code unknown} is not null, unrecognized arguments will be stored in it.
+     * </p>
+     * 
+     * @param args
+     *            Command line arguments.
+     * @param unknown
+     *            Output variable to store unrecognized arguments, or null
+     * @param attrs
+     *            Map object to store attributes.
+     * @throws ArgumentParserException
+     *             If an error occurred.
+     */
+    void parseKnownArgs(String[] args, List<String> unknown,
+            Map<String, Object> attrs) throws ArgumentParserException;
+
+    /**
+     * <p>
+     * Just like {@link #parseArgs(String[], Object)}, but parses only known
+     * arguments without throwing exception for unrecognized arguments. If
+     * {@code unknown} is not null, unrecognized arguments will be stored in it.
+     * </p>
+     * 
+     * @param args
+     *            Command line arguments.
+     * @param unknown
+     *            Output variable to store unrecognized arguments, or null
+     * @param userData
+     *            Object to store attributes.
+     * @throws ArgumentParserException
+     *             If an error occurred.
+     */
+    void parseKnownArgs(String[] args, List<String> unknown, Object userData)
+            throws ArgumentParserException;
+
+    /**
+     * <p>
+     * Just like {@link #parseArgs(String[], Map, Object)}, but parses only
+     * known arguments without throwing exception for unrecognized arguments. If
+     * {@code unknown} is not null, unrecognized arguments will be stored in it.
+     * </p>
+     * 
+     * @param args
+     *            Command line arguments.
+     * @param unknown
+     *            Output variable to store unrecognized arguments, or null
+     * @param attrs
+     *            Map to store attributes.
+     * @param userData
+     *            Object to store attributes.
+     * @throws ArgumentParserException
+     *             If an error occurred.
+     */
+    void parseKnownArgs(String[] args, List<String> unknown,
+            Map<String, Object> attrs, Object userData)
+            throws ArgumentParserException;
+
+    /**
+     * <p>
      * Prints usage and error message.
      * </p>
      * <p>

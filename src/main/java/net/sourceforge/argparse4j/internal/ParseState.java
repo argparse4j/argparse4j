@@ -54,7 +54,13 @@ public class ParseState {
      */
     public List<String> posargArgs;
 
-    public ParseState(String args[], int index, boolean negNumFlag) {
+    /**
+     * Accumulated unknown arguments, if not null.
+     */
+    public List<String> unknown;
+
+    public ParseState(String args[], int index, boolean negNumFlag,
+            List<String> unknown) {
         this.args = args;
         this.index = index;
         this.lastFromFileArgIndex = -1;
@@ -63,6 +69,7 @@ public class ParseState {
         this.posargIndex = 0;
         this.posargConsumed = 0;
         this.posargArgs = new ArrayList<String>();
+        this.unknown = unknown;
     }
 
     void resetArgs(String args[]) {

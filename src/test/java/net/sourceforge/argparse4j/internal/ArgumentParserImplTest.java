@@ -2,6 +2,9 @@ package net.sourceforge.argparse4j.internal;
 
 import java.io.FileInputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -19,6 +22,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import net.sourceforge.argparse4j.inf.Subparsers;
 import net.sourceforge.argparse4j.internal.ArgumentParserImpl.Candidate;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -859,6 +863,77 @@ public class ArgumentParserImplTest {
 
         assertEquals(true, res.get("a"));
         assertEquals("c", res.get("b"));
+    }
+
+    @Test
+    public void tetParseKnownArgsWithNullUnknown() throws ArgumentParserException {
+        ap.addArgument("-f");
+
+        Namespace res = ap.parseKnownArgs("-f a b c -g".split(" "), null);
+
+        assertEquals("a", res.get("f"));
+    }
+
+    @Test
+    public void testParseKnownArgs() throws ArgumentParserException {
+        ap = new ArgumentParserImpl("prog", true, "-+");
+        ap.addArgument("-f");
+        ap.addArgument("-g");
+        ap.addArgument("+a").action(Arguments.storeTrue());
+        ap.addArgument("path");
+
+        List<String> unknown = new ArrayList<String>();
+        Namespace res = ap.parseKnownArgs(
+                "p -f a b -g c d -i k --i +abc".split(" "), unknown);
+
+        assertEquals(list("b", "d", "-i", "k", "--i", "+bc"), unknown);
+        assertEquals("a", res.get("f"));
+        assertEquals("c", res.get("g"));
+        assertEquals("p", res.get("path"));
+
+        unknown.clear();
+
+        Map<String, Object> attrs = new HashMap<String, Object>();
+        ap.parseKnownArgs("p q".split(" "), unknown, attrs);
+
+        assertEquals(list("q"), unknown);
+        assertEquals("p", attrs.get("path"));
+
+        unknown.clear();
+        attrs.clear();
+
+        class Out {
+            @Arg(dest = "path")
+            public String path;
+        }
+
+        Out out = new Out();
+        ap.parseKnownArgs("p q".split(" "), unknown, out);
+
+        assertEquals(list("q"), unknown);
+        assertEquals("p", out.path);
+
+        unknown.clear();
+        attrs.clear();
+        out = new Out();
+
+        ap.parseKnownArgs("p q".split(" "), unknown, attrs, out);
+
+        assertEquals(list("q"), unknown);
+        assertEquals("p", attrs.get("path"));
+        assertEquals("p", out.path);
+    }
+
+    @Test
+    public void testParseKnownArgsWithSubparser() throws ArgumentParserException {
+        ArgumentParser install = ap.addSubparsers().addParser("install");
+        install.addArgument("-f");
+
+        List<String> unknown = new ArrayList<String>();
+        Namespace res = ap.parseKnownArgs("-g install -fx -i k".split(" "), unknown);
+
+        assertEquals(list("-g", "-i", "k"), unknown);
+        assertEquals("x", res.get("f"));
     }
 
     @Test

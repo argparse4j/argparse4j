@@ -209,6 +209,36 @@ public final class SubparserImpl implements Subparser {
     }
 
     @Override
+    public Namespace parseKnownArgsOrFail(String[] args, List<String> unknown) {
+        return parser_.parseKnownArgsOrFail(args, unknown);
+    }
+
+    @Override
+    public Namespace parseKnownArgs(String[] args, List<String> unknown)
+            throws ArgumentParserException {
+        return parser_.parseKnownArgs(args, unknown);
+    }
+
+    @Override
+    public void parseKnownArgs(String[] args, List<String> unknown,
+            Map<String, Object> attrs) throws ArgumentParserException {
+        parser_.parseKnownArgs(args, unknown, attrs);
+    }
+
+    @Override
+    public void parseKnownArgs(String[] args, List<String> unknown,
+            Object userData) throws ArgumentParserException {
+        parser_.parseKnownArgs(args, unknown, userData);
+    }
+
+    @Override
+    public void parseKnownArgs(String[] args, List<String> unknown,
+            Map<String, Object> attrs, Object userData)
+            throws ArgumentParserException {
+        parser_.parseKnownArgs(args, unknown, attrs, userData);
+    }
+
+    @Override
     public void handleError(ArgumentParserException e) {
         parser_.handleError(e);
     }

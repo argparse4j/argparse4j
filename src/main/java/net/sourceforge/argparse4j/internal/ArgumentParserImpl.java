@@ -581,6 +581,18 @@ public final class ArgumentParserImpl implements ArgumentParser {
     }
 
     @Override
+    public Namespace parseKnownArgsOrFail(String args[], List<String> unknown) {
+        try {
+            Namespace ns = parseKnownArgs(args, unknown);
+            return ns;
+        } catch (ArgumentParserException e) {
+            handleError(e);
+            System.exit(1);
+        }
+        return null;
+    }
+
+    @Override
     public Namespace parseArgs(String args[]) throws ArgumentParserException {
         Map<String, Object> attrs = new HashMap<String, Object>();
         parseArgs(args, attrs);
@@ -588,22 +600,56 @@ public final class ArgumentParserImpl implements ArgumentParser {
     }
 
     @Override
+    public Namespace parseKnownArgs(String args[], List<String> unknown)
+            throws ArgumentParserException {
+        Map<String, Object> attrs = new HashMap<String, Object>();
+        parseKnownArgs(args, unknown, attrs);
+        return new Namespace(attrs);
+    }
+
+    @Override
     public void parseArgs(String[] args, Map<String, Object> attrs)
             throws ArgumentParserException {
-        parseArgs(args, 0, attrs);
+        parseArgs(args, 0, null, attrs);
+    }
+
+    @Override
+    public void parseKnownArgs(String[] args, List<String> unknown,
+            Map<String, Object> attrs) throws ArgumentParserException {
+        parseKnownArgs(args, 0, unknown, attrs);
     }
 
     @Override
     public void parseArgs(String[] args, Object userData)
             throws ArgumentParserException {
-        Map<String, Object> opts = new HashMap<String, Object>();
-        parseArgs(args, opts, userData);
+        Map<String, Object> attrs = new HashMap<String, Object>();
+        parseArgs(args, attrs, userData);
+    }
+
+    @Override
+    public void parseKnownArgs(String[] args, List<String> unknown,
+            Object userData) throws ArgumentParserException {
+        Map<String, Object> attrs = new HashMap<String, Object>();
+        parseKnownArgs(args, unknown, attrs, userData);
     }
 
     @Override
     public void parseArgs(String[] args, Map<String, Object> attrs,
             Object userData) throws ArgumentParserException {
-        parseArgs(args, 0, attrs);
+        parseArgs(args, 0, null, attrs);
+        fillUserDataFromAttrs(userData, attrs);
+    }
+
+    @Override
+    public void parseKnownArgs(String[] args, List<String> unknown,
+            Map<String, Object> attrs, Object userData)
+            throws ArgumentParserException {
+        parseKnownArgs(args, 0, unknown, attrs);
+        fillUserDataFromAttrs(userData, attrs);
+    }
+
+    public void fillUserDataFromAttrs(Object userData, Map<String, Object> attrs)
+            throws ArgumentParserException {
 
         Class userClass = userData.getClass();
         while (userClass != null) {
@@ -693,9 +739,17 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     }
 
-    public void parseArgs(String args[], int offset, Map<String, Object> attrs)
-            throws ArgumentParserException {
-        ParseState state = new ParseState(args, offset, negNumFlag_);
+    public void parseKnownArgs(String args[], int offset, List<String> unknown,
+            Map<String, Object> attrs) throws ArgumentParserException {
+        if (unknown == null) {
+            unknown = new ArrayList<String>();
+        }
+        parseArgs(args, offset, unknown, attrs);
+    }
+
+    public void parseArgs(String args[], int offset, List<String> unknown,
+            Map<String, Object> attrs) throws ArgumentParserException {
+        ParseState state = new ParseState(args, offset, negNumFlag_, unknown);
         parseArgs(state, attrs);
         if (state.deferredException != null) {
             throw state.deferredException;
@@ -791,14 +845,17 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     // Assign null for clarity
                     embeddedValue = null;
                     boolean shortOptsFound = false;
+                    int unknownStart = -1;
                     if (prefixPattern_.matchShortFlag(term)) {
                         shortOptsFound = true;
                         // Possible concatenated short options
                         for (int i = 1, termlen = term.length(); i < termlen; ++i) {
-                            String shortFlag = term.substring(0, 1) + term.charAt(i);
+                            String shortFlag = term.substring(0, 1)
+                                    + term.charAt(i);
                             arg = optargIndex_.get(shortFlag);
                             if (arg == null) {
                                 shortOptsFound = false;
+                                unknownStart = i;
                                 break;
                             }
                             if (arg.getAction().consumeArgument()) {
@@ -817,9 +874,16 @@ public final class ArgumentParserImpl implements ArgumentParser {
                         }
                     }
                     if (!shortOptsFound) {
-                        throw new UnrecognizedArgumentException(
-                                formatUnrecognizedArgumentErrorMessage(state,
-                                        term), this, term);
+                        if (state.unknown == null) {
+                            throw new UnrecognizedArgumentException(
+                                    formatUnrecognizedArgumentErrorMessage(
+                                            state, term), this, term);
+                        }
+
+                        state.unknown
+                                .add(unknownStart == -1 ? term : term
+                                        .substring(0, 1)
+                                        + term.substring(unknownStart));
                     }
                 }
                 ++state.index;
@@ -842,11 +906,14 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 state.resetPosargs();
                 subparsers_.parseArg(state, attrs);
                 return;
-            } else {
+            } else if (state.unknown == null) {
                 throw new ArgumentParserException(
                         formatUnrecognizedArgumentErrorMessage(state,
                                 TextHelper.concat(state.args, state.index, " ")),
                         this);
+            } else {
+                state.unknown.add(state.getArg());
+                ++state.index;
             }
         }
         // all arguments are consumed here
