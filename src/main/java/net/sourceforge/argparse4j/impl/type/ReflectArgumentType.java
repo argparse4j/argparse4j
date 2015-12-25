@@ -32,14 +32,22 @@ import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.ArgumentType;
+import net.sourceforge.argparse4j.inf.MetavarInference;
 
 /**
  * <p>
  * This implementation converts String value into given type using type's
  * {@code valueOf(java.lang.String)} static method or its constructor.
+ * 
+ * This class implements {@link MetavarInference} interface, and performs
+ * special handling when {@link Boolean} class is passed to the constructor. In
+ * that case, {@link ReflectArgumentType#inferMetavar()} returns convenient
+ * metavar string for Boolean values, and it is used when
+ * {@link Argument#metavar(String...)} is not used.
  * </p>
  */
-public class ReflectArgumentType<T> implements ArgumentType<T> {
+public class ReflectArgumentType<T> implements ArgumentType<T>,
+        MetavarInference {
 
     private Class<T> type_;
 
@@ -152,5 +160,21 @@ public class ReflectArgumentType<T> implements ArgumentType<T> {
 
     private void handleInstatiationError(Exception e) {
         throw new IllegalArgumentException("reflect type conversion error", e);
+    }
+
+    /**
+     * If {@link Boolean} class is passed to constructor, this method returns
+     * metavar string "{true,false}" for convenience.
+     * 
+     * @see net.sourceforge.argparse4j.inf.MetavarInference#inferMetavar()
+     */
+    @Override
+    public String[] inferMetavar() {
+        if (!Boolean.class.equals(type_)) {
+            return null;
+        }
+
+        return new String[] { TextHelper.concat(
+                new String[] { "true", "false" }, 0, ",", "{", "}") };
     }
 }
