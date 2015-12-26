@@ -1301,6 +1301,27 @@ that simply check against a range of values::
 
 See :ref:`Argument-choices` for more details.
 
+In some cases, type itself may infer metavar.  In that case, it is
+more convenient to get metavar from type instead of setting metavar
+for each argument.  To achieve this, if
+:javadoc:`inf.MetavarInference` is implemented as well, it can infer
+metavar through its interface method.  We mentioned that special
+handling of ``Boolean.class`` for default metavar in
+:ref:`Argument-metavar` section.  It is implemented using
+:javadoc:`inf.MetavarInference`.  Here is an example of implementation
+of :javadocfunc:`inf.MetavarInference.inferMetavar()` from
+:javadoc:`impl.ReflectArgumentType`::
+
+    @Override
+    public String[] inferMetavar() {
+        if (!Boolean.class.equals(type_)) {
+            return null;
+        }
+
+        return new String[] { TextHelper.concat(
+                new String[] { "true", "false" }, 0, ",", "{", "}") };
+    }
+
 .. _Argument-choices:
 
 Argument.choices()
@@ -1467,6 +1488,8 @@ When :javadoc:`inf.ArgumentParser` generates help messages, it need
 some way to referer to each expected argument. By default,
 :javadoc:`inf.ArgumentParser` objects use the "dest" value (see
 :ref:`Argument-dest` about "dest" value) as the "name" of each object.
+If ``Boolean.class`` is given to |Argument.type|, and if no metavar is set,
+``{true,false}`` is used as metavar automatically for convenience.
 By default, for positional arguments, the dest value is used directly,
 and for optional arguments, the dest value is uppercased. So, a single
 positional argument with ``dest("bar")`` will be referred to as
