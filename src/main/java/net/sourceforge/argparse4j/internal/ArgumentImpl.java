@@ -170,22 +170,26 @@ public final class ArgumentImpl implements Argument {
 
     public String[] resolveMetavar() {
         if (metavar_ == null) {
-            if (type_ instanceof MetavarInference) {
-                String[] metavar = ((MetavarInference) type_).inferMetavar();
-                if (metavar != null) {
-                    return metavar;
-                }
-            }
-            String[] metavar = new String[1];
             if (choice_ == null) {
-                metavar[0] = isOptionalArgument() ? dest_.toUpperCase() : dest_;
-            } else {
-                metavar[0] = choice_.textualFormat();
+                if (type_ instanceof MetavarInference) {
+                    String[] metavar = ((MetavarInference) type_)
+                            .inferMetavar();
+                    if (metavar != null) {
+                        return metavar;
+                    }
+                }
+
+                if (isOptionalArgument()) {
+                    return new String[] { dest_.toUpperCase() };
+                }
+
+                return new String[] { dest_ };
             }
-            return metavar;
-        } else {
-            return metavar_;
+
+            return new String[] { choice_.textualFormat() };
         }
+
+        return metavar_;
     }
 
     public String formatMetavar() {

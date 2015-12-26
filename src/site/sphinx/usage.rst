@@ -1166,7 +1166,7 @@ members. For example::
       -x X
 
 The available enum values are automatically used as metavar, if
-metavar is not explicitly set by application::
+metavar and choices are not explicitly set by application::
 
     parser.addArgument("-x").type(Enums.class);
 
@@ -1487,9 +1487,10 @@ When :javadoc:`inf.ArgumentParser` generates help messages, it need
 some way to referer to each expected argument. By default,
 :javadoc:`inf.ArgumentParser` objects use the "dest" value (see
 :ref:`Argument-dest` about "dest" value) as the "name" of each object.
-If ``Boolean.class`` is given to |Argument.type|, and if no metavar is set,
-``{true,false}`` is used as metavar automatically for convenience.
-Similarly, if enum type is given, and if no metavar is set,
+If ``Boolean.class`` is given to |Argument.type|, and if no metavar and
+no choices are set, ``{true,false}`` is used as metavar automatically
+for convenience.
+Similarly, if enum type is given, and if no metavar and no choices are set,
 a metavar containing their all names is automatically used for convenience
 (these names are from ``Enum.names()`` instead of ``Enum.toString()``).
 By default, for positional arguments, the dest value is used directly,
