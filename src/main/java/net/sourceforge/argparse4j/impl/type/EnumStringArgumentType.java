@@ -28,6 +28,7 @@ import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.ArgumentType;
+import net.sourceforge.argparse4j.inf.MetavarInference;
 
 /**
  * <p>
@@ -41,7 +42,8 @@ import net.sourceforge.argparse4j.inf.ArgumentType;
  * @param <T>
  *            Type of enum
  */
-public class EnumStringArgumentType<T extends Enum<T>> implements ArgumentType<T> {
+public class EnumStringArgumentType<T extends Enum<T>> implements
+        ArgumentType<T>, MetavarInference {
 
     private Class<T> type_;
 
@@ -75,5 +77,23 @@ public class EnumStringArgumentType<T extends Enum<T>> implements ArgumentType<T
                 TextHelper.LOCALE_ROOT,
                 "could not convert '%s' (choose from %s)", value, choices),
                 parser, arg);
+    }
+
+    /**
+     * <p>
+     * Infers metavar based on given type.
+     * </p>
+     * <p>
+     * The inferred metavar contains all enum constant string representation,
+     * obtained by calling their {@link Object#toString()} method.
+     * </p>
+     * 
+     * @see net.sourceforge.argparse4j.inf.ArgumentType#convert(net.sourceforge.argparse4j.inf.ArgumentParser,
+     *      net.sourceforge.argparse4j.inf.Argument, java.lang.String)
+     */
+    @Override
+    public String[] inferMetavar() {
+        return new String[] { TextHelper.concat(type_.getEnumConstants(),
+                0, ",", "{", "}") };
     }
 }

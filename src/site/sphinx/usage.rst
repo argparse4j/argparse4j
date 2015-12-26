@@ -1165,10 +1165,10 @@ members. For example::
       -h, --help             show this help message and exit
       -x X
 
-To show available enum values in help message, use
-|Argument.choices|::
+The available enum values are automatically used as metavar, if
+metavar is not explicitly set by application::
 
-    parser.addArgument("-x").type(Enums.class).choices(Enums.values());
+    parser.addArgument("-x").type(Enums.class);
 
 .. code-block:: console
 
@@ -1231,8 +1231,7 @@ introduced |Arguments.enumStringType| method (it returns object
 this new type instead::
 
     parser.addArgument("--lang")
-            .type(Arguments.enumStringType(Lang.class))
-            .choices(Lang.values());
+            .type(Arguments.enumStringType(Lang.class));
 
 Passing ``--lang "C++"`` just works as expected.
 Please note that ``--lang CPP`` no longer works in this case.
@@ -1490,6 +1489,9 @@ some way to referer to each expected argument. By default,
 :ref:`Argument-dest` about "dest" value) as the "name" of each object.
 If ``Boolean.class`` is given to |Argument.type|, and if no metavar is set,
 ``{true,false}`` is used as metavar automatically for convenience.
+Similarly, if enum type is given, and if no metavar is set,
+a metavar containing their all names is automatically used for convenience
+(these names are from ``Enum.names()`` instead of ``Enum.toString()``).
 By default, for positional arguments, the dest value is used directly,
 and for optional arguments, the dest value is uppercased. So, a single
 positional argument with ``dest("bar")`` will be referred to as

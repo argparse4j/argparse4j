@@ -102,7 +102,10 @@ public class ReflectArgumentType<T> implements ArgumentType<T>,
             try {
                 return (T) Enum.valueOf((Class<Enum>) type_, value);
             } catch (IllegalArgumentException e) {
-                throwArgumentParserException(parser, arg, value, e);
+                throw new ArgumentParserException(String.format(
+                        TextHelper.LOCALE_ROOT,
+                        "could not convert '%s' (choose from %s)", value,
+                        inferMetavar()[0]), parser, arg);
             }
         }
         Method m = null;
@@ -164,18 +167,43 @@ public class ReflectArgumentType<T> implements ArgumentType<T>,
     }
 
     /**
+     * <p>
+     * Infers metavar based on given type.
+     * </p>
+     * <p>
      * If {@link Boolean} class is passed to constructor, this method returns
      * metavar string "{true,false}" for convenience.
+     * </p>
+     * <p>
+     * If enum type is passed to constructor, this method returns metavar
+     * containing all enum names defined in that type. This uses
+     * {@link Enum#name()} method, instead of {@link Object#toString()} method.
+     * If you are looking for the latter, consider to use
+     * {@link EnumStringArgumentType}.
+     * </p>
+     * <p>
+     * Otherwise, returns null.
+     * </p>
      * 
      * @see net.sourceforge.argparse4j.inf.MetavarInference#inferMetavar()
      */
     @Override
     public String[] inferMetavar() {
-        if (!Boolean.class.equals(type_)) {
-            return null;
+        if (Boolean.class.equals(type_)) {
+            return new String[] { TextHelper.concat(new String[] { "true",
+                    "false" }, 0, ",", "{", "}") };
         }
 
-        return new String[] { TextHelper.concat(
-                new String[] { "true", "false" }, 0, ",", "{", "}") };
+        if (type_.isEnum()) {
+            T[] enumConstants = type_.getEnumConstants();
+            String[] names = new String[enumConstants.length];
+            int i = 0;
+            for (T t : enumConstants) {
+                names[i++] = ((Enum<?>) t).name();
+            }
+            return new String[] { TextHelper.concat(names, 0, ",", "{", "}") };
+        }
+
+        return null;
     }
 }
