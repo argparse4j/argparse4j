@@ -28,6 +28,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import net.sourceforge.argparse4j.helper.TextHelper;
+import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
@@ -81,7 +82,7 @@ public class ReflectArgumentType<T> implements ArgumentType<T>,
      * application passes enums with toString() overridden with the different
      * value than enum name, it may not work like it expects. To take into
      * account {@link Enum#toString()} on conversion, use
-     * {@link Arguments#enumStringType} instead.
+     * {@link Arguments#enumStringType(Class)} instead.
      * </p>
      * 
      * @param type
