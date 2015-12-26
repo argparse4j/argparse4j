@@ -133,7 +133,14 @@ public class ArgumentImplTest {
         arg.nargs("+");
         assertEquals("ALPHA [BRAVO ...]", arg.formatMetavar());
     }
-    
+
+    @Test
+    public void testFormatMetavarWithMetavarInference() {
+        ArgumentImpl arg = new ArgumentImpl(prefix, "--foo")
+                .type(Boolean.class);
+        assertEquals("{true,false}", arg.formatMetavar());
+    }
+
     @Test
     public void testConvert() throws ArgumentParserException {
         ArgumentImpl arg = new ArgumentImpl(prefix, "--foo");
