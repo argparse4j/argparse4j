@@ -267,7 +267,7 @@ def _ap4j_javadocfunc_role(name, rawtext, text, lineno, inliner, options={},
                                     funcsig.split('(', 1)[0],
                                     '()']),
                            refuri='#'.join([_ap4j_javadoc_genuri(type_text),
-                                            funcsig]),
+                                            re.sub(r'\(|\)', '-', funcsig)]),
                            **options)
 
     lit = _ap4j_genliteral(rawtext, "")
