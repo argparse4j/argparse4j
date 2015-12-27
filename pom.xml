@@ -7,7 +7,7 @@
 	<packaging>jar</packaging>
 
 	<name>argparse4j</name>
-	<url>http://argparse4j.sourceforge.net</url>
+	<url>http://argparse4j.github.io</url>
 	<description>The command-line parser library based on Python's argparse</description>
 	<inceptionYear>2012</inceptionYear>
 
