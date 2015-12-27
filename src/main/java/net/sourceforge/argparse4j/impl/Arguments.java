@@ -35,6 +35,7 @@ import net.sourceforge.argparse4j.impl.action.StoreFalseArgumentAction;
 import net.sourceforge.argparse4j.impl.action.StoreTrueArgumentAction;
 import net.sourceforge.argparse4j.impl.action.VersionArgumentAction;
 import net.sourceforge.argparse4j.impl.choice.RangeArgumentChoice;
+import net.sourceforge.argparse4j.impl.type.BooleanArgumentType;
 import net.sourceforge.argparse4j.impl.type.EnumArgumentType;
 import net.sourceforge.argparse4j.impl.type.EnumStringArgumentType;
 import net.sourceforge.argparse4j.impl.type.FileArgumentType;
@@ -287,5 +288,45 @@ public final class Arguments {
     public static <T extends Enum<T>> EnumStringArgumentType<T> enumStringType(
             Class<T> type) {
         return new EnumStringArgumentType<T>(type);
+    }
+
+    /**
+     * <p>
+     * Returns {@link BooleanArgumentType} with "true" as true value, and
+     * "false" as false value.
+     * </p>
+     * <p>
+     * Read {@link BooleanArgumentType} documentation to know the difference
+     * between the use of {@link BooleanArgumentType} and passing
+     * {@link Boolean} class to {@link Argument#type(Class)}.
+     * </p>
+     * 
+     * @return The BooleanArgumentType object
+     * @since 0.7.0
+     */
+    public static BooleanArgumentType booleanType() {
+        return new BooleanArgumentType();
+    }
+
+    /**
+     * <p>
+     * Returns {@link BooleanArgumentType} with given true/false values.
+     * </p>
+     * <p>
+     * Read {@link BooleanArgumentType} documentation to know the difference
+     * between the use of {@link BooleanArgumentType} and passing
+     * {@link Boolean} class to {@link Argument#type(Class)}.
+     * </p>
+     * 
+     * @param trueValue
+     *            string used as true value
+     * @param falseValue
+     *            string used as false value
+     * @return The BooleanArgumentType object
+     * @since 0.7.0
+     */
+    public static BooleanArgumentType booleanType(String trueValue,
+            String falseValue) {
+        return new BooleanArgumentType(trueValue, falseValue);
     }
 }
