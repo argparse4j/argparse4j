@@ -1131,6 +1131,80 @@ is converted to its wrapped type counterpart. For example, if
 ``int.class`` is given, it is automatically converted to
 ``Integer.class``.
 
+Passing ``Boolean.class`` to |Argument.type| has a caveat.  Since it
+relies on ``Boolean.valueOf`` method, any string which matches "true"
+in case-insensitive fashion is converted to ``Boolean.TRUE``, and
+other strings are converted to ``Boolean.FALSE``::
+
+    public static void main(String[] args) {
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog")
+                .defaultHelp(true);
+        parser.addArgument("-f").type(Boolean.class);
+
+        Namespace res = parser.parseArgsOrFail(args);
+        System.out.printf("f=%b\n", res.get("f"));
+    }
+
+.. code-block:: console
+
+    $ java Demo -f TRue
+    f=true
+    $ java Demo -f foo
+    f=false
+
+If more strict boolean conversion is desirable, use
+:javadocfunc:`impl.Arguments.booleanType()`.  It only allows input
+string ``true`` as true value, and ``false`` as false value.  Otherwise,
+reports error::
+
+    public static void main(String[] args) {
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog")
+                .defaultHelp(true);
+        parser.addArgument("-f").type(Arguments.booleanType());
+
+        Namespace res = parser.parseArgsOrFail(args);
+        System.out.printf("f=%b\n", res.get("f"));
+    }
+
+
+.. code-block:: console
+
+    $ java Demo -f true
+    f=true
+    $ java Demo -f TRue
+    usage: prog [-h] [-f {true,false}]
+    prog: error: argument  -f:  could  not  convert  'TRue'  (choose from {true,
+    false})
+    $ java Demo -f foo
+    usage: prog [-h] [-f {true,false}]
+    prog: error: argument  -f:  could  not  convert  'foo'  (choose  from {true,
+    false})
+
+If application wants to change the valid input strings which can be
+converted to true/false values, use
+:javadocfunc:`impl.Arguments.booleanType(java.lang.String,java.lang.String)`.
+For example, to use ``yes``, and ``no`` as true and false values
+respectively instead of ``true`` and ``false``::
+
+    public static void main(String[] args) {
+        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog")
+                .defaultHelp(true);
+        parser.addArgument("-f").type(Arguments.booleanType("yes", "no"));
+
+        Namespace res = parser.parseArgsOrFail(args);
+        System.out.printf("f=%b\n", res.get("f"));
+    }
+
+.. code-block:: console
+
+    $ java Demo -f yes
+    f=true
+    $ java Demo -f no
+    f=false
+    $ java Demo -f true
+    usage: prog [-h] [-f {yes,no}]
+    prog: error: argument -f: could not convert 'true' (choose from {yes,no})
+
 The |Argument.type| can accept enums.  Since enums have limited number
 of members, type conversion effectively acts like a choice from
 members. For example::
