@@ -88,8 +88,8 @@ public class EnumStringArgumentType<T extends Enum<T>> implements
      * obtained by calling their {@link Object#toString()} method.
      * </p>
      * 
-     * @see net.sourceforge.argparse4j.inf.ArgumentType#convert(net.sourceforge.argparse4j.inf.ArgumentParser,
-     *      net.sourceforge.argparse4j.inf.Argument, java.lang.String)
+     * @see net.sourceforge.argparse4j.inf.MetavarInference#inferMetavar()
+     * @since 0.7.0
      */
     @Override
     public String[] inferMetavar() {

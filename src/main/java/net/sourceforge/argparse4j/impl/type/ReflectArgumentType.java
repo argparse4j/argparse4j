@@ -186,6 +186,7 @@ public class ReflectArgumentType<T> implements ArgumentType<T>,
      * </p>
      * 
      * @see net.sourceforge.argparse4j.inf.MetavarInference#inferMetavar()
+     * @since 0.7.0
      */
     @Override
     public String[] inferMetavar() {

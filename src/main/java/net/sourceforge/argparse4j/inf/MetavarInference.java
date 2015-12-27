@@ -27,6 +27,7 @@ package net.sourceforge.argparse4j.inf;
  * This interface provides a way to infer metavar strings from a context which
  * implements this interface.
  * 
+ * @since 0.7.0
  */
 public interface MetavarInference {
 
