@@ -1,39 +1,52 @@
-argparse4j 0.6.0
+argparse4j 0.7.0
 ================
 
 Release Note
 ------------
 
-This release fixes the bug that nargs("*") or nargs("+") for
-positional argument consume all arguments, and do not left any
-arguments to the remaining required positional arguments which take at
-least 1 argument.  By the product of this fix, we also fixed the bug
-that positional arguments are effectively separated and stop to
-consume by the existence of a flag.  For example, we define positional
-argument "foo" which has nargs("+"), and optional argument, "-b" which
-takes not argument.  Then previously, giving "a -b c d" to the program
-resulted error, because "d" was not consumed by "foo".  Now "d" is
-identified as one of argument to "foo", and "foo" takes "a" and "d"
-correctly.  This could possibly change the behaviour of the
-application, depending on how arguments are supplied.  This release
-also adds EnumStringArgumentType, and its shortcut
-Arguments.enumStringType.  Argument.type() already supports enum
-types, but it does not take into account toString() override for enum.
-EnumStringArgumentType converts strings to enums using toString as the
-enum String representation.
+This release adds several new functionalists.
+ArgumentParser#parseKnownArgs() family methods were added to parse
+known arguments only.  Metavar for Boolean and Enum types are now
+automatically generated if neither Argument#metavar() nor
+Argument#choices() is used.  To achieve this, MetavarInference
+interface, which is part of public API, was added for the underlying
+mechanism.  The BooleanArgumenType and its helper method
+Arguments#booleanType() were added for strict boolean parameter
+handling.  Previously, when parsing concatenated short options, the
+default prefix character ("-") is used, regardless of the prefix
+characters given by application.  Now it is corrected, and the prefix
+characters given by application are used for this purpose.
 
 Changes
 -------
 
-* Adds EnumStringArgumentType
+* Add BooleanArgumentType for strict boolean value conversion
 
-  Adds EnumStringArgumentType that converts strings to enums using
-  toString as the enum String representation.
+* Infer metavar for enums
 
-  Patch from andrewj
+  Previously, when enum types is used as type, either with
+  ReflectArgumentType or EnumStringArgumentType, application had to
+  set metavar to show their available values.  With this commit,
+  metavar is automatically created using MetavarInference interface.
 
-* Fix bug that positional arguments are separated and not consumed if
-  flag exists in between.
+* Introduce MetavarInference interface, and infer Boolean metavar
 
-* Distribute arguments to positional Argument object to satisfy
-  minimum number of arguments.
+  Previously, when Boolean.class is passed to Argument#type(), and no
+  metavar is provided, the help message was like "-f F".  This is
+  intentional, and expected, but it is better for user to show them F
+  is true or false.  This commit introduce MetavarInference interface.
+  When sub class of ArgumentType also implements MetavarInference, it
+  can infer metavar from its interface.  We made ReflectArgumentType
+  implement this interface, and if Boolean.class is given for its
+  constructor, then return useful Boolean value metavar from
+  inferMetavar() method.
+
+* Add ArgumentParser#parseKnownArgs() to parse known arguments only
+
+  If a parameter, named unknown, is given, all unrecognized arguments
+  are stored in it.  This parsing operation does not work in all cases
+  as you expect.  In particular, if variable length positional
+  arguments (nargs("*") or nargs("+")), all non-prefixed arguments are
+  consumed.
+
+* Use prefixChars to parse concatenated short options
