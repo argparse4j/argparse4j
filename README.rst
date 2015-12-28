@@ -57,8 +57,8 @@ Here is summary of features:
 The primary documentation is done using `Sphinx
 <http://sphinx-doc.org/>`_.  You need Sphinx to run ``mvn site``.
 
-Upgrading to 0.5.0
-==================
+Upgrading to 0.5.0 or later versions
+------------------------------------
 
 Please consult the documentation section for `Migration
 <https://argparse4j.github.io/migration.html>`_.
