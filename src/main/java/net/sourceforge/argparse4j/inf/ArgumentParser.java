@@ -521,4 +521,17 @@ public interface ArgumentParser {
      *            Error thrown by {@link #parseArgs(String[])}.
      */
     void handleError(ArgumentParserException e);
+
+    /**
+     * <p>
+     * Prints usage and error message to the given writer.
+     * </p>
+     * <p>
+     * Please note that this method does not terminate the program.
+     * </p>
+     * 
+     * @param e
+     *            Error thrown by {@link #parseArgs(String[])}.
+     */
+    void handleError(ArgumentParserException e, PrintWriter writer);
 }

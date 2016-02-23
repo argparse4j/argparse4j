@@ -1324,8 +1324,13 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     @Override
     public void handleError(ArgumentParserException e) {
+        handleError(e, new PrintWriter(System.err));
+    }
+    
+    @Override
+    public void handleError(ArgumentParserException e, PrintWriter writer) {
         if (e.getParser() != this) {
-            e.getParser().handleError(e);
+            e.getParser().handleError(e, writer);
             return;
         }
         // if --help triggered, just return (help info displayed by other
@@ -1333,7 +1338,6 @@ public final class ArgumentParserImpl implements ArgumentParser {
         if (e instanceof HelpScreenException) {
             return;
         }
-        PrintWriter writer = new PrintWriter(System.err);
         printUsage(writer);
         writer.write(TextHelper.wrap(textWidthCounter_, String.format(
                 TextHelper.LOCALE_ROOT, "%s: error: %s%n", prog_,
