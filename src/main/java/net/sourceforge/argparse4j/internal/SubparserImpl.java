@@ -244,6 +244,11 @@ public final class SubparserImpl implements Subparser {
     }
 
     @Override
+    public void handleError(ArgumentParserException e, PrintWriter writer) {
+        parser_.handleError(e, writer);
+    }
+
+    @Override
     public SubparserImpl aliases(String... alias) {
         parser_.getMainParser().addSubparsers().addAlias(this, alias);
         for (String s : alias) {
