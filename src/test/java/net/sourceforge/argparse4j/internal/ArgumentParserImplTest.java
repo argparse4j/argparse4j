@@ -267,7 +267,7 @@ public class ArgumentParserImplTest {
         ap.addArgument("-v", "--verbose").action(count());
         ap.addArgument("--foo");
         Namespace res = ap.parseArgs("-v -vv -vvvv".split(" "));
-        assertEquals(7, res.get("verbose"));
+        assertEquals(Integer.valueOf(7), res.<Integer>get("verbose"));
     }
 
     @Test
@@ -357,7 +357,7 @@ public class ArgumentParserImplTest {
         ap.addArgument("--port").type(Integer.class)
                 .choices(range(1025, 65535));
         Namespace res = ap.parseArgs("--port 3000".split(" "));
-        assertEquals(3000, res.get("port"));
+        assertEquals(Integer.valueOf(3000), res.<Integer>get("port"));
         try {
             ap.parseArgs("--port 80".split(" "));
             fail("Exception must be thrown");
