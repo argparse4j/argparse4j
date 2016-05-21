@@ -46,9 +46,9 @@ public final class TextHelper {
     }
 
     /**
-     * Language neutral locale. Defined here for Java5.
+     * Language neutral locale.
      */
-    public static final Locale LOCALE_ROOT = new Locale("", "", "");
+    public static final Locale LOCALE_ROOT = Locale.ROOT;
 
     public static final String LINESEP = System.getProperty("line.separator");
 
