@@ -573,6 +573,9 @@ public final class ArgumentParserImpl implements ArgumentParser {
         try {
             Namespace ns = parseArgs(args);
             return ns;
+        } catch (HelpScreenException e) {
+            handleError(e);
+            System.exit(0);
         } catch (ArgumentParserException e) {
             handleError(e);
             System.exit(1);
@@ -585,6 +588,9 @@ public final class ArgumentParserImpl implements ArgumentParser {
         try {
             Namespace ns = parseKnownArgs(args, unknown);
             return ns;
+        } catch (HelpScreenException e) {
+            handleError(e);
+            System.exit(0);
         } catch (ArgumentParserException e) {
             handleError(e);
             System.exit(1);
