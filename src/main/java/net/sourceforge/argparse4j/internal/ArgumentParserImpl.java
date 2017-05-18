@@ -281,7 +281,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         if (checkDefaultGroup(posargs_)
                 || (subparsers_.hasSubCommand() && subparsersUntitled)) {
             writer.println();
-            writer.println("positional arguments:");
+            writer.println(resourceBundle.getString("positional.arguments"));
             printArgumentHelp(writer, posargs_, formatWidth);
             if (subparsers_.hasSubCommand() && subparsersUntitled) {
                 subparsers_.printSubparserHelp(writer, formatWidth);
