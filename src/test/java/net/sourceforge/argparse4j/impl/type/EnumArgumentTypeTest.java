@@ -23,8 +23,12 @@
  */
 package net.sourceforge.argparse4j.impl.type;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
+import java.util.Locale;
+
+import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.mock.MockArgument;
 
@@ -38,10 +42,12 @@ public class EnumArgumentTypeTest {
 
     @Test
     public void testConvert() throws ArgumentParserException {
+        ArgumentParser ap = ArgumentParsers.newFor("argparse4j")
+                .locale(Locale.US).build();
         EnumArgumentType<Foo> type = new EnumArgumentType<Foo>(Foo.class);
         assertEquals(Foo.BRAVO, type.convert(null, null, "BRAVO"));
         try {
-            type.convert(null, new MockArgument(), "DELTA");
+            type.convert(ap, new MockArgument(), "DELTA");
         } catch (ArgumentParserException e) {
             assertEquals(
                     "argument null: could not convert 'DELTA' (choose from {ALPHA,BRAVO,CHARLIE})",

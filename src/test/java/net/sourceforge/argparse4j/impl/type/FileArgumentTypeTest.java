@@ -23,10 +23,13 @@
  */
 package net.sourceforge.argparse4j.impl.type;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.util.Locale;
 
+import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.mock.MockArgument;
 
@@ -43,7 +46,9 @@ public class FileArgumentTypeTest {
                 .convert(null, null, "-");
         assertEquals("-", file.getName());
         try {
-            new FileArgumentType().verifyCanRead().convert(null,
+            ArgumentParser ap = ArgumentParsers
+                    .newFor("argparse4j").locale(Locale.US).build();
+            new FileArgumentType().verifyCanRead().convert(ap,
                     new MockArgument(), "-");
         } catch (ArgumentParserException e) {
             assertEquals(

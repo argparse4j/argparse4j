@@ -28,11 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.argparse4j.ArgumentParserConfiguration;
 import net.sourceforge.argparse4j.helper.TextHelper;
-import net.sourceforge.argparse4j.helper.TextWidthCounter;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentGroup;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.ConfiguredArgumentParser;
 import net.sourceforge.argparse4j.inf.MutuallyExclusiveGroup;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
@@ -42,19 +43,17 @@ import net.sourceforge.argparse4j.inf.Subparsers;
  * <strong>The application code must not use this class directly.</strong>
  * 
  */
-public final class SubparserImpl implements Subparser {
+public final class SubparserImpl implements Subparser, ConfiguredArgumentParser {
 
     private String command_;
     private List<String> aliases_ = new ArrayList<String>();
     private ArgumentParserImpl parser_;
     private String help_ = "";
 
-    public SubparserImpl(String prog, boolean addHelp, String prefixChars,
-            String fromFilePrefix, TextWidthCounter textWidthCounter,
-            String command, ArgumentParserImpl mainParser) {
+    public SubparserImpl(ArgumentParserConfiguration config, String command,
+            ArgumentParserImpl mainParser) {
         command_ = command;
-        parser_ = new ArgumentParserImpl(prog, addHelp, prefixChars,
-                fromFilePrefix, textWidthCounter, command, mainParser);
+        parser_ = new ArgumentParserImpl(config, command, mainParser);
     }
 
     @Override
@@ -275,5 +274,9 @@ public final class SubparserImpl implements Subparser {
 
     public String getCommand() {
         return parser_.getCommand();
+    }
+
+    public ArgumentParserConfiguration getConfig() {
+        return parser_.getConfig();
     }
 }

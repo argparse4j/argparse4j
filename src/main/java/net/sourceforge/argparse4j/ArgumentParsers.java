@@ -54,6 +54,19 @@ public final class ArgumentParsers {
 
     /**
      * <p>
+     * Creates {@link ArgumentParserBuilder} with given program name.
+     * </p>
+     *
+     * @param prog
+     *         The program name
+     * @return ArgumentParserBuilder object
+     */
+    public static ArgumentParserBuilder newFor(String prog) {
+        return new ArgumentParserBuilder(prog);
+    }
+
+    /**
+     * <p>
      * Creates {@link ArgumentParser} with given program name.
      * </p>
      * 
@@ -64,7 +77,9 @@ public final class ArgumentParsers {
      * @param prog
      *            The program name
      * @return ArgumentParser object
+     * @deprecated This is not thread safe. Use {@link #newFor(String)} instead.
      */
+    @Deprecated
     public static ArgumentParser newArgumentParser(String prog) {
         return newArgumentParser(prog, true, DEFAULT_PREFIX_CHARS, null);
     }
@@ -84,7 +99,9 @@ public final class ArgumentParsers {
      *            If true, {@code -h/--help} are available. If false, they are
      *            not.
      * @return ArgumentParser object
+     * @deprecated This is not thread safe. Use {@link #newFor(String)} instead.
      */
+    @Deprecated
     public static ArgumentParser newArgumentParser(String prog, boolean addHelp) {
         return newArgumentParser(prog, addHelp, DEFAULT_PREFIX_CHARS, null);
     }
@@ -108,7 +125,9 @@ public final class ArgumentParsers {
      * @param prefixChars
      *            The set of characters that prefix optional arguments.
      * @return ArgumentParser object.
+     * @deprecated This is not thread safe. Use {@link #newFor(String)} instead.
      */
+    @Deprecated
     public static ArgumentParser newArgumentParser(String prog,
             boolean addHelp, String prefixChars) {
         return newArgumentParser(prog, addHelp, prefixChars, null);
@@ -132,18 +151,22 @@ public final class ArgumentParsers {
      *            additional arguments should be read. Specify {@code null} to
      *            disable reading arguments from file.
      * @return ArgumentParser object.
+     * @deprecated This is not thread safe. Use {@link #newFor(String)} instead.
      */
+    @Deprecated
     public static ArgumentParser newArgumentParser(String prog,
             boolean addHelp, String prefixChars, String fromFilePrefix) {
-        return new ArgumentParserImpl(prog, addHelp, prefixChars,
-                fromFilePrefix, cjkWidthHack_
-                        && cjkWidthLangs_.contains(Locale.getDefault()
-                                .getLanguage()) ? new CJKTextWidthCounter()
-                        : new ASCIITextWidthCounter());
+        ArgumentParserConfiguration config = new ArgumentParserConfiguration(
+                prog, addHelp, prefixChars, fromFilePrefix, Locale.getDefault(),
+                cjkWidthHack_ && cjkWidthLangs_.contains(Locale.getDefault()
+                        .getLanguage()) ? new CJKTextWidthCounter() : new ASCIITextWidthCounter(),
+                getFormatWidth(), isSingleMetavar(),
+                getNoDestConversionForPositionalArgs());
+        return new ArgumentParserImpl(config, null, null);
     }
 
     private static final String cjkWidthLangsSrc_[] = { "ja", "zh", "ko" };
-    private static List<String> cjkWidthLangs_ = Arrays
+    static List<String> cjkWidthLangs_ = Arrays
             .asList(cjkWidthLangsSrc_);
 
     private static boolean cjkWidthHack_ = true;
@@ -162,7 +185,9 @@ public final class ArgumentParsers {
      * 
      * @param flag
      *            {@code true} or {@code false}
+     * @deprecated This is not thread safe. Use {@link #newFor(String)} instead.
      */
+    @Deprecated
     public static void setCJKWidthHack(boolean flag) {
         cjkWidthHack_ = flag;
     }
@@ -171,7 +196,9 @@ public final class ArgumentParsers {
      * Returns true iff CJK width hack is enabled.
      * 
      * @return {@code true} or {@code false}
+     * @deprecated This is not thread safe. Use {@link #newFor(String)} instead.
      */
+    @Deprecated
     public static boolean getCjkWidthHack() {
         return cjkWidthHack_;
     }
@@ -190,7 +217,9 @@ public final class ArgumentParsers {
      * 
      * @param flag
      *            {@code true} or {@code false}
+     * @deprecated This is not thread safe. Use {@link #newFor(String)} instead.
      */
+    @Deprecated
     public static void setTerminalWidthDetection(boolean flag) {
         terminalWidthDetection_ = flag;
     }
@@ -199,7 +228,9 @@ public final class ArgumentParsers {
      * Returns true iff terminal width detection is enabled.
      * 
      * @return {@code true} or {@code false}
+     * @deprecated This is not thread safe. Use {@link #newFor(String)} instead.
      */
+    @Deprecated
     public static boolean getTerminalWidthDetection() {
         return terminalWidthDetection_;
     }
@@ -216,7 +247,9 @@ public final class ArgumentParsers {
      * was failed, the {@link ArgumentParsers#DEFAULT_FORMAT_WIDTH} is returned.
      * 
      * @return the width of formatted text
+     * @deprecated This is not thread safe. Use {@link #newFor(String)} instead.
      */
+    @Deprecated
     public static int getFormatWidth() {
         if (terminalWidthDetection_) {
             int w = new TerminalWidth().getTerminalWidth() - 5;
@@ -252,7 +285,9 @@ public final class ArgumentParsers {
      * 
      * @param singleMetavar
      *            Switch to display a metavar only after the last flag.
+     * @deprecated This is not thread safe. Use {@link #newFor(String)} instead.
      */
+    @Deprecated
     public static void setSingleMetavar(boolean singleMetavar) {
         singleMetavar_ = singleMetavar;
     }
@@ -261,7 +296,9 @@ public final class ArgumentParsers {
      * Returns true iff a metavar is shown only after the last flag.
      * 
      * @return {@code true} or {@code false}
+     * @deprecated This is not thread safe. Use {@link #newFor(String)} instead.
      */
+    @Deprecated
     public static boolean isSingleMetavar() {
         return singleMetavar_;
     }
@@ -293,12 +330,22 @@ public final class ArgumentParsers {
      *            Switch not to perform conversion to produce dest for
      *            positional arguments. If {@code true} is given, no conversion
      *            is made.
+     * @deprecated This is not thread safe. Use {@link #newFor(String)} instead.
      */
+    @Deprecated
     public static void setNoDestConversionForPositionalArgs(boolean flag)
     {
         noDestConversionForPositionalArgs_ = flag;
     }
 
+    /**
+     * Returns {@code true} iff no destination value conversion for positional
+     * arguments is enabled.
+     *
+     * @return {@code true} or {@code false}
+     * @deprecated This is not thread safe. Use {@link #newFor(String)} instead.
+     */
+    @Deprecated
     public static boolean getNoDestConversionForPositionalArgs()
     {
         return noDestConversionForPositionalArgs_;

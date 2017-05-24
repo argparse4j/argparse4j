@@ -32,7 +32,6 @@ import java.util.Map;
 
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
-import net.sourceforge.argparse4j.inf.Subparser;
 import net.sourceforge.argparse4j.inf.Subparsers;
 
 /**
@@ -80,9 +79,9 @@ public final class SubparsersImpl implements Subparsers {
                     TextHelper.LOCALE_ROOT,
                     "command '%s' has been already used", command));
         }
-        SubparserImpl parser = new SubparserImpl(mainParser_.getProg(),
-                addHelp, prefixChars, mainParser_.getFromFilePrefixChars(),
-                mainParser_.getTextWidthCounter(), command, mainParser_);
+        SubparserImpl parser = new SubparserImpl(
+                mainParser_.getConfig().forSubparser(addHelp, prefixChars),
+                command, mainParser_);
         parsers_.put(command, parser);
         return parser;
     }
