@@ -169,7 +169,7 @@ public class ArgumentParserBuilder {
      *         Switch to display a metavar only after the last flag.
      * @return This builder.
      */
-    public ArgumentParserBuilder singleMetaVar(boolean flag) {
+    public ArgumentParserBuilder singleMetavar(boolean flag) {
         singleMetavar_ = flag;
         return this;
     }
