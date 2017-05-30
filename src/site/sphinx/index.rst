@@ -38,7 +38,7 @@ this source code)::
   public class Checksum {
 
       public static void main(String[] args) {
-	  ArgumentParser parser = ArgumentParsers.newArgumentParser("Checksum")
+	  ArgumentParser parser = ArgumentParsers.newFor("Checksum").build()
 		  .defaultHelp(true)
 		  .description("Calculate checksum of given files.");
 	  parser.addArgument("-t", "--type")
