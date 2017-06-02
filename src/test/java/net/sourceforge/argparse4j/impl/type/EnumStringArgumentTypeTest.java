@@ -25,6 +25,11 @@ package net.sourceforge.argparse4j.impl.type;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+
+import java.util.Locale;
+
+import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.mock.MockArgument;
 
@@ -51,9 +56,11 @@ public class EnumStringArgumentTypeTest {
 
     @Test
     public void testConvertErrorsWithUnknownMember() throws ArgumentParserException {
+        ArgumentParser ap = ArgumentParsers.newFor("argparse4j")
+                .locale(Locale.US).build();
         EnumStringArgumentType<Lang> type = EnumStringArgumentType.forEnum(Lang.class);
         try {
-            type.convert(null, new MockArgument(), "CPP");
+            type.convert(ap, new MockArgument(), "CPP");
             fail("Expected ArgumentParserException to be thrown");
         } catch (ArgumentParserException e) {
             assertEquals(

@@ -23,7 +23,14 @@
  */
 package net.sourceforge.argparse4j.impl.type;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.util.Locale;
+
+import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.mock.MockArgument;
 
@@ -41,13 +48,15 @@ public class BooleanArgumentTypeTest {
 
     @Test
     public void testConvert() throws ArgumentParserException {
+        ArgumentParser ap = ArgumentParsers
+                .newFor("argparse4j").locale(Locale.US).build();
         BooleanArgumentType t = new BooleanArgumentType();
 
         assertEquals(Boolean.TRUE, t.convert(null, ma, "true"));
         assertEquals(Boolean.FALSE, t.convert(null, ma, "false"));
 
         try {
-            t.convert(null, ma, "TRUE");
+            t.convert(ap, ma, "TRUE");
             fail();
         } catch (ArgumentParserException e) {
             assertEquals(
@@ -61,7 +70,7 @@ public class BooleanArgumentTypeTest {
         assertEquals(Boolean.FALSE, t.convert(null, ma, "no"));
 
         try {
-            t.convert(null, ma, "Yes");
+            t.convert(ap, ma, "Yes");
             fail();
         } catch (ArgumentParserException e) {
             assertEquals(

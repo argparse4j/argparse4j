@@ -23,6 +23,22 @@
  */
 package net.sourceforge.argparse4j.internal;
 
+import static net.sourceforge.argparse4j.ArgumentParsers.DEFAULT_PREFIX_CHARS;
+import static net.sourceforge.argparse4j.impl.Arguments.SUPPRESS;
+import static net.sourceforge.argparse4j.impl.Arguments.append;
+import static net.sourceforge.argparse4j.impl.Arguments.appendConst;
+import static net.sourceforge.argparse4j.impl.Arguments.count;
+import static net.sourceforge.argparse4j.impl.Arguments.range;
+import static net.sourceforge.argparse4j.impl.Arguments.storeConst;
+import static net.sourceforge.argparse4j.impl.Arguments.storeFalse;
+import static net.sourceforge.argparse4j.impl.Arguments.storeTrue;
+import static net.sourceforge.argparse4j.test.TestHelper.list;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.FileInputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -47,45 +63,24 @@ import net.sourceforge.argparse4j.inf.Subparsers;
 import net.sourceforge.argparse4j.internal.ArgumentParserImpl.Candidate;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static net.sourceforge.argparse4j.impl.Arguments.SUPPRESS;
-import static net.sourceforge.argparse4j.impl.Arguments.append;
-import static net.sourceforge.argparse4j.impl.Arguments.appendConst;
-import static net.sourceforge.argparse4j.impl.Arguments.count;
-import static net.sourceforge.argparse4j.impl.Arguments.range;
-import static net.sourceforge.argparse4j.impl.Arguments.storeConst;
-import static net.sourceforge.argparse4j.impl.Arguments.storeFalse;
-import static net.sourceforge.argparse4j.impl.Arguments.storeTrue;
-import static net.sourceforge.argparse4j.test.TestHelper.list;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class ArgumentParserImplTest {
 
     private ArgumentParserImpl ap;
     private String[] zeroargs;
 
-    @BeforeClass
-    public static void init()
-    {
-        ArgumentParsers.setTerminalWidthDetection(false);
-    }
-
     @Before
     public void setup() {
-        Locale.setDefault(Locale.US);
-        ap = new ArgumentParserImpl("argparse4j");
+        ap = (ArgumentParserImpl) ArgumentParsers.newFor("argparse4j")
+                .terminalWidthDetection(false).locale(Locale.US).build();
         zeroargs = new String[]{};
     }
 
     @Test
     public void testCtor() throws ArgumentParserException {
-        ap = new ArgumentParserImpl("prog", false, "+", "@", null);
+        ap = (ArgumentParserImpl) ArgumentParsers.newFor("prog").addHelp(false)
+                .prefixChars("+").fromFilePrefix("@").build();
         assertEquals("prog", ap.getProg());
         assertEquals("+", ap.getPrefixChars());
         assertEquals("@", ap.getFromFilePrefixChars());
@@ -380,7 +375,9 @@ public class ArgumentParserImplTest {
 
     @Test
     public void testParseArgsWithFromFilePrefixAndUnrecognizedArgs() throws ArgumentParserException {
-        ap = new ArgumentParserImpl("argparse4j", true, ArgumentParsers.DEFAULT_PREFIX_CHARS, "@");
+        ap = (ArgumentParserImpl) ArgumentParsers.newFor("argparse4j")
+                .addHelp(true).prefixChars(DEFAULT_PREFIX_CHARS)
+                .fromFilePrefix("@").locale(Locale.US).build();
         ap.addArgument("-a").action(Arguments.storeTrue());
         ap.addArgument("-b").action(Arguments.storeTrue());
         ap.addArgument("-c").action(Arguments.storeTrue());
@@ -437,7 +434,9 @@ public class ArgumentParserImplTest {
             		e.getMessage());
         }
         // Multiple fromFilePrefix
-        ap = new ArgumentParserImpl("argparse4j", true, ArgumentParsers.DEFAULT_PREFIX_CHARS, "@/");
+        ap = (ArgumentParserImpl) ArgumentParsers.newFor("argparse4j")
+                .addHelp(true).prefixChars(DEFAULT_PREFIX_CHARS)
+                .fromFilePrefix("@/").locale(Locale.US).build();
         ap.addArgument("-a").action(Arguments.storeTrue());
         try {
             ap.parseArgs("-a @target/test-classes/args5.txt".split(" "));
@@ -453,7 +452,9 @@ public class ArgumentParserImplTest {
 
     @Test
     public void testParseArgsWithFromFilePrefix() throws ArgumentParserException {
-        ap = new ArgumentParserImpl("argparse4j", true, ArgumentParsers.DEFAULT_PREFIX_CHARS, "@");
+        ap = (ArgumentParserImpl) ArgumentParsers.newFor("argparse4j")
+                .addHelp(true).prefixChars(DEFAULT_PREFIX_CHARS)
+                .fromFilePrefix("@").build();
         ap.addArgument("-f");
         ap.addArgument("--baz").nargs(2);
         ap.addArgument("x");
@@ -572,7 +573,7 @@ public class ArgumentParserImplTest {
         res = ap.parseArgs(zeroargs);
         assertEquals(list(), res.get("foo"));
 
-        ap = new ArgumentParserImpl("argparse4j");
+        ap = (ArgumentParserImpl) ArgumentParsers.newFor("argparse4j").build();
         ap.addArgument("foo").nargs("*").setDefault("foo");
         // Make sure that default value is kept
         res = ap.parseArgs(zeroargs);
@@ -581,13 +582,13 @@ public class ArgumentParserImplTest {
         res = ap.parseArgs("a b".split(" "));
         assertEquals(list("a", "b"), res.get("foo"));
 
-        ap = new ArgumentParserImpl("argparse4j");
+        ap = (ArgumentParserImpl) ArgumentParsers.newFor("argparse4j").build();
         ap.addArgument("foo").nargs("*").action(append());
         // Make sure that empty list is returned.
         res = ap.parseArgs(zeroargs);
         assertEquals(list(), res.get("foo"));
 
-        ap = new ArgumentParserImpl("argparse4j");
+        ap = (ArgumentParserImpl) ArgumentParsers.newFor("argparse4j").build();
         ap.addArgument("foo").nargs("*").action(append()).setDefault("foo");
         // Make sure that default stays intact without positional argument
         res = ap.parseArgs(zeroargs);
@@ -860,7 +861,7 @@ public class ArgumentParserImplTest {
 
     @Test
     public void testParseArgsWithDeferredException() throws ArgumentParserException {
-        ap = new ArgumentParserImpl("argparse4j");
+        ap = (ArgumentParserImpl) ArgumentParsers.newFor("argparse4j").build();
         ap.addArgument("-a").required(true);
         ap.addArgument("b");
         ap.addMutuallyExclusiveGroup().required(true).addArgument("-c");
@@ -878,7 +879,8 @@ public class ArgumentParserImplTest {
     @Test
     public void testParseArgsWithConcatShortOptsAndPrefixChars()
             throws ArgumentParserException {
-        ap = new ArgumentParserImpl("prog", true, "-+");
+        ap = (ArgumentParserImpl) ArgumentParsers.newFor("argparse4j")
+                .addHelp(true).prefixChars("-+").build();
         ap.addArgument("+a").action(Arguments.storeTrue());
         ap.addArgument("+b");
 
@@ -899,7 +901,8 @@ public class ArgumentParserImplTest {
 
     @Test
     public void testParseKnownArgs() throws ArgumentParserException {
-        ap = new ArgumentParserImpl("prog", true, "-+");
+        ap = (ArgumentParserImpl) ArgumentParsers.newFor("argparse4j")
+                .addHelp(true).prefixChars("-+").build();
         ap.addArgument("-f");
         ap.addArgument("-g");
         ap.addArgument("+a").action(Arguments.storeTrue());
@@ -961,7 +964,8 @@ public class ArgumentParserImplTest {
 
     @Test
     public void testSubparserInheritPrefixChars() throws ArgumentParserException {
-        ap = new ArgumentParserImpl("argparse4j", true, "+");
+        ap = (ArgumentParserImpl) ArgumentParsers.newFor("argparse4j")
+                .addHelp(true).prefixChars("+").locale(Locale.US).build();
         ap.addSubparsers().addParser("install").addArgument("+f");
         ap.addSubparsers().addParser("check", true, "-").addArgument("-f");
         try {
@@ -985,7 +989,8 @@ public class ArgumentParserImplTest {
     @Test
     public void testArgumentParserWithoutAddHelp()
             throws ArgumentParserException {
-        ArgumentParserImpl ap = new ArgumentParserImpl("argparse4j", false);
+        ap = (ArgumentParserImpl) ArgumentParsers.newFor("argparse4j")
+                .addHelp(false).locale(Locale.US).build();
         try {
             ap.parseArgs("-h".split(" "));
             fail();
@@ -997,7 +1002,7 @@ public class ArgumentParserImplTest {
     @Test
     public void testSubparserWithoutAddHelp() throws ArgumentParserException {
         Subparsers subparsers = ap.addSubparsers();
-        subparsers.addParser("install", false, ArgumentParsers.DEFAULT_PREFIX_CHARS);
+        subparsers.addParser("install", false, DEFAULT_PREFIX_CHARS);
         try {
             ap.parseArgs("install -h".split(" "));
             fail();
@@ -1157,7 +1162,8 @@ public class ArgumentParserImplTest {
 
     @Test
     public void testFormatHelpWithArgumentGroupWithoutHelp() throws ArgumentParserException {
-        ArgumentParserImpl ap = new ArgumentParserImpl("argparse4j", false);
+        ap = (ArgumentParserImpl) ArgumentParsers.newFor("argparse4j")
+                .addHelp(false).locale(Locale.US).build();
         ArgumentGroup group1 = ap.addArgumentGroup("group1").description(
                 "group1 description");
         group1.addArgument("foo").help("foo help");

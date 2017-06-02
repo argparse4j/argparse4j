@@ -63,7 +63,7 @@ and produces either the sum or the max::
         }
 
         public static void main(String[] args) {
-            ArgumentParser parser = ArgumentParsers.newArgumentParser("prog")
+            ArgumentParser parser = ArgumentParsers.newFor("prog").build()
                     .description("Process some integers.");
             parser.addArgument("integers")
                     .metavar("N")
@@ -129,10 +129,14 @@ Creating a parser
 
 The first step using the argparse4j is creating
 :javadoc:`inf.ArgumentParser` object. To do this, use
-|ArgumentParsers.newArgumentParser| static method of :javadoc:`ArgumentParsers`
-class::
+|ArgumentParsers.newFor| static method of :javadoc:`ArgumentParsers`
+class. This will return a builder for the parser. (Note: Prior to
+0.8.0 an ArgumentParser object was created using
+``newArgumentParser(...)`` methods of ``ArgumentParsers``. See
+:doc:`migration`.) Use method |ArgumentParserBuilder.build| to create
+the parser:
 
-    ArgumentParser parser = ArgumentParsers.newArgumentParser("prog")
+    ArgumentParser parser = ArgumentParsers.newFor("prog").build()
          .description("Process some integers.");
 
 The :javadoc:`inf.ArgumentParser` object will hold all the information
@@ -196,24 +200,54 @@ argv``.  To parse the command line, pass this object to
 ArgumentParser objects
 ----------------------
 
-To create :javadoc:`inf.ArgumentParser` object, one can use one of
-|ArgumentParsers.newArgumentParser| static methods of
-:javadoc:`ArgumentParsers` class.  The following parameters can be
-specified:
+To create :javadoc:`inf.ArgumentParser` object, use
+|ArgumentParsers.newFor| static method of
+:javadoc:`ArgumentParsers` class.  This will return a builder for
+the parser.  The following parameter must be specified:
 
-* :ref:`ArgumentParsers-newArgumentParser-prog` - The name of the
+* :ref:`ArgumentParsers-newFor-prog` - The name of the
   program. This is necessary because ``main()`` method in Java does
   not provide program name.
 
-* :ref:`ArgumentParsers-newArgumentParser-addHelp` - Add a -h/--help
+Configure the parser to be build using methods of the builder:
+
+* :ref:`ArgumentParserBuilder-addHelp` - Add a -h/--help
   option to the parser.  (default: ``true``).
 
-* :ref:`ArgumentParsers-newArgumentParser-prefixChars` - The set of
+* :ref:`ArgumentParserBuilder-prefixChars` - The set of
   characters that prefix optional arguments. (default: '-')
 
-* :ref:`ArgumentParsers-newArgumentParser-fromFilePrefixChars` - The
+* :ref:`ArgumentParserBuilder-fromFilePrefix` - The
   set of characters that prefix file path from which additional
   arguments are read. (default: ``null``)
+
+* :ref:`ArgumentParserBuilder-locale` - The locale to use for
+  messages. (default: ``Locale.getDefault()``)
+
+* :ref:`ArgumentParserBuilder-cjkWidthHack` - Treat Unicode
+  characters having East Asian Width property Wide/Full/Ambiguous to
+  have twice a width of ascii characters when formatting help message
+  if locale is "ja", "zh" or "ko". (default: ``true``)
+
+* :ref:`ArgumentParserBuilder-defaultFormatWidth` - The default
+  width (in columns) for formatting messages. This value is used if
+  terminal width detection is disabled or fails. (default: ``75``)
+
+* :ref:`ArgumentParserBuilder-terminalWidthDetection` - Detect the
+  width of the terminal the application is running in. If the
+  terminal width cannot be detected, the default format width is
+  used. (default: ``true``)
+
+* :ref:`ArgumentParserBuilder-singleMetavar` - Show the metavar
+  string in help message only after the last flag instead of each
+  flag. (default: ``false``)
+
+* :ref:`ArgumentParserBuilder-noDestConversionForPositionalArgs` -
+  Do not perform any conversion to produce "dest" value from
+  positional argument name. (default: ``false``)
+
+The parser is created using method
+|ArgumentParserBuilder.build|.
 
 After creation of the instance, several additional parameters can be
 specified using following methods:
@@ -235,16 +269,16 @@ specified using following methods:
 
 The following sections describes how each of these are used.
 
-.. _ArgumentParsers-newArgumentParser-prog:
+.. _ArgumentParsers-newFor-prog:
 
 prog
 ^^^^
 
 In Java, the name of the program is not included in the argument in
 `main()` method. Because of this, the name of the program must be
-supplied to |ArgumentParsers.newArgumentParser|.
+supplied to |ArgumentParsers.newFor|.
 
-.. _ArgumentParsers-newArgumentParser-addHelp:
+.. _ArgumentParserBuilder-addHelp:
 
 addHelp
 ^^^^^^^
@@ -254,7 +288,7 @@ simply displays the parser's help message. For example, consider
 following code::
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("--foo").help("foo help");
         Namespace res = parser.parseArgs(args);
     }
@@ -273,11 +307,11 @@ ArgumentParser will display help message:
 
 Occasionally, it may be useful to disable the addition of this help
 option.  This can be achieved by passing ``false`` as the
-addHelp_ argument to |ArgumentParsers.newArgumentParser|::
+addHelp_ argument to |ArgumentParserBuilder.addHelp|::
 
     public static void main(String[] args) throws ArgumentParserException {
         ArgumentParser parser = ArgumentParsers
-            .newArgumentParser("prog", /*addHelp*/ false);
+            .newFor("prog").addHelp(false).build();
         parser.addArgument("--foo").help("foo help");
         parser.printHelp();
     }
@@ -291,15 +325,15 @@ addHelp_ argument to |ArgumentParsers.newArgumentParser|::
       --foo FOO              foo help
 
 The help option is typically ``-h/--help``. The exception to this is
-if the :ref:`ArgumentParsers-newArgumentParser-prefixChars` is
+if the :ref:`ArgumentParserBuilder-prefixChars` is
 specified and does not include ``-``, in which case ``-h`` and
 ``--help`` are not valid options. In this case, the first character in
-:ref:`ArgumentParsers-newArgumentParser-prefixChars` is used to prefix
+:ref:`ArgumentParserBuilder-prefixChars` is used to prefix
 the help options::
 
     public static void main(String[] args) throws ArgumentParserException {
         ArgumentParser parser = ArgumentParsers
-            .newArgumentParser("prog", /*addHelp*/ true, /*prefixChars*/ "+/");
+            .newFor("prog").addHelp(true).prefixChars("+/").build();
         parser.printHelp();
     }
 
@@ -312,7 +346,7 @@ the help options::
       +h, ++help             show this help message and exit
 
 
-.. _ArgumentParsers-newArgumentParser-prefixChars:
+.. _ArgumentParserBuilder-prefixChars:
 
 prefixChars
 ^^^^^^^^^^^
@@ -321,10 +355,11 @@ Most command line options will use ``-`` as the prefix, e.g.
 ``-f/--foo``. Parsers that need to support different or additional
 prefix characters, e.g. for options like ``+f`` or ``/foo``, may
 specify them using the *prefixChars* to
-|ArgumentParsers.newArgumentParser|::
+|ArgumentParserBuilder.prefixChars|::
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog", true, /*prefixChars*/ "-+");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").prefixChars("-+")
+                .build();
         parser.addArgument("+f");
         parser.addArgument("++bar");
         Namespace res = parser.parseArgs(args);
@@ -341,15 +376,15 @@ The *prefixChars* argument defaults to ``-`` (you can use
 a set of characters that does not include ``-`` will cause
 ``-f/--foo`` options to be disallowed.
 
-.. _ArgumentParsers-newArgumentParser-fromFilePrefixChars:
+.. _ArgumentParserBuilder-fromFilePrefix:
 
-fromFilePrefixChars
-^^^^^^^^^^^^^^^^^^^
+fromFilePrefix
+^^^^^^^^^^^^^^
 
 It is sometimes useful to read arguments from file other than typing
 them in command line, for example, when lots of arguments are needed.
-If *fromFilePrefixChars* is given as non ``null`` string, arguments
-starts with one of these characters are treated as file path and
+If *fromFilePrefix* is given as non ``null`` string, arguments starts
+with one of these characters are treated as file path and
 ArgumentParser reads additional arguments from the file.  For example:
 
 .. code-block:: console
@@ -361,8 +396,8 @@ ArgumentParser reads additional arguments from the file.  For example:
 ::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog", true,
-                "-", /*fromFilePrefixChars*/ "@");
+        ArgumentParser parser = ArgumentParsers.newFor("prog")
+                .fromFilePrefix("@").build();
         parser.addArgument("-f");
         try {
             System.out.println(parser.parseArgs(args));
@@ -382,8 +417,202 @@ that trailing empty lines or line with only white spaces are also
 considered as arguments, although it is not readily noticeable to the
 user. The empty line is treated as empty string.
 
-By default, *fromFilePrefixChars* is ``null``, which means no argument
-is treated as file path.
+By default, *fromFilePrefix* is ``null``, which means no argument is
+treated as file path.
+
+.. _ArgumentParserBuilder-locale:
+
+locale
+^^^^^^
+
+The locale for messages of :javadoc:`inf.ArgumentParser` objects can
+be changed by using |ArgumentParserBuilder.locale|. For example::
+
+    public static void main(String[] args) throws ArgumentParserException {
+        ArgumentParser parser = ArgumentParsers.newFor("prog")
+                .locale(new Locale("nl")).build();
+        parser.printHelp();
+    }
+
+.. code-block:: console
+
+    $ java Demo
+    gebruik: prog [-h]
+
+    optionele argumenten:
+      -h, --help             toon dit hulpbericht en sluit af
+
+Currently messages have been (partially) translated to Dutch,
+English, German and Russian.
+
+The default locale is the default locale of the JVM
+(``Locale.getDefault()``).
+
+.. _ArgumentParserBuilder-cjkWidthHack:
+
+cjkWidthHack
+^^^^^^^^^^^^
+
+A number of characters in Chinese, Japanese and Korean (CJK) are
+wider than others. If those characters are treated to have the same
+width as other characters, texts may extend past the right margin
+when printed. By enabling the CJK width, 2 columns are used for these
+wide characters during the determination of line breaks, resulting in
+better formatted text. To enable or disable handling of wide CJK
+characters use |ArgumentParserBuilder.cjkWidthHack|::
+
+    public static void main(String[] args) throws ArgumentParserException {
+        ArgumentParser parser = ArgumentParsers.newFor("prog")
+                .cjkWidthHack(false).build()
+        ...
+    }
+
+*cjkWidthHack* is ``true`` by default.
+
+.. _ArgumentParserBuilder-defaultFormatWidth:
+
+defaultFormatWidth
+^^^^^^^^^^^^^^^^^^
+
+Messages generated by :javadoc:`inf.ArgumentParser` objects are
+formatted to fit within a number of columns.
+|ArgumentParserBuilder.defaultFormatWidth| can be used to set the
+number of columns to use when
+:ref:`ArgumentParserBuilder-terminalWidthDetection` is disabled or
+when the detection cannot determine the number of columns from the
+environment::
+
+    public static void main(String[] arguments) {
+        ArgumentParser parser = ArgumentParsers.newFor("prog")
+                .defaultFormatWidth(40).build()
+                .description(
+                        "A program showing how argparse4j formats long messages.");
+        parser.printHelp();
+    }
+
+.. code-block:: console
+
+    $ java Demo
+    usage: prog [-h]
+
+    A   program   showing   how   argparse4j
+    formats long messages.
+
+    ...
+
+The default value for *defaultFormatWidth* is ``75``.
+
+.. _ArgumentParserBuilder-terminalWidthDetection:
+
+terminalWidthDetection
+^^^^^^^^^^^^^^^^^^^^^^
+
+Argparse4j tries to format messages so they fit the terminal the
+application is running in. It does this by looking at environment
+variable ``COLUMNS``, or running ``stty`` on platforms that support
+it. The detection can be enabled or disabled using
+|ArgumentParserBuilder.terminalWidthDetection|. When disabling the
+detection :ref:`ArgumentParserBuilder-defaultFormatWidth` is used as
+the number of columns::
+
+    public static void main(String[] args) throws ArgumentParserException {
+        ArgumentParser parser = ArgumentParsers.newFor("prog")
+                .terminalWidthDetection(false).build()
+                .description(
+                        "A program showing how argparse4j formats long messages. " +
+                                "Terminal width detection has been disabled, " +
+                                "so this description is formatted to 75 characters wide.");
+        parser.printHelp();
+    }
+
+.. code-block:: console
+
+    $ java Demo
+    usage: prog [-h]
+
+    A program showing  how  argparse4j  formats  long  messages. Terminal width
+    detection has  been  disabled,  so  this  description  is  formatted  to 75
+    characters wide.
+
+    ...
+
+By default *terminalWidthDection* is ``true``.
+
+.. _ArgumentParserBuilder-singleMetavar:
+
+singleMetavar
+^^^^^^^^^^^^^
+
+The metavariable of an argument can be printed after each argument
+name or only once after all argument names. This behavior is
+controlled using |ArgumentParserBuilder.singleMetavar|. Here is an
+example using a single metavariable::
+
+    public static void main(String[] args) throws ArgumentParserException {
+        ArgumentParser parser = ArgumentParsers.newFor("single")
+                .singleMetavar(true).build();
+        parser.addArgument("-f", "-file").nargs("+").metavar("FILE");
+        parser.printHelp();
+    }
+
+.. code-block:: console
+
+    $ java Demo
+    usage: single [-h] [-f FILE [FILE ...]]
+
+    optional arguments:
+      -h, --help             show this help message and exit
+      -f, -file FILE [FILE ...]
+
+Compare this with the output if using multiple metavariables::
+
+    public static void main(String[] args) throws ArgumentParserException {
+        ArgumentParser parser = ArgumentParsers.newFor("multiple")
+                .singleMetavar(false).build();
+        parser.addArgument("-f", "-file").nargs("+").metavar("FILE");
+        parser.printHelp();
+    }
+
+.. code-block:: console
+
+    $ java Demo
+    usage: multiple [-h] [-f FILE [FILE ...]]
+
+    optional arguments:
+      -h, --help             show this help message and exit
+      -f FILE [FILE ...], -file FILE [FILE ...]
+
+*singleMetavar* defaults to ``false``, so the metavariable is printed
+after each argument name.
+
+.. _ArgumentParserBuilder-noDestConversionForPositionalArgs:
+
+noDestConversionForPositionalArgs
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Prior to 0.5.0 the destination for positional arguments was not
+automatically determined from the argument name. See
+:doc:`migration`.
+|ArgumentParserBuilder.noDestConversionForPositionalArgs| can be used
+to revert back to the pre 0.5.0 behavior. Note that you must
+explicitly set a destination when you enable this option, because
+otherwise the destination will be ``null``::
+
+    public static void main(String[] arguments) throws ArgumentParserException {
+        ArgumentParser parser = ArgumentParsers.newFor("prog")
+                .noDestConversionForPositionalArgs(true)
+                .build();
+        parser.addArgument("foo-bar").dest("explicit-dest");
+        System.out.println(parser.parseArgs(arguments));
+    }
+
+.. code-block:: console
+
+    $ java Demo value
+    Namespace(explicit-dest=value)
+
+By default *noDestConversionForPositionalArgs* is ``false``, so the
+names of positional arguments are automatically converted to destinations.
 
 .. _ArgumentParser-description:
 
@@ -396,7 +625,7 @@ displayed between command line usage string and the help messages for
 the various arguments::
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog")
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build()
             .description("A foo that bars");
         parser.printHelp();
     }
@@ -424,7 +653,7 @@ after the description of the arguments. Such text can be specified
 using |ArgumentParser.epilog| method::
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog")
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build()
                 .description("A foo that bars")
                 .epilog("And that's how you'd foo a bar");
         parser.printHelp();
@@ -456,7 +685,7 @@ will display the default value of each argument in help message::
 
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog")
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build()
             .defaultHelp(true);
         parser.addArgument("--foo")
             .type(Integer.class)
@@ -490,7 +719,7 @@ By default, :javadoc:`inf.ArgumentParser` calculates the usage message
 from the arguments it contains::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("--foo").nargs("?").help("foo help");
         parser.addArgument("bar").nargs("+").help("bar help");
         Namespace res = parser.parseArgsOrFail(args);
@@ -512,7 +741,7 @@ The default message can be overridden with the |ArgumentParser.usage|
 method::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog")
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build()
                 .usage("${prog} [OPTIONS]");
         parser.addArgument("--foo").nargs("?").help("foo help");
         parser.addArgument("bar").nargs("+").help("bar help");
@@ -533,7 +762,7 @@ method::
 
 The ``${prog}`` literal string in the given usage message will be
 replaced with the program name
-:ref:`ArgumentParsers-newArgumentParser-prog`.
+:ref:`ArgumentParsers-newFor-prog`.
 
 .. _ArgumentParser-version:
 
@@ -545,7 +774,7 @@ describing program version. It will be displayed when
 :ref:`Arguments-version` action is used.
 
 The ``${prog}`` literal string in the given string will be replaced
-with the program name :ref:`ArgumentParsers-newArgumentParser-prog`.
+with the program name :ref:`ArgumentParsers-newFor-prog`.
 
 .. _ArgumentParser-addArgument:
 
@@ -613,12 +842,12 @@ while a positional argument could be created like::
 
 When |ArgumentParser.parseArgs| is called, optional arguments will
 be identified by the ``-`` prefix (or one of
-:ref:`ArgumentParsers-newArgumentParser-prefixChars` if it is
-specified in |ArgumentParsers.newArgumentParser|, and the
-remaining arguments will be assumed to be positional::
+:ref:`ArgumentParserBuilder-prefixChars` if it is
+specified, and the remaining arguments will be assumed to be
+positional::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("-f", "--foo");
         parser.addArgument("bar");
         try {
@@ -660,7 +889,7 @@ Arguments.store()
 the default action. For example::
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("-f", "--foo");
         System.out.println(parser.parseArgs(args));
     }
@@ -682,7 +911,7 @@ most commonly used with optional arguments that specify sort of
 flags. For example::
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("--foo").action(Arguments.storeConst()).setConst(42);
         System.out.println(parser.parseArgs(args));
     }
@@ -703,7 +932,7 @@ of :ref:`Arguments-storeConst` using for storing values ``true`` and
 ``false`` and ``true`` respectively. For example::
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("--foo").action(Arguments.storeTrue());
         parser.addArgument("--bar").action(Arguments.storeFalse());
         parser.addArgument("--baz").action(Arguments.storeFalse());
@@ -725,7 +954,7 @@ the list. The list is of type :javatype:`List`. This is useful to
 allow an option to be specified multiple times. For example::
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("--foo").action(Arguments.append());
         System.out.println(parser.parseArgs(args));
     }
@@ -747,7 +976,7 @@ defaults to ``null``.) The list is of type :javatype:`List`. The
 arguments need to store constants to the same list. For example::
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("--str")
             .dest("types")
             .action(Arguments.appendConst())
@@ -773,7 +1002,7 @@ Arguments.count()
 example, this is useful for increasing verbosity levels::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("--verbose", "-v").action(Arguments.count());
         Namespace res = parser.parseArgsOrFail(args);
         System.out.println(res);
@@ -793,7 +1022,7 @@ Arguments.version()
 :ref:`ArgumentParser-version` and exists when invoked::
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("PROG")
+        ArgumentParser parser = ArgumentParsers.newFor("PROG").build()
             .version("${prog} 2.0");
         parser.addArgument("--version").action(Arguments.version());
         System.out.println(parser.parseArgs(args));
@@ -812,7 +1041,8 @@ Arguments.help()
 |Arguments.help| prints help message and exits when invoked::
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog", /*defaultHelp*/ false);
+        ArgumentParser parser = ArgumentParsers.newFor("prog").addHelp(false)
+                .build();
         parser.addArgument("--help").action(Arguments.help());
         System.out.println(parser.parseArgs(args));
     }
@@ -853,7 +1083,7 @@ You can also specify your custom action by implementing
     }
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         FooAction fooAction = new FooAction();
         parser.addArgument("--foo").action(fooAction);
         parser.addArgument("bar").action(fooAction);
@@ -881,7 +1111,7 @@ with a single action. The supported values are:
   gathered into a :javatype:`List`. For example::
 
        public static void main(String[] args) throws ArgumentParserException {
-           ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+           ArgumentParser parser = ArgumentParsers.newFor("prog").build();
            parser.addArgument("--foo").nargs(2);
            parser.addArgument("bar").nargs(1);
            System.out.println(parser.parseArgs(args));
@@ -904,7 +1134,7 @@ with a single action. The supported values are:
   will be produced. Some examples to illustrate this::
 
        public static void main(String[] args) throws ArgumentParserException {
-           ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+           ArgumentParser parser = ArgumentParsers.newFor("prog").build();
            parser.addArgument("--foo").nargs("?").setConst("c").setDefault("d");
            parser.addArgument("bar").nargs("?").setDefault("d");
            System.out.println(parser.parseArgs(args));
@@ -923,7 +1153,7 @@ with a single action. The supported values are:
   optional input and output files::
 
        public static void main(String[] args) throws ArgumentParserException {
-           ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+           ArgumentParser parser = ArgumentParsers.newFor("prog").build();
            parser.addArgument("infile").nargs("?").type(FileInputStream.class)
                    .setDefault(System.in);
            parser.addArgument("outfile").nargs("?").type(PrintStream.class)
@@ -947,7 +1177,7 @@ with a single action. The supported values are:
   optional arguments with ``nargs("*")`` is possible. For example::
 
        public static void main(String[] args) throws ArgumentParserException {
-           ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+           ArgumentParser parser = ArgumentParsers.newFor("prog").build();
            parser.addArgument("--foo").nargs("*");
            parser.addArgument("--bar").nargs("*");
            parser.addArgument("baz").nargs("*");
@@ -967,7 +1197,7 @@ with a single action. The supported values are:
   present. For example::
 
        public static void main(String[] args) {
-           ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+           ArgumentParser parser = ArgumentParsers.newFor("prog").build();
            parser.addArgument("foo").nargs("+");
            try {
                System.out.println(parser.parseArgs(args));
@@ -1051,7 +1281,7 @@ default value is used when the option string was not present at the
 command line::
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("--foo").setDefault(42);
         System.out.println(parser.parseArgs(args));
     }
@@ -1067,7 +1297,7 @@ For positional arguments with ``nargs("?")`` or ``nargs("*")``, the
 default value is used when no command line argument was present::
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("foo").nargs("?").setDefault(42);
         System.out.println(parser.parseArgs(args));
     }
@@ -1083,7 +1313,7 @@ Providing :javafield:`Arguments.SUPPRESS` causes no attribute to be
 added if the command ine argument was not present::
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("--foo").setDefault(Arguments.SUPPRESS);
         System.out.println(parser.parseArgs(args));
     }
@@ -1110,7 +1340,7 @@ argument or a constructor with 1 String argument can be passed
 directly::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("foo").type(Integer.class);
         try {
             System.out.println(parser.parseArgs(args));
@@ -1137,7 +1367,7 @@ in case-insensitive fashion is converted to ``Boolean.TRUE``, and
 other strings are converted to ``Boolean.FALSE``::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog")
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build()
                 .defaultHelp(true);
         parser.addArgument("-f").type(Boolean.class);
 
@@ -1158,7 +1388,7 @@ string ``true`` as true value, and ``false`` as false value.  Otherwise,
 reports error::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog")
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build()
                 .defaultHelp(true);
         parser.addArgument("-f").type(Arguments.booleanType());
 
@@ -1187,7 +1417,7 @@ For example, to use ``yes``, and ``no`` as true and false values
 respectively instead of ``true`` and ``false``::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog")
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build()
                 .defaultHelp(true);
         parser.addArgument("-f").type(Arguments.booleanType("yes", "no"));
 
@@ -1214,7 +1444,7 @@ members. For example::
     }
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("-x").type(Enums.class);
         try {
             Namespace res = parser.parseArgs(args);
@@ -1333,7 +1563,7 @@ implements :javadoc:`inf.ArgumentType` interface::
     }
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("foo").type(new PerfectSquare());
         try {
             System.out.println(parser.parseArgs(args));
@@ -1354,7 +1584,7 @@ The :ref:`Argument-choices` may be more convenient for type checkers
 that simply check against a range of values::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("foo").type(Integer.class)
                 .choices(Arguments.range(5, 10));
         try {
@@ -1407,7 +1637,7 @@ will be checked, and an error message will be displayed if the
 argument was not one of the accepted values::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("foo").choices("a", "b", "c");
         try {
             System.out.println(parser.parseArgs(args));
@@ -1431,7 +1661,7 @@ example, argparse4j provides |Arguments.range| to check whether an
 integer is in specified range::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("foo").type(Integer.class)
                 .choices(Arguments.range(1, 10));
         try {
@@ -1466,7 +1696,7 @@ be omitted at the command line. To make an option required, ``true``
 can be specified for |Argument.required|::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("--foo").required(true);
         try {
             System.out.println(parser.parseArgs(args));
@@ -1505,7 +1735,7 @@ of the argument. When a user requests help (usually by using ``-h`` or
 displayed with each argument::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("--foo").action(Arguments.storeTrue())
                 .help("foo the bars before frobbling");
         parser.addArgument("bar").nargs("+").help("one of the bars to be frobbled");
@@ -1535,7 +1765,7 @@ The argparse4j supports silencing the help entry for certain options,
 by passing :javafield:`Arguments.SUPPRESS` to |Argument.help| method::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("--foo").help(Arguments.SUPPRESS);
         try {
             Namespace ns = parser.parseArgs(args);
@@ -1575,7 +1805,7 @@ by a single command line argument will be referred to as ``FOO``. For
 example::
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("--foo");
         parser.addArgument("bar");
         parser.printHelp();
@@ -1597,7 +1827,7 @@ An alternative name can be specified with |Argument.metavar|
 method::
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("--foo").metavar("YY");
         parser.addArgument("bar").metavar("XX");
         parser.printHelp();
@@ -1624,7 +1854,7 @@ metavar to be used multiple times. Providing multiple values to
 the arguments::
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("-x").nargs(2);
         parser.addArgument("--foo").nargs(2).metavar("bar", "baz");
         parser.printHelp();
@@ -1657,7 +1887,7 @@ to |ArgumentParser.addArgument| method, with any internal ``-`` converted
 to ``_``::
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("bar");
         parser.addArgument("foo-bar");
         System.out.println(parser.parseArgs(args));
@@ -1677,7 +1907,7 @@ initial ``-`` character. Any internal ``-`` characters will be
 converted to ``_``. The example below illustrate this behavior::
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("-f", "--foo-bar", "--foo");
         parser.addArgument("-x", "-y");
         System.out.println(parser.parseArgs(args));
@@ -1694,7 +1924,7 @@ converted to ``_``. The example below illustrate this behavior::
 |Argument.dest| method allows a custom attribute name to be provided::
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("--foo").dest("bar");
         System.out.println(parser.parseArgs(args));
     }
@@ -1728,7 +1958,7 @@ the value of an option (if it takes one). In the simplest case, the
 option and its value are passed as two separate arguments::
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("-x");
         parser.addArgument("--foo");
         System.out.println(parser.parseArgs(args));
@@ -1763,7 +1993,7 @@ Several short options can be joined together, using only a single
 requires a value::
 
     public static void main(String[] args) throws ArgumentParserException {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("-x").action(Arguments.storeTrue());
         parser.addArgument("-y").action(Arguments.storeTrue());
         parser.addArgument("-z");
@@ -1787,7 +2017,7 @@ typical error handling is catch the exception and use
 the program::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("--foo").type(Integer.class);
         parser.addArgument("bar").nargs("?");
         try {
@@ -1823,7 +2053,7 @@ negative numbers and there are no options in the parser that look like
 negative numbers::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("-x");
         parser.addArgument("foo").nargs("?");
         try {
@@ -1846,7 +2076,7 @@ negative numbers::
 ::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("-1").dest("one");
         parser.addArgument("foo").nargs("?");
         try {
@@ -1884,8 +2114,8 @@ that is a positional argument:
 
 
 Please note that whatever
-:ref:`ArgumentParsers-newArgumentParser-prefixChars` is specified in
-|ArgumentParsers.newArgumentParser| method, pseudo-argument is ``--``.
+:ref:`ArgumentParserBuilder-prefixChars` is, pseudo-argument is
+``--``.
 
 After ``--``, sub-command cannot be recognized.
 
@@ -1897,7 +2127,7 @@ abbreviated if the abbreviation is unambiguous::
 
 
     public static void main(String[] args) {
-        ArgumentParser ap = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser ap = ArgumentParsers.newFor("prog").build();
         ap.addArgument("-bacon");
         ap.addArgument("-badger");
         Namespace res = ap.parseArgsOrFail(args);
@@ -1951,7 +2181,7 @@ attribute or the method will be used instead.  For example::
     }
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("--rows").type(Integer.class).nargs("+")
                 .action(Arguments.append()).metavar("N");
         parser.addArgument("--filename");
@@ -2008,13 +2238,12 @@ no arguments and returns :javadoc:`inf.Subparsers` object. This object
 has |Subparsers.addParser| method, which takes a command name and
 returns :javadoc:`inf.Subparser` object. |Subparsers.addParser| method
 can take *prefixChars* argument just like
-:ref:`ArgumentParsers-newArgumentParser-prefixChars` of
-|ArgumentParsers.newArgumentParser| method. If a version of
+:ref:`ArgumentParserBuilder-prefixChars`. If a version of
 |Subparsers.addParser| method without *prefixChars* is used,
 *prefixChars* is inherited from main parser. Some example usage::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("--foo").action(Arguments.storeTrue()).help("foo help");
         Subparsers subparsers = parser.addSubparsers().help("sub-command help");
 
@@ -2086,7 +2315,7 @@ subparser's commands will appear in their own group in the help
 output. For example::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         Subparsers subparsers = parser.addSubparsers()
                 .title("subcommands")
                 .description("valid subcommands")
@@ -2121,7 +2350,7 @@ sub-commands, the display will become quite ugly.  In that case,
 sub-command names. For example::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         Subparsers subparsers = parser.addSubparsers().title("subcommands")
                 .description("valid subcommands").help("additional help")
                 .metavar("COMMAND");
@@ -2155,7 +2384,7 @@ allows multiple strings to refer to the same subparser. This example,
 like ``svn``, aliases ``co`` as a shorthand for ``checkout``::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         Subparsers subparsers = parser.addSubparsers();
         Subparser checkout = subparsers.addParser("checkout").aliases("co");
         checkout.addArgument("foo");
@@ -2205,7 +2434,7 @@ which function it should execute. For example::
     }
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         Subparsers subparsers = parser.addSubparsers();
         Subparser parserSum = subparsers.addParser("sum")
                 .setDefault("func", new Sum());
@@ -2233,7 +2462,7 @@ The alternative way is use |Subparsers.dest| method. With this dest
 value, the selected command name is stored as an attribute::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         Subparsers subparsers = parser.addSubparsers().dest("subparser_name");
         Subparser subparser1 = subparsers.addParser("1");
         subparser1.addArgument("-x");
@@ -2260,7 +2489,7 @@ abbreviation is unambiguous, just like long options::
     };
 
     public static void main(String[] args) {
-        ArgumentParser ap = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser ap = ArgumentParsers.newFor("prog").build();
         Subparsers subparsers = ap.addSubparsers();
         subparsers.addParser("clone").setDefault("command", Command.CLONE);
         subparsers.addParser("clean").setDefault("command", Command.CLEAN);
@@ -2292,7 +2521,7 @@ programs traditionally accept ``-`` as standard input.  The
 use `acceptSystemIn()` method::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog")
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build()
                 .defaultHelp(true);
         parser.addArgument("-i", "--in")
                 .type(Arguments.fileType().acceptSystemIn().verifyCanRead())
@@ -2328,7 +2557,7 @@ of arguments than this default one, appropriate groups can be created
 using the |ArgumentParser.addArgumentGroup|::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         ArgumentGroup group = parser.addArgumentGroup("group");
         group.addArgument("--foo").help("foo help");
         group.addArgument("bar").help("bar help");
@@ -2363,7 +2592,8 @@ specified in |ArgumentGroup.description|, you can customize the help
 message::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog", false);
+        ArgumentParser parser = ArgumentParsers.newFor("prog")
+                .addHelp(false).build();
         ArgumentGroup group1 = parser.addArgumentGroup("group1")
                 .description("group1 description");
         group1.addArgument("foo").help("foo help");
@@ -2401,7 +2631,7 @@ only one of the arguments in the mutually exclusive group was present
 on the command line::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         MutuallyExclusiveGroup group = parser.addMutuallyExclusiveGroup();
         group.addArgument("--foo").action(Arguments.storeTrue());
         group.addArgument("--bar").action(Arguments.storeFalse());
@@ -2424,7 +2654,7 @@ Specifying ``true`` to |MutuallyExclusiveGroup.required| indicates
 that at least one of the mutually exclusive arguments is required::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         MutuallyExclusiveGroup group = parser.addMutuallyExclusiveGroup("group")
                 .required(true);
         group.addArgument("--foo").action(Arguments.storeTrue());
@@ -2449,7 +2679,7 @@ group is merged into the other optional arguments. With either or both
 title and description, the help message is in separate group::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         MutuallyExclusiveGroup group = parser.addMutuallyExclusiveGroup("group");
                 .description("group description");
         group.addArgument("--foo").action(Arguments.storeTrue());
@@ -2485,7 +2715,7 @@ command line arguments and the argument actions.
 determined without any inspection of the command line to be added::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("foo").type(Integer.class);
         parser.setDefault("bar", 42).setDefault("baz", "badger");
         try {
@@ -2504,7 +2734,7 @@ Note that parser-level defaults always override argument-level
 defaults::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("--foo").setDefault("bar");
         parser.setDefault("foo", "spam");
         try {
@@ -2526,7 +2756,7 @@ as set by either |Argument.setDefault| or by
 |ArgumentParser.setDefault|::
 
     public static void main(String[] args) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser("prog");
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
         parser.addArgument("--foo").setDefault("badger");
         System.out.println(parser.getDefault("foo"));
     }
@@ -2579,7 +2809,16 @@ available:
 .. |ArgumentParser.setDefault| replace:: :javadocfunc:`inf.ArgumentParser.setDefault(java.lang.String, java.lang.Object)`
 .. |ArgumentParser.usage| replace:: :javadocfunc:`inf.ArgumentParser.usage(java.lang.String)`
 .. |ArgumentParser.version| replace:: :javadocfunc:`inf.ArgumentParser.version(java.lang.String)`
-.. |ArgumentParsers.newArgumentParser| replace:: :javadocfunc:`ArgumentParsers.newArgumentParser(java.lang.String)`
+.. |ArgumentParserBuilder.addHelp| replace:: :javadocfunc:`ArgumentParserBuilder.addHelp(boolean)`
+.. |ArgumentParserBuilder.build| replace:: :javadocfunc:`ArgumentParserBuilder.build()`
+.. |ArgumentParserBuilder.cjkwidthHack| replace:: :javadocfunc:`ArgumentParserBuilder.cjkwidthHack(boolean)`
+.. |ArgumentParserBuilder.defaultFormatWidth| replace:: :javadocfunc:`ArgumentParserBuilder.defaultFormatWidth(int)`
+.. |ArgumentParserBuilder.locale| replace:: :javadocfunc:`ArgumentParserBuilder.locale(java.util.Locale)`
+.. |ArgumentParserBuilder.noDestConversionForPositionalArgs| replace:: :javadocfunc:`ArgumentParserBuilder.noDestConversionForPositionalArgs(boolean)`
+.. |ArgumentParserBuilder.prefixChars| replace:: :javadocfunc:`ArgumentParserBuilder.prefixChars(java.lang.String)`
+.. |ArgumentParserBuilder.singleMetavar| replace:: :javadocfunc:`ArgumentParserBuilder.singleMetavar(boolean)`
+.. |ArgumentParserBuilder.terminalWidthDetection| replace:: :javadocfunc:`ArgumentParserBuilder.terminalWidthDetection(boolean)`
+.. |ArgumentParsers.newFor| replace:: :javadocfunc:`ArgumentParsers.newFor(java.lang.String)`
 .. |Arguments.appendConst| replace:: :javadocfunc:`impl.Arguments.appendConst()`
 .. |Arguments.append| replace:: :javadocfunc:`impl.Arguments.append()`
 .. |Arguments.count| replace:: :javadocfunc:`impl.Arguments.count()`

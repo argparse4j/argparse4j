@@ -23,8 +23,14 @@
  */
 package net.sourceforge.argparse4j.impl.type;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
+import java.util.Locale;
+
+import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.mock.MockArgument;
 
@@ -46,10 +52,12 @@ public class ReflectArgumentTypeTest {
 
     @Test
     public void testConvertInteger() throws ArgumentParserException {
+        ArgumentParser ap = ArgumentParsers.newFor("argparse4j")
+                .locale(Locale.US).build();
         ReflectArgumentType<Integer> at = createRA(Integer.class);
         assertEquals((Integer)100, at.convert(null, null, "100"));
         try {
-            at.convert(null, ma, "0x100");
+            at.convert(ap, ma, "0x100");
             fail();
         } catch(ArgumentParserException e) {
             assertEquals("argument null: could not convert '0x100' to Integer (For input string: \"0x100\")",
@@ -62,10 +70,12 @@ public class ReflectArgumentTypeTest {
     }
     @Test
     public void testConvertEnum() throws ArgumentParserException {
+        ArgumentParser ap = ArgumentParsers.newFor("argparse4j")
+                .locale(Locale.US).build();
         ReflectArgumentType<Lang> at = createRA(Lang.class);
         assertEquals(Lang.CPP, at.convert(null, null, "CPP"));
         try {
-            at.convert(null, ma, "C");
+            at.convert(ap, ma, "C");
             fail();
         } catch(ArgumentParserException e) {
             assertEquals("argument null: could not convert 'C' (choose from {PYTHON,CPP,JAVA})",

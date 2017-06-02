@@ -17,7 +17,8 @@ Debian Linux::
 
 	public static void main(String[] args) {
 	    ArgumentParser parser = ArgumentParsers
-		    .newArgumentParser("ls")
+            .newFor("ls")
+            .build()
 		    .defaultHelp(true)
 		    .description(
 			    "FILE に関する情報を一覧表示します (デフォルトは現在のディレクトリ)。\n"
@@ -119,8 +120,9 @@ Clojure example
     (defn va [& name-and-flags]
       (into-array name-and-flags))
 
-    (def ap (. ArgumentParsers newArgumentParser
-	       "java -cp clojure.jar clojure.main"))
+    (def apb (. ArgumentParsers newFor
+           "java -cp clojure.jar clojure.main"))
+    (def ap (. apb build))
 
     (let [group (. ap addArgumentGroup "init options")]
 	 (doto (. group addArgument (va "-i" "--init"))
@@ -154,7 +156,8 @@ if you use |Argument.choices| with integer constants:
 
 .. code-block:: clojure
 
-    (def ap (. ArgumentParsers newArgumentParser "hello"))
+    (def apb (. ArgumentParsers newFor "hello"))
+    (def ap (. apb build))
     (doto (. ap addArgument (va "-i"))
 	  (.type Long)
 	  (.choices [1 2 3])

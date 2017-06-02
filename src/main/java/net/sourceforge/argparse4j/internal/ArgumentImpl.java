@@ -29,8 +29,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
-import net.sourceforge.argparse4j.ArgumentParsers;
-import net.sourceforge.argparse4j.helper.PrefixPattern;
+import net.sourceforge.argparse4j.ArgumentParserConfiguration;
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.helper.TextWidthCounter;
 import net.sourceforge.argparse4j.impl.Arguments;
@@ -66,40 +65,44 @@ public final class ArgumentImpl implements Argument {
     private int minNumArg_ = -1;
     private int maxNumArg_ = -1;
     private String help_ = "";
+    private ArgumentParserConfiguration config_;
     private ArgumentGroupImpl argumentGroup_;
 
-    public ArgumentImpl(PrefixPattern prefixPattern, String... nameOrFlags) {
-        this(prefixPattern, null, nameOrFlags);
+    public ArgumentImpl(ArgumentParserConfiguration config,
+            String... nameOrFlags) {
+        this(config, null, nameOrFlags);
     }
 
-    public ArgumentImpl(PrefixPattern prefixPattern,
+    public ArgumentImpl(ArgumentParserConfiguration config,
             ArgumentGroupImpl argumentGroup, String... nameOrFlags) {
         if (nameOrFlags.length == 0) {
             throw new IllegalArgumentException("no nameOrFlags was specified");
         }
+        config_ = config;
         argumentGroup_ = argumentGroup;
-        if (nameOrFlags.length == 1 && !prefixPattern.match(nameOrFlags[0])) {
+        if (nameOrFlags.length == 1
+                && !config.prefixPattern_.match(nameOrFlags[0])) {
             if (argumentGroup_ != null && argumentGroup_.isMutex()) {
                 throw new IllegalArgumentException(
                         "mutually exclusive arguments must be optional");
             }
             name_ = nameOrFlags[0];
-            if (ArgumentParsers.getNoDestConversionForPositionalArgs() == false) {
+            if (!config.noDestConversionForPositionalArgs_) {
                 dest_ = name_.replace('-', '_');
             }
         } else {
             flags_ = nameOrFlags;
             for (String flag : flags_) {
-                if (!prefixPattern.match(flag)) {
+                if (!config.prefixPattern_.match(flag)) {
                     throw new IllegalArgumentException(
                             String.format(
                                     TextHelper.LOCALE_ROOT,
                                     "invalid option string '%s': must start with a character '%s'",
-                                    flag, prefixPattern.getPrefixChars()));
+                                    flag, config.prefixPattern_.getPrefixChars()));
                 }
             }
             for (String flag : flags_) {
-                boolean longflag = prefixPattern.matchLongFlag(flag);
+                boolean longflag = config.prefixPattern_.matchLongFlag(flag);
                 if (dest_ == null) {
                     dest_ = flag;
                     if (longflag) {
@@ -110,7 +113,7 @@ public final class ArgumentImpl implements Argument {
                     break;
                 }
             }
-            dest_ = prefixPattern.removePrefix(dest_).replace('-', '_');
+            dest_ = config.prefixPattern_.removePrefix(dest_).replace('-', '_');
         }
     }
 
@@ -227,7 +230,7 @@ public final class ArgumentImpl implements Argument {
             String mv = formatMetavar();
             StringBuilder sb = new StringBuilder();
 
-            if(ArgumentParsers.isSingleMetavar()) {
+            if(config_.singleMetavar_) {
                 for (String flag : flags_) {
                     if(sb.length() > 0) {
                         sb.append(", ");

@@ -23,7 +23,7 @@
  */
 package net.sourceforge.argparse4j;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import net.sourceforge.argparse4j.internal.ArgumentParserImpl;
 
@@ -34,7 +34,8 @@ public class ArgumentParsersTest {
     @Test
     public void testNewArgumentParser() {
         ArgumentParserImpl ap = (ArgumentParserImpl) ArgumentParsers
-                .newArgumentParser("prog", false, "+", "@");
+                .newFor("prog").addHelp(false).prefixChars("+")
+                .fromFilePrefix("@").build();
         assertEquals("prog", ap.getProg());
         assertEquals("+", ap.getPrefixChars());
         assertEquals("@", ap.getFromFilePrefixChars());

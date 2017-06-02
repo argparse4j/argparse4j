@@ -40,29 +40,26 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.ArgumentParserConfiguration;
 import net.sourceforge.argparse4j.annotation.Arg;
-import net.sourceforge.argparse4j.helper.ASCIITextWidthCounter;
-import net.sourceforge.argparse4j.helper.PrefixPattern;
 import net.sourceforge.argparse4j.helper.ReflectHelper;
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.helper.TextWidthCounter;
 import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentGroup;
-import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.ConfiguredArgumentParser;
 import net.sourceforge.argparse4j.inf.MutuallyExclusiveGroup;
 import net.sourceforge.argparse4j.inf.Namespace;
 
 /**
  * <strong>The application code must not use this class directly.</strong>
  */
-public final class ArgumentParserImpl implements ArgumentParser {
+public final class ArgumentParserImpl implements ConfiguredArgumentParser {
 
     private Map<String, ArgumentImpl> optargIndex_ = new HashMap<String, ArgumentImpl>();
     private List<ArgumentImpl> optargs_ = new ArrayList<ArgumentImpl>();
@@ -72,70 +69,40 @@ public final class ArgumentParserImpl implements ArgumentParser {
     private SubparsersImpl subparsers_ = new SubparsersImpl(this);
     private ArgumentParserImpl mainParser_;
     private String command_;
-    private String prog_;
+    private ArgumentParserConfiguration config_;
     private String usage_ = "";
     private String description_ = "";
     private String epilog_ = "";
     private String version_ = "";
-    private PrefixPattern prefixPattern_;
-    private PrefixPattern fromFilePrefixPattern_;
     private boolean defaultHelp_ = false;
     private boolean negNumFlag_ = false;
-    private TextWidthCounter textWidthCounter_;
-    private ResourceBundle resourceBundle = ResourceBundle.getBundle(this
-            .getClass().getName());
 
     private static final Pattern NEG_NUM_PATTERN = Pattern.compile("-\\d+");
     private static final Pattern SHORT_OPTS_PATTERN = Pattern
             .compile("-[^-].*");
 
-    public ArgumentParserImpl(String prog) {
-        this(prog, true, ArgumentParsers.DEFAULT_PREFIX_CHARS, null,
-                new ASCIITextWidthCounter(), null, null);
+    public ArgumentParserImpl(ArgumentParserConfiguration config) {
+        this(config, null, null);
     }
 
-    public ArgumentParserImpl(String prog, boolean addHelp) {
-        this(prog, addHelp, ArgumentParsers.DEFAULT_PREFIX_CHARS, null,
-                new ASCIITextWidthCounter(), null, null);
-    }
-
-    public ArgumentParserImpl(String prog, boolean addHelp, String prefixChars) {
-        this(prog, addHelp, prefixChars, null, new ASCIITextWidthCounter(),
-                null, null);
-    }
-
-    public ArgumentParserImpl(String prog, boolean addHelp, String prefixChars,
-            String fromFilePrefix) {
-        this(prog, addHelp, prefixChars, fromFilePrefix,
-                new ASCIITextWidthCounter(), null, null);
-    }
-
-    public ArgumentParserImpl(String prog, boolean addHelp, String prefixChars,
-            String fromFilePrefix, TextWidthCounter textWidthCounter) {
-        this(prog, addHelp, prefixChars, fromFilePrefix, textWidthCounter,
-                null, null);
-    }
-
-    public ArgumentParserImpl(String prog, boolean addHelp, String prefixChars,
-            String fromFilePrefix, TextWidthCounter textWidthCounter,
+    public ArgumentParserImpl(ArgumentParserConfiguration config,
             String command, ArgumentParserImpl mainParser) {
-        this.prog_ = TextHelper.nonNull(prog);
+        this.config_ = config;
         this.command_ = command;
         this.mainParser_ = mainParser;
-        this.textWidthCounter_ = textWidthCounter;
-        if (prefixChars == null || prefixChars.isEmpty()) {
+        if (config.prefixChars_ == null || config.prefixChars_.isEmpty()) {
             throw new IllegalArgumentException(
                     "prefixChars cannot be a null or empty");
         }
-        this.prefixPattern_ = new PrefixPattern(prefixChars);
-        if (fromFilePrefix != null) {
-            this.fromFilePrefixPattern_ = new PrefixPattern(fromFilePrefix);
+        if (config.formatWidth_ <= 0) {
+            throw new IllegalArgumentException(
+                    "formatWidth muet be greater than 0");
         }
-        if (addHelp) {
-            String prefix = prefixChars.substring(0, 1);
+        if (config.addHelp_) {
+            String prefix = config.prefixChars_.substring(0, 1);
             addArgument(prefix + "h", prefix + prefix + "help")
                     .action(Arguments.help())
-                    .help(resourceBundle.getString("help"))
+                    .help(config_.localize("help"))
                     .setDefault(Arguments.SUPPRESS);
         }
     }
@@ -147,7 +114,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     public ArgumentImpl addArgument(ArgumentGroupImpl group,
             String... nameOrFlags) {
-        ArgumentImpl arg = new ArgumentImpl(prefixPattern_, group, nameOrFlags);
+        ArgumentImpl arg = new ArgumentImpl(config_, group, nameOrFlags);
         if (arg.isOptionalArgument()) {
             for (String flag : arg.getFlags()) {
                 ArgumentImpl another = optargIndex_.get(flag);
@@ -254,7 +221,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         for (ArgumentImpl arg : args) {
             if (arg.getArgumentGroup() == null
                     || !arg.getArgumentGroup().isSeparateHelp()) {
-                arg.printHelp(writer, defaultHelp_, textWidthCounter_,
+                arg.printHelp(writer, defaultHelp_, config_.textWidthCounter_,
                         format_width);
             }
         }
@@ -269,19 +236,19 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     @Override
     public void printHelp(PrintWriter writer) {
-        int formatWidth = ArgumentParsers.getFormatWidth();
+        int formatWidth = config_.formatWidth_;
         printUsage(writer, formatWidth);
         if (!description_.isEmpty()) {
             writer.println();
-            writer.println(TextHelper.wrap(textWidthCounter_, description_,
-                    formatWidth, 0, "", ""));
+            writer.println(TextHelper.wrap(config_.textWidthCounter_, 
+                   description_, formatWidth, 0, "", ""));
         }
         boolean subparsersUntitled = subparsers_.getTitle().isEmpty()
                 && subparsers_.getDescription().isEmpty();
         if (checkDefaultGroup(posargs_)
                 || (subparsers_.hasSubCommand() && subparsersUntitled)) {
             writer.println();
-            writer.println(resourceBundle.getString("positional.arguments"));
+            writer.println(config_.localize("positional.arguments"));
             printArgumentHelp(writer, posargs_, formatWidth);
             if (subparsers_.hasSubCommand() && subparsersUntitled) {
                 subparsers_.printSubparserHelp(writer, formatWidth);
@@ -289,17 +256,17 @@ public final class ArgumentParserImpl implements ArgumentParser {
         }
         if (checkDefaultGroup(optargs_)) {
             writer.println();
-            writer.println(resourceBundle.getString("optional.arguments"));
+            writer.println(config_.localize("optional.arguments"));
             printArgumentHelp(writer, optargs_, formatWidth);
         }
         if (subparsers_.hasSubCommand() && !subparsersUntitled) {
             writer.println();
-            writer.print(subparsers_.getTitle().isEmpty() ? resourceBundle
-                    .getString("sub-commands") : subparsers_.getTitle());
+            writer.print(subparsers_.getTitle().isEmpty() ? config_
+                    .localize("sub-commands") : subparsers_.getTitle());
             writer.println(":");
             if (!subparsers_.getDescription().isEmpty()) {
                 writer.print("  ");
-                writer.println(TextHelper.wrap(textWidthCounter_,
+                writer.println(TextHelper.wrap(config_.textWidthCounter_,
                         subparsers_.getDescription(), formatWidth, 2, "", "  "));
                 writer.println();
             }
@@ -313,7 +280,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         }
         if (!epilog_.isEmpty()) {
             writer.println();
-            writer.println(TextHelper.wrap(textWidthCounter_, epilog_,
+            writer.println(TextHelper.wrap(config_.textWidthCounter_, epilog_,
                     formatWidth, 0, "", ""));
         }
     }
@@ -370,22 +337,22 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     @Override
     public void printUsage(PrintWriter writer) {
-        printUsage(writer, ArgumentParsers.getFormatWidth());
+        printUsage(writer, config_.formatWidth_);
     }
 
     private void printUsage(PrintWriter writer, int format_width) {
         if (!usage_.isEmpty()) {
-            writer.print(resourceBundle.getString("usage") + " ");
+            writer.print(config_.localize("usage") + " ");
             writer.println(substitutePlaceholder(usage_));
             return;
         }
-        String usageprog = resourceBundle.getString("usage") + " " + prog_;
+        String usageprog = config_.localize("usage") + " " + config_.prog_;
         writer.print(usageprog);
         int offset;
         String firstIndent;
         String subsequentIndent;
         String indent = "                              ";
-        int usageprogWidth = textWidthCounter_.width(usageprog);
+        int usageprogWidth = config_.textWidthCounter_.width(usageprog);
         if (usageprogWidth > indent.length()) {
             writer.println();
             offset = 6;
@@ -852,7 +819,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     embeddedValue = null;
                     boolean shortOptsFound = false;
                     int unknownStart = -1;
-                    if (prefixPattern_.matchShortFlag(term)) {
+                    if (config_.prefixPattern_.matchShortFlag(term)) {
                         shortOptsFound = true;
                         // Possible concatenated short options
                         for (int i = 1, termlen = term.length(); i < termlen; ++i) {
@@ -951,10 +918,10 @@ public final class ArgumentParserImpl implements ArgumentParser {
                                 : String.format(
                                         TextHelper.LOCALE_ROOT,
                                         "%nChecking trailing white spaces or new lines in %sfile may help.",
-                                        fromFilePrefixPattern_.getPrefixChars()
-                                                .length() == 1 ? fromFilePrefixPattern_
+                                        config_.fromFilePrefixPattern_.getPrefixChars()
+                                                .length() == 1 ? config_.fromFilePrefixPattern_
                                                 .getPrefixChars() : "["
-                                                + fromFilePrefixPattern_
+                                                + config_.fromFilePrefixPattern_
                                                         .getPrefixChars() + "]"));
     }
 
@@ -1189,7 +1156,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     private boolean flagFound(ParseState state) throws ArgumentParserException {
         while (fromFileFound(state)) {
             extendArgs(state,
-                    fromFilePrefixPattern_.removePrefix(state.getArg()));
+                    config_.fromFilePrefixPattern_.removePrefix(state.getArg()));
         }
         String term = state.getArg();
         if (state.consumedSeparator) {
@@ -1197,14 +1164,14 @@ public final class ArgumentParserImpl implements ArgumentParser {
         } else if ("--".equals(term)) {
             return true;
         }
-        return prefixPattern_.match(term)
+        return config_.prefixPattern_.match(term)
                 && (state.negNumFlag || !NEG_NUM_PATTERN.matcher(term)
                         .matches());
     }
 
     private boolean fromFileFound(ParseState state) {
-        return fromFilePrefixPattern_ != null
-                && fromFilePrefixPattern_.match(state.getArg());
+        return config_.fromFilePrefixPattern_ != null
+                && config_.fromFilePrefixPattern_.match(state.getArg());
     }
 
     /**
@@ -1307,8 +1274,12 @@ public final class ArgumentParserImpl implements ArgumentParser {
         }
     }
 
+    public ArgumentParserConfiguration getConfig() {
+        return config_;
+    }
+
     public String getProg() {
-        return prog_;
+        return config_.prog_;
     }
 
     @Override
@@ -1345,14 +1316,14 @@ public final class ArgumentParserImpl implements ArgumentParser {
             return;
         }
         printUsage(writer);
-        writer.write(TextHelper.wrap(textWidthCounter_, String.format(
-                TextHelper.LOCALE_ROOT, "%s: error: %s%n", prog_,
-                e.getMessage()), ArgumentParsers.getFormatWidth(), 0, "", ""));
+        writer.write(TextHelper.wrap(config_.textWidthCounter_, String.format(
+                TextHelper.LOCALE_ROOT, "%s: error: %s%n", config_.prog_,
+                e.getMessage()), config_.formatWidth_, 0, "", ""));
         if (e instanceof UnrecognizedArgumentException) {
             UnrecognizedArgumentException ex = (UnrecognizedArgumentException) e;
             String argument = ex.getArgument();
-            if (prefixPattern_.match(argument)) {
-                String flagBody = prefixPattern_.removePrefix(argument);
+            if (config_.prefixPattern_.match(argument)) {
+                String flagBody = config_.prefixPattern_.removePrefix(argument);
                 if (flagBody.length() >= 2) {
                     printFlagCandidates(flagBody, writer);
                 }
@@ -1485,7 +1456,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         for (ArgumentImpl arg : optargs_) {
             String[] flags = arg.getFlags();
             for (int i = 0, len = flags.length; i < len; ++i) {
-                String body = prefixPattern_.removePrefix(flags[i]);
+                String body = config_.prefixPattern_.removePrefix(flags[i]);
                 if (body.length() <= 1) {
                     continue;
                 }
@@ -1549,14 +1520,14 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     /**
      * Replace placeholder in src with actual value. The only known placeholder
-     * is <tt>${prog}</tt>, which is replaced with {@link #prog_}.
+     * is <tt>${prog}</tt>, which is replaced with {@code config_.prog_}.
      * 
      * @param src
      *            string to be processed
      * @return the substituted string
      */
     private String substitutePlaceholder(String src) {
-        return src.replaceAll(Pattern.quote("${prog}"), prog_);
+        return src.replaceAll(Pattern.quote("${prog}"), config_.prog_);
     }
 
     public String getCommand() {
@@ -1564,15 +1535,15 @@ public final class ArgumentParserImpl implements ArgumentParser {
     }
 
     public TextWidthCounter getTextWidthCounter() {
-        return textWidthCounter_;
+        return config_.textWidthCounter_;
     }
 
     public String getPrefixChars() {
-        return prefixPattern_.getPrefixChars();
+        return config_.prefixPattern_.getPrefixChars();
     }
 
     public String getFromFilePrefixChars() {
-        return fromFilePrefixPattern_ == null ? null : fromFilePrefixPattern_
+        return config_.fromFilePrefixPattern_ == null ? null : config_.fromFilePrefixPattern_
                 .getPrefixChars();
     }
 

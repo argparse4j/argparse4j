@@ -23,7 +23,10 @@
  */
 package net.sourceforge.argparse4j.internal;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import net.sourceforge.argparse4j.ArgumentParsers;
 
 import org.junit.Test;
 
@@ -31,8 +34,9 @@ public class SubparsersImplTest {
 
     @Test
     public void testFormatShortSyntax() {
-        SubparsersImpl subparsers = new SubparsersImpl(new ArgumentParserImpl(
-                "prog"));
+        ArgumentParserImpl ap = (ArgumentParserImpl) ArgumentParsers
+                .newFor("prog").build();
+        SubparsersImpl subparsers = new SubparsersImpl(ap);
         assertEquals("{}", subparsers.formatShortSyntax());
         subparsers.addParser("install");
         assertEquals("{install}", subparsers.formatShortSyntax());
@@ -45,8 +49,9 @@ public class SubparsersImplTest {
 
     @Test
     public void testAddParserNotUnique() {
-        SubparsersImpl subparsers = new SubparsersImpl(new ArgumentParserImpl(
-                "prog"));
+        ArgumentParserImpl ap = (ArgumentParserImpl) ArgumentParsers
+                .newFor("prog").build();
+        SubparsersImpl subparsers = new SubparsersImpl(ap);
         SubparserImpl subparser = subparsers.addParser("checkout");
         try {
             subparsers.addParser("checkout");
@@ -57,8 +62,9 @@ public class SubparsersImplTest {
 
     @Test
     public void testAddAlias() {
-        SubparsersImpl subparsers = new SubparsersImpl(new ArgumentParserImpl(
-                "prog"));
+        ArgumentParserImpl ap = (ArgumentParserImpl) ArgumentParsers
+                .newFor("prog").build();
+        SubparsersImpl subparsers = new SubparsersImpl(ap);
         SubparserImpl subparser = subparsers.addParser("checkout");
         subparsers.addAlias(subparser, "co", "out");
         assertTrue(subparsers.getCommands().contains("co"));

@@ -26,26 +26,24 @@ package net.sourceforge.argparse4j.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
+
+import java.util.Locale;
+
+import net.sourceforge.argparse4j.ArgumentParserConfiguration;
 import net.sourceforge.argparse4j.ArgumentParsers;
-import net.sourceforge.argparse4j.helper.PrefixPattern;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 
-import org.junit.Before;
 import org.junit.Test;
 
 
 public class ArgumentImplTest {
 
-    private PrefixPattern prefix;
-
-    @Before
-    public void setup() {
-        prefix = new PrefixPattern(ArgumentParsers.DEFAULT_PREFIX_CHARS);
-    }
+    private ArgumentParserConfiguration config_ = ArgumentParsers
+            .newFor("argpars4j").locale(Locale.US).config();
 
     @Test
     public void testArgumentWithName() {
-        ArgumentImpl arg = new ArgumentImpl(prefix, "foo");
+        ArgumentImpl arg = new ArgumentImpl(config_, "foo");
         assertEquals("foo", arg.getName());
         assertEquals("foo", arg.getDest());
         assertEquals("foo", arg.textualName());
@@ -53,7 +51,7 @@ public class ArgumentImplTest {
 
     @Test
     public void testArgumentWithDashSeparatedName() {
-        ArgumentImpl arg = new ArgumentImpl(prefix, "foo-bar");
+        ArgumentImpl arg = new ArgumentImpl(config_, "foo-bar");
         assertEquals("foo-bar", arg.getName());
         assertEquals("foo_bar", arg.getDest());
         assertEquals("foo-bar", arg.textualName());
@@ -62,7 +60,7 @@ public class ArgumentImplTest {
     @Test
     public void testArgumentWithNoNameOrFlags() {
         try {
-            new ArgumentImpl(prefix);
+            new ArgumentImpl(config_);
             fail();
         } catch(IllegalArgumentException e) {
             // success
@@ -71,7 +69,8 @@ public class ArgumentImplTest {
 
     @Test
     public void testArgumentWithFlags() {
-        ArgumentImpl arg = new ArgumentImpl(prefix, "-f", "--foo-bar", "--foo");
+        ArgumentImpl arg = new ArgumentImpl(config_, "-f", "--foo-bar",
+                "--foo");
         assertNull(arg.getName());
         assertEquals("foo_bar", arg.getDest());
         assertEquals("FOO_BAR", arg.resolveMetavar()[0]);
@@ -80,7 +79,7 @@ public class ArgumentImplTest {
     @Test
     public void testArgumentWithBadFlags() {
         try {
-            new ArgumentImpl(prefix, "f", "-f");
+            new ArgumentImpl(config_, "f", "-f");
             fail("Exception must be thrown");
         } catch (IllegalArgumentException e) {
             // success
@@ -89,8 +88,9 @@ public class ArgumentImplTest {
 
     @Test
     public void testArgumentWithPrefix() {
-        PrefixPattern prefix = new PrefixPattern("-+");
-        ArgumentImpl arg = new ArgumentImpl(prefix, "-f", "-+foo-bar", "++foo");
+        ArgumentParserConfiguration config = ArgumentParsers.newFor("argpars4j")
+                .prefixChars("-+").locale(Locale.US).config();
+        ArgumentImpl arg = new ArgumentImpl(config, "-f", "-+foo-bar", "++foo");
         assertNull(arg.getName());
         assertEquals("foo_bar", arg.getDest());
         assertEquals("FOO_BAR", arg.resolveMetavar()[0]);
@@ -98,7 +98,7 @@ public class ArgumentImplTest {
     
     @Test
     public void testNargsWithZero() {
-        ArgumentImpl arg = new ArgumentImpl(prefix, "--foo");
+        ArgumentImpl arg = new ArgumentImpl(config_, "--foo");
         try {
             arg.nargs(0);
             fail();
@@ -108,7 +108,7 @@ public class ArgumentImplTest {
 
     @Test
     public void testResolveMetavar() {
-        ArgumentImpl arg = new ArgumentImpl(prefix, "--foo");
+        ArgumentImpl arg = new ArgumentImpl(config_, "--foo");
         assertEquals("FOO", arg.resolveMetavar()[0]);
         arg.dest("bar");
         assertEquals("BAR", arg.resolveMetavar()[0]);
@@ -117,7 +117,7 @@ public class ArgumentImplTest {
         arg.metavar("baz");
         assertEquals("baz", arg.resolveMetavar()[0]);
         
-        arg = new ArgumentImpl(prefix, "foo");
+        arg = new ArgumentImpl(config_, "foo");
         assertEquals("foo", arg.resolveMetavar()[0]);
         arg.dest("bar");
         assertEquals("bar", arg.resolveMetavar()[0]);
@@ -129,15 +129,15 @@ public class ArgumentImplTest {
     
     @Test
     public void testTextualName() {
-        ArgumentImpl arg = new ArgumentImpl(prefix, "f");
+        ArgumentImpl arg = new ArgumentImpl(config_, "f");
         assertEquals("f", arg.textualName());
-        arg = new ArgumentImpl(prefix, "-f", "--foo", "--foo-bar");
+        arg = new ArgumentImpl(config_, "-f", "--foo", "--foo-bar");
         assertEquals("-f/--foo/--foo-bar", arg.textualName());
     }
 
     @Test
     public void testFormatMetavar() {
-        ArgumentImpl arg = new ArgumentImpl(prefix, "--foo");
+        ArgumentImpl arg = new ArgumentImpl(config_, "--foo");
         assertEquals("FOO", arg.formatMetavar());
         arg.dest("BAZ");
         assertEquals("BAZ", arg.formatMetavar());
@@ -159,18 +159,19 @@ public class ArgumentImplTest {
 
     @Test
     public void testFormatMetavarWithMetavarInference() {
-        ArgumentImpl arg = new ArgumentImpl(prefix, "--foo")
+        ArgumentImpl arg = new ArgumentImpl(config_, "--foo")
                 .type(Boolean.class);
         assertEquals("{true,false}", arg.formatMetavar());
     }
 
     @Test
     public void testConvert() throws ArgumentParserException {
-        ArgumentImpl arg = new ArgumentImpl(prefix, "--foo");
+        ArgumentImpl arg = new ArgumentImpl(config_, "--foo");
         assertEquals("hello", arg.convert(null, "hello"));
         arg.choices("world");
         try {
-            arg.convert(null, "hello");
+            ArgumentParserImpl ap = new ArgumentParserImpl(config_);
+            arg.convert(ap, "hello");
             fail();
         } catch(ArgumentParserException e) {
             assertEquals("argument --foo: invalid choice: 'hello' (choose from {world})", e.getMessage());
@@ -179,7 +180,7 @@ public class ArgumentImplTest {
 
     @Test
     public void testPrimitiveTypes() throws ArgumentParserException {
-        ArgumentImpl arg = new ArgumentImpl(prefix, "foo").type(int.class);
+        ArgumentImpl arg = new ArgumentImpl(config_, "foo").type(int.class);
         assertEquals(Integer.MAX_VALUE, arg.convert(null, Integer.toString(Integer.MAX_VALUE)));
 
         arg.type(boolean.class);
