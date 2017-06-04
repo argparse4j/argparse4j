@@ -140,7 +140,7 @@ Clojure example
 	       (.action (. Arguments storeTrue))
 	       (.help "Run a repl"))
 	 (doto (. group addArgument (va "path"))
-	       (.help (str "Run a script from from a file or resource;"
+	       (.help (str "Run a script from a file or resource;"
 			   " use '-' to read from standard input"))))
 
     (try
