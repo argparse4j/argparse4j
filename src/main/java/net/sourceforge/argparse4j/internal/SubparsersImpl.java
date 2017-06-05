@@ -32,6 +32,7 @@ import java.util.Map;
 
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.FeatureControl;
 import net.sourceforge.argparse4j.inf.Subparsers;
 
 /**
@@ -129,6 +130,22 @@ public final class SubparsersImpl implements Subparsers {
     }
 
     /**
+     * Return true if SubparserImpl has at least one sub-command whose help
+     * output is not suppressed.
+     * 
+     * @return true if SubparserImpl has at least one sub-command whose help
+     *         output is not suppressed.
+     */
+    public boolean hasNotSuppressedSubCommand() {
+        for (Map.Entry<String, SubparserImpl> entry : parsers_.entrySet()) {
+            if (entry.getValue().getHelpControl() != FeatureControl.SUPPRESS) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Get next SubparserImpl from given command and state. This function
      * resolves abbreviated command input as well. If the given command is
      * ambiguous, {@link ArgumentParserException} will be thrown. If no matching
@@ -195,7 +212,9 @@ public final class SubparsersImpl implements Subparsers {
             StringBuilder sb = new StringBuilder();
             sb.append("{");
             for (Map.Entry<String, SubparserImpl> entry : parsers_.entrySet()) {
-                sb.append(entry.getKey()).append(",");
+                if (entry.getValue().getHelpControl() != FeatureControl.SUPPRESS) {
+                    sb.append(entry.getKey()).append(",");
+                }
             }
             if (sb.length() > 1) {
                 sb.delete(sb.length() - 1, sb.length());
@@ -220,7 +239,8 @@ public final class SubparsersImpl implements Subparsers {
                 mainParser_.getTextWidthCounter(), format_width);
         for (Map.Entry<String, SubparserImpl> entry : parsers_.entrySet()) {
             // Don't generate help for aliases.
-            if (entry.getKey().equals(entry.getValue().getCommand())) {
+            if (entry.getValue().getHelpControl() != FeatureControl.SUPPRESS &&
+                    entry.getKey().equals(entry.getValue().getCommand())) {
                 entry.getValue().printSubparserHelp(writer, format_width);
             }
         }
