@@ -1625,6 +1625,26 @@ of :javadocfunc:`inf.MetavarInference.inferMetavar()` from
                 new String[] { "true", "false" }, 0, ",", "{", "}") };
     }
 
+The name of types in messages can be localized. Names for the
+primitive types (and their wrappers) are provided. Names for custom
+types are looked up using the following methods. The first name that
+is found is returned:
+
+1. The key ``displayName`` is looked up in resource bundle
+   ``<fully-qualified type name>-argparse4j``. For examaple: Resource
+   bundle ``com/example/CustomType-argparse4j*.properties`` is used
+   for ``com.example.CustomType``. 
+#. The simple name of the class of the type prepended with ``type.``
+   is used as a key to look up the name in the resource bundle of
+   argparse4j. This method provides the names for primitive type
+   wrappers. For example: The key ``type.Integer`` is used  for
+   ``java.lang.Integer``.
+#. The simple name of the class of the custom type.
+
+Note that if your custom type has the same simple name as a wrapper
+for a primitive type, the localized name of that wrapper will also be
+used for your custom type.
+
 .. _Argument-choices:
 
 Argument.choices()
@@ -2032,7 +2052,7 @@ the program::
 
     $ java Demo --foo spam
     usage: prog [-h] [--foo FOO] [bar]
-    prog: error: argument --foo: could not convert 'spam' to Integer (For input string: "spam")
+    prog: error: argument --foo: could not convert 'spam' to integer (32 bits)
     $ java Demo --bar
     usage: prog [-h] [--foo FOO] [bar]
     prog: error: unrecognized arguments: --bar

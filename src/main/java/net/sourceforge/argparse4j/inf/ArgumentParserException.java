@@ -23,6 +23,9 @@
  */
 package net.sourceforge.argparse4j.inf;
 
+import static net.sourceforge.argparse4j.internal.MessageLocalization.localizeIfPossible;
+
+import net.sourceforge.argparse4j.ArgumentParserConfiguration;
 import net.sourceforge.argparse4j.helper.TextHelper;
 
 /**
@@ -60,21 +63,55 @@ public class ArgumentParserException extends Exception {
         parser_ = parser;
     }
 
+    /**
+     * @deprecated This only localizes messages if the parser is an instance of
+     * {@link ConfiguredArgumentParser}. Use
+     * {@link #ArgumentParserException(String, ConfiguredArgumentParser, Argument)}
+     * instead.
+     */
+    @Deprecated
     public ArgumentParserException(String message, ArgumentParser parser,
             Argument arg) {
-        super(formatMessage(message, arg));
+        super(formatMessage(message, arg, parser));
+        parser_ = parser;
+    }
+
+    /**
+     * @deprecated This only localizes messages if the parser is an instance of
+     * {@link ConfiguredArgumentParser}. Use
+     * {@link #ArgumentParserException(String, Throwable, ConfiguredArgumentParser, Argument)}
+     * instead.
+     */
+    @Deprecated
+    public ArgumentParserException(String message, Throwable cause,
+            ArgumentParser parser, Argument arg) {
+        super(formatMessage(message, arg, parser), cause);
+        parser_ = parser;
+    }
+
+    public ArgumentParserException(String message,
+            ConfiguredArgumentParser parser, Argument arg) {
+        super(formatMessage(message, arg, parser.getConfig()));
         parser_ = parser;
     }
 
     public ArgumentParserException(String message, Throwable cause,
-            ArgumentParser parser, Argument arg) {
-        super(formatMessage(message, arg), cause);
+            ConfiguredArgumentParser parser, Argument arg) {
+        super(formatMessage(message, arg, parser.getConfig()), cause);
         parser_ = parser;
     }
 
-    private static String formatMessage(String message, Argument arg) {
-        return String.format(TextHelper.LOCALE_ROOT, "argument %s: %s",
+    private static String formatMessage(String message, Argument arg,
+            ArgumentParser parser) {
+        return String.format(TextHelper.LOCALE_ROOT,
+                localizeIfPossible(parser, "argument", "argument %s: %s"),
                 arg.textualName(), message);
+    }
+
+    private static String formatMessage(String message, Argument arg,
+            ArgumentParserConfiguration config) {
+        return String.format(TextHelper.LOCALE_ROOT,
+                config.localize("argument"), arg.textualName(), message);
     }
 
     public ArgumentParser getParser() {

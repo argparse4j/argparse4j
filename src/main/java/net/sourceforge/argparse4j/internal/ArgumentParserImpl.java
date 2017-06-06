@@ -102,7 +102,7 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
             String prefix = config.prefixChars_.substring(0, 1);
             addArgument(prefix + "h", prefix + prefix + "help")
                     .action(Arguments.help())
-                    .help(config_.localize("help"))
+                    .help(localize("help"))
                     .setDefault(Arguments.SUPPRESS);
         }
     }
@@ -122,7 +122,7 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
                     // TODO No conflict handler ATM
                     throw new IllegalArgumentException(String.format(
                             TextHelper.LOCALE_ROOT,
-                            "argument %s: conflicting option string(s): %s",
+                            localize("conflictingOptionStringsError"),
                             flag, another.textualName()));
                 }
             }
@@ -139,7 +139,7 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
                     // TODO No conflict handler ATM
                     throw new IllegalArgumentException(String.format(
                             TextHelper.LOCALE_ROOT,
-                            "argument %s: conflicting option string(s): %s",
+                            localize("conflictingOptionStringsError"),
                             arg.getName(), another.textualName()));
                 }
             }
@@ -248,7 +248,7 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
         if (checkDefaultGroup(posargs_)
                 || (subparsers_.hasSubCommand() && subparsersUntitled)) {
             writer.println();
-            writer.println(config_.localize("positional.arguments"));
+            writer.println(localize("positional.arguments"));
             printArgumentHelp(writer, posargs_, formatWidth);
             if (subparsers_.hasSubCommand() && subparsersUntitled) {
                 subparsers_.printSubparserHelp(writer, formatWidth);
@@ -256,7 +256,7 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
         }
         if (checkDefaultGroup(optargs_)) {
             writer.println();
-            writer.println(config_.localize("optional.arguments"));
+            writer.println(localize("optional.arguments"));
             printArgumentHelp(writer, optargs_, formatWidth);
         }
         if (subparsers_.hasSubCommand() && !subparsersUntitled) {
@@ -342,11 +342,11 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
 
     private void printUsage(PrintWriter writer, int format_width) {
         if (!usage_.isEmpty()) {
-            writer.print(config_.localize("usage") + " ");
+            writer.print(localize("usage") + " ");
             writer.println(substitutePlaceholder(usage_));
             return;
         }
-        String usageprog = config_.localize("usage") + " " + config_.prog_;
+        String usageprog = localize("usage") + " " + config_.prog_;
         writer.print(usageprog);
         int offset;
         String firstIndent;
@@ -788,7 +788,7 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
         // Sort in order to make unit test easier.
         Collections.sort(cand);
         throw new ArgumentParserException(String.format(TextHelper.LOCALE_ROOT,
-                "ambiguous option: %s could match %s", flag,
+                localize("ambiguousOptionError"), flag,
                 TextHelper.concat(cand, 0, ", ")), this);
     }
 
@@ -891,7 +891,8 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
         }
         // all arguments are consumed here
         if (subparsers_.hasSubCommand()) {
-            throw new ArgumentParserException("too few arguments", this);
+            throw new ArgumentParserException(
+                    localize("tooFewArgumentsError"), this);
         }
         processPositionalArgs(attrs, state);
         checkRequiredArgument(state, used);
@@ -912,12 +913,12 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
             String args) {
         return String
                 .format(TextHelper.LOCALE_ROOT,
-                        "unrecognized arguments: '%s'%s",
+                        localize("unrecognizedArgumentsError"),
                         args,
                         state.index > state.lastFromFileArgIndex ? ""
                                 : String.format(
                                         TextHelper.LOCALE_ROOT,
-                                        "%nChecking trailing white spaces or new lines in %sfile may help.",
+                                        localize("trailingWhiteSpacesInFileTip"),
                                         config_.fromFilePrefixPattern_.getPrefixChars()
                                                 .length() == 1 ? config_.fromFilePrefixPattern_
                                                 .getPrefixChars() : "["
@@ -948,7 +949,7 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
                 } else if (usedMutexArg != arg) {
                     throw new ArgumentParserException(String.format(
                             TextHelper.LOCALE_ROOT,
-                            "not allowed with argument %s",
+                            localize("notAllowedWithArgumentError"),
                             usedMutexArg.textualName()), this, arg);
                 }
             }
@@ -977,8 +978,8 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
             } else {
                 throw new ArgumentParserException(String.format(
                         TextHelper.LOCALE_ROOT,
-                        "ignore implicit argument '%s'", embeddedValue), this,
-                        arg);
+                        localize("ignoreImplicitArgumentError"),
+                        embeddedValue), this, arg);
             }
         }
         if (arg.getMinNumArg() == -1
@@ -995,8 +996,8 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
             }
             if (argval == null) {
                 if (arg.getMinNumArg() == -1) {
-                    throw new ArgumentParserException("expected one argument",
-                            this, arg);
+                    throw new ArgumentParserException(
+                            localize("expectedOneArgumentError"), this, arg);
                 }
                 // This is a special treatment for nargs("?"). If flag is
                 // given but no argument follows, produce const value.
@@ -1020,7 +1021,8 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
         }
         if (list.size() < arg.getMinNumArg()) {
             throw new ArgumentParserException(String.format(
-                    TextHelper.LOCALE_ROOT, "expected %d argument(s)",
+                    TextHelper.LOCALE_ROOT,
+                    localize("expectedNArgumentsError"),
                     arg.getMinNumArg()), this, arg);
         }
         // For optional arguments, always process the list even if it is
@@ -1101,7 +1103,8 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
             mustLeft[i] += mustLeft[i + 1];
         }
         if (mustLeft[0] > state.posargArgs.size()) {
-            throw new ArgumentParserException("too few arguments", this);
+            throw new ArgumentParserException(localize("tooFewArgumentsError"),
+                    this);
         }
         int argindex = 0;
         for (int i = 0; i < posargs_.size(); ++i) {
@@ -1197,7 +1200,7 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
         } catch (IOException e) {
             throw new ArgumentParserException(String.format(
                     TextHelper.LOCALE_ROOT,
-                    "Could not read arguments from file '%s'", file), e, this);
+                    localize("couldNotReadFromFileError"), file), e, this);
         } finally {
             try {
                 if (reader != null) {
@@ -1228,8 +1231,8 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
             if (arg.isRequired() && !used.contains(arg)) {
                 state.deferredException = new ArgumentParserException(
                         String.format(TextHelper.LOCALE_ROOT,
-                                "argument %s is required", arg.textualName()),
-                        this);
+                                localize("argumentIsRequiredError"),
+                                arg.textualName()), this);
             }
         }
         // we already handled the case where arguments is too few for positional
@@ -1252,7 +1255,7 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
                 }
                 state.deferredException = new ArgumentParserException(
                         String.format(TextHelper.LOCALE_ROOT,
-                                "one of the arguments %sis required",
+                                localize("oneOfTheArgumentsIsRequiredError"),
                                 sb.toString()), this);
             }
         }
@@ -1316,9 +1319,10 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
             return;
         }
         printUsage(writer);
-        writer.write(TextHelper.wrap(config_.textWidthCounter_, String.format(
-                TextHelper.LOCALE_ROOT, "%s: error: %s%n", config_.prog_,
-                e.getMessage()), config_.formatWidth_, 0, "", ""));
+        writer.write(TextHelper.wrap(config_.textWidthCounter_,String.format(
+                TextHelper.LOCALE_ROOT, localize("errorLine"),
+                config_.prog_, e.getMessage()), config_.formatWidth_, 0, "",
+                ""));
         if (e instanceof UnrecognizedArgumentException) {
             UnrecognizedArgumentException ex = (UnrecognizedArgumentException) e;
             String argument = ex.getArgument();
@@ -1554,5 +1558,9 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
      */
     public ArgumentParserImpl getMainParser() {
         return mainParser_;
+    }
+
+    private String localize(String messageKey) {
+        return config_.localize(messageKey);
     }
 }
