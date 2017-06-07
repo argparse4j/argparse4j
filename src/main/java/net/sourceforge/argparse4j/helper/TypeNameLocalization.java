@@ -6,7 +6,6 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import net.sourceforge.argparse4j.inf.ArgumentParser;
-import net.sourceforge.argparse4j.inf.ConfiguredArgumentParser;
 
 /**
  * <p>
@@ -37,13 +36,10 @@ public class TypeNameLocalization {
     
     public static String localizeTypeNameIfPossible(ArgumentParser parser,
             Class<?> type) {
-        if (parser instanceof ConfiguredArgumentParser) {
-            return localizeTypeName((ConfiguredArgumentParser)parser, type);
-        }
-        return type.getSimpleName();
+        return localizeTypeName(parser, type);
     }
 
-    private static String localizeTypeName(ConfiguredArgumentParser parser,
+    private static String localizeTypeName(ArgumentParser parser,
             Class<?> type) {
         try {
             ResourceBundle typeBundle = ResourceBundle.getBundle(

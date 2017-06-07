@@ -52,15 +52,15 @@ import net.sourceforge.argparse4j.helper.TextWidthCounter;
 import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentGroup;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
-import net.sourceforge.argparse4j.inf.ConfiguredArgumentParser;
 import net.sourceforge.argparse4j.inf.MutuallyExclusiveGroup;
 import net.sourceforge.argparse4j.inf.Namespace;
 
 /**
  * <strong>The application code must not use this class directly.</strong>
  */
-public final class ArgumentParserImpl implements ConfiguredArgumentParser {
+public final class ArgumentParserImpl implements ArgumentParser {
 
     private Map<String, ArgumentImpl> optargIndex_ = new HashMap<String, ArgumentImpl>();
     private List<ArgumentImpl> optargs_ = new ArrayList<ArgumentImpl>();
@@ -1279,6 +1279,7 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
         }
     }
 
+    @Override
     public ArgumentParserConfiguration getConfig() {
         return config_;
     }

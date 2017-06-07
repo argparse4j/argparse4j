@@ -1,7 +1,6 @@
 package net.sourceforge.argparse4j.helper;
 
 import net.sourceforge.argparse4j.inf.ArgumentParser;
-import net.sourceforge.argparse4j.inf.ConfiguredArgumentParser;
 
 /**
  * <p>
@@ -19,16 +18,13 @@ public class MessageLocalization {
     private MessageLocalization() {
     }
 
-    public static String localizeIfPossible(ArgumentParser parser, String messageKey,
-            String unlocalizedMessage) {
-        if (parser instanceof ConfiguredArgumentParser) {
-            return ((ConfiguredArgumentParser) parser).getConfig()
-                    .localize(messageKey);
-        }
-        return unlocalizedMessage;
+    public static String localizeIfPossible(ArgumentParser parser,
+            String messageKey, String unlocalizedMessage) {
+        return parser.getConfig().optionallyLocalize(messageKey,
+                unlocalizedMessage);
     }
 
-    public static String optionallyLocalize(ConfiguredArgumentParser parser,
+    public static String optionallyLocalize(ArgumentParser parser,
             String messageKey, String unlocalizedMessage) {
         return parser.getConfig()
                 .optionallyLocalize(messageKey, unlocalizedMessage);

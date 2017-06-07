@@ -32,8 +32,8 @@ import net.sourceforge.argparse4j.ArgumentParserConfiguration;
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentGroup;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
-import net.sourceforge.argparse4j.inf.ConfiguredArgumentParser;
 import net.sourceforge.argparse4j.inf.FeatureControl;
 import net.sourceforge.argparse4j.inf.MutuallyExclusiveGroup;
 import net.sourceforge.argparse4j.inf.Namespace;
@@ -44,7 +44,7 @@ import net.sourceforge.argparse4j.inf.Subparsers;
  * <strong>The application code must not use this class directly.</strong>
  * 
  */
-public final class SubparserImpl implements Subparser, ConfiguredArgumentParser {
+public final class SubparserImpl implements Subparser, ArgumentParser {
 
     private String command_;
     private List<String> aliases_ = new ArrayList<String>();

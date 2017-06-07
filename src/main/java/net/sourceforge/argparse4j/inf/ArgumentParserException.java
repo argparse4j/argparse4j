@@ -63,40 +63,14 @@ public class ArgumentParserException extends Exception {
         parser_ = parser;
     }
 
-    /**
-     * @deprecated This only localizes messages if the parser is an instance of
-     * {@link ConfiguredArgumentParser}. Use
-     * {@link #ArgumentParserException(String, ConfiguredArgumentParser, Argument)}
-     * instead.
-     */
-    @Deprecated
     public ArgumentParserException(String message, ArgumentParser parser,
             Argument arg) {
-        super(formatMessage(message, arg, parser));
-        parser_ = parser;
-    }
-
-    /**
-     * @deprecated This only localizes messages if the parser is an instance of
-     * {@link ConfiguredArgumentParser}. Use
-     * {@link #ArgumentParserException(String, Throwable, ConfiguredArgumentParser, Argument)}
-     * instead.
-     */
-    @Deprecated
-    public ArgumentParserException(String message, Throwable cause,
-            ArgumentParser parser, Argument arg) {
-        super(formatMessage(message, arg, parser), cause);
-        parser_ = parser;
-    }
-
-    public ArgumentParserException(String message,
-            ConfiguredArgumentParser parser, Argument arg) {
         super(formatMessage(message, arg, parser.getConfig()));
         parser_ = parser;
     }
 
     public ArgumentParserException(String message, Throwable cause,
-            ConfiguredArgumentParser parser, Argument arg) {
+            ArgumentParser parser, Argument arg) {
         super(formatMessage(message, arg, parser.getConfig()), cause);
         parser_ = parser;
     }
