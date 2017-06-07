@@ -56,12 +56,6 @@ public class ArgumentParserConfiguration {
         noDestConversionForPositionalArgs_ = noDestConversionForPositionalArgs;
     }
 
-    public String optionallyLocalize(String key,
-            String unlocalizedMessage) {
-        return resourceBundle_.containsKey(key) ? resourceBundle_
-                .getString(key) : unlocalizedMessage;
-    }
-
     public ArgumentParserConfiguration forSubparser(boolean addHelp,
             String prefixChars) {
         return new ArgumentParserConfiguration(prog_, addHelp, prefixChars,
