@@ -89,6 +89,79 @@ public class ArgumentParserImplTest {
     }
 
     @Test
+    public void testParseEmptyArgs(){
+        ap.addArgument("--foo");
+        try {
+            ap.parseArgs(" ".split(" "));
+        } catch (ArgumentParserException e) {
+            fail("Error: A space should not cause an exception.");
+        }
+        try {
+            ap.parseArgs("".split(" "));
+        } catch (ArgumentParserException e) {
+            fail("Error: An empty string should not cause an exception.");
+        }
+    }
+
+    @Test
+    public void testParseEmptyArgsWithRequired(){
+        ap.addArgument("--foo").required(true);
+        try {
+            ap.parseArgs(" ".split(" "));
+            fail();
+        } catch (ArgumentParserException e) {
+            assertEquals("argument --foo is required", e.getMessage());
+        }
+        try {
+            ap.parseArgs("".split(" "));
+            fail();
+        } catch (ArgumentParserException e) {
+            // this passes
+            //assertEquals("unrecognized arguments: ''", e.getMessage());
+            // but should be
+            assertEquals("argument --foo is required", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testParseSubparsersEmptyArgs(){
+        ap.addSubparsers().addParser("install");
+        try {
+            ap.parseArgs(" ".split(" "));
+            fail();
+        } catch (ArgumentParserException e) {
+            assertEquals("too few arguments", e.getMessage());
+        }
+        try {
+            ap.parseArgs("".split(" "));
+            fail();
+        } catch (ArgumentParserException e) {
+            // this passes
+            //assertEquals("invalid choice: '' (choose from 'install')", e.getMessage());
+            // but should be
+            assertEquals("too few arguments", e.getMessage());
+        }
+        ap.addSubparsers().addParser("compile");
+        try {
+            ap.parseArgs(" ".split(" "));
+            fail();
+        } catch (ArgumentParserException e) {
+            assertEquals("too few arguments", e.getMessage());
+        }
+        try {
+            ap.parseArgs("".split(" "));
+            fail();
+        } catch (ArgumentParserException e) {
+            // this passes in argparse4j-0.3.2
+            //assertEquals("invalid choice: '' (choose from 'install', 'compile')", e.getMessage());
+            // this passes in argparse4j-0.4.0
+            //assertEquals("ambiguous command:  could match compile, install", e.getMessage());
+            // but should be
+            assertEquals("too few arguments", e.getMessage());
+        }
+    }
+    
+    @Test
     public void testParseArgs() throws ArgumentParserException {
         ap.addArgument("--foo");
         ap.addArgument("--bar").nargs("?").setConst("c");
