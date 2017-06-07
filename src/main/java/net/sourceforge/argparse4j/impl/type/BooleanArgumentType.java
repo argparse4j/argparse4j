@@ -100,8 +100,7 @@ public class BooleanArgumentType implements ArgumentType<Boolean>,
         throw new ArgumentParserException(String.format(TextHelper.LOCALE_ROOT,
                 MessageLocalization.localize(
                         parser.getConfig().getResourceBundle(),
-                        "couldNotConvertChooseFromError",
-                        "could not convert '%s' (choose from %s)"),
+                        "couldNotConvertChooseFromError"),
                 value, inferMetavar()[0]), parser, arg);
     }
 

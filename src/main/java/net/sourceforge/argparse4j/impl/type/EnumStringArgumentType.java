@@ -77,8 +77,7 @@ public class EnumStringArgumentType<T extends Enum<T>> implements
         throw new ArgumentParserException(String.format(TextHelper.LOCALE_ROOT,
                 MessageLocalization.localize(
                         parser.getConfig().getResourceBundle(),
-                        "couldNotConvertChooseFromError",
-                        "could not convert '%s' (choose from %s)"),
+                        "couldNotConvertChooseFromError"),
                 value, choices), parser, arg);
     }
 

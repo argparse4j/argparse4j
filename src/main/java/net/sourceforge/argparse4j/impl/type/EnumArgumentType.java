@@ -69,8 +69,7 @@ public class EnumArgumentType<T extends Enum<T>> implements ArgumentType<T> {
                     String.format(TextHelper.LOCALE_ROOT,
                             MessageLocalization.localize(
                                     parser.getConfig().getResourceBundle(),
-                                    "couldNotConvertChooseFromError",
-                                    "could not convert '%s' (choose from %s)"),
+                                    "couldNotConvertChooseFromError"),
                             value, choices),
                     e, parser, arg);
         }

@@ -84,8 +84,7 @@ public class ConstructorArgumentType<T> implements ArgumentType<T> {
                     String.format(TextHelper.LOCALE_ROOT,
                             MessageLocalization.localize(
                                     parser.getConfig().getResourceBundle(),
-                                    "couldNotConvertToError",
-                                    "could not convert '%s' to %s"),
+                                    "couldNotConvertToError"),
                             value, localizedTypeName),
                     e.getCause(), parser, arg);
         } catch (NoSuchMethodException e) {
