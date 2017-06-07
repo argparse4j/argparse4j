@@ -23,8 +23,8 @@
  */
 package net.sourceforge.argparse4j.impl.type;
 
-import static net.sourceforge.argparse4j.internal.MessageLocalization.localizeIfPossible;
-import static net.sourceforge.argparse4j.internal.TypeNameLocalization.localizeTypeNameIfPossible;
+import static net.sourceforge.argparse4j.helper.MessageLocalization.localizeIfPossible;
+import static net.sourceforge.argparse4j.helper.TypeNameLocalization.localizeTypeNameIfPossible;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

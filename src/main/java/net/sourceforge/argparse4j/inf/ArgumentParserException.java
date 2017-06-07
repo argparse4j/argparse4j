@@ -23,7 +23,7 @@
  */
 package net.sourceforge.argparse4j.inf;
 
-import static net.sourceforge.argparse4j.internal.MessageLocalization.localizeIfPossible;
+import static net.sourceforge.argparse4j.helper.MessageLocalization.localizeIfPossible;
 
 import net.sourceforge.argparse4j.ArgumentParserConfiguration;
 import net.sourceforge.argparse4j.helper.TextHelper;

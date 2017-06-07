@@ -18,7 +18,7 @@
  */
 package net.sourceforge.argparse4j.impl.type;
 
-import static net.sourceforge.argparse4j.internal.MessageLocalization.localizeIfPossible;
+import static net.sourceforge.argparse4j.helper.MessageLocalization.localizeIfPossible;
 
 import java.io.File;
 import java.io.IOException;

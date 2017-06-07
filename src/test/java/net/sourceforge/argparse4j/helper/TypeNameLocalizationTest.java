@@ -1,6 +1,6 @@
-package net.sourceforge.argparse4j.internal;
+package net.sourceforge.argparse4j.helper;
 
-import static net.sourceforge.argparse4j.internal.TypeNameLocalization.localizeTypeNameIfPossible;
+import static net.sourceforge.argparse4j.helper.TypeNameLocalization.localizeTypeNameIfPossible;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Locale;

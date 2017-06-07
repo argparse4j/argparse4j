@@ -1,6 +1,6 @@
-package net.sourceforge.argparse4j.internal;
+package net.sourceforge.argparse4j.helper;
 
-import static net.sourceforge.argparse4j.internal.MessageLocalization.optionallyLocalize;
+import static net.sourceforge.argparse4j.helper.MessageLocalization.optionallyLocalize;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
