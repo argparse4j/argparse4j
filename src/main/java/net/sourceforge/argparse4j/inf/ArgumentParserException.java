@@ -23,9 +23,9 @@
  */
 package net.sourceforge.argparse4j.inf;
 
-import net.sourceforge.argparse4j.helper.MessageLocalization;
+import java.util.Locale;
+
 import net.sourceforge.argparse4j.ArgumentParserConfiguration;
-import net.sourceforge.argparse4j.helper.TextHelper;
 
 /**
  * The exception thrown from {@link ArgumentParser#parseArgs(String[])} if error
@@ -76,8 +76,9 @@ public class ArgumentParserException extends Exception {
 
     private static String formatMessage(String message, Argument arg,
             ArgumentParserConfiguration config) {
-        return String.format(TextHelper.LOCALE_ROOT,
-                MessageLocalization.localize(config.getResourceBundle(), "argument"), arg.textualName(), message);
+        return String.format(Locale.ROOT,
+                config.getResourceBundle().getString("argument"),
+                arg.textualName(), message);
     }
 
     public ArgumentParser getParser() {
