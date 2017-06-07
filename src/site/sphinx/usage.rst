@@ -2379,6 +2379,39 @@ sub-command names. For example::
         foo                  foo help
         bar                  bar help
 
+The argparse4j supports silencing the help entry for certain
+:javadoc:`inf.Subparser`, by passing :javafield:`Arguments.SUPPRESS`
+to |Subparser.help| method::
+
+    public static void main(String[] args) {
+        ArgumentParser parser = ArgumentParsers.newFor("prog").build();
+        Subparsers subparsers = parser.addSubparsers()
+                .title("subcommands")
+                .description("valid subcommands")
+                .help("additional help");
+        subparsers.addParser("foo");
+        subparsers.addParser("bar").help(Arguments.SUPPRESS);
+        try {
+            System.out.println(parser.parseArgs(args));
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+            System.exit(1);
+        }
+    }
+
+.. code-block:: console
+
+    $ java Demo -h
+    usage: prog [-h] {foo} ...
+
+    optional arguments:
+      -h, --help             show this help message and exit
+
+    subcommands:
+      valid subcommands
+
+      {foo}                  additional help
+
 Furthermore, :javadoc:`inf.Subparser` supports alias names, which
 allows multiple strings to refer to the same subparser. This example,
 like ``svn``, aliases ``co`` as a shorthand for ``checkout``::

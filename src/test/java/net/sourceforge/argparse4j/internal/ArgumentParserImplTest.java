@@ -1413,6 +1413,76 @@ public class ArgumentParserImplTest {
     }
 
     @Test
+    public void testFormatHelpWithSuppressedSubCommand() throws ArgumentParserException {
+        Subparsers subparsers = ap.addSubparsers().help("subcommand help")
+                .title("mysubcommands").description("valid subcommands");
+        subparsers.addParser("clone").help("clone help");
+        subparsers.addParser("checkout").help(Arguments.SUPPRESS);
+        subparsers.addParser("remove").help("remove help");
+        assertEquals(String.format(
+                  TextHelper.LOCALE_ROOT,
+                  "usage: argparse4j [-h] {clone,remove} ...%n"
+                + "%n"
+                + "optional arguments:%n"
+                + "  -h, --help             show this help message and exit%n"
+                + "%n"
+                + "mysubcommands:%n"
+                + "  valid subcommands%n"
+                + "%n"
+                + "  {clone,remove}         subcommand help%n"
+                + "    clone                clone help%n"
+                + "    remove               remove help%n"),
+                ap.formatHelp());
+    }
+
+    @Test
+    public void testFormatHelpWithSuppressedAllSubCommand() throws ArgumentParserException {
+        Subparsers subparsers = ap.addSubparsers().help("subcommand help")
+                .title("mysubcommands").description("valid subcommands");
+        subparsers.addParser("checkout").help(Arguments.SUPPRESS);
+        assertEquals(String.format(
+                  TextHelper.LOCALE_ROOT,
+                  "usage: argparse4j [-h]%n"
+                + "%n"
+                + "optional arguments:%n"
+                + "  -h, --help             show this help message and exit%n"),
+                ap.formatHelp());
+    }
+
+    @Test
+    public void testFormatHelpWithUntitledSuppressedSubCommand() throws ArgumentParserException {
+        Subparsers subparsers = ap.addSubparsers().help("subcommand help");
+        subparsers.addParser("clone").help("clone help");
+        subparsers.addParser("checkout").help(Arguments.SUPPRESS);
+        subparsers.addParser("remove").help("remove help");
+        assertEquals(String.format(
+                  TextHelper.LOCALE_ROOT,
+                  "usage: argparse4j [-h] {clone,remove} ...%n"
+                + "%n"
+                + "positional arguments:%n"
+                + "  {clone,remove}         subcommand help%n"
+                + "    clone                clone help%n"
+                + "    remove               remove help%n"
+                + "%n"
+                + "optional arguments:%n"
+                + "  -h, --help             show this help message and exit%n"),
+                ap.formatHelp());
+    }
+
+    @Test
+    public void testFormatHelpWithUntitledSuppressedAllSubCommand() throws ArgumentParserException {
+        Subparsers subparsers = ap.addSubparsers().help("subcommand help");
+        subparsers.addParser("checkout").help(Arguments.SUPPRESS);
+        assertEquals(String.format(
+                  TextHelper.LOCALE_ROOT,
+                  "usage: argparse4j [-h]%n"
+                + "%n"
+                + "optional arguments:%n"
+                + "  -h, --help             show this help message and exit%n"),
+                ap.formatHelp());
+    }
+
+    @Test
     public void testPrintHelp() throws ArgumentParserException {
         String h = "Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do";
         ap.addArgument("bar").help(h);

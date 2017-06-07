@@ -61,6 +61,22 @@ public interface Subparser extends ArgumentParser {
     Subparser help(String help);
 
     /**
+     * <p>
+     * Sets special value to control help message handling.
+     * </p>
+     * <p>
+     * Currently, only {@link FeatureControl#SUPPRESS} is available. If it is
+     * given, the help entry for this Subparser is not displayed in the help
+     * message.
+     * </p>
+     * 
+     * @param ctrl
+     *            The special value to control help message handling.
+     * @return this
+     */
+    Subparser help(FeatureControl ctrl);
+
+    /**
      * Sets alias names for this Subparser. The alias names must be unique for
      * each {@link Subparsers} instance which this object belongs to.
      * 

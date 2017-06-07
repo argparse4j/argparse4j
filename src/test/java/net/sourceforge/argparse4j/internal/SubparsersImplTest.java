@@ -24,9 +24,10 @@
 package net.sourceforge.argparse4j.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.impl.Arguments;
 
 import org.junit.Test;
 
@@ -74,5 +75,19 @@ public class SubparsersImplTest {
         } catch(IllegalArgumentException e) {
             assertEquals("command 'co' has been already used", e.getMessage());
         }
+    }
+
+    @Test
+    public void testHasNotSuppressedSubCommand() {
+        ArgumentParserImpl ap = (ArgumentParserImpl) ArgumentParsers.newFor(
+                "prog").build();
+        SubparsersImpl subparsers = new SubparsersImpl(ap);
+        subparsers.addParser("checkout").help(Arguments.SUPPRESS);
+
+        assertFalse(subparsers.hasNotSuppressedSubCommand());
+
+        subparsers.addParser("remove");
+
+        assertTrue(subparsers.hasNotSuppressedSubCommand());
     }
 }

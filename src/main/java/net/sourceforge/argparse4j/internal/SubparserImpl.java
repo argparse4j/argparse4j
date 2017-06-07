@@ -34,6 +34,7 @@ import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentGroup;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.ConfiguredArgumentParser;
+import net.sourceforge.argparse4j.inf.FeatureControl;
 import net.sourceforge.argparse4j.inf.MutuallyExclusiveGroup;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
@@ -49,6 +50,7 @@ public final class SubparserImpl implements Subparser, ConfiguredArgumentParser 
     private List<String> aliases_ = new ArrayList<String>();
     private ArgumentParserImpl parser_;
     private String help_ = "";
+    private FeatureControl helpControl_;
 
     public SubparserImpl(ArgumentParserConfiguration config, String command,
             ArgumentParserImpl mainParser) {
@@ -180,6 +182,12 @@ public final class SubparserImpl implements Subparser, ConfiguredArgumentParser 
     }
 
     @Override
+    public SubparserImpl help(FeatureControl ctrl) {
+        helpControl_ = ctrl;
+        return this;
+    }
+
+    @Override
     public Namespace parseArgsOrFail(String args[]) {
         return parser_.parseArgsOrFail(args);
     }
@@ -278,5 +286,9 @@ public final class SubparserImpl implements Subparser, ConfiguredArgumentParser 
 
     public ArgumentParserConfiguration getConfig() {
         return parser_.getConfig();
+    }
+
+    public FeatureControl getHelpControl() {
+        return helpControl_;
     }
 }

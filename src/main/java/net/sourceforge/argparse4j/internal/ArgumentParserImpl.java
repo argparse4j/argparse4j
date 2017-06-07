@@ -245,12 +245,13 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
         }
         boolean subparsersUntitled = subparsers_.getTitle().isEmpty()
                 && subparsers_.getDescription().isEmpty();
+        boolean hasSubCommand = subparsers_.hasNotSuppressedSubCommand();
         if (checkDefaultGroup(posargs_)
-                || (subparsers_.hasSubCommand() && subparsersUntitled)) {
+                || (hasSubCommand && subparsersUntitled)) {
             writer.println();
             writer.println(config_.localize("positional.arguments"));
             printArgumentHelp(writer, posargs_, formatWidth);
-            if (subparsers_.hasSubCommand() && subparsersUntitled) {
+            if (hasSubCommand && subparsersUntitled) {
                 subparsers_.printSubparserHelp(writer, formatWidth);
             }
         }
@@ -259,7 +260,7 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
             writer.println(config_.localize("optional.arguments"));
             printArgumentHelp(writer, optargs_, formatWidth);
         }
-        if (subparsers_.hasSubCommand() && !subparsersUntitled) {
+        if (hasSubCommand && !subparsersUntitled) {
             writer.println();
             writer.print(subparsers_.getTitle().isEmpty() ? config_
                     .localize("sub-commands") : subparsers_.getTitle());
@@ -403,7 +404,7 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
                 opts.add(arg.formatShortSyntax());
             }
         }
-        if (subparsers_.hasSubCommand()) {
+        if (subparsers_.hasNotSuppressedSubCommand()) {
             opts.add(subparsers_.formatShortSyntax());
             opts.add("...");
         }
