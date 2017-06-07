@@ -97,7 +97,7 @@ public final class ArgumentImpl implements Argument {
                     throw new IllegalArgumentException(
                             String.format(
                                     TextHelper.LOCALE_ROOT,
-                                    "invalid option string '%s': must start with a character '%s'",
+                                    localize("invalidOptionStringError"),
                                     flag, config.prefixPattern_.getPrefixChars()));
                 }
             }
@@ -283,9 +283,8 @@ public final class ArgumentImpl implements Argument {
         Object obj = type_.convert(parser, this, value);
         if (choice_ != null && !choice_.contains(obj)) {
             throw new ArgumentParserException(String.format(
-                    TextHelper.LOCALE_ROOT,
-                    "invalid choice: '%s' (choose from %s)", value,
-                    choice_.textualFormat()), parser, this);
+                    TextHelper.LOCALE_ROOT, localize("invalidChoiceError"),
+                    value, choice_.textualFormat()), parser, this);
         }
         return obj;
     }
@@ -551,5 +550,9 @@ public final class ArgumentImpl implements Argument {
 
     public String[] getFlags() {
         return flags_;
+    }
+
+    private String localize(String messageKey) {
+        return config_.localize(messageKey);
     }
 }
