@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import net.sourceforge.argparse4j.ArgumentParserConfiguration;
+import net.sourceforge.argparse4j.helper.MessageLocalization;
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.helper.TextWidthCounter;
 import net.sourceforge.argparse4j.impl.Arguments;
@@ -553,6 +554,7 @@ public final class ArgumentImpl implements Argument {
     }
 
     private String localize(String messageKey) {
-        return config_.localize(messageKey);
+        return MessageLocalization.localize(config_.getResourceBundle(),
+                messageKey);
     }
 }

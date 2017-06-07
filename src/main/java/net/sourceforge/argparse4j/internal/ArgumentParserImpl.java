@@ -46,6 +46,7 @@ import java.util.regex.Pattern;
 import net.sourceforge.argparse4j.ArgumentParserConfiguration;
 import net.sourceforge.argparse4j.annotation.Arg;
 import net.sourceforge.argparse4j.helper.HelpScreenException;
+import net.sourceforge.argparse4j.helper.MessageLocalization;
 import net.sourceforge.argparse4j.helper.ReflectHelper;
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.helper.TextWidthCounter;
@@ -263,8 +264,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
         }
         if (hasSubCommand && !subparsersUntitled) {
             writer.println();
-            writer.print(subparsers_.getTitle().isEmpty() ? config_
-                    .localize("sub-commands") : subparsers_.getTitle());
+            writer.print(subparsers_.getTitle().isEmpty()
+                    ? localize("sub-commands") : subparsers_.getTitle());
             writer.println(":");
             if (!subparsers_.getDescription().isEmpty()) {
                 writer.print("  ");
@@ -1564,6 +1565,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     }
 
     private String localize(String messageKey) {
-        return config_.localize(messageKey);
+        return MessageLocalization.localize(config_.getResourceBundle(),
+                messageKey);
     }
 }

@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.argparse4j.helper.MessageLocalization;
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.FeatureControl;
@@ -278,6 +279,7 @@ public final class SubparsersImpl implements Subparsers {
     }
 
     private String localize(String messageKey) {
-        return mainParser_.getConfig().localize(messageKey);
+        return MessageLocalization.localize(
+                mainParser_.getConfig().getResourceBundle(), messageKey);
     }
 }
