@@ -25,11 +25,11 @@ package net.sourceforge.argparse4j.impl.action;
 
 import java.util.Map;
 
+import net.sourceforge.argparse4j.helper.HelpScreenException;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentAction;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
-import net.sourceforge.argparse4j.internal.HelpScreenException;
 
 /**
  * <p>
