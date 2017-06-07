@@ -1540,6 +1540,13 @@ this new type instead::
 Passing ``--lang "C++"`` just works as expected.
 Please note that ``--lang CPP`` no longer works in this case.
 
+To use case-insensitive matching of enum value names, use either
+|Arguments.caseInsensitiveEnumType| (uses ``name()``) or
+|Arguments.caseInsensitiveEnumStringType| (uses ``toString()``). Note
+that ``Locale.ROOT`` is used for case-insensitive comparison to
+ensure that correct parsing of arguments is not dependent on the
+locale of the parser.
+
 The |Argument.type| has a version which accepts an object which
 implements :javadoc:`inf.ArgumentType` interface::
 
@@ -2874,6 +2881,8 @@ available:
 .. |ArgumentParsers.newFor| replace:: :javadocfunc:`ArgumentParsers.newFor(java.lang.String)`
 .. |Arguments.appendConst| replace:: :javadocfunc:`impl.Arguments.appendConst()`
 .. |Arguments.append| replace:: :javadocfunc:`impl.Arguments.append()`
+.. |Arguments.caseInsensitiveEnumType| replace:: :javadocfunc:`impl.Arguments.caseInsensitiveEnumType(java.lang.Class)`
+.. |Arguments.caseInsensitiveEnumStringType| replace:: :javadocfunc:`impl.Arguments.caseInsensitiveEnumStringType(java.lang.Class)`
 .. |Arguments.count| replace:: :javadocfunc:`impl.Arguments.count()`
 .. |Arguments.enumStringType| replace:: :javadocfunc:`impl.Arguments.enumStringType(java.lang.Class)`
 .. |Arguments.fileType| replace:: :javadocfunc:`impl.Arguments.fileType()`

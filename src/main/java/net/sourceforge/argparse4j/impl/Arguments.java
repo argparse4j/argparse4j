@@ -36,6 +36,8 @@ import net.sourceforge.argparse4j.impl.action.StoreTrueArgumentAction;
 import net.sourceforge.argparse4j.impl.action.VersionArgumentAction;
 import net.sourceforge.argparse4j.impl.choice.RangeArgumentChoice;
 import net.sourceforge.argparse4j.impl.type.BooleanArgumentType;
+import net.sourceforge.argparse4j.impl.type.CaseInsensitiveEnumNameArgumentType;
+import net.sourceforge.argparse4j.impl.type.CaseInsensitiveEnumStringArgumentType;
 import net.sourceforge.argparse4j.impl.type.EnumArgumentType;
 import net.sourceforge.argparse4j.impl.type.EnumStringArgumentType;
 import net.sourceforge.argparse4j.impl.type.FileArgumentType;
@@ -288,6 +290,45 @@ public final class Arguments {
     public static <T extends Enum<T>> EnumStringArgumentType<T> enumStringType(
             Class<T> type) {
         return new EnumStringArgumentType<T>(type);
+    }
+
+    /**
+     * <p>
+     * Returns {@link CaseInsensitiveEnumNameArgumentType} with given enum
+     * {@code type}.
+     * </p>
+     * <p>
+     * Uses {@link Enum#name()} as the String representation of the enum.
+     * </p>
+     *
+     * @param type
+     *            The enum type
+     * @return {@link CaseInsensitiveEnumNameArgumentType} object
+     */
+    public static <T extends Enum<T>> CaseInsensitiveEnumNameArgumentType<T>
+            caseInsensitiveEnumType(Class<T> type) {
+        return new CaseInsensitiveEnumNameArgumentType<T>(type);
+    }
+
+    /**
+     * <p>
+     * Returns {@link CaseInsensitiveEnumStringArgumentType} with given enum
+     * {@code type}.
+     * </p>
+     * <p>
+     * Uses {@link Enum#toString()} instead of {@link Enum#name()} as the String
+     * representation of the enum. For enums that do not override
+     * {@link Enum#toString()}, this behaves the same as
+     * {@link CaseInsensitiveEnumNameArgumentType}.
+     * </p>
+     * 
+     * @param type
+     *            The enum type
+     * @return {@link CaseInsensitiveEnumStringArgumentType} object
+     */
+    public static <T extends Enum<T>> CaseInsensitiveEnumStringArgumentType<T> 
+            caseInsensitiveEnumStringType(Class<T> type) {
+        return new CaseInsensitiveEnumStringArgumentType<T>(type);
     }
 
     /**
