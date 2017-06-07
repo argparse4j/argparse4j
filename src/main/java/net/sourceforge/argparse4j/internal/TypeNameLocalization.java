@@ -11,7 +11,7 @@ import net.sourceforge.argparse4j.inf.ConfiguredArgumentParser;
 /**
  * <p>
  * Localization of names for argument types. Localized names for commonly used
- * ypes in the JDK (e.g. {@code Integer} and {@code Boolean}) are provided, but
+ * types in the JDK (e.g. {@code Integer} and {@code Boolean}) are provided, but
  * for custom types, the developer of the type must provide the localization.
  * This class tries to load the display name by using the following sources. The
  * first display name that is found is used:
