@@ -25,8 +25,6 @@ package net.sourceforge.argparse4j.inf;
 
 import java.util.Locale;
 
-import net.sourceforge.argparse4j.ArgumentParserConfiguration;
-
 /**
  * The exception thrown from {@link ArgumentParser#parseArgs(String[])} if error
  * occurred while processing command line argument. The argument {@code parser}

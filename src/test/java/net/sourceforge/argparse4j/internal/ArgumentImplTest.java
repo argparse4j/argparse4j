@@ -29,7 +29,6 @@ import static org.junit.Assert.fail;
 
 import java.util.Locale;
 
-import net.sourceforge.argparse4j.ArgumentParserConfiguration;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 
@@ -38,8 +37,8 @@ import org.junit.Test;
 
 public class ArgumentImplTest {
 
-    private ArgumentParserConfiguration config_ = ArgumentParsers
-            .newFor("argpars4j").locale(Locale.US).config();
+    private ArgumentParserConfigurationImpl config_ = ((ArgumentParserImpl) ArgumentParsers
+            .newFor("argpars4j").locale(Locale.US).build()).getConfig();
 
     @Test
     public void testArgumentWithName() {
@@ -88,8 +87,9 @@ public class ArgumentImplTest {
 
     @Test
     public void testArgumentWithPrefix() {
-        ArgumentParserConfiguration config = ArgumentParsers.newFor("argpars4j")
-                .prefixChars("-+").locale(Locale.US).config();
+        ArgumentParserConfigurationImpl config = ((ArgumentParserImpl) ArgumentParsers
+                .newFor("argpars4j").prefixChars("-+").locale(Locale.US)
+                .build()).getConfig();
         ArgumentImpl arg = new ArgumentImpl(config, "-f", "-+foo-bar", "++foo");
         assertNull(arg.getName());
         assertEquals("foo_bar", arg.getDest());

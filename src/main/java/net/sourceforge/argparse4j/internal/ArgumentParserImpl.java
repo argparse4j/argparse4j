@@ -43,7 +43,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import net.sourceforge.argparse4j.ArgumentParserConfiguration;
 import net.sourceforge.argparse4j.annotation.Arg;
 import net.sourceforge.argparse4j.helper.HelpScreenException;
 import net.sourceforge.argparse4j.helper.MessageLocalization;
@@ -71,7 +70,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     private SubparsersImpl subparsers_ = new SubparsersImpl(this);
     private ArgumentParserImpl mainParser_;
     private String command_;
-    private ArgumentParserConfiguration config_;
+    private ArgumentParserConfigurationImpl config_;
     private String usage_ = "";
     private String description_ = "";
     private String epilog_ = "";
@@ -83,11 +82,11 @@ public final class ArgumentParserImpl implements ArgumentParser {
     private static final Pattern SHORT_OPTS_PATTERN = Pattern
             .compile("-[^-].*");
 
-    public ArgumentParserImpl(ArgumentParserConfiguration config) {
+    public ArgumentParserImpl(ArgumentParserConfigurationImpl config) {
         this(config, null, null);
     }
 
-    public ArgumentParserImpl(ArgumentParserConfiguration config,
+    public ArgumentParserImpl(ArgumentParserConfigurationImpl config,
             String command, ArgumentParserImpl mainParser) {
         this.config_ = config;
         this.command_ = command;
@@ -1281,7 +1280,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     }
 
     @Override
-    public ArgumentParserConfiguration getConfig() {
+    public ArgumentParserConfigurationImpl getConfig() {
         return config_;
     }
 

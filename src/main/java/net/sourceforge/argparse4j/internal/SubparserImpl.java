@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.argparse4j.ArgumentParserConfiguration;
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentGroup;
@@ -52,7 +51,7 @@ public final class SubparserImpl implements Subparser, ArgumentParser {
     private String help_ = "";
     private FeatureControl helpControl_;
 
-    public SubparserImpl(ArgumentParserConfiguration config, String command,
+    public SubparserImpl(ArgumentParserConfigurationImpl config, String command,
             ArgumentParserImpl mainParser) {
         command_ = command;
         parser_ = new ArgumentParserImpl(config, command, mainParser);
@@ -284,7 +283,7 @@ public final class SubparserImpl implements Subparser, ArgumentParser {
         return parser_.getCommand();
     }
 
-    public ArgumentParserConfiguration getConfig() {
+    public ArgumentParserConfigurationImpl getConfig() {
         return parser_.getConfig();
     }
 

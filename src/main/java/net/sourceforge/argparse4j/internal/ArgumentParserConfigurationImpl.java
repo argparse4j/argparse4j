@@ -1,13 +1,13 @@
-package net.sourceforge.argparse4j;
+package net.sourceforge.argparse4j.internal;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 import net.sourceforge.argparse4j.helper.PrefixPattern;
 import net.sourceforge.argparse4j.helper.TextWidthCounter;
-import net.sourceforge.argparse4j.internal.ArgumentParserImpl;
+import net.sourceforge.argparse4j.inf.ArgumentParserConfiguration;
 
-public class ArgumentParserConfiguration {
+public class ArgumentParserConfigurationImpl implements ArgumentParserConfiguration {
     public final String prog_;
     public final boolean addHelp_;
     public final String prefixChars_;
@@ -20,7 +20,7 @@ public class ArgumentParserConfiguration {
     public final boolean singleMetavar_;
     public final boolean noDestConversionForPositionalArgs_;
 
-    public ArgumentParserConfiguration(String prog, boolean addHelp,
+    public ArgumentParserConfigurationImpl(String prog, boolean addHelp,
             String prefixChars, String fromFilePrefix, Locale locale,
             TextWidthCounter textWidthCounter, int formatWidth,
             boolean singleMetavar, boolean noDestConversionForPositionalArgs) {
@@ -38,7 +38,7 @@ public class ArgumentParserConfiguration {
         noDestConversionForPositionalArgs_ = noDestConversionForPositionalArgs;
     }
 
-    private ArgumentParserConfiguration(String prog, boolean addHelp,
+    private ArgumentParserConfigurationImpl(String prog, boolean addHelp,
             String prefixChars, String fromFilePrefix,
             ResourceBundle resourceBundle, TextWidthCounter textWidthCounter,
             int formatWidth, boolean singleMetavar,
@@ -56,9 +56,9 @@ public class ArgumentParserConfiguration {
         noDestConversionForPositionalArgs_ = noDestConversionForPositionalArgs;
     }
 
-    public ArgumentParserConfiguration forSubparser(boolean addHelp,
+    public ArgumentParserConfigurationImpl forSubparser(boolean addHelp,
             String prefixChars) {
-        return new ArgumentParserConfiguration(prog_, addHelp, prefixChars,
+        return new ArgumentParserConfigurationImpl(prog_, addHelp, prefixChars,
                 fromFilePrefix_, resourceBundle_, textWidthCounter_,
                 formatWidth_, singleMetavar_,
                 noDestConversionForPositionalArgs_);

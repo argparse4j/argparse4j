@@ -11,6 +11,7 @@ import net.sourceforge.argparse4j.helper.CJKTextWidthCounter;
 import net.sourceforge.argparse4j.helper.TextWidthCounter;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.internal.ArgumentParserConfigurationImpl;
 import net.sourceforge.argparse4j.internal.ArgumentParserImpl;
 import net.sourceforge.argparse4j.internal.TerminalWidth;
 
@@ -209,8 +210,8 @@ public class ArgumentParserBuilder {
         return new ArgumentParserImpl(config());
     }
 
-    public ArgumentParserConfiguration config() {
-        return new ArgumentParserConfiguration(prog_, addHelp_, prefixChars_,
+    private ArgumentParserConfigurationImpl config() {
+        return new ArgumentParserConfigurationImpl(prog_, addHelp_, prefixChars_,
                 fromFilePrefix_, locale_, createTextWidthCounter(),
                 getFormatWidth(), singleMetavar_,
                 noDestConversionForPositionalArgs_);
