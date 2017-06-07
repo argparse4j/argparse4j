@@ -23,8 +23,7 @@
  */
 package net.sourceforge.argparse4j.inf;
 
-import static net.sourceforge.argparse4j.helper.MessageLocalization.localizeIfPossible;
-
+import net.sourceforge.argparse4j.helper.MessageLocalization;
 import net.sourceforge.argparse4j.ArgumentParserConfiguration;
 import net.sourceforge.argparse4j.helper.TextHelper;
 
@@ -76,16 +75,9 @@ public class ArgumentParserException extends Exception {
     }
 
     private static String formatMessage(String message, Argument arg,
-            ArgumentParser parser) {
-        return String.format(TextHelper.LOCALE_ROOT,
-                localizeIfPossible(parser, "argument", "argument %s: %s"),
-                arg.textualName(), message);
-    }
-
-    private static String formatMessage(String message, Argument arg,
             ArgumentParserConfiguration config) {
         return String.format(TextHelper.LOCALE_ROOT,
-                config.localize("argument"), arg.textualName(), message);
+                MessageLocalization.localize(config.getResourceBundle(), "argument"), arg.textualName(), message);
     }
 
     public ArgumentParser getParser() {

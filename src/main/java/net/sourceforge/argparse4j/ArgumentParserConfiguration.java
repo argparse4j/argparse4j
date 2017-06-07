@@ -73,4 +73,8 @@ public class ArgumentParserConfiguration {
                 formatWidth_, singleMetavar_,
                 noDestConversionForPositionalArgs_);
     }
+
+    public ResourceBundle getResourceBundle() {
+        return resourceBundle_;
+    }
 }

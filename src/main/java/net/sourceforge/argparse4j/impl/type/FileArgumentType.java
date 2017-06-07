@@ -18,11 +18,10 @@
  */
 package net.sourceforge.argparse4j.impl.type;
 
-import static net.sourceforge.argparse4j.helper.MessageLocalization.localizeIfPossible;
-
 import java.io.File;
 import java.io.IOException;
 
+import net.sourceforge.argparse4j.helper.MessageLocalization;
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
@@ -308,9 +307,13 @@ public class FileArgumentType implements ArgumentType<File> {
     private void throwException(ArgumentParser parser, Argument arg, File file,
             String messageKey, String unlocalizedMessage)
             throws ArgumentParserException {
-        throw new ArgumentParserException(String.format(TextHelper.LOCALE_ROOT,
-                localizeIfPossible(parser, messageKey, unlocalizedMessage),
-                file), parser, arg);
+        throw new ArgumentParserException(
+                String.format(TextHelper.LOCALE_ROOT,
+                        MessageLocalization.localize(
+                                parser.getConfig().getResourceBundle(),
+                                messageKey, unlocalizedMessage),
+                        file),
+                parser, arg);
     }
 
     private boolean isSystemIn(File file) {

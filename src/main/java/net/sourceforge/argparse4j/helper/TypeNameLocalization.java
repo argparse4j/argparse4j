@@ -1,7 +1,5 @@
 package net.sourceforge.argparse4j.helper;
 
-import static net.sourceforge.argparse4j.helper.MessageLocalization.optionallyLocalize;
-
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -47,8 +45,9 @@ public class TypeNameLocalization {
             return typeBundle.getString("displayName");
         } catch (MissingResourceException e) {
             String simpleTypeName = type.getSimpleName();
-            return optionallyLocalize(parser, "type." + simpleTypeName,
-                    simpleTypeName);
+            return MessageLocalization.localize(
+                    parser.getConfig().getResourceBundle(),
+                    "type." + simpleTypeName, simpleTypeName);
         }
     }
 }
