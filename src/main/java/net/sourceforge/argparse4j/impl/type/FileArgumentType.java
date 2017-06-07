@@ -18,6 +18,8 @@
  */
 package net.sourceforge.argparse4j.impl.type;
 
+import static net.sourceforge.argparse4j.internal.MessageLocalization.localizeIfPossible;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -214,56 +216,50 @@ public class FileArgumentType implements ArgumentType<File> {
     private void verifyExists(ArgumentParser parser, Argument arg, File file)
             throws ArgumentParserException {
         if (!file.exists()) {
-            throw new ArgumentParserException(String.format(
-                    TextHelper.LOCALE_ROOT, "File not found: '%s'", file),
-                    parser, arg);
+            throwException(parser, arg, file, "fileNotFoundError",
+                    "File not found: '%s'");
         }
     }
 
     private void verifyNotExists(ArgumentParser parser, Argument arg, File file)
             throws ArgumentParserException {
         if (file.exists()) {
-            throw new ArgumentParserException(String.format(
-                    TextHelper.LOCALE_ROOT, "File found: '%s'", file), parser,
-                    arg);
+            throwException(parser, arg, file, "fileFoundError",
+                    "File found: '%s'");
         }
     }
 
     private void verifyIsFile(ArgumentParser parser, Argument arg, File file)
             throws ArgumentParserException {
         if (!file.isFile()) {
-            throw new ArgumentParserException(String.format(
-                    TextHelper.LOCALE_ROOT, "Not a file: '%s'", file), parser,
-                    arg);
+            throwException(parser, arg, file, "notAFileError",
+                    "Not a file: '%s'");
         }
     }
 
     private void verifyIsDirectory(ArgumentParser parser, Argument arg,
             File file) throws ArgumentParserException {
         if (!file.isDirectory()) {
-            throw new ArgumentParserException(String.format(
-                    TextHelper.LOCALE_ROOT, "Not a directory: '%s'", file),
-                    parser, arg);
+            throwException(parser, arg, file, "notADirectoryError",
+                    "Not a directory: '%s'");
         }
     }
 
     private void verifyCanRead(ArgumentParser parser, Argument arg, File file)
             throws ArgumentParserException {
         if (!file.canRead()) {
-            throw new ArgumentParserException(String.format(
-                    TextHelper.LOCALE_ROOT,
-                    "Insufficient permissions to read file: '%s'", file),
-                    parser, arg);
+            throwException(parser, arg, file,
+                    "insufficientPermissionsToReadFileError",
+                    "Insufficient permissions to read file: '%s'");
         }
     }
 
     private void verifyCanWrite(ArgumentParser parser, Argument arg, File file)
             throws ArgumentParserException {
         if (!file.canWrite()) {
-            throw new ArgumentParserException(String.format(
-                    TextHelper.LOCALE_ROOT,
-                    "Insufficient permissions to write file: '%s'", file),
-                    parser, arg);
+            throwException(parser, arg, file,
+                    "insufficientPermissionsToWriteFileError",
+                    "Insufficient permissions to write file: '%s'");
         }
     }
 
@@ -271,9 +267,8 @@ public class FileArgumentType implements ArgumentType<File> {
             File file) throws ArgumentParserException {
         File parent = file.getParentFile();
         if (parent == null || !parent.canWrite()) {
-            throw new ArgumentParserException(String.format(
-                    TextHelper.LOCALE_ROOT,
-                    "Cannot write parent of file: '%s'", file), parser, arg);
+            throwException(parser, arg, file, "cannotWriteParentOfFileError",
+                    "Cannot write parent of file: '%s'");
         }
     }
 
@@ -288,28 +283,34 @@ public class FileArgumentType implements ArgumentType<File> {
         }
 
         // An exception was thrown or the parent directory can't be written
-        throw new ArgumentParserException(String.format(TextHelper.LOCALE_ROOT,
-                "Cannot create file: '%s'", file), parser, arg);
+        throwException(parser, arg, file, "cannotCreateFileError",
+                "Cannot create file: '%s'");
 
     }
 
     private void verifyCanExecute(ArgumentParser parser, Argument arg, File file)
             throws ArgumentParserException {
         if (!file.canExecute()) {
-            throw new ArgumentParserException(String.format(
-                    TextHelper.LOCALE_ROOT,
-                    "Insufficient permissions to execute file: '%s'", file),
-                    parser, arg);
+            throwException(parser, arg, file,
+                    "insufficientPermissionsToExecuteFileError",
+                    "Insufficient permissions to execute file: '%s'");
         }
     }
 
     private void verifyIsAbsolute(ArgumentParser parser, Argument arg, File file)
             throws ArgumentParserException {
         if (!file.isAbsolute()) {
-            throw new ArgumentParserException(
-                    String.format(TextHelper.LOCALE_ROOT,
-                            "Not an absolute file: '%s'", file), parser, arg);
+            throwException(parser, arg, file, "notAnAbsoluteFileError",
+                    "Not an absolute file: '%s'");
         }
+    }
+
+    private void throwException(ArgumentParser parser, Argument arg, File file,
+            String messageKey, String unlocalizedMessage)
+            throws ArgumentParserException {
+        throw new ArgumentParserException(String.format(TextHelper.LOCALE_ROOT,
+                localizeIfPossible(parser, messageKey, unlocalizedMessage),
+                file), parser, arg);
     }
 
     private boolean isSystemIn(File file) {

@@ -23,6 +23,9 @@
  */
 package net.sourceforge.argparse4j.impl.type;
 
+import static net.sourceforge.argparse4j.internal.MessageLocalization.localizeIfPossible;
+import static net.sourceforge.argparse4j.internal.TypeNameLocalization.localizeTypeNameIfPossible;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -104,8 +107,10 @@ public class ReflectArgumentType<T> implements ArgumentType<T>,
             } catch (IllegalArgumentException e) {
                 throw new ArgumentParserException(String.format(
                         TextHelper.LOCALE_ROOT,
-                        "could not convert '%s' (choose from %s)", value,
-                        inferMetavar()[0]), parser, arg);
+                        localizeIfPossible(parser,
+                                "couldNotConvertChooseFromError",
+                                "could not convert '%s' (choose from %s)"),
+                        value, inferMetavar()[0]), parser, arg);
             }
         }
         Method m = null;
@@ -157,9 +162,11 @@ public class ReflectArgumentType<T> implements ArgumentType<T>,
     private void throwArgumentParserException(ArgumentParser parser,
             Argument arg, String value, Throwable t)
             throws ArgumentParserException {
+        String localizedTypeName = localizeTypeNameIfPossible(parser, type_);
         throw new ArgumentParserException(String.format(TextHelper.LOCALE_ROOT,
-                "could not convert '%s' to %s (%s)", value,
-                type_.getSimpleName(), t.getMessage()), t, parser, arg);
+                localizeIfPossible(parser, "couldNotConvertToError",
+                        "could not convert '%s' to %s"), value,
+                localizedTypeName), t, parser, arg);
     }
 
     private void handleInstatiationError(Exception e) {

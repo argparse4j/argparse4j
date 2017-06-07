@@ -173,7 +173,7 @@ public final class SubparsersImpl implements Subparsers {
                 Collections.sort(cand);
                 throw new ArgumentParserException(String.format(
                         TextHelper.LOCALE_ROOT,
-                        "ambiguous command: %s could match %s", command,
+                        localize("ambiguousCommandError"), command,
                         TextHelper.concat(cand, 0, ", ")), mainParser_);
             }
         }
@@ -194,7 +194,7 @@ public final class SubparsersImpl implements Subparsers {
             sb.delete(sb.length() - 2, sb.length());
             throw new UnrecognizedCommandException(String.format(
                     TextHelper.LOCALE_ROOT,
-                    "invalid choice: '%s' (choose from %s)", state.getArg(),
+                    localize("invalidChoiceError"), state.getArg(),
                     sb.toString()), mainParser_, state.getArg());
         } else {
             ++state.index;
@@ -275,5 +275,9 @@ public final class SubparsersImpl implements Subparsers {
                 parsers_.put(command, subparser);
             }
         }
+    }
+
+    private String localize(String messageKey) {
+        return mainParser_.getConfig().localize(messageKey);
     }
 }

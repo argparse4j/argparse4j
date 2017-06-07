@@ -60,7 +60,7 @@ public class ReflectArgumentTypeTest {
             at.convert(ap, ma, "0x100");
             fail();
         } catch(ArgumentParserException e) {
-            assertEquals("argument null: could not convert '0x100' to Integer (For input string: \"0x100\")",
+            assertEquals("argument null: could not convert '0x100' to integer (32 bits)",
                     e.getMessage());
         }
     }

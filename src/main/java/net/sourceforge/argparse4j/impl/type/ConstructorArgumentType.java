@@ -23,6 +23,9 @@
  */
 package net.sourceforge.argparse4j.impl.type;
 
+import static net.sourceforge.argparse4j.internal.MessageLocalization.localizeIfPossible;
+import static net.sourceforge.argparse4j.internal.TypeNameLocalization.localizeTypeNameIfPossible;
+
 import java.lang.reflect.InvocationTargetException;
 
 import net.sourceforge.argparse4j.helper.TextHelper;
@@ -75,10 +78,13 @@ public class ConstructorArgumentType<T> implements ArgumentType<T> {
         } catch (IllegalAccessException e) {
             handleInstatiationError(e);
         } catch (InvocationTargetException e) {
+            String localizedTypeName = localizeTypeNameIfPossible(parser,
+                    type_);
             throw new ArgumentParserException(String.format(
                     TextHelper.LOCALE_ROOT,
-                    "could not convert '%s' to %s (%s)", value,
-                    type_.getSimpleName(), e.getCause().getMessage()),
+                    localizeIfPossible(parser, "couldNotConvertToError",
+                            "could not convert '%s' to %s"),
+                    value, localizedTypeName),
                     e.getCause(), parser, arg);
         } catch (NoSuchMethodException e) {
             handleInstatiationError(e);
