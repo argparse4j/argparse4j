@@ -14,24 +14,22 @@ import net.sourceforge.argparse4j.inf.ArgumentParser;
  * first display name that is found is used:
  * </p>
  * <ol>
- *     <li>Key <code>displayName</code> of resource bundle
- *     <code>&lt;fully-qualified custom type name&gt;-argparse4j</code> (with
- *     the dots replaced by slashes).</li>
- *     <li>Key <code>type.&lt;simple class name of the type&gt;</code> of
- *     resource bundle
- *     <code>net/sourceforge/argparse4j/internal/ArgumentParserImpl</code>.</li>
- *     <li>The simple class name of the type.</li>
+ * <li>Key <code>displayName</code> of resource bundle
+ * <code>&lt;fully-qualified custom type name&gt;-argparse4j</code> (with the
+ * dots replaced by slashes).</li>
+ * <li>Key <code>type.&lt;simple class name of the type&gt;</code> of resource
+ * bundle <code>net/sourceforge/argparse4j/internal/ArgumentParserImpl</code>.
+ * </li>
+ * <li>The simple class name of the type.</li>
  * </ol>
  * <p>
- * If the parser does not provide a locale, i.e. it is not a
- * {@link net.sourceforge.argparse4j.inf.ConfiguredArgumentParser}, then the
- * simple class name of the type is returned.
+ * <strong>The application code should not use this class directly.</strong>
  * </p>
-*/
+ */
 public class TypeNameLocalization {
     private TypeNameLocalization() {
     }
-    
+
     public static String localizeTypeNameIfPossible(ArgumentParser parser,
             Class<?> type) {
         return localizeTypeName(parser, type);

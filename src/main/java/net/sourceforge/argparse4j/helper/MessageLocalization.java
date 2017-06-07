@@ -2,18 +2,12 @@ package net.sourceforge.argparse4j.helper;
 
 import java.util.ResourceBundle;
 
-import net.sourceforge.argparse4j.inf.ArgumentParser;
-
 /**
  * <p>
- * For localization of messages the configuration of
- * {@link ConfiguredArgumentParser} is needed, but some methods must be backward
- * compatible and use {@link ArgumentParser} as its parameter type.
- * </p>
+ * MessageLocalization is a helper class to provide methods for localization.
  * <p>
- * Using the function in this class the messages will be localized, if the
- * parser is a {@code ConfiguredArgumentParser}. Otherwise the unlocalized
- * message is used.
+ * <p>
+ * <strong>The application code should not use this class directly.</strong>
  * </p>
  */
 public class MessageLocalization {
