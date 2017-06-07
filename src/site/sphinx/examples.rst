@@ -78,7 +78,7 @@ Debian Linux::
     positional arguments:
       file
 
-    optional arguments:
+    named arguments:
       -h, --help             show this help message and exit
       -a, --all              . で始まる要素を無視しない (default: false)
       -A, --almost-all       . および .. を一覧表示しない (default: false)

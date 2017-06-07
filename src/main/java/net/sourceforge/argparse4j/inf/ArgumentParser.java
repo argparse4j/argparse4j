@@ -57,7 +57,7 @@ public interface ArgumentParser {
      * </p>
      * <p>
      * The {@code nameOrFlags} is either a single name of positional argument or
-     * a list of option strings for optional argument, e.g. {@code foo} or
+     * a list of option strings for named argument, e.g. {@code foo} or
      * {@code -f, --foo}.
      * </p>
      * 

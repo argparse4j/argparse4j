@@ -103,7 +103,7 @@ When executed:
   positional arguments:
     file                   File to calculate checksum
 
-  optional arguments:
+  named arguments:
     -h, --help             show this help message and exit
     -t {SHA-256,SHA-512,SHA1}, --type {SHA-256,SHA-512,SHA1}
 			   Specify hash function to use (default: SHA-256)

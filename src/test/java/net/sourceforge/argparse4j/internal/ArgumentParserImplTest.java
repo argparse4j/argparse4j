@@ -1128,7 +1128,7 @@ public class ArgumentParserImplTest {
                 + "%n"
                 + "This is argparser4j.%n"
                 + "%n"
-                + "optional arguments:%n"
+                + "named arguments:%n"
                 + "  -h, --help             show this help message and exit%n"
                 + "%n"
                 + "group1:%n"
@@ -1151,7 +1151,7 @@ public class ArgumentParserImplTest {
                 + "%n"
                 + "This is argparser4j.%n"
                 + "%n"
-                + "optional arguments:%n"
+                + "named arguments:%n"
                 + "  -h, --help             show this help message and exit%n"
                 + "%n"
                 + "  --foo FOO%n"
@@ -1201,7 +1201,7 @@ public class ArgumentParserImplTest {
                 + "%n"
                 + "This is argparser4j.%n"
                 + "%n"
-                + "optional arguments:%n"
+                + "named arguments:%n"
                 + "  -h, --help             show this help message and exit%n"
                 + "%n"
                 + "group1:%n"
@@ -1222,14 +1222,14 @@ public class ArgumentParserImplTest {
         group.addArgument("--foo");
         ap.addArgument("-b").action(Arguments.storeTrue());
         // Without title and description, options in mutually exclusive group
-        // is merged into other optional arguments.
+        // is merged into other named arguments.
         assertEquals(String.format(
                   TextHelper.LOCALE_ROOT,
                   "usage: argparse4j [-h] [-b] [--foo FOO]%n"
                 + "%n"
                 + "This is argparser4j.%n"
                 + "%n"
-                + "optional arguments:%n"
+                + "named arguments:%n"
                 + "  -h, --help             show this help message and exit%n"
                 + "  --foo FOO%n"
                 + "  -b%n"
@@ -1246,7 +1246,7 @@ public class ArgumentParserImplTest {
                   "usage: argparse4j [-h]%n"
                 + "%n"
                 + "This is argparser4j.%n"
-                + "%n" + "optional arguments:%n"
+                + "%n" + "named arguments:%n"
                 + "  -h, --help             show this help message and exit%n"
                 + "%n"
                 + "This is epilog.%n"),
@@ -1260,7 +1260,7 @@ public class ArgumentParserImplTest {
                   TextHelper.LOCALE_ROOT,
                   "usage: argparse4j [-h] [--foo FOO]%n"
                 + "%n"
-                + "optional arguments:%n"
+                + "named arguments:%n"
                 + "  -h, --help             show this help message and exit%n"
                 + "  --foo FOO              (default: alpha)%n"),
                 ap.formatHelp());
@@ -1300,7 +1300,7 @@ public class ArgumentParserImplTest {
                    + "  t%n"
                    + "  {add}%n"
                    + "%n"
-                   + "optional arguments:%n"
+                   + "named arguments:%n"
                    + "  -h, --help             show this help message and exit%n"
                    + "  -b B%n"
                    + "%n"
@@ -1319,7 +1319,7 @@ public class ArgumentParserImplTest {
                      TextHelper.LOCALE_ROOT,
                      "usage: argparse4j (-f F | -g G) s t add [-h] [-j J]%n"
                    + "%n"
-                   + "optional arguments:%n"
+                   + "named arguments:%n"
                    + "  -h, --help             show this help message and exit%n"
                    + "  -j J%n"),
                 sap.formatHelp());
@@ -1340,7 +1340,7 @@ public class ArgumentParserImplTest {
                 + "%n"
                 + "This is sub-command of argparser4j.%n"
                 + "%n"
-                + "optional arguments:%n"
+                + "named arguments:%n"
                 + "  -h, --help             show this help message and exit%n"
                 + "  --foo FOO%n"
                 + "%n"
@@ -1359,7 +1359,7 @@ public class ArgumentParserImplTest {
                   TextHelper.LOCALE_ROOT,
                   "usage: argparse4j install [-h] [--foo FOO]%n"
                 + "%n"
-                + "optional arguments:%n"
+                + "named arguments:%n"
                 + "  -h, --help             show this help message and exit%n"
                 + "  --foo FOO              (default: alpha)%n"),
                 parser.formatHelp());
@@ -1375,7 +1375,7 @@ public class ArgumentParserImplTest {
                   TextHelper.LOCALE_ROOT,
                   "usage: argparse4j [-h] {install} ...%n"
                 + "%n"
-                + "optional arguments:%n"
+                + "named arguments:%n"
                 + "  -h, --help             show this help message and exit%n"
                 + "%n"
                 + "mysubcommands:%n"
@@ -1398,7 +1398,7 @@ public class ArgumentParserImplTest {
                   TextHelper.LOCALE_ROOT,
                   "usage: argparse4j [-h] {clone,checkout,co,remove,rm,del} ...%n"
                 + "%n"
-                + "optional arguments:%n"
+                + "named arguments:%n"
                 + "  -h, --help             show this help message and exit%n"
                 + "%n"
                 + "mysubcommands:%n"
@@ -1423,7 +1423,7 @@ public class ArgumentParserImplTest {
                   TextHelper.LOCALE_ROOT,
                   "usage: argparse4j [-h] {clone,remove} ...%n"
                 + "%n"
-                + "optional arguments:%n"
+                + "named arguments:%n"
                 + "  -h, --help             show this help message and exit%n"
                 + "%n"
                 + "mysubcommands:%n"
@@ -1444,7 +1444,7 @@ public class ArgumentParserImplTest {
                   TextHelper.LOCALE_ROOT,
                   "usage: argparse4j [-h]%n"
                 + "%n"
-                + "optional arguments:%n"
+                + "named arguments:%n"
                 + "  -h, --help             show this help message and exit%n"),
                 ap.formatHelp());
     }
@@ -1464,7 +1464,7 @@ public class ArgumentParserImplTest {
                 + "    clone                clone help%n"
                 + "    remove               remove help%n"
                 + "%n"
-                + "optional arguments:%n"
+                + "named arguments:%n"
                 + "  -h, --help             show this help message and exit%n"),
                 ap.formatHelp());
     }
@@ -1477,7 +1477,7 @@ public class ArgumentParserImplTest {
                   TextHelper.LOCALE_ROOT,
                   "usage: argparse4j [-h]%n"
                 + "%n"
-                + "optional arguments:%n"
+                + "named arguments:%n"
                 + "  -h, --help             show this help message and exit%n"),
                 ap.formatHelp());
     }

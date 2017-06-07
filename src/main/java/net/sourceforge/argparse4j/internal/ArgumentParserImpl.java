@@ -115,7 +115,7 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
     public ArgumentImpl addArgument(ArgumentGroupImpl group,
             String... nameOrFlags) {
         ArgumentImpl arg = new ArgumentImpl(config_, group, nameOrFlags);
-        if (arg.isOptionalArgument()) {
+        if (arg.isNamedArgument()) {
             for (String flag : arg.getFlags()) {
                 ArgumentImpl another = optargIndex_.get(flag);
                 if (another != null) {
@@ -257,7 +257,7 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
         }
         if (checkDefaultGroup(optargs_)) {
             writer.println();
-            writer.println(localize("optional.arguments"));
+            writer.println(localize("named.arguments"));
             printArgumentHelp(writer, optargs_, formatWidth);
         }
         if (hasSubCommand && !subparsersUntitled) {
@@ -431,12 +431,12 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
     }
 
     /**
-     * Appends command, required optional arguments and positional arguments in
+     * Appends command, required named arguments and positional arguments in
      * {@code parser} to {@code opts} recursively. Most upper parser stores
      * first, just like post order traversal.
      * 
      * @param opts
-     *            Command, required optional arguments and positional arguments.
+     *            Command, required named arguments and positional arguments.
      * @param parser
      *            The parser
      */
@@ -758,7 +758,7 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
     }
 
     /**
-     * Returns optional argument ArgumentImpl which matches given flag. This
+     * Returns named argument ArgumentImpl which matches given flag. This
      * function handles abbreviation as well. If flag is ambiguous,
      * {@link ArgumentParserException} will be thrown. If flag does not match
      * any ArgumentImpl, this function returns null.
@@ -958,14 +958,14 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
     }
 
     /**
-     * This function only handles an optional argument.
+     * This function only handles a named argument.
      * 
      * @param res
      * @param state
      * @param arg
      * @param flag
      * @param embeddedValue
-     *            If optional argument is given as "foo=bar" or "-fbar" (short
+     *            If named argument is given as "foo=bar" or "-fbar" (short
      *            option), embedded value is "bar". Otherwise {@code null}
      * @throws ArgumentParserException
      */
@@ -1026,7 +1026,7 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
                     localize("expectedNArgumentsError"),
                     arg.getMinNumArg()), this, arg);
         }
-        // For optional arguments, always process the list even if it is
+        // For named arguments, always process the list even if it is
         // empty.
         arg.run(this, res, flag, list);
     }
@@ -1072,7 +1072,7 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
     }
 
     /**
-     * This function processes optional arguments accumulated in state.
+     * This function processes named arguments accumulated in state.
      * 
      * @param res
      * @param state
@@ -1150,7 +1150,7 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
     /**
      * Returns true if state.getArg() is flag. Note that if "--" is met and not
      * consumed, this function returns true, because "--" is treated as special
-     * optional argument. If prefixFileChar is found in prefix of argument, read
+     * named argument. If prefixFileChar is found in prefix of argument, read
      * arguments from that file and expand arguments in state necessary.
      * 
      * @param state
