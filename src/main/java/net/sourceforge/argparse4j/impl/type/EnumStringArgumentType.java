@@ -23,8 +23,7 @@
  */
 package net.sourceforge.argparse4j.impl.type;
 
-import static net.sourceforge.argparse4j.internal.MessageLocalization.localizeIfPossible;
-
+import net.sourceforge.argparse4j.helper.MessageLocalization;
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
@@ -75,10 +74,10 @@ public class EnumStringArgumentType<T extends Enum<T>> implements
 
         String choices = TextHelper.concat(type_.getEnumConstants(), 0,
                 ",", "{", "}");
-        throw new ArgumentParserException(String.format(
-                TextHelper.LOCALE_ROOT,
-                localizeIfPossible(parser, "couldNotConvertChooseFromError",
-                        "could not convert '%s' (choose from %s)"), 
+        throw new ArgumentParserException(String.format(TextHelper.LOCALE_ROOT,
+                MessageLocalization.localize(
+                        parser.getConfig().getResourceBundle(),
+                        "couldNotConvertChooseFromError"),
                 value, choices), parser, arg);
     }
 

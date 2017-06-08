@@ -23,13 +23,13 @@
  */
 package net.sourceforge.argparse4j.impl.type;
 
-import static net.sourceforge.argparse4j.internal.MessageLocalization.localizeIfPossible;
-import static net.sourceforge.argparse4j.internal.TypeNameLocalization.localizeTypeNameIfPossible;
+import static net.sourceforge.argparse4j.helper.TypeNameLocalization.localizeTypeNameIfPossible;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import net.sourceforge.argparse4j.helper.MessageLocalization;
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.Argument;
@@ -105,12 +105,13 @@ public class ReflectArgumentType<T> implements ArgumentType<T>,
             try {
                 return (T) Enum.valueOf((Class<Enum>) type_, value);
             } catch (IllegalArgumentException e) {
-                throw new ArgumentParserException(String.format(
-                        TextHelper.LOCALE_ROOT,
-                        localizeIfPossible(parser,
-                                "couldNotConvertChooseFromError",
-                                "could not convert '%s' (choose from %s)"),
-                        value, inferMetavar()[0]), parser, arg);
+                throw new ArgumentParserException(
+                        String.format(TextHelper.LOCALE_ROOT,
+                                MessageLocalization.localize(
+                                        parser.getConfig().getResourceBundle(),
+                                        "couldNotConvertChooseFromError"),
+                                value, inferMetavar()[0]),
+                        parser, arg);
             }
         }
         Method m = null;
@@ -164,9 +165,10 @@ public class ReflectArgumentType<T> implements ArgumentType<T>,
             throws ArgumentParserException {
         String localizedTypeName = localizeTypeNameIfPossible(parser, type_);
         throw new ArgumentParserException(String.format(TextHelper.LOCALE_ROOT,
-                localizeIfPossible(parser, "couldNotConvertToError",
-                        "could not convert '%s' to %s"), value,
-                localizedTypeName), t, parser, arg);
+                MessageLocalization.localize(
+                        parser.getConfig().getResourceBundle(),
+                        "couldNotConvertToError"),
+                value, localizedTypeName), t, parser, arg);
     }
 
     private void handleInstatiationError(Exception e) {

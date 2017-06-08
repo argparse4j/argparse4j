@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
-import net.sourceforge.argparse4j.ArgumentParserConfiguration;
+import net.sourceforge.argparse4j.helper.MessageLocalization;
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.helper.TextWidthCounter;
 import net.sourceforge.argparse4j.impl.Arguments;
@@ -65,15 +65,15 @@ public final class ArgumentImpl implements Argument {
     private int minNumArg_ = -1;
     private int maxNumArg_ = -1;
     private String help_ = "";
-    private ArgumentParserConfiguration config_;
+    private ArgumentParserConfigurationImpl config_;
     private ArgumentGroupImpl argumentGroup_;
 
-    public ArgumentImpl(ArgumentParserConfiguration config,
+    public ArgumentImpl(ArgumentParserConfigurationImpl config,
             String... nameOrFlags) {
         this(config, null, nameOrFlags);
     }
 
-    public ArgumentImpl(ArgumentParserConfiguration config,
+    public ArgumentImpl(ArgumentParserConfigurationImpl config,
             ArgumentGroupImpl argumentGroup, String... nameOrFlags) {
         if (nameOrFlags.length == 0) {
             throw new IllegalArgumentException("no nameOrFlags was specified");
@@ -553,6 +553,7 @@ public final class ArgumentImpl implements Argument {
     }
 
     private String localize(String messageKey) {
-        return config_.localize(messageKey);
+        return MessageLocalization.localize(config_.getResourceBundle(),
+                messageKey);
     }
 }

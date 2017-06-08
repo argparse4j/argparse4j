@@ -18,11 +18,10 @@
  */
 package net.sourceforge.argparse4j.impl.type;
 
-import static net.sourceforge.argparse4j.internal.MessageLocalization.localizeIfPossible;
-
 import java.io.File;
 import java.io.IOException;
 
+import net.sourceforge.argparse4j.helper.MessageLocalization;
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
@@ -216,32 +215,28 @@ public class FileArgumentType implements ArgumentType<File> {
     private void verifyExists(ArgumentParser parser, Argument arg, File file)
             throws ArgumentParserException {
         if (!file.exists()) {
-            throwException(parser, arg, file, "fileNotFoundError",
-                    "File not found: '%s'");
+            throwException(parser, arg, file, "fileNotFoundError");
         }
     }
 
     private void verifyNotExists(ArgumentParser parser, Argument arg, File file)
             throws ArgumentParserException {
         if (file.exists()) {
-            throwException(parser, arg, file, "fileFoundError",
-                    "File found: '%s'");
+            throwException(parser, arg, file, "fileFoundError");
         }
     }
 
     private void verifyIsFile(ArgumentParser parser, Argument arg, File file)
             throws ArgumentParserException {
         if (!file.isFile()) {
-            throwException(parser, arg, file, "notAFileError",
-                    "Not a file: '%s'");
+            throwException(parser, arg, file, "notAFileError");
         }
     }
 
     private void verifyIsDirectory(ArgumentParser parser, Argument arg,
             File file) throws ArgumentParserException {
         if (!file.isDirectory()) {
-            throwException(parser, arg, file, "notADirectoryError",
-                    "Not a directory: '%s'");
+            throwException(parser, arg, file, "notADirectoryError");
         }
     }
 
@@ -249,8 +244,7 @@ public class FileArgumentType implements ArgumentType<File> {
             throws ArgumentParserException {
         if (!file.canRead()) {
             throwException(parser, arg, file,
-                    "insufficientPermissionsToReadFileError",
-                    "Insufficient permissions to read file: '%s'");
+                    "insufficientPermissionsToReadFileError");
         }
     }
 
@@ -258,8 +252,7 @@ public class FileArgumentType implements ArgumentType<File> {
             throws ArgumentParserException {
         if (!file.canWrite()) {
             throwException(parser, arg, file,
-                    "insufficientPermissionsToWriteFileError",
-                    "Insufficient permissions to write file: '%s'");
+                    "insufficientPermissionsToWriteFileError");
         }
     }
 
@@ -267,8 +260,7 @@ public class FileArgumentType implements ArgumentType<File> {
             File file) throws ArgumentParserException {
         File parent = file.getParentFile();
         if (parent == null || !parent.canWrite()) {
-            throwException(parser, arg, file, "cannotWriteParentOfFileError",
-                    "Cannot write parent of file: '%s'");
+            throwException(parser, arg, file, "cannotWriteParentOfFileError");
         }
     }
 
@@ -283,34 +275,34 @@ public class FileArgumentType implements ArgumentType<File> {
         }
 
         // An exception was thrown or the parent directory can't be written
-        throwException(parser, arg, file, "cannotCreateFileError",
-                "Cannot create file: '%s'");
-
+        throwException(parser, arg, file, "cannotCreateFileError");
     }
 
     private void verifyCanExecute(ArgumentParser parser, Argument arg, File file)
             throws ArgumentParserException {
         if (!file.canExecute()) {
             throwException(parser, arg, file,
-                    "insufficientPermissionsToExecuteFileError",
-                    "Insufficient permissions to execute file: '%s'");
+                    "insufficientPermissionsToExecuteFileError");
         }
     }
 
     private void verifyIsAbsolute(ArgumentParser parser, Argument arg, File file)
             throws ArgumentParserException {
         if (!file.isAbsolute()) {
-            throwException(parser, arg, file, "notAnAbsoluteFileError",
-                    "Not an absolute file: '%s'");
+            throwException(parser, arg, file, "notAnAbsoluteFileError");
         }
     }
 
     private void throwException(ArgumentParser parser, Argument arg, File file,
-            String messageKey, String unlocalizedMessage)
+            String messageKey)
             throws ArgumentParserException {
-        throw new ArgumentParserException(String.format(TextHelper.LOCALE_ROOT,
-                localizeIfPossible(parser, messageKey, unlocalizedMessage),
-                file), parser, arg);
+        throw new ArgumentParserException(
+                String.format(TextHelper.LOCALE_ROOT,
+                        MessageLocalization.localize(
+                                parser.getConfig().getResourceBundle(),
+                                messageKey),
+                        file),
+                parser, arg);
     }
 
     private boolean isSystemIn(File file) {

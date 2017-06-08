@@ -28,12 +28,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.argparse4j.ArgumentParserConfiguration;
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentGroup;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
-import net.sourceforge.argparse4j.inf.ConfiguredArgumentParser;
 import net.sourceforge.argparse4j.inf.FeatureControl;
 import net.sourceforge.argparse4j.inf.MutuallyExclusiveGroup;
 import net.sourceforge.argparse4j.inf.Namespace;
@@ -44,7 +43,7 @@ import net.sourceforge.argparse4j.inf.Subparsers;
  * <strong>The application code must not use this class directly.</strong>
  * 
  */
-public final class SubparserImpl implements Subparser, ConfiguredArgumentParser {
+public final class SubparserImpl implements Subparser, ArgumentParser {
 
     private String command_;
     private List<String> aliases_ = new ArrayList<String>();
@@ -52,7 +51,7 @@ public final class SubparserImpl implements Subparser, ConfiguredArgumentParser 
     private String help_ = "";
     private FeatureControl helpControl_;
 
-    public SubparserImpl(ArgumentParserConfiguration config, String command,
+    public SubparserImpl(ArgumentParserConfigurationImpl config, String command,
             ArgumentParserImpl mainParser) {
         command_ = command;
         parser_ = new ArgumentParserImpl(config, command, mainParser);
@@ -284,7 +283,7 @@ public final class SubparserImpl implements Subparser, ConfiguredArgumentParser 
         return parser_.getCommand();
     }
 
-    public ArgumentParserConfiguration getConfig() {
+    public ArgumentParserConfigurationImpl getConfig() {
         return parser_.getConfig();
     }
 

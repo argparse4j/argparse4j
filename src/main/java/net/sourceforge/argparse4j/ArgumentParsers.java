@@ -31,6 +31,7 @@ import net.sourceforge.argparse4j.helper.ASCIITextWidthCounter;
 import net.sourceforge.argparse4j.helper.CJKTextWidthCounter;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.internal.ArgumentParserConfigurationImpl;
 import net.sourceforge.argparse4j.internal.ArgumentParserImpl;
 import net.sourceforge.argparse4j.internal.TerminalWidth;
 
@@ -156,7 +157,7 @@ public final class ArgumentParsers {
     @Deprecated
     public static ArgumentParser newArgumentParser(String prog,
             boolean addHelp, String prefixChars, String fromFilePrefix) {
-        ArgumentParserConfiguration config = new ArgumentParserConfiguration(
+        ArgumentParserConfigurationImpl config = new ArgumentParserConfigurationImpl(
                 prog, addHelp, prefixChars, fromFilePrefix, Locale.getDefault(),
                 cjkWidthHack_ && cjkWidthLangs_.contains(Locale.getDefault()
                         .getLanguage()) ? new CJKTextWidthCounter() : new ASCIITextWidthCounter(),

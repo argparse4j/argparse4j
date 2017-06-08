@@ -534,4 +534,14 @@ public interface ArgumentParser {
      *            Error thrown by {@link #parseArgs(String[])}.
      */
     void handleError(ArgumentParserException e, PrintWriter writer);
+
+    /**
+     * <p>
+     * Get the configuration of this argument parser.
+     * </p>
+     *
+     * @return The argument parser configuration.
+     * @since 0.8.0
+     */
+    ArgumentParserConfiguration getConfig();
 }

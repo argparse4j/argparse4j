@@ -21,12 +21,20 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.sourceforge.argparse4j.internal;
+package net.sourceforge.argparse4j.helper;
 
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 
-
+/**
+ * <p>
+ * HelpScreenException is a subclass of ArgumentParserException. It is used
+ * internally, and is thrown when help option is invoked.
+ * </p>
+ * <p>
+ * <strong>The application code should not use this class directly.</strong>
+ * </p>
+ */
 public class HelpScreenException extends ArgumentParserException {
 
     private static final long serialVersionUID = -7303433847334132539L;
@@ -35,4 +43,3 @@ public class HelpScreenException extends ArgumentParserException {
         super("Help Screen", parser);
     }
 }
-

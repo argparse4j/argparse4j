@@ -23,8 +23,7 @@
  */
 package net.sourceforge.argparse4j.impl.type;
 
-import static net.sourceforge.argparse4j.internal.MessageLocalization.localizeIfPossible;
-
+import net.sourceforge.argparse4j.helper.MessageLocalization;
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
@@ -99,9 +98,10 @@ public class BooleanArgumentType implements ArgumentType<Boolean>,
         }
 
         throw new ArgumentParserException(String.format(TextHelper.LOCALE_ROOT,
-                localizeIfPossible(parser, "couldNotConvertChooseFromError",
-                        "could not convert '%s' (choose from %s)"), value,
-                inferMetavar()[0]), parser, arg);
+                MessageLocalization.localize(
+                        parser.getConfig().getResourceBundle(),
+                        "couldNotConvertChooseFromError"),
+                value, inferMetavar()[0]), parser, arg);
     }
 
     /**

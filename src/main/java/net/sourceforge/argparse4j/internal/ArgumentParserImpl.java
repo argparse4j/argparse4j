@@ -43,23 +43,24 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import net.sourceforge.argparse4j.ArgumentParserConfiguration;
 import net.sourceforge.argparse4j.annotation.Arg;
+import net.sourceforge.argparse4j.helper.HelpScreenException;
+import net.sourceforge.argparse4j.helper.MessageLocalization;
 import net.sourceforge.argparse4j.helper.ReflectHelper;
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.helper.TextWidthCounter;
 import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentGroup;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
-import net.sourceforge.argparse4j.inf.ConfiguredArgumentParser;
 import net.sourceforge.argparse4j.inf.MutuallyExclusiveGroup;
 import net.sourceforge.argparse4j.inf.Namespace;
 
 /**
  * <strong>The application code must not use this class directly.</strong>
  */
-public final class ArgumentParserImpl implements ConfiguredArgumentParser {
+public final class ArgumentParserImpl implements ArgumentParser {
 
     private Map<String, ArgumentImpl> optargIndex_ = new HashMap<String, ArgumentImpl>();
     private List<ArgumentImpl> optargs_ = new ArrayList<ArgumentImpl>();
@@ -69,7 +70,7 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
     private SubparsersImpl subparsers_ = new SubparsersImpl(this);
     private ArgumentParserImpl mainParser_;
     private String command_;
-    private ArgumentParserConfiguration config_;
+    private ArgumentParserConfigurationImpl config_;
     private String usage_ = "";
     private String description_ = "";
     private String epilog_ = "";
@@ -81,11 +82,11 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
     private static final Pattern SHORT_OPTS_PATTERN = Pattern
             .compile("-[^-].*");
 
-    public ArgumentParserImpl(ArgumentParserConfiguration config) {
+    public ArgumentParserImpl(ArgumentParserConfigurationImpl config) {
         this(config, null, null);
     }
 
-    public ArgumentParserImpl(ArgumentParserConfiguration config,
+    public ArgumentParserImpl(ArgumentParserConfigurationImpl config,
             String command, ArgumentParserImpl mainParser) {
         this.config_ = config;
         this.command_ = command;
@@ -262,8 +263,8 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
         }
         if (hasSubCommand && !subparsersUntitled) {
             writer.println();
-            writer.print(subparsers_.getTitle().isEmpty() ? config_
-                    .localize("sub-commands") : subparsers_.getTitle());
+            writer.print(subparsers_.getTitle().isEmpty()
+                    ? localize("sub-commands") : subparsers_.getTitle());
             writer.println(":");
             if (!subparsers_.getDescription().isEmpty()) {
                 writer.print("  ");
@@ -1278,7 +1279,8 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
         }
     }
 
-    public ArgumentParserConfiguration getConfig() {
+    @Override
+    public ArgumentParserConfigurationImpl getConfig() {
         return config_;
     }
 
@@ -1562,6 +1564,7 @@ public final class ArgumentParserImpl implements ConfiguredArgumentParser {
     }
 
     private String localize(String messageKey) {
-        return config_.localize(messageKey);
+        return MessageLocalization.localize(config_.getResourceBundle(),
+                messageKey);
     }
 }
