@@ -63,7 +63,7 @@ public interface Argument {
      * {@code "?"} is given, one argument will be consumed from the command line
      * if possible, and produced as a single item. If no command line argument
      * is present, the value from {@link #setDefault(Object)} will be produced.
-     * Note that for optional arguments, there is an additional case - the
+     * Note that for named arguments, there is an additional case - the
      * option string is present but not followed by a command line argument. In
      * this case the value from {@link #setConst(Object)} will be produced.
      * </p>
@@ -195,7 +195,7 @@ public interface Argument {
 
     /**
      * <p>
-     * If {@code true} is given, this optional argument must be specified in
+     * If {@code true} is given, this named argument must be specified in
      * command line otherwise error will be issued.
      * </p>
      * <p>
@@ -260,7 +260,7 @@ public interface Argument {
      * <p>
      * The default value is For positional arguments, The default value is
      * normally supplied as the first argument to
-     * {@link ArgumentParser#parseArgs(String[])}. For optional arguments,
+     * {@link ArgumentParser#parseArgs(String[])}. For named arguments,
      * {@link ArgumentParser} generates the default value of {@code dest} by
      * taking the first long option string and stripping away the initial
      * {@code --} string. If no long option strings were supplied, {@code dest}
@@ -315,7 +315,7 @@ public interface Argument {
      * </p>
      * 
      * <p>
-     * For optional arguments, this method returns the first argument given in
+     * For named arguments, this method returns the first argument given in
      * {@link ArgumentParser#addArgument(String...)}. For positional arguments,
      * this method returns the flags joined with "/", e.g. {@code -f/--foo}.
      * </p>

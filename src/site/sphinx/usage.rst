@@ -99,7 +99,7 @@ It can be run at the command line and provides useful help messages:
     positional arguments:
       N                      an integer for the accumulator
 
-    optional arguments:
+    named arguments:
       -h, --help             show this help message and exit
       --sum                  sum the integers (default: find the max)
 
@@ -215,7 +215,7 @@ Configure the parser to be build using methods of the builder:
   option to the parser.  (default: ``true``).
 
 * :ref:`ArgumentParserBuilder-prefixChars` - The set of
-  characters that prefix optional arguments. (default: '-')
+  characters that prefix named arguments. (default: '-')
 
 * :ref:`ArgumentParserBuilder-fromFilePrefix` - The
   set of characters that prefix file path from which additional
@@ -301,7 +301,7 @@ ArgumentParser will display help message:
     $ java Demo --help
     usage: prog [-h] [--foo FOO]
 
-    optional arguments:
+    named arguments:
       -h, --help             show this help message and exit
       --foo FOO              foo help
 
@@ -321,7 +321,7 @@ addHelp_ argument to |ArgumentParserBuilder.addHelp|::
     $ java Demo
     usage: prog [--foo FOO]
 
-    optional arguments:
+    named arguments:
       --foo FOO              foo help
 
 The help option is typically ``-h/--help``. The exception to this is
@@ -342,7 +342,7 @@ the help options::
     $ java Demo
     usage: prog [+h]
 
-    optional arguments:
+    named arguments:
       +h, ++help             show this help message and exit
 
 
@@ -560,7 +560,7 @@ example using a single metavariable::
     $ java Demo
     usage: single [-h] [-f FILE [FILE ...]]
 
-    optional arguments:
+    named arguments:
       -h, --help             show this help message and exit
       -f, -file FILE [FILE ...]
 
@@ -578,7 +578,7 @@ Compare this with the output if using multiple metavariables::
     $ java Demo
     usage: multiple [-h] [-f FILE [FILE ...]]
 
-    optional arguments:
+    named arguments:
       -h, --help             show this help message and exit
       -f FILE [FILE ...], -file FILE [FILE ...]
 
@@ -637,8 +637,8 @@ the various arguments::
 
     A foo that bars
 
-    optional arguments:
-    -h, --help             show this help message and exit
+    named arguments:
+      -h, --help             show this help message and exit
 
 By default, the description will be line-wrapped so that it fits
 within the given space.
@@ -666,7 +666,7 @@ using |ArgumentParser.epilog| method::
 
     A foo that bars
 
-    optional arguments:
+    named arguments:
       -h, --help             show this help message and exit
 
     And that's how you'd foo a bar
@@ -706,7 +706,7 @@ will display the default value of each argument in help message::
     positional arguments:
       bar                    BAR! (default: [1, 2, 3])
 
-    optional arguments:
+    named arguments:
       -h, --help             show this help message and exit
       -f FOO, --foo FOO      FOO! (default: 42)
 
@@ -733,7 +733,7 @@ from the arguments it contains::
     positional arguments:
       bar                    bar help
 
-    optional arguments:
+    named arguments:
       -h, --help             show this help message and exit
       --foo [FOO]            foo help
 
@@ -756,7 +756,7 @@ method::
     positional arguments:
       bar                    bar help
 
-    optional arguments:
+    named arguments:
       -h, --help             show this help message and exit
       --foo [FOO]            foo help
 
@@ -810,7 +810,7 @@ parameters can be specified using following methods:
   the argument.
 
 * :ref:`Argument-required` - Whether or not the command line option
-  may be omitted(optional arguments only).
+  may be omitted (named arguments only).
 
 * :ref:`Argument-help` - A brief description of what the argument
   does.
@@ -827,11 +827,11 @@ The following sections describe how each of these are used.
 nameOrFlags
 ^^^^^^^^^^^
 
-The |ArgumentParser.addArgument| method must know whether an
-optional argument, like ``-f`` or ``--foo``, or a positional argument,
+The |ArgumentParser.addArgument| method must know whether a
+named argument, like ``-f`` or ``--foo``, or a positional argument,
 like a list of filenames, is expected.  The arguments passed to
 |ArgumentParser.addArgument| must therefore be either a series of
-flags, or a simple argument name.  For example, an optional argument
+flags, or a simple argument name.  For example, a named argument
 could be created like::
 
     parser.addArgument("-f", "--foo");
@@ -840,7 +840,7 @@ while a positional argument could be created like::
 
     parser.addArgument("bar");
 
-When |ArgumentParser.parseArgs| is called, optional arguments will
+When |ArgumentParser.parseArgs| is called, named arguments will
 be identified by the ``-`` prefix (or one of
 :ref:`ArgumentParserBuilder-prefixChars` if it is
 specified, and the remaining arguments will be assumed to be
@@ -907,7 +907,7 @@ Arguments.storeConst()
 |Arguments.storeConst| stores the value specified by the
 :ref:`Argument-setConst`. (Note that by default const value is the
 rather unhelpful ``null``.)  The |Arguments.storeConst| action is
-most commonly used with optional arguments that specify sort of
+most commonly used with named arguments that specify sort of
 flags. For example::
 
     public static void main(String[] args) throws ArgumentParserException {
@@ -1052,7 +1052,7 @@ Arguments.help()
     $ java Demo --help
     usage: prog [--help]
 
-    optional arguments:
+    named arguments:
       --help
 
 Custom actions
@@ -1128,7 +1128,7 @@ with a single action. The supported values are:
 * ``"?"``.  One argument will be consumed from the command line if
   possible, and produced as a single item. If no command line argument
   is present, the value from :ref:`Argument-setDefault` will be
-  produced. Note that for optional arguments, there is an additional
+  produced. Note that for named arguments, there is an additional
   case - the option string is present but not followed by a command
   line argument. In this case the value from :ref:`Argument-setConst`
   will be produced. Some examples to illustrate this::
@@ -1261,7 +1261,7 @@ The two most common uses of it are:
 
 * When |ArgumentParser.addArgument| is called with option strings
   (like ``-f`` or ``--foo``) and ``nargs("?")`` is used.  This creates
-  an optional argument that can be followed by zero or one command
+  a named argument that can be followed by zero or one command
   line argument. When parsing the command line, if the option string
   is encountered with no command line argument following it, the value
   specified by |Argument.setConst| will be assumed instead.  See the
@@ -1273,10 +1273,10 @@ The two most common uses of it are:
 Argument.setDefault()
 ^^^^^^^^^^^^^^^^^^^^^
 
-All optional arguments and some positional arguments may be omitted at
+All named arguments and some positional arguments may be omitted at
 the command line.  The |Argument.setDefault| specifies what
 value should be used if the command line argument is not present. The
-default value defaults to ``null``. For optional arguments, the
+default value defaults to ``null``. For named arguments, the
 default value is used when the option string was not present at the
 command line::
 
@@ -1465,7 +1465,7 @@ members. For example::
     $ java Demo -h
     usage: prog [-h] [-x X]
 
-    optional arguments:
+    named arguments:
       -h, --help             show this help message and exit
       -x X
 
@@ -1479,7 +1479,7 @@ metavar and choices are not explicitly set by application::
     $ java Demo -h
     usage: prog [-h] [-x {FOO,BAR,BAZ}]
 
-    optional arguments:
+    named arguments:
       -h, --help             show this help message and exit
       -x {FOO,BAR,BAZ}
 
@@ -1493,7 +1493,7 @@ To limit enum values to choose from, specify them in
     $ java Demo -h
     usage: prog [-h] [-x {FOO,BAZ}]
 
-    optional arguments:
+    named arguments:
       -h, --help             show this help message and exit
       -x {FOO,BAZ}
 
@@ -1718,7 +1718,7 @@ Argument.required()
 ^^^^^^^^^^^^^^^^^^^
 
 In general, the :javadoc:`inf.ArgumentParser` assumes that flags like
-``-f`` and ``--bar`` indicate optional arguments, which can always
+``-f`` and ``--bar`` indicate named arguments, which can always
 be omitted at the command line. To make an option required, ``true``
 can be specified for |Argument.required|::
 
@@ -1781,7 +1781,7 @@ displayed with each argument::
     positional arguments:
       bar                    one of the bars to be frobbled
 
-    optional arguments:
+    named arguments:
       -h, --help             show this help message and exit
       --foo                  foo the bars before frobbling
 
@@ -1806,7 +1806,7 @@ by passing :javafield:`Arguments.SUPPRESS` to |Argument.help| method::
    $ java Demo -h
    usage: prog [-h]
 
-   optional arguments:
+   named arguments:
      -h, --help             show this help message and exit
 
 .. _Argument-metavar:
@@ -1825,9 +1825,9 @@ Similarly, if enum type is given, and if no metavar and no choices are set,
 a metavar containing their all names is automatically used for convenience
 (these names are from ``Enum.names()`` instead of ``Enum.toString()``).
 By default, for positional arguments, the dest value is used directly,
-and for optional arguments, the dest value is uppercased. So, a single
+and for named arguments, the dest value is uppercased. So, a single
 positional argument with ``dest("bar")`` will be referred to as
-``bar``. A single optional argument ``--foo`` that should be followed
+``bar``. A single named argument ``--foo`` that should be followed
 by a single command line argument will be referred to as ``FOO``. For
 example::
 
@@ -1846,7 +1846,7 @@ example::
     positional arguments:
       bar
 
-    optional arguments:
+    named arguments:
       -h, --help             show this help message and exit
       --foo FOO
 
@@ -1868,7 +1868,7 @@ method::
     positional arguments:
       XX
 
-    optional arguments:
+    named arguments:
       -h, --help             show this help message and exit
       --foo YY
 
@@ -1892,7 +1892,7 @@ the arguments::
     $ java Demo
     usage: prog [-h] [-x X X] [--foo bar baz]
 
-    optional arguments:
+    named arguments:
       -h, --help             show this help message and exit
       -x X X
       --foo bar baz
@@ -1925,7 +1925,7 @@ to ``_``::
     $ java Demo XX YY
     Namespace(bar=XX, foo_bar=YY)
 
-For optional arguments, the value of dest is normally inferred from
+For named arguments, the value of dest is normally inferred from
 the option strings. :javadoc:`inf.ArgumentParser` generates the value
 of dest by taking the first long option string and stripping away the
 initial ``--`` string. If no long option strings were supplied, dest
@@ -2316,7 +2316,7 @@ can be given using |Subparser.help| method.):
         a                    a help
         b                    b help
 
-    optional arguments:
+    named arguments:
       -h, --help             show this help message and exit
       --foo                  foo help
 
@@ -2326,13 +2326,13 @@ can be given using |Subparser.help| method.):
     positional arguments:
       bar                    bar help
 
-    optional arguments:
+    named arguments:
       -h, --help             show this help message and exit
 
     $ java Demo b --help
     usage: prog b [-h] [--baz BAZ]
 
-    optional arguments:
+    named arguments:
       -h, --help             show this help message and exit
       --baz BAZ              baz help
 
@@ -2362,7 +2362,7 @@ output. For example::
     $ java Demo -h
     usage: prog [-h] {foo,bar} ...
 
-    optional arguments:
+    named arguments:
       -h, --help             show this help message and exit
 
     subcommands:
@@ -2396,7 +2396,7 @@ sub-command names. For example::
     $ java Demo -h
     usage: prog [-h] COMMAND ...
 
-    optional arguments:
+    named arguments:
       -h, --help             show this help message and exit
 
     subcommands:
@@ -2599,7 +2599,7 @@ use `acceptSystemIn()` method::
     $ java Demo -h
     usage: prog [-h] [-i IN] [-o OUT]
 
-    optional arguments:
+    named arguments:
       -h, --help             show this help message and exit
       -i IN, --in IN         (default: -)
       -o OUT, --out OUT
@@ -2611,7 +2611,7 @@ Argument groups
 ^^^^^^^^^^^^^^^
 
 By default, :javadoc:`inf.ArgumentParser` groups command line
-arguments into "positional arguments" and "optional arguments" when
+arguments into "positional arguments" and "named arguments" when
 displaying help messages. When there is a better conceptual grouping
 of arguments than this default one, appropriate groups can be created
 using the |ArgumentParser.addArgumentGroup|::
@@ -2635,7 +2635,7 @@ using the |ArgumentParser.addArgumentGroup|::
 
     positional arguments:
 
-    optional arguments:
+    named arguments:
       -h, --help             show this help message and exit
 
     group:
@@ -2679,7 +2679,7 @@ message::
       --bar BAR              bar help
 
 Note that any arguments not in your user defined groups will end up
-back in the usual "positional arguments" and "optional arguments"
+back in the usual "positional arguments" and "named arguments"
 sections.
 
 Mutual exclusion
@@ -2735,7 +2735,7 @@ that at least one of the mutually exclusive arguments is required::
 The :javadoc:`inf.MutuallyExclusiveGroup` support the title and
 description just like :javadoc:`inf.ArgumentGroup` object.  If both
 title and description are not specified, the help message for this
-group is merged into the other optional arguments. With either or both
+group is merged into the other named arguments. With either or both
 title and description, the help message is in separate group::
 
     public static void main(String[] args) {
@@ -2756,7 +2756,7 @@ title and description, the help message is in separate group::
     $ java Demo -h
     usage: prog [-h] (--foo | --bar)
 
-    optional arguments:
+    named arguments:
       -h, --help             show this help message and exit
 
     group:

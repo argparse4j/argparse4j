@@ -37,7 +37,7 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
  * </p>
  * <p>
  * Note that by default const value is {@code null}. This action is most
- * commonly used with optional arguments that specify sort of flags.
+ * commonly used with named arguments that specify sort of flags.
  * {@link #consumeArgument()} always returns {@code false}.
  * </p>
  * 

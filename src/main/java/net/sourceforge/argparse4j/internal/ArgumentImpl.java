@@ -182,7 +182,7 @@ public final class ArgumentImpl implements Argument {
                     }
                 }
 
-                if (isOptionalArgument()) {
+                if (isNamedArgument()) {
                     return new String[] { dest_.toUpperCase() };
                 }
 
@@ -226,7 +226,7 @@ public final class ArgumentImpl implements Argument {
     }
 
     private String formatHelpTitle() {
-        if (isOptionalArgument()) {
+        if (isNamedArgument()) {
             String mv = formatMetavar();
             StringBuilder sb = new StringBuilder();
 
@@ -473,7 +473,7 @@ public final class ArgumentImpl implements Argument {
         return this;
     }
 
-    public boolean isOptionalArgument() {
+    public boolean isNamedArgument() {
         return name_ == null;
     }
 
@@ -499,7 +499,7 @@ public final class ArgumentImpl implements Argument {
         // For positional arguments, we perform special treatment if
         // they are configured with nargs("*") and default is null.
         // In this case, return empty list.
-        if (!isOptionalArgument() && default_ == null && maxNumArg_ > 1) {
+        if (!isNamedArgument() && default_ == null && maxNumArg_ > 1) {
             return new ArrayList<Object>();
         } else {
             return default_;

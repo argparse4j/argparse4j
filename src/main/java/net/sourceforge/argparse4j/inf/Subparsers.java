@@ -88,7 +88,7 @@ public interface Subparsers {
      *            If true, {@code -h/--help} are available. If false, they are
      *            not.
      * @param prefixChars
-     *            The set of characters that prefix optional arguments.
+     *            The set of characters that prefix named arguments.
      * @return {@link Subparser} object
      */
     Subparser addParser(String command, boolean addHelp, String prefixChars);

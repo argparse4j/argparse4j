@@ -50,8 +50,8 @@ public interface ArgumentAction {
      * @param attrs
      *            Map to store attributes.
      * @param flag
-     *            The actual option flag in command line if {@code arg} is an
-     *            optional arguments. {@code null} if {@code arg} is a
+     *            The actual option flag in command line if {@code arg} is a
+     *            named arguments. {@code null} if {@code arg} is a
      *            positional argument.
      * @param value
      *            The attribute value. This may be null if this action does not

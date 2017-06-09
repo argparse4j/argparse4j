@@ -27,10 +27,10 @@ argparse4j.
 
 Here is summary of features:
 
-* Supported positional arguments and optional arguments.
+* Supported positional arguments and named arguments.
 * Variable number of arguments.
 * Generates well formatted line-wrapped help message.
-* Suggests optional arguments/sub-command if unrecognized
+* Suggests named arguments/sub-command if unrecognized
   arguments/sub-command were given, e.g.:
 
   .. code-block:: console
