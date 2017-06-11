@@ -11,4 +11,8 @@
 
     <artifactId>argparse4j-extensions</artifactId>
     <packaging>pom</packaging>
+    
+    <modules>
+        <module>java7</module>
+    </modules>
 </project>

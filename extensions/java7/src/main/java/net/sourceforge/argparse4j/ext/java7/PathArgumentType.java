@@ -16,39 +16,73 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package net.sourceforge.argparse4j.impl.type;
+package net.sourceforge.argparse4j.ext.java7;
 
 import java.io.File;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 
+import net.sourceforge.argparse4j.helper.MessageLocalization;
+import net.sourceforge.argparse4j.helper.TextHelper;
+import net.sourceforge.argparse4j.impl.type.FileVerification;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.ArgumentType;
 
 /**
- * ArgumentType subclass for File type, using fluent style API.
- * 
- * This object can convert path string to {@link java.io.File} object. The
+ * <p>
+ * ArgumentType subclass for Path type, using fluent style API.
+ * </p>
+ *
+ * <p>
+ * This object can convert path string to {@link java.nio.file.Path} object. The
  * command-line programs traditionally accept the file path "-" as standard
  * input. This object supports this when
- * {@link FileArgumentType#acceptSystemIn()} is used. Also there are several
+ * {@link PathArgumentType#acceptSystemIn()} is used. Also there are several
  * convenient verification features such as checking readability or existence.
+ * </p>
+ *
+ * @since 0.8.0
  */
-public class FileArgumentType implements ArgumentType<File> {
+public class PathArgumentType implements ArgumentType<Path> {
 
+    private final FileSystem fileSystem;
     private boolean acceptSystemIn = false;
     private final FileVerification fileVerification = new FileVerification();
 
-    public FileArgumentType() {
+    /**
+     * Create an instance using the default file system for resolving the path.
+     */
+    public PathArgumentType() {
+        fileSystem = FileSystems.getDefault();
+    }
+
+    /**
+     * <p>
+     * Create an instance using the given file system for resolving the path.
+     * </p>
+     * <p>
+     * <strong>Warning</strong>: Using the non-default file system disables all
+     * file verifications.
+     * </p>
+     *
+     * @param fileSystem
+     *         The file system to use for resolving paths
+     */
+    public PathArgumentType(FileSystem fileSystem) {
+        this.fileSystem = fileSystem;
     }
 
     /**
      * If the argument is "-", accept it as standard input. If this method is
      * used, all verification methods will be ignored.
-     * 
+     *
      * @return this
      */
-    public FileArgumentType acceptSystemIn() {
+    public PathArgumentType acceptSystemIn() {
         acceptSystemIn = true;
         return this;
     }
@@ -56,10 +90,10 @@ public class FileArgumentType implements ArgumentType<File> {
     /**
      * Verifies that the specified path exists. If the verification fails, error
      * will be reported.
-     * 
+     *
      * @return this
      */
-    public FileArgumentType verifyExists() {
+    public PathArgumentType verifyExists() {
         fileVerification.verifyExists = true;
         return this;
     }
@@ -67,10 +101,10 @@ public class FileArgumentType implements ArgumentType<File> {
     /**
      * Verifies that the specified path does not exist. If the verification
      * fails, error will be reported.
-     * 
+     *
      * @return this
      */
-    public FileArgumentType verifyNotExists() {
+    public PathArgumentType verifyNotExists() {
         fileVerification.verifyNotExists = true;
         return this;
     }
@@ -78,10 +112,10 @@ public class FileArgumentType implements ArgumentType<File> {
     /**
      * Verifies that the specified path is a regular file. If the verification
      * fails, error will be reported.
-     * 
+     *
      * @return this
      */
-    public FileArgumentType verifyIsFile() {
+    public PathArgumentType verifyIsFile() {
         fileVerification.verifyIsFile = true;
         return this;
     }
@@ -89,10 +123,10 @@ public class FileArgumentType implements ArgumentType<File> {
     /**
      * Verifies that the specified path is a directory. If the verification
      * fails, error will be reported.
-     * 
+     *
      * @return this
      */
-    public FileArgumentType verifyIsDirectory() {
+    public PathArgumentType verifyIsDirectory() {
         fileVerification.verifyIsDirectory = true;
         return this;
     }
@@ -100,10 +134,10 @@ public class FileArgumentType implements ArgumentType<File> {
     /**
      * Verifies that the specified path is readable. If the verification fails,
      * error will be reported.
-     * 
+     *
      * @return this
      */
-    public FileArgumentType verifyCanRead() {
+    public PathArgumentType verifyCanRead() {
         fileVerification.verifyCanRead = true;
         return this;
     }
@@ -111,10 +145,10 @@ public class FileArgumentType implements ArgumentType<File> {
     /**
      * Verifies that the specified path is writable. If the verification fails,
      * error will be reported.
-     * 
+     *
      * @return this
      */
-    public FileArgumentType verifyCanWrite() {
+    public PathArgumentType verifyCanWrite() {
         fileVerification.verifyCanWrite = true;
         return this;
     }
@@ -122,10 +156,10 @@ public class FileArgumentType implements ArgumentType<File> {
     /**
      * Verifies that the parent directory of the specified path is writable. If
      * the verification fails, error will be reported.
-     * 
+     *
      * @return this
      */
-    public FileArgumentType verifyCanWriteParent() {
+    public PathArgumentType verifyCanWriteParent() {
         fileVerification.verifyCanWriteParent = true;
         return this;
     }
@@ -133,10 +167,10 @@ public class FileArgumentType implements ArgumentType<File> {
     /**
      * Verifies that the specified path is writable. If the verification fails,
      * error will be reported.
-     * 
+     *
      * @return this
      */
-    public FileArgumentType verifyCanCreate() {
+    public PathArgumentType verifyCanCreate() {
         fileVerification.verifyCanCreate = true;
         return this;
     }
@@ -144,10 +178,10 @@ public class FileArgumentType implements ArgumentType<File> {
     /**
      * Verifies that the specified path is executable. If the verification
      * fails, error will be reported.
-     * 
+     *
      * @return this
      */
-    public FileArgumentType verifyCanExecute() {
+    public PathArgumentType verifyCanExecute() {
         fileVerification.verifyCanExecute = true;
         return this;
     }
@@ -155,26 +189,44 @@ public class FileArgumentType implements ArgumentType<File> {
     /**
      * Verifies that the specified path is an absolute path. If the verification
      * fails, error will be reported.
-     * 
+     *
      * @return this
      */
-    public FileArgumentType verifyIsAbsolute() {
+    public PathArgumentType verifyIsAbsolute() {
         fileVerification.verifyIsAbsolute = true;
         return this;
     }
 
     @Override
-    public File convert(ArgumentParser parser, Argument arg, String value)
-            throws ArgumentParserException {
-        File file = new File(value);
-        if (!isSystemIn(file)) {
-            fileVerification.verify(parser, arg, file);
+    public Path convert(ArgumentParser parser, Argument arg,
+            String value) throws ArgumentParserException {
+        Path path;
+        try {
+            path = fileSystem.getPath(value);
+        } catch (InvalidPathException e) {
+            String localizedTypeName = Java7ExtensionResourceBundle
+                    .get(parser.getConfig().getLocale()).getString("path");
+            throw new ArgumentParserException(
+                    String.format(TextHelper.LOCALE_ROOT, MessageLocalization
+                                    .localize(parser.getConfig().getResourceBundle(),
+                                            "couldNotConvertToError"), value,
+                            localizedTypeName), e.getCause(), parser, arg);
+
         }
-        return file;
+
+        try {
+            File file = path.toFile();
+            if (!isSystemIn(value)) {
+                fileVerification.verify(parser, arg, file);
+            }
+        } catch (UnsupportedOperationException e) {
+            // Ignore: Not the default file system provider, so conversion to a
+            // file is not possible. Simply skip the file verifications.
+        }
+        return path;
     }
 
-    private boolean isSystemIn(File file) {
-        return acceptSystemIn && file.getPath().equals("-");
+    private boolean isSystemIn(String path) {
+        return acceptSystemIn && path.equals("-");
     }
-
 }

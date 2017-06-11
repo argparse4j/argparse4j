@@ -1,5 +1,6 @@
 package net.sourceforge.argparse4j.inf;
 
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -15,4 +16,11 @@ public interface ArgumentParserConfiguration {
      * @return ResourceBundle
      */
     ResourceBundle getResourceBundle();
+
+    /**
+     * Returns Locale for this configuration.
+     * 
+     * @return Locale
+     */
+    Locale getLocale();
 }

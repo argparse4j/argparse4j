@@ -2841,6 +2841,25 @@ available:
   program usage and information about the arguments registered with
   :javadoc:`inf.ArgumentParser`.
 
+Extensions
+----------
+
+.. _Java 7:
+
+Java 7
+^^^^^^
+
+Argument types for classes and interfaces introduced in Java 7 are
+available in module ``argparse4j-java7``. The following argument
+types are available: 
+
+``java.nio.file.Path``
+  Argument type:
+  ``net.sourceforge.argparse4j.ext.java7.PathArgumentType``. The
+  no-arg constructor used the default file system. If you want to
+  resolve paths for another file system, use the constructor
+  accepting a file system. Note that using the non-default file
+  system disables all file verification checks.
 
 .. |Argument.action| replace:: :javadocfunc:`inf.Argument.action(net.sourceforge.argparse4j.inf.ArgumentAction)`
 .. |Argument.choices| replace:: :javadocfunc:`inf.Argument.choices(E...)`
