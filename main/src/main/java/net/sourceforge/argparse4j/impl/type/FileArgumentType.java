@@ -19,10 +19,7 @@
 package net.sourceforge.argparse4j.impl.type;
 
 import java.io.File;
-import java.io.IOException;
 
-import net.sourceforge.argparse4j.helper.MessageLocalization;
-import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
@@ -40,16 +37,7 @@ import net.sourceforge.argparse4j.inf.ArgumentType;
 public class FileArgumentType implements ArgumentType<File> {
 
     private boolean acceptSystemIn = false;
-    private boolean verifyExists = false;
-    private boolean verifyNotExists = false;
-    private boolean verifyIsFile = false;
-    private boolean verifyIsDirectory = false;
-    private boolean verifyCanRead = false;
-    private boolean verifyCanWrite = false;
-    private boolean verifyCanWriteParent = false;
-    private boolean verifyCanCreate = false;
-    private boolean verifyCanExecute = false;
-    private boolean verifyIsAbsolute = false;
+    private final FileVerification fileVerification = new FileVerification();
 
     public FileArgumentType() {
     }
@@ -72,7 +60,7 @@ public class FileArgumentType implements ArgumentType<File> {
      * @return this
      */
     public FileArgumentType verifyExists() {
-        verifyExists = true;
+        fileVerification.verifyExists = true;
         return this;
     }
 
@@ -83,7 +71,7 @@ public class FileArgumentType implements ArgumentType<File> {
      * @return this
      */
     public FileArgumentType verifyNotExists() {
-        verifyNotExists = true;
+        fileVerification.verifyNotExists = true;
         return this;
     }
 
@@ -94,7 +82,7 @@ public class FileArgumentType implements ArgumentType<File> {
      * @return this
      */
     public FileArgumentType verifyIsFile() {
-        verifyIsFile = true;
+        fileVerification.verifyIsFile = true;
         return this;
     }
 
@@ -105,7 +93,7 @@ public class FileArgumentType implements ArgumentType<File> {
      * @return this
      */
     public FileArgumentType verifyIsDirectory() {
-        verifyIsDirectory = true;
+        fileVerification.verifyIsDirectory = true;
         return this;
     }
 
@@ -116,7 +104,7 @@ public class FileArgumentType implements ArgumentType<File> {
      * @return this
      */
     public FileArgumentType verifyCanRead() {
-        verifyCanRead = true;
+        fileVerification.verifyCanRead = true;
         return this;
     }
 
@@ -127,7 +115,7 @@ public class FileArgumentType implements ArgumentType<File> {
      * @return this
      */
     public FileArgumentType verifyCanWrite() {
-        verifyCanWrite = true;
+        fileVerification.verifyCanWrite = true;
         return this;
     }
 
@@ -138,7 +126,7 @@ public class FileArgumentType implements ArgumentType<File> {
      * @return this
      */
     public FileArgumentType verifyCanWriteParent() {
-        verifyCanWriteParent = true;
+        fileVerification.verifyCanWriteParent = true;
         return this;
     }
 
@@ -149,7 +137,7 @@ public class FileArgumentType implements ArgumentType<File> {
      * @return this
      */
     public FileArgumentType verifyCanCreate() {
-        verifyCanCreate = true;
+        fileVerification.verifyCanCreate = true;
         return this;
     }
 
@@ -160,7 +148,7 @@ public class FileArgumentType implements ArgumentType<File> {
      * @return this
      */
     public FileArgumentType verifyCanExecute() {
-        verifyCanExecute = true;
+        fileVerification.verifyCanExecute = true;
         return this;
     }
 
@@ -171,7 +159,7 @@ public class FileArgumentType implements ArgumentType<File> {
      * @return this
      */
     public FileArgumentType verifyIsAbsolute() {
-        verifyIsAbsolute = true;
+        fileVerification.verifyIsAbsolute = true;
         return this;
     }
 
@@ -179,130 +167,10 @@ public class FileArgumentType implements ArgumentType<File> {
     public File convert(ArgumentParser parser, Argument arg, String value)
             throws ArgumentParserException {
         File file = new File(value);
-        if (verifyIsAbsolute && !isSystemIn(file)) {
-            verifyIsAbsolute(parser, arg, file);
-        }
-        if (verifyExists && !isSystemIn(file)) {
-            verifyExists(parser, arg, file);
-        }
-        if (verifyNotExists && !isSystemIn(file)) {
-            verifyNotExists(parser, arg, file);
-        }
-        if (verifyIsFile && !isSystemIn(file)) {
-            verifyIsFile(parser, arg, file);
-        }
-        if (verifyIsDirectory && !isSystemIn(file)) {
-            verifyIsDirectory(parser, arg, file);
-        }
-        if (verifyCanRead && !isSystemIn(file)) {
-            verifyCanRead(parser, arg, file);
-        }
-        if (verifyCanWrite && !isSystemIn(file)) {
-            verifyCanWrite(parser, arg, file);
-        }
-        if (verifyCanWriteParent && !isSystemIn(file)) {
-            verifyCanWriteParent(parser, arg, file);
-        }
-        if (verifyCanCreate && !isSystemIn(file)) {
-            verifyCanCreate(parser, arg, file);
-        }
-        if (verifyCanExecute && !isSystemIn(file)) {
-            verifyCanExecute(parser, arg, file);
+        if (!isSystemIn(file)) {
+            fileVerification.verify(parser, arg, file);
         }
         return file;
-    }
-
-    private void verifyExists(ArgumentParser parser, Argument arg, File file)
-            throws ArgumentParserException {
-        if (!file.exists()) {
-            throwException(parser, arg, file, "fileNotFoundError");
-        }
-    }
-
-    private void verifyNotExists(ArgumentParser parser, Argument arg, File file)
-            throws ArgumentParserException {
-        if (file.exists()) {
-            throwException(parser, arg, file, "fileFoundError");
-        }
-    }
-
-    private void verifyIsFile(ArgumentParser parser, Argument arg, File file)
-            throws ArgumentParserException {
-        if (!file.isFile()) {
-            throwException(parser, arg, file, "notAFileError");
-        }
-    }
-
-    private void verifyIsDirectory(ArgumentParser parser, Argument arg,
-            File file) throws ArgumentParserException {
-        if (!file.isDirectory()) {
-            throwException(parser, arg, file, "notADirectoryError");
-        }
-    }
-
-    private void verifyCanRead(ArgumentParser parser, Argument arg, File file)
-            throws ArgumentParserException {
-        if (!file.canRead()) {
-            throwException(parser, arg, file,
-                    "insufficientPermissionsToReadFileError");
-        }
-    }
-
-    private void verifyCanWrite(ArgumentParser parser, Argument arg, File file)
-            throws ArgumentParserException {
-        if (!file.canWrite()) {
-            throwException(parser, arg, file,
-                    "insufficientPermissionsToWriteFileError");
-        }
-    }
-
-    private void verifyCanWriteParent(ArgumentParser parser, Argument arg,
-            File file) throws ArgumentParserException {
-        File parent = file.getParentFile();
-        if (parent == null || !parent.canWrite()) {
-            throwException(parser, arg, file, "cannotWriteParentOfFileError");
-        }
-    }
-
-    private void verifyCanCreate(ArgumentParser parser, Argument arg, File file)
-            throws ArgumentParserException {
-        try {
-            File parent = file.getCanonicalFile().getParentFile();
-            if (parent != null && parent.canWrite()) {
-                return;
-            }
-        } catch (IOException e) {
-        }
-
-        // An exception was thrown or the parent directory can't be written
-        throwException(parser, arg, file, "cannotCreateFileError");
-    }
-
-    private void verifyCanExecute(ArgumentParser parser, Argument arg, File file)
-            throws ArgumentParserException {
-        if (!file.canExecute()) {
-            throwException(parser, arg, file,
-                    "insufficientPermissionsToExecuteFileError");
-        }
-    }
-
-    private void verifyIsAbsolute(ArgumentParser parser, Argument arg, File file)
-            throws ArgumentParserException {
-        if (!file.isAbsolute()) {
-            throwException(parser, arg, file, "notAnAbsoluteFileError");
-        }
-    }
-
-    private void throwException(ArgumentParser parser, Argument arg, File file,
-            String messageKey)
-            throws ArgumentParserException {
-        throw new ArgumentParserException(
-                String.format(TextHelper.LOCALE_ROOT,
-                        MessageLocalization.localize(
-                                parser.getConfig().getResourceBundle(),
-                                messageKey),
-                        file),
-                parser, arg);
     }
 
     private boolean isSystemIn(File file) {

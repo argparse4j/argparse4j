@@ -1,15 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>argparse4j-root</artifactId>
+        <artifactId>argparse4j-extensions</artifactId>
         <groupId>net.sourceforge.argparse4j</groupId>
         <version>0.8.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>argparse4j</artifactId>
+    <artifactId>argparse4j-java7</artifactId>
     <packaging>jar</packaging>
 
-    <name>argparse4j</name>
     <url>http://argparse4j.github.io</url>
     <description>The command-line parser library based on Python's argparse</description>
     <inceptionYear>2012</inceptionYear>
@@ -56,6 +55,10 @@
     </distributionManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>net.sourceforge.argparse4j</groupId>
+            <artifactId>argparse4j</artifactId>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -112,25 +115,6 @@
                 <artifactId>maven-site-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>sphinx-doc</id>
-                        <phase>site</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>sphinx-make-html</executable>
-                            <arguments>
-                                <argument>${project.version}</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <descriptorRefs>
@@ -176,8 +160,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
             </plugin>
             <plugin>

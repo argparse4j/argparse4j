@@ -67,4 +67,9 @@ public class ArgumentParserConfigurationImpl implements ArgumentParserConfigurat
     public ResourceBundle getResourceBundle() {
         return resourceBundle_;
     }
+
+    @Override
+    public Locale getLocale() {
+        return resourceBundle_.getLocale();
+    }
 }
