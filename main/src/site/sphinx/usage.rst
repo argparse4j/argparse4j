@@ -2861,6 +2861,19 @@ types are available:
   accepting a file system. Note that using the non-default file
   system disables all file verification checks.
 
+.. _Hadoop:
+
+Hadoop
+^^^^^^
+
+Argument types for classes and interfaces of Hadoop are available in
+module ``argparse4j-hadoop``. The following argument types are
+available: 
+
+``org.apache.hadoop.fs.Path``
+  Argument type:
+  ``net.sourceforge.argparse4j.ext.hadoop.PathArgumentType``.
+
 .. |Argument.action| replace:: :javadocfunc:`inf.Argument.action(net.sourceforge.argparse4j.inf.ArgumentAction)`
 .. |Argument.choices| replace:: :javadocfunc:`inf.Argument.choices(E...)`
 .. |Argument.dest| replace:: :javadocfunc:`inf.Argument.dest(java.lang.String)`
