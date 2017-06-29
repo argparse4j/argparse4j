@@ -48,25 +48,7 @@ import net.sourceforge.argparse4j.annotation.Arg;
  * {@link #parseArgs(String[])} or several overloaded methods.
  * </p>
  */
-public interface ArgumentParser {
-
-    /**
-     * <p>
-     * Creates new {@link Argument} object and adds to this parser and returns
-     * the object.
-     * </p>
-     * <p>
-     * The {@code nameOrFlags} is either a single name of positional argument or
-     * a list of option strings for named argument, e.g. {@code foo} or
-     * {@code -f, --foo}.
-     * </p>
-     * 
-     * @param nameOrFlags
-     *            A name or a list of option strings of new {@link Argument}.
-     * @return {@link Argument} object.
-     */
-    Argument addArgument(String... nameOrFlags);
-
+public interface ArgumentParser extends ArgumentContainer {
     /**
      * <p>
      * Creates new {@link ArgumentGroup} object and adds to this parser and
@@ -144,13 +126,7 @@ public interface ArgumentParser {
      */
     ArgumentParser usage(String usage);
 
-    /**
-     * Sets the text to display before the argument help.
-     * 
-     * @param description
-     *            The text to display before the argument help.
-     * @return this
-     */
+    @Override
     ArgumentParser description(String description);
 
     /**
