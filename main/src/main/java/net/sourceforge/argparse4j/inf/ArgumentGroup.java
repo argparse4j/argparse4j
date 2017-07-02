@@ -28,29 +28,7 @@ package net.sourceforge.argparse4j.inf;
  * objects.
  * 
  */
-public interface ArgumentGroup {
-
-    /**
-     * Sets description to customize help message of this group.
-     * 
-     * @param description
-     *            The description of this group.
-     * @return this
-     */
+public interface ArgumentGroup extends ArgumentContainer {
+    @Override
     ArgumentGroup description(String description);
-
-    /**
-     * <p>
-     * Creates new {@link Argument} and adds it to the underlining parser and
-     * returns it.
-     * </p>
-     * <p>
-     * See {@link ArgumentParser#addArgument(String...)} for details.
-     * </p>
-     * 
-     * @param nameOrFlags
-     *            A name or a list of option strings of new {@link Argument}.
-     * @return {@link Argument} object.
-     */
-    Argument addArgument(String... nameOrFlags);
 }
