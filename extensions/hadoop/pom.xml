@@ -166,6 +166,10 @@
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
+                    <compilerArgs>
+                        <arg>-bootclasspath</arg>
+                        <arg>${jdk.6.rt.jar.path}</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
             <plugin>

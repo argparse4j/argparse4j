@@ -13,6 +13,12 @@
         <module>extensions</module>
         <module>main</module>
     </modules>
+    
+    <properties>
+        <jdk.build.rt.jar.path>${env.JAVA_HOME}/jre/lib/rt.jar</jdk.build.rt.jar.path>
+        <jdk.6.rt.jar.path>${jdk.build.rt.jar.path}</jdk.6.rt.jar.path>
+        <jdk.7.rt.jar.path>${jdk.build.rt.jar.path}</jdk.7.rt.jar.path>
+    </properties>
 
     <dependencyManagement>
         <dependencies>
@@ -72,7 +78,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.0</version>
+                    <version>3.6.2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.sonatype.plugins</groupId>
