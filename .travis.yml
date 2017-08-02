@@ -3,6 +3,7 @@ language: java
 #  - oraclejdk8
 #  - oraclejdk7
 #  - openjdk6
+install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip -B -V
 script:
   - jdk_switcher use openjdk6
   - export JAVA6_HOME=$JAVA_HOME
