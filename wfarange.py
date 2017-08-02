@@ -1,14 +1,15 @@
 #!/usr/bin/env python
+from __future__ import print_function
 import sys
 import re
 
 res = [(0, 0, '')]
-pat = re.compile(r'^([^;]+);([WAF]) # .*$')
+pat = re.compile(r'^([^;]+);([WAF]).*')
 for line in sys.stdin:
     m = pat.match(line)
     if m:
-        if len(m.group(1)) > 5:
-            first, last = [int(x, 16) for x in m.group(1).split('..')]
+        if '..' in m.group(1):
+            first, last = (int(x, 16) for x in m.group(1).split('..'))
             last += 1
         else:
             first = int(m.group(1), 16)
@@ -18,9 +19,8 @@ for line in sys.stdin:
             res[len(res)-1] = (lastrange[0], last, lastrange[2])
         else:
             res.append((first, last, m.group(2)))
-print "private static final CpRange ranges_[] = {"
-for range in res:
-    if range[1] == 0: continue
-    print "new CpRange(0x{:04X}, 0x{:04X}, EastAsianWidth.{}),"\
-        .format(range[0], range[1], range[2])
-print "}"
+print ("private static final CpRange[] ranges_ = {")
+for r in res:
+    if r[1] == 0: continue
+    print("new CpRange(0x{:04X}, 0x{:04X}, EastAsianWidth.{}),".format(r[0], r[1], r[2]))
+print ("};")

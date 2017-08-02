@@ -23,6 +23,7 @@
  */
 package net.sourceforge.argparse4j.helper;
 
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import org.junit.Before;
@@ -40,7 +41,7 @@ public class CJKTextWidthCounterTest {
     @Test
     public void testWidth() {
         String s = "こんにちは世界€ Hello world";
-        assertEquals(16+12, counter.width(s));
+        assertThat(counter.width(s), is(16 + 12));
     }
 
 }
