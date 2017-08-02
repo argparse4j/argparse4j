@@ -9,4 +9,4 @@ script:
   - jdk_switcher use oraclejdk7
   - export JAVA7_HOME=$JAVA_HOME
   - jdk_switcher use oraclejdk8
-  - install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip -B -V "-Djdk.6.rt.jar.path=$JAVA6_HOME/jre/lib/rt.jar" "-Djdk.7.rt.jar.path=$JAVA7_HOME/jre/lib/rt.jar"
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip -B -V "-Djdk.6.rt.jar.path=$JAVA6_HOME/jre/lib/rt.jar" "-Djdk.7.rt.jar.path=$JAVA7_HOME/jre/lib/rt.jar"
