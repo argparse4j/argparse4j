@@ -1,2 +1,9 @@
 language: java
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip -B -V
+script:
+  - jdk_switcher use openjdk6
+  - export JAVA6_HOME=$JAVA_HOME
+  - jdk_switcher use oraclejdk7
+  - export JAVA7_HOME=$JAVA_HOME
+  - jdk_switcher use oraclejdk8
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip -B -V "-Djdk.6.rt.jar.path=$JAVA6_HOME/jre/lib/rt.jar" "-Djdk.7.rt.jar.path=$JAVA7_HOME/jre/lib/rt.jar"

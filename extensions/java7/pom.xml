@@ -162,6 +162,10 @@
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
+                    <compilerArgs>
+                        <arg>-bootclasspath</arg>
+                        <arg>${jdk.7.rt.jar.path}</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
             <plugin>
