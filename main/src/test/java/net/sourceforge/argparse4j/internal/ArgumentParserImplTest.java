@@ -23,6 +23,9 @@
  */
 package net.sourceforge.argparse4j.internal;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static net.sourceforge.argparse4j.ArgumentParsers.DEFAULT_PREFIX_CHARS;
 import static net.sourceforge.argparse4j.impl.Arguments.SUPPRESS;
 import static net.sourceforge.argparse4j.impl.Arguments.append;
@@ -32,7 +35,6 @@ import static net.sourceforge.argparse4j.impl.Arguments.range;
 import static net.sourceforge.argparse4j.impl.Arguments.storeConst;
 import static net.sourceforge.argparse4j.impl.Arguments.storeFalse;
 import static net.sourceforge.argparse4j.impl.Arguments.storeTrue;
-import static net.sourceforge.argparse4j.test.TestHelper.list;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -70,13 +72,13 @@ import org.junit.Test;
 public class ArgumentParserImplTest {
 
     private ArgumentParserImpl ap;
-    private String[] zeroargs;
+    private String[] zeroArgs;
 
     @Before
     public void setup() {
         ap = (ArgumentParserImpl) ArgumentParsers.newFor("argparse4j")
                 .terminalWidthDetection(false).locale(Locale.US).build();
-        zeroargs = new String[]{};
+        zeroArgs = new String[]{};
     }
 
     @Test
@@ -99,11 +101,11 @@ public class ArgumentParserImplTest {
                 + "cake dango mochi").split(" "));
         assertEquals("hello", res.get("foo"));
         assertEquals("c", res.get("bar"));
-        assertEquals(list("cake", "dango", "mochi"), res.get("suites"));
+        assertEquals(asList("cake", "dango", "mochi"), res.get("suites"));
     }
 
     @Test
-    public void testRequiredOptarg() throws ArgumentParserException {
+    public void testRequiredOptArg() throws ArgumentParserException {
         ap.addArgument("--foo").required(true);
         try {
             ap.parseArgs(new String[] {});
@@ -126,7 +128,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testRequiredOptargWithSubcommand()
+    public void testRequiredOptArgWithSubcommand()
             throws ArgumentParserException {
         ap.addArgument("--foo").required(true);
         ap.addSubparsers().addParser("install");
@@ -138,7 +140,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testTooFewArgumentForPosarg() throws ArgumentParserException {
+    public void testTooFewArgumentForPosArg() throws ArgumentParserException {
         ap.addArgument("foo");
         try {
             ap.parseArgs(new String[] {});
@@ -149,7 +151,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testTooFewArgumentForPosargWithNargs()
+    public void testTooFewArgumentForPosArgWithNargs()
             throws ArgumentParserException {
         ap.addArgument("foo").nargs(3);
         try {
@@ -160,28 +162,24 @@ public class ArgumentParserImplTest {
         }
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddPrefixedArgumentWithConflict() throws ArgumentParserException {
+        ap.addArgument("--foo");
+        ap.addArgument("--foo");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     public void testAddArgumentWithConflict() throws ArgumentParserException {
-        try {
-            ap.addArgument("--foo");
-            ap.addArgument("--foo");
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
-        try {
-            ap.addArgument("foo");
-            ap.addArgument("foo");
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
+        ap.addArgument("foo");
+        ap.addArgument("foo");
     }
 
     @Test
-    public void testParseArgsWithPosargOutOfIndex()
+    public void testParseArgsWithPosArgOutOfIndex()
             throws ArgumentParserException {
         ap.addArgument("foo").nargs("*");
         Namespace res = ap.parseArgs(new String[] {});
-        assertEquals(list(), res.get("foo"));
+        assertEquals(emptyList(), res.get("foo"));
     }
 
     @Test
@@ -246,8 +244,9 @@ public class ArgumentParserImplTest {
         ap.addArgument("--bar").action(append());
         Namespace res = ap.parseArgs("--foo a --foo b --bar c --bar d"
                 .split(" "));
-        assertEquals(list(list("a"), list("b")), res.get("foo"));
-        assertEquals(list("c", "d"), res.get("bar"));
+        //noinspection unchecked
+        assertEquals(asList(singletonList("a"), singletonList("b")), res.get("foo"));
+        assertEquals(asList("c", "d"), res.get("bar"));
     }
 
     @Test
@@ -255,7 +254,7 @@ public class ArgumentParserImplTest {
         ap.addArgument("--foo").action(appendConst()).setConst("X");
         ap.addArgument("bar");
         Namespace res = ap.parseArgs("--foo --foo bar".split(" "));
-        assertEquals(list("X", "X"), res.get("foo"));
+        assertEquals(asList("X", "X"), res.get("foo"));
         assertEquals("bar", res.get("bar"));
     }
 
@@ -303,7 +302,7 @@ public class ArgumentParserImplTest {
         assertEquals("3=x", res.get("2"));
         assertEquals("a", res.get("ff"));
         assertEquals("x", res.get("f"));
-        assertEquals(list(true, true, true, true), res.get("c"));
+        assertEquals(asList(true, true, true, true), res.get("c"));
         // If last option requires argument but the argument is not
         // embedded in the same term, it must take next term as an
         // argument.
@@ -316,7 +315,7 @@ public class ArgumentParserImplTest {
         assertEquals(" ", res.get("2"));
         // This is error case because the next term -fx is flag.
         try {
-            res = ap.parseArgs("-12 -fx".split(" "));
+            ap.parseArgs("-12 -fx".split(" "));
             fail();
         } catch(ArgumentParserException e) {
             assertEquals("argument -2: expected one argument", e.getMessage());
@@ -468,9 +467,9 @@ public class ArgumentParserImplTest {
 
         Namespace res = ap.parseArgs("-f foo @target/test-classes/args.txt --baz alpha @target/test-classes/args2.txt x y1 @target/test-classes/args3.txt add --bar @target/test-classes/args4.txt".split(" "));
         assertEquals("bar", res.getString("f"));
-        assertEquals(list("alpha", "bravo"), res.getList("baz"));
+        assertEquals(asList("alpha", "bravo"), res.getList("baz"));
         assertEquals("x", res.getString("x"));
-        assertEquals(list("y1", "y2"), res.getList("y"));
+        assertEquals(asList("y1", "y2"), res.getList("y"));
         assertEquals("HELLO", res.getString("foo"));
     }
 
@@ -502,9 +501,9 @@ public class ArgumentParserImplTest {
     public void testParseArgsWithSubparsersAmbiguousCommand() throws ArgumentParserException {
         Namespace res;
         Subparsers subparsers = ap.addSubparsers();
-        Subparser checkout = subparsers.addParser("clone")
+        subparsers.addParser("clone")
                 .setDefault("func", "clone");
-        Subparser clean = subparsers.addParser("clean")
+        subparsers.addParser("clean")
                 .setDefault("func", "clean");
 
         res = ap.parseArgs("clo".split(" "));
@@ -540,7 +539,7 @@ public class ArgumentParserImplTest {
         ap.addArgument("--baz").nargs("*").action(append());
         ap.addArgument("--buzz").nargs("*").action(append()).setDefault("buzz");
 
-        Namespace res = ap.parseArgs(zeroargs);
+        Namespace res = ap.parseArgs(zeroArgs);
         assertNull(res.get("foo"));
         assertEquals("bar", res.get("bar"));
         assertNull(res.get("baz"));
@@ -548,63 +547,67 @@ public class ArgumentParserImplTest {
 
         // Make sure that empty list overwrites previous arguments.
         res = ap.parseArgs("--foo 1 2 --foo".split(" "));
-        assertEquals(list(), res.get("foo"));
+        assertEquals(emptyList(), res.get("foo"));
 
         // Make sure that empty list overwrites default value.
         res = ap.parseArgs("--bar".split(" "));
-        assertEquals(list(), res.get("bar"));
+        assertEquals(emptyList(), res.get("bar"));
 
         // Make sure that empty list is appended
         res = ap.parseArgs("--baz".split(" "));
-        assertEquals(list(list()), res.get("baz"));
+        //noinspection unchecked
+        assertEquals(singletonList(emptyList()), res.get("baz"));
 
         // Make sure that empty list overwrites default value
         res = ap.parseArgs("--buzz".split(" "));
-        assertEquals(list(list()), res.get("buzz"));
+        //noinspection unchecked
+        assertEquals(singletonList(emptyList()), res.get("buzz"));
 
         // sanity check: Make sure that given list overwrites default value
         res = ap.parseArgs("--buzz 1 2".split(" "));
-        assertEquals(list(list("1", "2")), res.get("buzz"));
+        //noinspection unchecked
+        assertEquals(singletonList(asList("1", "2")), res.get("buzz"));
     }
 
     @Test
-    public void testParseArgsWithPosargNargsEmptyList() throws ArgumentParserException {
+    public void testParseArgsWithPosArgNargsEmptyList() throws ArgumentParserException {
         Namespace res;
 
         ap.addArgument("foo").nargs("*");
-        res = ap.parseArgs(zeroargs);
-        assertEquals(list(), res.get("foo"));
+        res = ap.parseArgs(zeroArgs);
+        assertEquals(emptyList(), res.get("foo"));
 
         ap = (ArgumentParserImpl) ArgumentParsers.newFor("argparse4j").build();
         ap.addArgument("foo").nargs("*").setDefault("foo");
         // Make sure that default value is kept
-        res = ap.parseArgs(zeroargs);
+        res = ap.parseArgs(zeroArgs);
         assertEquals("foo", res.get("foo"));
         // Make sure that given argument list overwrites default.
         res = ap.parseArgs("a b".split(" "));
-        assertEquals(list("a", "b"), res.get("foo"));
+        assertEquals(asList("a", "b"), res.get("foo"));
 
         ap = (ArgumentParserImpl) ArgumentParsers.newFor("argparse4j").build();
         ap.addArgument("foo").nargs("*").action(append());
         // Make sure that empty list is returned.
-        res = ap.parseArgs(zeroargs);
-        assertEquals(list(), res.get("foo"));
+        res = ap.parseArgs(zeroArgs);
+        assertEquals(emptyList(), res.get("foo"));
 
         ap = (ArgumentParserImpl) ArgumentParsers.newFor("argparse4j").build();
         ap.addArgument("foo").nargs("*").action(append()).setDefault("foo");
         // Make sure that default stays intact without positional argument
-        res = ap.parseArgs(zeroargs);
+        res = ap.parseArgs(zeroArgs);
         assertEquals("foo", res.get("foo"));
         // Make sure that given argument list overwrites default.
         res = ap.parseArgs("a b".split(" "));
-        assertEquals(list(list("a", "b")), res.get("foo"));
+        //noinspection unchecked
+        assertEquals(singletonList(asList("a", "b")), res.get("foo"));
     }
 
     @Test
-    public void testParseArgsWithsPosargNargsDefaults() throws ArgumentParserException {
+    public void testParseArgsWithsPosArgNargsDefaults() throws ArgumentParserException {
 
         class MockAction implements ArgumentAction {
-            boolean invoked;
+            private boolean invoked;
 
             @Override
             public void run(ArgumentParser parser, Argument arg,
@@ -620,11 +623,11 @@ public class ArgumentParserImplTest {
             public boolean consumeArgument() { return true; }
         }
 
-        ap.addArgument("f").nargs("*").setDefault(list("default"));
+        ap.addArgument("f").nargs("*").setDefault(singletonList("default"));
         MockAction action = new MockAction();
         ap.addArgument("b").nargs("*").setDefault(false).action(action);
         Namespace res = ap.parseArgs(new String[] {});
-        assertEquals(list("default"), res.get("f"));
+        assertEquals(singletonList("default"), res.get("f"));
         assertFalse(action.invoked);
     }
 
@@ -673,12 +676,12 @@ public class ArgumentParserImplTest {
         Namespace res = ap.parseArgs("a b1 b2 c1 c2 e".split(" "));
         assertEquals("a", res.get("a"));
         // b should take only 2, to leave remaining arguments to c and e.
-        assertEquals(list("b1", "b2"), res.get("b"));
-        assertEquals(list("c1", "c2"), res.get("c"));
+        assertEquals(asList("b1", "b2"), res.get("b"));
+        assertEquals(asList("c1", "c2"), res.get("c"));
         assertNull(res.get("d"));
         assertEquals("e", res.get("e"));
         // f returns default value
-        assertEquals(list("f1", "f2"), res.get("f"));
+        assertEquals(asList("f1", "f2"), res.get("f"));
     }
 
     @Test
@@ -697,7 +700,7 @@ public class ArgumentParserImplTest {
     public void testParseArgsWithConvertPositionalArg() throws ArgumentParserException {
         ap.addArgument("foo").nargs("*").type(int.class);
         Namespace res = ap.parseArgs("1 2 3".split(" "));
-        assertEquals(list(1, 2, 3), res.get("foo"));
+        assertEquals(asList(1, 2, 3), res.get("foo"));
     }
 
     @Test
@@ -706,7 +709,7 @@ public class ArgumentParserImplTest {
         ap.addArgument("bar").nargs("*");
         Namespace res = ap.parseArgs("a --foo b c d e".split(" "));
         assertEquals("b", res.get("foo"));
-        assertEquals(list("a", "c", "d", "e"), res.get("bar"));
+        assertEquals(asList("a", "c", "d", "e"), res.get("bar"));
     }
 
     @Test
@@ -840,7 +843,7 @@ public class ArgumentParserImplTest {
         assertTrue(res.getBoolean("a"));
         // -aa is ambiguous
         try {
-            res = ap.parseArgs("-aa".split(" "));
+            ap.parseArgs("-aa".split(" "));
             fail();
         } catch(ArgumentParserException e) {
             assertEquals("ambiguous option: -aa could match -a, -aaa",
@@ -853,7 +856,7 @@ public class ArgumentParserImplTest {
         res = ap.parseArgs("-bbb".split(" "));
         assertTrue(res.getBoolean("bbb"));
         try {
-            res = ap.parseArgs("-bb".split(" "));
+            ap.parseArgs("-bb".split(" "));
             fail();
         } catch(ArgumentParserException e) {
             assertEquals("ambiguous option: -bb could match -b, -bbb",
@@ -861,7 +864,7 @@ public class ArgumentParserImplTest {
         }
     }
 
-    @Test
+    @Test(expected = HelpScreenException.class)
     public void testParseArgsWithDeferredException() throws ArgumentParserException {
         ap = (ArgumentParserImpl) ArgumentParsers.newFor("argparse4j").build();
         ap.addArgument("-a").required(true);
@@ -869,13 +872,7 @@ public class ArgumentParserImplTest {
         ap.addMutuallyExclusiveGroup().required(true).addArgument("-c");
         ap.addSubparsers().addParser("install");
 
-        try {
-            ap.parseArgs("install -h".split(" "));
-        } catch(HelpScreenException e) {
-            // Success
-        } catch(ArgumentParserException e) {
-            fail();
-        }
+        ap.parseArgs("install -h".split(" "));
     }
 
     @Test
@@ -914,7 +911,7 @@ public class ArgumentParserImplTest {
         Namespace res = ap.parseKnownArgs(
                 "p -f a b -g c d -i k --i +abc".split(" "), unknown);
 
-        assertEquals(unknown, list("b", "d", "-i", "k", "--i", "+bc"));
+        assertEquals(unknown, asList("b", "d", "-i", "k", "--i", "+bc"));
         assertEquals("a", res.get("f"));
         assertEquals("c", res.get("g"));
         assertEquals("p", res.get("path"));
@@ -924,7 +921,7 @@ public class ArgumentParserImplTest {
         Map<String, Object> attrs = new HashMap<String, Object>();
         ap.parseKnownArgs("p q".split(" "), unknown, attrs);
 
-        assertEquals(unknown, list("q"));
+        assertEquals(unknown, singletonList("q"));
         assertEquals("p", attrs.get("path"));
 
         unknown.clear();
@@ -932,13 +929,13 @@ public class ArgumentParserImplTest {
 
         class Out {
             @Arg(dest = "path")
-            public String path;
+            private String path;
         }
 
         Out out = new Out();
         ap.parseKnownArgs("p q".split(" "), unknown, out);
 
-        assertEquals(unknown, list("q"));
+        assertEquals(unknown, singletonList("q"));
         assertEquals("p", out.path);
 
         unknown.clear();
@@ -947,7 +944,7 @@ public class ArgumentParserImplTest {
 
         ap.parseKnownArgs("p q".split(" "), unknown, attrs, out);
 
-        assertEquals(unknown, list("q"));
+        assertEquals(unknown, singletonList("q"));
         assertEquals("p", attrs.get("path"));
         assertEquals("p", out.path);
     }
@@ -960,7 +957,7 @@ public class ArgumentParserImplTest {
         List<String> unknown = new ArrayList<String>();
         Namespace res = ap.parseKnownArgs("-g install -fx -i k".split(" "), unknown);
 
-        assertEquals(unknown, list("-g", "-i", "k"));
+        assertEquals(unknown, asList("-g", "-i", "k"));
         assertEquals("x", res.get("f"));
     }
 
@@ -1024,15 +1021,16 @@ public class ArgumentParserImplTest {
 
     @Test
     public void testParseArgsWithUserData() throws ArgumentParserException {
+        @SuppressWarnings({"unused", "WeakerAccess"})
         class Out {
             @Arg(dest = "null")
             public String x;
             @Arg(dest = "username", ignoreError = true)
             private int y;
             @Arg(dest = "username")
-            public String name;
+            String name;
             @Arg
-            public String host;
+            String host;
             
             private int[] ints;
 
@@ -1041,7 +1039,7 @@ public class ArgumentParserImplTest {
                 this.ints = ints;
             }
 
-            public int[] getInts() {
+            int[] getInts() {
                 return ints;
             }
 
@@ -1063,7 +1061,7 @@ public class ArgumentParserImplTest {
         // Test inheritance
         class SubOut extends Out {
         	@Arg
-        	public int port;
+            private int port;
         }
         
         ap.addArgument("--port").type(Integer.class);
@@ -1091,8 +1089,8 @@ public class ArgumentParserImplTest {
                 TextHelper.LOCALE_ROOT,
                 "usage: argparse4j [-h] [-a A] -b B (-c C | -d D) file%n"),
                 ap.formatUsage());
-        Subparser foosub = ap.addSubparsers().addParser("foo");
-        foosub.addArgument("hash");
+        Subparser fooSub = ap.addSubparsers().addParser("foo");
+        fooSub.addArgument("hash");
         assertEquals(String.format(
                 TextHelper.LOCALE_ROOT,
                 "usage: argparse4j [-h] [-a A] -b B (-c C | -d D) file {foo} ...%n"),
@@ -1100,12 +1098,12 @@ public class ArgumentParserImplTest {
         assertEquals(String.format(
                 TextHelper.LOCALE_ROOT,
                 "usage: argparse4j -b B (-c C | -d D) file foo [-h] hash%n"),
-                foosub.formatUsage());
-        Subparser bazsub = foosub.addSubparsers().addParser("baz");
+                fooSub.formatUsage());
+        Subparser bazSub = fooSub.addSubparsers().addParser("baz");
         assertEquals(String.format(
                 TextHelper.LOCALE_ROOT,
                 "usage: argparse4j -b B (-c C | -d D) file foo hash baz [-h]%n"),
-                bazsub.formatUsage());
+                bazSub.formatUsage());
     }
 
     @Test
@@ -1120,7 +1118,7 @@ public class ArgumentParserImplTest {
     @Test
     public void testFormatHelpWithArgumentGroup()
             throws ArgumentParserException {
-        ap.description("This is argparser4j.").epilog("This is epilog.");
+        ap.description("This is argparse4j.").epilog("This is epilog.");
         ArgumentGroup group = ap.addArgumentGroup("group1")
                 .description("group1 description");
         group.addArgument("--foo");
@@ -1128,7 +1126,7 @@ public class ArgumentParserImplTest {
                   TextHelper.LOCALE_ROOT,
                   "usage: argparse4j [-h] [--foo FOO]%n"
                 + "%n"
-                + "This is argparser4j.%n"
+                + "This is argparse4j.%n"
                 + "%n"
                 + "named arguments:%n"
                 + "  -h, --help             show this help message and exit%n"
@@ -1144,14 +1142,14 @@ public class ArgumentParserImplTest {
     @Test
     public void testFormatHelpWithArgumentGroupWithoutTitleAndDescription()
             throws ArgumentParserException {
-        ap.description("This is argparser4j.").epilog("This is epilog.");
+        ap.description("This is argparse4j.").epilog("This is epilog.");
         ArgumentGroup group = ap.addArgumentGroup("");
         group.addArgument("--foo");
         assertEquals(String.format(
                   TextHelper.LOCALE_ROOT,
                   "usage: argparse4j [-h] [--foo FOO]%n"
                 + "%n"
-                + "This is argparser4j.%n"
+                + "This is argparse4j.%n"
                 + "%n"
                 + "named arguments:%n"
                 + "  -h, --help             show this help message and exit%n"
@@ -1192,7 +1190,7 @@ public class ArgumentParserImplTest {
     @Test
     public void testFormatHelpWithMutexGroup()
             throws ArgumentParserException {
-        ap.description("This is argparser4j.").epilog("This is epilog.");
+        ap.description("This is argparse4j.").epilog("This is epilog.");
         MutuallyExclusiveGroup group = ap.addMutuallyExclusiveGroup("group1")
                 .description("group1 description");
         group.addArgument("--foo");
@@ -1201,7 +1199,7 @@ public class ArgumentParserImplTest {
                   TextHelper.LOCALE_ROOT,
                   "usage: argparse4j [-h] [--foo FOO | --bar BAR]%n"
                 + "%n"
-                + "This is argparser4j.%n"
+                + "This is argparse4j.%n"
                 + "%n"
                 + "named arguments:%n"
                 + "  -h, --help             show this help message and exit%n"
@@ -1219,7 +1217,7 @@ public class ArgumentParserImplTest {
     @Test
     public void testFormatHelpWithMutexGroupWithoutTitleAndDescription()
             throws ArgumentParserException {
-        ap.description("This is argparser4j.").epilog("This is epilog.");
+        ap.description("This is argparse4j.").epilog("This is epilog.");
         MutuallyExclusiveGroup group = ap.addMutuallyExclusiveGroup();
         group.addArgument("--foo");
         ap.addArgument("-b").action(Arguments.storeTrue());
@@ -1229,7 +1227,7 @@ public class ArgumentParserImplTest {
                   TextHelper.LOCALE_ROOT,
                   "usage: argparse4j [-h] [-b] [--foo FOO]%n"
                 + "%n"
-                + "This is argparser4j.%n"
+                + "This is argparse4j.%n"
                 + "%n"
                 + "named arguments:%n"
                 + "  -h, --help             show this help message and exit%n"
@@ -1242,12 +1240,12 @@ public class ArgumentParserImplTest {
 
     @Test
     public void testFormatHelp() throws ArgumentParserException {
-        ap.description("This is argparser4j.").epilog("This is epilog.");
+        ap.description("This is argparse4j.").epilog("This is epilog.");
         assertEquals(String.format(
                   TextHelper.LOCALE_ROOT,
                   "usage: argparse4j [-h]%n"
                 + "%n"
-                + "This is argparser4j.%n"
+                + "This is argparse4j.%n"
                 + "%n" + "named arguments:%n"
                 + "  -h, --help             show this help message and exit%n"
                 + "%n"
@@ -1333,14 +1331,14 @@ public class ArgumentParserImplTest {
         ap.addArgument("--bar");
         Subparsers subparsers = ap.addSubparsers();
         Subparser parser = subparsers.addParser("install");
-        parser.description("This is sub-command of argparser4j.").epilog(
+        parser.description("This is sub-command of argparse4j.").epilog(
                 "This is epilog of sub-command.");
         parser.addArgument("--foo");
         assertEquals(String.format(
                   TextHelper.LOCALE_ROOT,
                   "usage: argparse4j install [-h] [--foo FOO]%n"
                 + "%n"
-                + "This is sub-command of argparser4j.%n"
+                + "This is sub-command of argparse4j.%n"
                 + "%n"
                 + "named arguments:%n"
                 + "  -h, --help             show this help message and exit%n"
@@ -1497,7 +1495,7 @@ public class ArgumentParserImplTest {
         Subparsers subparsers = ap.addSubparsers().help("sub-command help");
         Subparser parserA = subparsers.addParser("install");
         parserA.help("parserA help");
-        Subparser parserB = subparsers.addParser("search");
+        subparsers.addParser("search");
 
         // StringWriter out = new StringWriter();
         ap.printHelp(new PrintWriter(System.out));
@@ -1519,7 +1517,9 @@ public class ArgumentParserImplTest {
         assertEquals(foo, fooCopy);
         assertFalse(foo.equals(bar));
         assertFalse(foo.equals(foo2));
+        //noinspection ObjectEqualsNull
         assertFalse(foo.equals(null));
+        //noinspection EqualsBetweenInconvertibleTypes
         assertFalse(foo.equals("foo"));
         Candidate subNull = new Candidate(15, null);
         assertFalse(foo.equals(subNull));

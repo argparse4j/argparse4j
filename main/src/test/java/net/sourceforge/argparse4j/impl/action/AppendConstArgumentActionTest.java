@@ -23,6 +23,7 @@
  */
 package net.sourceforge.argparse4j.impl.action;
 
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
@@ -63,7 +64,7 @@ public class AppendConstArgumentActionTest {
     @Test
     public void testRun() throws ArgumentParserException {
         act.run(null, arg, attrs, null, null);
-        assertEquals(Arrays.asList("const"), attrs.get("dest"));
+        assertEquals(singletonList("const"), attrs.get("dest"));
         act.run(null, arg, attrs, null, null);
         assertEquals(Arrays.asList("const", "const"), attrs.get("dest"));
     }
@@ -72,7 +73,7 @@ public class AppendConstArgumentActionTest {
     public void testRunWithDefaultNonList() throws ArgumentParserException {
         attrs.put("dest", "default");
         act.run(null, arg, attrs, null, null);
-        assertEquals(Arrays.asList("const"), attrs.get("dest"));
+        assertEquals(singletonList("const"), attrs.get("dest"));
     }
 
 }

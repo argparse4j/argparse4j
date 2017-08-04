@@ -53,7 +53,7 @@ public class SubparsersImplTest {
         ArgumentParserImpl ap = (ArgumentParserImpl) ArgumentParsers
                 .newFor("prog").build();
         SubparsersImpl subparsers = new SubparsersImpl(ap);
-        SubparserImpl subparser = subparsers.addParser("checkout");
+        subparsers.addParser("checkout");
         try {
             subparsers.addParser("checkout");
         } catch(IllegalArgumentException e) {
@@ -66,12 +66,12 @@ public class SubparsersImplTest {
         ArgumentParserImpl ap = (ArgumentParserImpl) ArgumentParsers
                 .newFor("prog").build();
         SubparsersImpl subparsers = new SubparsersImpl(ap);
-        SubparserImpl subparser = subparsers.addParser("checkout");
-        subparsers.addAlias(subparser, "co", "out");
+        SubparserImpl subParser = subparsers.addParser("checkout");
+        subparsers.addAlias(subParser, "co", "out");
         assertTrue(subparsers.getCommands().contains("co"));
         assertTrue(subparsers.getCommands().contains("out"));
         try {
-            subparsers.addAlias(subparser, "co");
+            subparsers.addAlias(subParser, "co");
         } catch(IllegalArgumentException e) {
             assertEquals("command 'co' has been already used", e.getMessage());
         }
