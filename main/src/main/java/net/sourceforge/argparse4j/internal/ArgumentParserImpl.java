@@ -41,6 +41,11 @@ import java.util.regex.Pattern;
  */
 public final class ArgumentParserImpl implements ArgumentParser {
 
+    private static final int SUBSTITUTION_COST = 2;
+    private static final int SWAP_COST = 0;
+    private static final int DELETION_COST = 4;
+    private static final int ADDITION_COST = 1;
+
     private Map<String, ArgumentImpl> optArgIndex_ = new HashMap<String, ArgumentImpl>();
     private List<ArgumentImpl> optArgs_ = new ArrayList<ArgumentImpl>();
     private List<ArgumentImpl> posArgs_ = new ArrayList<ArgumentImpl>();
@@ -1320,14 +1325,14 @@ public final class ArgumentParserImpl implements ArgumentParser {
             dp[0][0] = i;
             for (int j = 1; j <= bLen; ++j) {
                 dp[0][j] = dp[1][j - 1]
-                        + (a.charAt(i - 1) == b.charAt(j - 1) ? 0 : 2);
+                        + (a.charAt(i - 1) == b.charAt(j - 1) ? 0 : SUBSTITUTION_COST);
                 if (i >= 2 && j >= 2 && a.charAt(i - 1) != b.charAt(j - 1)
                         && a.charAt(i - 2) == b.charAt(j - 1)
                         && a.charAt(i - 1) == b.charAt(j - 2)) {
-                    dp[0][j] = Math.min(dp[0][j], dp[2][j - 2]);
+                    dp[0][j] = Math.min(dp[0][j], dp[2][j - 2] + SWAP_COST);
                 }
                 dp[0][j] = Math.min(dp[0][j],
-                        Math.min(dp[1][j] + 4, dp[0][j - 1] + 1));
+                        Math.min(dp[1][j] + DELETION_COST, dp[0][j - 1] + ADDITION_COST));
             }
             int[] temp = dp[2];
             dp[2] = dp[1];
