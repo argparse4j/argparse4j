@@ -25,6 +25,7 @@ package net.sourceforge.argparse4j.impl.type;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
 import java.util.Locale;
@@ -170,7 +171,7 @@ public class ReflectArgumentTypeTest {
     @Test
     public void testConvertSupertype() throws ArgumentParserException {
         ReflectArgumentType<Base> at = createRA(Base.class);
-        assertEquals(Derived.class, at.convert(null, null, "foo").getClass());
+	    assertSame(Derived.class, at.convert(null, null, "foo").getClass());
     }
 
     private static final class NonStringValueOf {

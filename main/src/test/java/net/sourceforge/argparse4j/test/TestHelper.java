@@ -28,6 +28,10 @@ import java.util.List;
 
 public class TestHelper {
 
+    private TestHelper()
+    {
+    }
+
     /**
      * Returns args as List<T>
      * 

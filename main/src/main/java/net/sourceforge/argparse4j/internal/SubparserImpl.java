@@ -25,6 +25,7 @@ package net.sourceforge.argparse4j.internal;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -257,9 +258,7 @@ public final class SubparserImpl implements Subparser, ArgumentParser {
     @Override
     public SubparserImpl aliases(String... alias) {
         parser_.getMainParser().addSubparsers().addAlias(this, alias);
-        for (String s : alias) {
-            aliases_.add(s);
-        }
+        Collections.addAll(aliases_, alias);
         return this;
     }
 

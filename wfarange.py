@@ -21,6 +21,7 @@ for line in sys.stdin:
             res.append((first, last, m.group(2)))
 print ("private static final CpRange[] ranges_ = {")
 for r in res:
-    if r[1] == 0: continue
+    if r[1] == 0:
+        continue
     print("new CpRange(0x{:04X}, 0x{:04X}, EastAsianWidth.{}),".format(r[0], r[1], r[2]))
 print ("};")
