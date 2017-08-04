@@ -28,15 +28,9 @@ import static org.junit.Assert.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
 import org.junit.Test;
 
 public class NamespaceTest {
-
-    @Before
-    public void setUp() throws Exception {
-    }
-
     @Test
     public void testGetString() {
         Map<String, Object> attrs = new HashMap<String, Object>();

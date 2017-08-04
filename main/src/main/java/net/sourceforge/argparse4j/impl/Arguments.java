@@ -73,9 +73,9 @@ public final class Arguments {
      * </p>
      * 
      * @param min
-     *            The lowerbound of the range, inclusive.
+     *            The lower bound of the range, inclusive.
      * @param max
-     *            The upperbound of the range, inclusive.
+     *            The upper bound of the range, inclusive.
      * @return {@link RangeArgumentChoice} object.
      */
     public static <T extends Comparable<T>> RangeArgumentChoice<T> range(T min,

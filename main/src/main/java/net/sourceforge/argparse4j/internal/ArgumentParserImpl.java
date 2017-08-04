@@ -562,7 +562,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     @Override
     public void parseArgs(String[] args, Map<String, Object> attrs)
             throws ArgumentParserException {
-        parseArgs(args, 0, null, attrs);
+        parseArgsAtOffsetZero(args, null, attrs);
     }
 
     @Override
@@ -588,7 +588,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     @Override
     public void parseArgs(String[] args, Map<String, Object> attrs,
             Object userData) throws ArgumentParserException {
-        parseArgs(args, 0, null, attrs);
+        parseArgsAtOffsetZero(args, null, attrs);
         fillUserDataFromAttrs(userData, attrs);
     }
 
@@ -600,8 +600,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         fillUserDataFromAttrs(userData, attrs);
     }
 
-    private void fillUserDataFromAttrs(Object userData, Map<String, Object> attrs)
-            throws ArgumentParserException {
+    private void fillUserDataFromAttrs(Object userData, Map<String, Object> attrs) {
 
         Class userClass = userData.getClass();
         while (userClass != null) {
@@ -697,12 +696,12 @@ public final class ArgumentParserImpl implements ArgumentParser {
         if (unknown == null) {
             unknown = new ArrayList<String>();
         }
-        parseArgs(args, 0, unknown, attrs);
+        parseArgsAtOffsetZero(args, unknown, attrs);
     }
 
-    public void parseArgs(String args[], int offset, List<String> unknown,
+    private void parseArgsAtOffsetZero(String[] args, List<String> unknown,
             Map<String, Object> attrs) throws ArgumentParserException {
-        ParseState state = new ParseState(args, offset, negNumFlag_, unknown);
+        ParseState state = new ParseState(args, negNumFlag_, unknown);
         parseArgs(state, attrs);
         if (state.deferredException != null) {
             throw state.deferredException;
@@ -1184,8 +1183,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         state.resetArgs(newArgs);
     }
 
-    private void checkRequiredArgument(ParseState state, Set<ArgumentImpl> used)
-            throws ArgumentParserException {
+    private void checkRequiredArgument(ParseState state, Set<ArgumentImpl> used) {
         if (state.deferredException != null) {
             return;
         }
@@ -1201,8 +1199,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         // arguments.
     }
 
-    private void checkRequiredMutex(ParseState state, ArgumentImpl[] used)
-            throws ArgumentParserException {
+    private void checkRequiredMutex(ParseState state, ArgumentImpl[] used) {
         if (state.deferredException != null) {
             return;
         }
