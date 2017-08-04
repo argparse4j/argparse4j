@@ -38,7 +38,6 @@ import java.util.Map;
  * {@link #toString()} provides nice textual representation of stored
  * attributes.
  * </p>
- * 
  */
 public class Namespace {
 

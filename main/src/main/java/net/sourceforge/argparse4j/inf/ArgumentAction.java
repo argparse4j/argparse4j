@@ -28,7 +28,6 @@ import java.util.Map;
 /**
  * This interface defines behavior of action when an argument is encountered at
  * the command line.
- * 
  */
 public interface ArgumentAction {
 

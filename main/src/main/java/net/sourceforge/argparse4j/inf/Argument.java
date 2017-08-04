@@ -29,7 +29,6 @@ import java.util.List;
 /**
  * This interface provides a way to specify parameters to argument to be
  * processed in {@link ArgumentParser} object.
- * 
  */
 public interface Argument {
 

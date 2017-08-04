@@ -29,13 +29,9 @@ import java.util.Locale;
  * The exception thrown from {@link ArgumentParser#parseArgs(String[])} if error
  * occurred while processing command line argument. The argument {@code parser}
  * in constructor is the ArgumentParser object where an error occurred.
- * 
  */
 public class ArgumentParserException extends Exception {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
     private transient ArgumentParser parser_;
 

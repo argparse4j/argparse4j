@@ -73,6 +73,7 @@ public class CollectionArgumentChoice<E> implements ArgumentChoice {
         if (first.getClass().equals(val.getClass())
                 || first instanceof Enum && val instanceof Enum
                 && ((Enum) first).getDeclaringClass().equals(((Enum) val).getDeclaringClass())) {
+            //noinspection SuspiciousMethodCalls
             return values_.contains(val);
         } else {
             throw new IllegalArgumentException(String.format(

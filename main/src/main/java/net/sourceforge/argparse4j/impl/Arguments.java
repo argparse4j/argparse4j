@@ -54,7 +54,6 @@ import net.sourceforge.argparse4j.inf.FeatureControl;
  * <p>
  * They are mainly used to specify parameter to {@link Argument} object.
  * </p>
- * 
  */
 public final class Arguments {
 

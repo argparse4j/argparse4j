@@ -75,9 +75,9 @@ public class ConstructorArgumentType<T> implements ArgumentType<T> {
         try {
             obj = type_.getConstructor(String.class).newInstance(value);
         } catch (InstantiationException e) {
-            handleInstatiationError(e);
+            handleInstantiationError(e);
         } catch (IllegalAccessException e) {
-            handleInstatiationError(e);
+            handleInstantiationError(e);
         } catch (InvocationTargetException e) {
             String localizedTypeName = localizeTypeNameIfPossible(parser,
                     type_);
@@ -89,12 +89,12 @@ public class ConstructorArgumentType<T> implements ArgumentType<T> {
                             value, localizedTypeName),
                     e.getCause(), parser, arg);
         } catch (NoSuchMethodException e) {
-            handleInstatiationError(e);
+            handleInstantiationError(e);
         }
         return obj;
     }
 
-    private void handleInstatiationError(Exception e) {
+    private void handleInstantiationError(Exception e) {
         throw new IllegalArgumentException("Failed to instantiate object", e);
     }
 

@@ -103,6 +103,7 @@ public class ReflectArgumentType<T> implements ArgumentType<T>,
         // cannot without setAccessible(true).
         if (type_.isEnum()) {
             try {
+                //noinspection unchecked
                 return (T) Enum.valueOf((Class<Enum>) type_, value);
             } catch (IllegalArgumentException e) {
                 throw new ArgumentParserException(
@@ -121,7 +122,7 @@ public class ReflectArgumentType<T> implements ArgumentType<T>,
             // If no valueOf static method found, try constructor.
             return convertUsingConstructor(parser, arg, value);
         } catch (SecurityException e) {
-            handleInstatiationError(e);
+            handleInstantiationError(e);
         }
         // Only interested in static valueOf method.
         if (!Modifier.isStatic(m.getModifiers())
@@ -134,11 +135,12 @@ public class ReflectArgumentType<T> implements ArgumentType<T>,
         } catch (IllegalAccessException e) {
             return convertUsingConstructor(parser, arg, value);
         } catch (IllegalArgumentException e) {
-            handleInstatiationError(e);
+            handleInstantiationError(e);
         } catch (InvocationTargetException e) {
             throwArgumentParserException(parser, arg, value,
                     e.getCause() == null ? e : e.getCause());
         }
+        //noinspection unchecked
         return (T) obj;
     }
 
@@ -148,14 +150,14 @@ public class ReflectArgumentType<T> implements ArgumentType<T>,
         try {
             obj = type_.getConstructor(String.class).newInstance(value);
         } catch (InstantiationException e) {
-            handleInstatiationError(e);
+            handleInstantiationError(e);
         } catch (IllegalAccessException e) {
-            handleInstatiationError(e);
+            handleInstantiationError(e);
         } catch (InvocationTargetException e) {
             throwArgumentParserException(parser, arg, value,
                     e.getCause() == null ? e : e.getCause());
         } catch (NoSuchMethodException e) {
-            handleInstatiationError(e);
+            handleInstantiationError(e);
         }
         return obj;
     }
@@ -171,7 +173,7 @@ public class ReflectArgumentType<T> implements ArgumentType<T>,
                 value, localizedTypeName), t, parser, arg);
     }
 
-    private void handleInstatiationError(Exception e) {
+    private void handleInstantiationError(Exception e) {
         throw new IllegalArgumentException("reflect type conversion error", e);
     }
 
