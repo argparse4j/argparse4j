@@ -54,7 +54,6 @@ import net.sourceforge.argparse4j.inf.FeatureControl;
  * <p>
  * They are mainly used to specify parameter to {@link Argument} object.
  * </p>
- * 
  */
 public final class Arguments {
 
@@ -74,9 +73,9 @@ public final class Arguments {
      * </p>
      * 
      * @param min
-     *            The lowerbound of the range, inclusive.
+     *            The lower bound of the range, inclusive.
      * @param max
-     *            The upperbound of the range, inclusive.
+     *            The upper bound of the range, inclusive.
      * @return {@link RangeArgumentChoice} object.
      */
     public static <T extends Comparable<T>> RangeArgumentChoice<T> range(T min,

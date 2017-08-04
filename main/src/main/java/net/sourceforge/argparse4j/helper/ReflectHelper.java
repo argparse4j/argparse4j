@@ -33,7 +33,6 @@ import java.util.List;
  * <p>
  * <strong>The application code should not use this class directly.</strong>
  * </p>
- * 
  */
 public final class ReflectHelper {
 
@@ -50,7 +49,7 @@ public final class ReflectHelper {
      * it only converts {@link List} to array. If {@code targetType} is array
      * type and {@code src} is {@link List}, new array is created with the size
      * of {@code src} and for each element of {@code src},
-     * {@link #list2Array(Class, Object)} will be called recursively with the
+     * this method will be called recursively with the
      * component type of {@code targetType} and the element of {@code src}. The
      * returned object is assigned to newly created array. If either
      * {@code targetType} is not array or {@code src} is not {@link List},

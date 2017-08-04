@@ -34,7 +34,7 @@ public class PrefixPatternTest {
     private PrefixPattern pat = new PrefixPattern("-+");
 
     @Test
-    public void testmatch() {
+    public void testMatch() {
         assertTrue(pat.match("-f"));
         assertTrue(pat.match("+-f"));
         assertTrue(pat.match("+f"));
@@ -44,7 +44,7 @@ public class PrefixPatternTest {
     }
 
     @Test
-    public void testmatchLongFlag() {
+    public void testMatchLongFlag() {
         assertTrue(pat.matchLongFlag("--flag"));
         assertTrue(pat.matchLongFlag("+-+flag"));
         assertTrue(!pat.matchLongFlag("-f"));

@@ -32,7 +32,6 @@ import net.sourceforge.argparse4j.ArgumentParsers;
  * <p>
  * {@link Subparser} is used to add sub-command to {@link ArgumentParser}.
  * </p>
- * 
  */
 public interface Subparsers {
 

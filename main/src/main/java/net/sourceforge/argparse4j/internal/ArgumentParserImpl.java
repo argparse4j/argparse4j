@@ -23,49 +23,33 @@
  */
 package net.sourceforge.argparse4j.internal;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import net.sourceforge.argparse4j.annotation.Arg;
+import net.sourceforge.argparse4j.helper.*;
+import net.sourceforge.argparse4j.impl.Arguments;
+import net.sourceforge.argparse4j.inf.*;
+
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
-
-import net.sourceforge.argparse4j.annotation.Arg;
-import net.sourceforge.argparse4j.helper.HelpScreenException;
-import net.sourceforge.argparse4j.helper.MessageLocalization;
-import net.sourceforge.argparse4j.helper.ReflectHelper;
-import net.sourceforge.argparse4j.helper.TextHelper;
-import net.sourceforge.argparse4j.helper.TextWidthCounter;
-import net.sourceforge.argparse4j.impl.Arguments;
-import net.sourceforge.argparse4j.inf.Argument;
-import net.sourceforge.argparse4j.inf.ArgumentGroup;
-import net.sourceforge.argparse4j.inf.ArgumentParser;
-import net.sourceforge.argparse4j.inf.ArgumentParserException;
-import net.sourceforge.argparse4j.inf.MutuallyExclusiveGroup;
-import net.sourceforge.argparse4j.inf.Namespace;
 
 /**
  * <strong>The application code must not use this class directly.</strong>
  */
 public final class ArgumentParserImpl implements ArgumentParser {
 
-    private Map<String, ArgumentImpl> optargIndex_ = new HashMap<String, ArgumentImpl>();
-    private List<ArgumentImpl> optargs_ = new ArrayList<ArgumentImpl>();
-    private List<ArgumentImpl> posargs_ = new ArrayList<ArgumentImpl>();
-    private List<ArgumentGroupImpl> arggroups_ = new ArrayList<ArgumentGroupImpl>();
+    private static final int SUBSTITUTION_COST = 2;
+    private static final int SWAP_COST = 0;
+    private static final int DELETION_COST = 4;
+    private static final int ADDITION_COST = 1;
+
+    private Map<String, ArgumentImpl> optArgIndex_ = new HashMap<String, ArgumentImpl>();
+    private List<ArgumentImpl> optArgs_ = new ArrayList<ArgumentImpl>();
+    private List<ArgumentImpl> posArgs_ = new ArrayList<ArgumentImpl>();
+    private List<ArgumentGroupImpl> argGroups_ = new ArrayList<ArgumentGroupImpl>();
     private Map<String, Object> defaults_ = new HashMap<String, Object>();
     private SubparsersImpl subparsers_ = new SubparsersImpl(this);
     private ArgumentParserImpl mainParser_;
@@ -97,7 +81,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         }
         if (config.formatWidth_ <= 0) {
             throw new IllegalArgumentException(
-                    "formatWidth muet be greater than 0");
+                    "formatWidth must be greater than 0");
         }
         if (config.addHelp_) {
             String prefix = config.prefixChars_.substring(0, 1);
@@ -118,7 +102,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         ArgumentImpl arg = new ArgumentImpl(config_, group, nameOrFlags);
         if (arg.isNamedArgument()) {
             for (String flag : arg.getFlags()) {
-                ArgumentImpl another = optargIndex_.get(flag);
+                ArgumentImpl another = optArgIndex_.get(flag);
                 if (another != null) {
                     // TODO No conflict handler ATM
                     throw new IllegalArgumentException(String.format(
@@ -131,11 +115,11 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 if (NEG_NUM_PATTERN.matcher(flag).matches()) {
                     negNumFlag_ = true;
                 }
-                optargIndex_.put(flag, arg);
+                optArgIndex_.put(flag, arg);
             }
-            optargs_.add(arg);
+            optArgs_.add(arg);
         } else {
-            for (ArgumentImpl another : posargs_) {
+            for (ArgumentImpl another : posArgs_) {
                 if (arg.getName().equals(another.getName())) {
                     // TODO No conflict handler ATM
                     throw new IllegalArgumentException(String.format(
@@ -144,7 +128,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                             arg.getName(), another.textualName()));
                 }
             }
-            posargs_.add(arg);
+            posArgs_.add(arg);
         }
         return arg;
     }
@@ -157,8 +141,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
     @Override
     public ArgumentGroup addArgumentGroup(String title) {
         ArgumentGroupImpl group = new ArgumentGroupImpl(this, title);
-        group.setIndex(arggroups_.size());
-        arggroups_.add(group);
+        group.setIndex(argGroups_.size());
+        argGroups_.add(group);
         return group;
     }
 
@@ -170,9 +154,9 @@ public final class ArgumentParserImpl implements ArgumentParser {
     @Override
     public MutuallyExclusiveGroup addMutuallyExclusiveGroup(String title) {
         ArgumentGroupImpl group = new ArgumentGroupImpl(this, title);
-        group.setIndex(arggroups_.size());
+        group.setIndex(argGroups_.size());
         group.setMutex(true);
-        arggroups_.add(group);
+        argGroups_.add(group);
         return group;
     }
 
@@ -213,7 +197,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         return this;
     }
 
-    public boolean isDefaultHelp() {
+    boolean isDefaultHelp() {
         return defaultHelp_;
     }
 
@@ -247,19 +231,19 @@ public final class ArgumentParserImpl implements ArgumentParser {
         boolean subparsersUntitled = subparsers_.getTitle().isEmpty()
                 && subparsers_.getDescription().isEmpty();
         boolean hasSubCommand = subparsers_.hasNotSuppressedSubCommand();
-        if (checkDefaultGroup(posargs_)
+        if (checkDefaultGroup(posArgs_)
                 || (hasSubCommand && subparsersUntitled)) {
             writer.println();
             writer.println(localize("positional.arguments"));
-            printArgumentHelp(writer, posargs_, formatWidth);
+            printArgumentHelp(writer, posArgs_, formatWidth);
             if (hasSubCommand && subparsersUntitled) {
                 subparsers_.printSubparserHelp(writer, formatWidth);
             }
         }
-        if (checkDefaultGroup(optargs_)) {
+        if (checkDefaultGroup(optArgs_)) {
             writer.println();
             writer.println(localize("named.arguments"));
-            printArgumentHelp(writer, optargs_, formatWidth);
+            printArgumentHelp(writer, optArgs_, formatWidth);
         }
         if (hasSubCommand && !subparsersUntitled) {
             writer.println();
@@ -274,7 +258,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
             }
             subparsers_.printSubparserHelp(writer, formatWidth);
         }
-        for (ArgumentGroupImpl group : arggroups_) {
+        for (ArgumentGroupImpl group : argGroups_) {
             if (group.isSeparateHelp()) {
                 writer.println();
                 group.printHelp(writer, formatWidth);
@@ -348,19 +332,19 @@ public final class ArgumentParserImpl implements ArgumentParser {
             writer.println(substitutePlaceholder(usage_));
             return;
         }
-        String usageprog = localize("usage") + " " + config_.prog_;
-        writer.print(usageprog);
+        String usageProg = localize("usage") + " " + config_.prog_;
+        writer.print(usageProg);
         int offset;
         String firstIndent;
         String subsequentIndent;
         String indent = "                              ";
-        int usageprogWidth = config_.textWidthCounter_.width(usageprog);
-        if (usageprogWidth > indent.length()) {
+        int usageProgWidth = config_.textWidthCounter_.width(usageProg);
+        if (usageProgWidth > indent.length()) {
             writer.println();
             offset = 6;
             firstIndent = subsequentIndent = indent.substring(0, offset);
         } else {
-            offset = usageprogWidth;
+            offset = usageProgWidth;
             firstIndent = "";
             subsequentIndent = indent.substring(0, offset);
         }
@@ -369,14 +353,14 @@ public final class ArgumentParserImpl implements ArgumentParser {
         if (command_ != null) {
             opts.add(command_);
         }
-        for (ArgumentImpl arg : optargs_) {
+        for (ArgumentImpl arg : optArgs_) {
             if (arg.getHelpControl() != Arguments.SUPPRESS
                     && (arg.getArgumentGroup() == null || !arg
                             .getArgumentGroup().isMutex())) {
                 opts.add(arg.formatShortSyntax());
             }
         }
-        for (ArgumentGroupImpl group : arggroups_) {
+        for (ArgumentGroupImpl group : argGroups_) {
             List<ArgumentImpl> args = filterSuppressedArgs(group.getArgs());
             int numArgs = args.size();
             if (group.isMutex()) {
@@ -400,7 +384,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 }
             }
         }
-        for (ArgumentImpl arg : posargs_) {
+        for (ArgumentImpl arg : posArgs_) {
             if (arg.getHelpControl() != Arguments.SUPPRESS) {
                 opts.add(arg.formatShortSyntax());
             }
@@ -417,7 +401,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
      * Returns arguments in {@code args} whose {@link Argument#getHelpControl()}
      * do not return {@link Arguments#SUPPRESS}.
      * 
-     * @param args
+     * @param args arguments to filter
      * @return filtered list of arguments
      */
     private static List<ArgumentImpl> filterSuppressedArgs(
@@ -450,7 +434,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         if (parser.command_ != null) {
             opts.add(parser.command_);
         }
-        for (ArgumentImpl arg : parser.optargs_) {
+        for (ArgumentImpl arg : parser.optArgs_) {
             if (arg.getHelpControl() != Arguments.SUPPRESS
                     && arg.isRequired()
                     && (arg.getArgumentGroup() == null || !arg
@@ -459,7 +443,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
             }
         }
 
-        for (ArgumentGroupImpl group : parser.arggroups_) {
+        for (ArgumentGroupImpl group : parser.argGroups_) {
             List<ArgumentImpl> args = filterSuppressedArgs(group.getArgs());
             int numArgs = args.size();
             if (group.isMutex()) {
@@ -485,7 +469,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
             }
         }
 
-        for (ArgumentImpl arg : parser.posargs_) {
+        for (ArgumentImpl arg : parser.posArgs_) {
             if (arg.getHelpControl() != Arguments.SUPPRESS) {
                 opts.add(arg.formatShortSyntax());
             }
@@ -524,12 +508,12 @@ public final class ArgumentParserImpl implements ArgumentParser {
      */
     @Override
     public Object getDefault(String dest) {
-        for (ArgumentImpl arg : optargs_) {
+        for (ArgumentImpl arg : optArgs_) {
             if (dest.equals(arg.getDest()) && arg.getDefault() != null) {
                 return arg.getDefault();
             }
         }
-        for (ArgumentImpl arg : posargs_) {
+        for (ArgumentImpl arg : posArgs_) {
             if (dest.equals(arg.getDest()) && arg.getDefault() != null) {
                 return arg.getDefault();
             }
@@ -540,8 +524,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     @Override
     public Namespace parseArgsOrFail(String args[]) {
         try {
-            Namespace ns = parseArgs(args);
-            return ns;
+            return parseArgs(args);
         } catch (HelpScreenException e) {
             handleError(e);
             System.exit(0);
@@ -555,8 +538,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     @Override
     public Namespace parseKnownArgsOrFail(String args[], List<String> unknown) {
         try {
-            Namespace ns = parseKnownArgs(args, unknown);
-            return ns;
+            return parseKnownArgs(args, unknown);
         } catch (HelpScreenException e) {
             handleError(e);
             System.exit(0);
@@ -585,13 +567,13 @@ public final class ArgumentParserImpl implements ArgumentParser {
     @Override
     public void parseArgs(String[] args, Map<String, Object> attrs)
             throws ArgumentParserException {
-        parseArgs(args, 0, null, attrs);
+        parseArgsAtOffsetZero(args, null, attrs);
     }
 
     @Override
     public void parseKnownArgs(String[] args, List<String> unknown,
             Map<String, Object> attrs) throws ArgumentParserException {
-        parseKnownArgs(args, 0, unknown, attrs);
+        parseKnownArgsCreatingUnknownIfNeeded(args, unknown, attrs);
     }
 
     @Override
@@ -611,7 +593,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     @Override
     public void parseArgs(String[] args, Map<String, Object> attrs,
             Object userData) throws ArgumentParserException {
-        parseArgs(args, 0, null, attrs);
+        parseArgsAtOffsetZero(args, null, attrs);
         fillUserDataFromAttrs(userData, attrs);
     }
 
@@ -619,12 +601,11 @@ public final class ArgumentParserImpl implements ArgumentParser {
     public void parseKnownArgs(String[] args, List<String> unknown,
             Map<String, Object> attrs, Object userData)
             throws ArgumentParserException {
-        parseKnownArgs(args, 0, unknown, attrs);
+        parseKnownArgsCreatingUnknownIfNeeded(args, unknown, attrs);
         fillUserDataFromAttrs(userData, attrs);
     }
 
-    public void fillUserDataFromAttrs(Object userData, Map<String, Object> attrs)
-            throws ArgumentParserException {
+    private void fillUserDataFromAttrs(Object userData, Map<String, Object> attrs) {
 
         Class userClass = userData.getClass();
         while (userClass != null) {
@@ -714,17 +695,17 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     }
 
-    public void parseKnownArgs(String args[], int offset, List<String> unknown,
+    private void parseKnownArgsCreatingUnknownIfNeeded(String args[], List<String> unknown,
             Map<String, Object> attrs) throws ArgumentParserException {
         if (unknown == null) {
             unknown = new ArrayList<String>();
         }
-        parseArgs(args, offset, unknown, attrs);
+        parseArgsAtOffsetZero(args, unknown, attrs);
     }
 
-    public void parseArgs(String args[], int offset, List<String> unknown,
+    private void parseArgsAtOffsetZero(String[] args, List<String> unknown,
             Map<String, Object> attrs) throws ArgumentParserException {
-        ParseState state = new ParseState(args, offset, negNumFlag_, unknown);
+        ParseState state = new ParseState(args, negNumFlag_, unknown);
         parseArgs(state, attrs);
         if (state.deferredException != null) {
             throw state.deferredException;
@@ -742,9 +723,9 @@ public final class ArgumentParserImpl implements ArgumentParser {
      */
     private boolean checkConcatenatedShortOpts(String term) {
         if (SHORT_OPTS_PATTERN.matcher(term).matches()) {
-            for (int i = 1, termlen = term.length(); i < termlen; ++i) {
+            for (int i = 1, termLen = term.length(); i < termLen; ++i) {
                 String shortFlag = "-" + term.charAt(i);
-                ArgumentImpl arg = optargIndex_.get(shortFlag);
+                ArgumentImpl arg = optArgIndex_.get(shortFlag);
                 if (arg == null) {
                     return false;
                 }
@@ -772,20 +753,20 @@ public final class ArgumentParserImpl implements ArgumentParser {
      */
     private ArgumentImpl resolveNextFlag(String flag)
             throws ArgumentParserException {
-        ArgumentImpl arg = optargIndex_.get(flag);
+        ArgumentImpl arg = optArgIndex_.get(flag);
         if (arg != null) {
             return arg;
         }
-        List<String> cand = TextHelper.findPrefix(optargIndex_.keySet(), flag);
+        List<String> cand = TextHelper.findPrefix(optArgIndex_.keySet(), flag);
         if (cand.isEmpty()) {
             return null;
         } else if (checkConcatenatedShortOpts(flag)) {
             // Get first short option
             cand.add(flag.substring(0, 2));
         } else if (cand.size() == 1) {
-            return optargIndex_.get(cand.get(0));
+            return optArgIndex_.get(cand.get(0));
         }
-        // At this point, more than 1 flags were found from optargIndex_
+        // At this point, more than 1 flags were found from optArgIndex_
         // and/or flag forms concatenated short options.
         // Sort in order to make unit test easier.
         Collections.sort(cand);
@@ -798,8 +779,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
             throws ArgumentParserException {
         populateDefaults(attrs);
         Set<ArgumentImpl> used = new HashSet<ArgumentImpl>();
-        ArgumentImpl[] groupUsed = new ArgumentImpl[arggroups_.size()];
-        int posargsLen = posargs_.size();
+        ArgumentImpl[] groupUsed = new ArgumentImpl[argGroups_.size()];
+        int posArgsLen = posArgs_.size();
         while (state.isArgAvail()) {
             // We first evaluate flagFound(state) before comparing arg to "--"
             // in order to expand arguments from file.
@@ -824,10 +805,10 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     if (config_.prefixPattern_.matchShortFlag(term)) {
                         shortOptsFound = true;
                         // Possible concatenated short options
-                        for (int i = 1, termlen = term.length(); i < termlen; ++i) {
+                        for (int i = 1, termLen = term.length(); i < termLen; ++i) {
                             String shortFlag = term.substring(0, 1)
                                     + term.charAt(i);
-                            arg = optargIndex_.get(shortFlag);
+                            arg = optArgIndex_.get(shortFlag);
                             if (arg == null) {
                                 shortOptsFound = false;
                                 unknownStart = i;
@@ -871,14 +852,14 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 state.consumedSeparator = true;
                 state.negNumFlag = false;
                 ++state.index;
-            } else if (state.posargIndex < posargsLen) {
-                ArgumentImpl arg = posargs_.get(state.posargIndex);
+            } else if (state.posArgIndex < posArgsLen) {
+                ArgumentImpl arg = posArgs_.get(state.posArgIndex);
                 accumulatePositionalArg(state, arg);
             } else if (!state.consumedSeparator && subparsers_.hasSubCommand()) {
                 processPositionalArgs(attrs, state);
                 checkRequiredArgument(state, used);
                 checkRequiredMutex(state, groupUsed);
-                state.resetPosargs();
+                state.resetPosArgs();
                 subparsers_.parseArg(state, attrs);
                 return;
             } else if (state.unknown == null) {
@@ -961,14 +942,9 @@ public final class ArgumentParserImpl implements ArgumentParser {
     /**
      * This function only handles a named argument.
      * 
-     * @param res
-     * @param state
-     * @param arg
-     * @param flag
      * @param embeddedValue
      *            If named argument is given as "foo=bar" or "-fbar" (short
      *            option), embedded value is "bar". Otherwise {@code null}
-     * @throws ArgumentParserException
      */
     private void processArg(Map<String, Object> res, ParseState state,
             ArgumentImpl arg, String flag, String embeddedValue)
@@ -987,16 +963,16 @@ public final class ArgumentParserImpl implements ArgumentParser {
         if (arg.getMinNumArg() == -1
                 || (arg.getMinNumArg() == 0 && arg.getMaxNumArg() == 1)) {
             // In case of: option takes exactly one argument, or nargs("?")
-            String argval = null;
+            String argVal = null;
             if (embeddedValue == null) {
                 if (state.isArgAvail() && !flagFound(state)) {
-                    argval = state.getArg();
+                    argVal = state.getArg();
                     ++state.index;
                 }
             } else {
-                argval = embeddedValue;
+                argVal = embeddedValue;
             }
-            if (argval == null) {
+            if (argVal == null) {
                 if (arg.getMinNumArg() == -1) {
                     throw new ArgumentParserException(
                             localize("expectedOneArgumentError"), this, arg);
@@ -1005,7 +981,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 // given but no argument follows, produce const value.
                 arg.run(this, res, flag, arg.getConst());
             } else {
-                arg.run(this, res, flag, arg.convert(this, argval));
+                arg.run(this, res, flag, arg.convert(this, argVal));
             }
             return;
         }
@@ -1036,57 +1012,48 @@ public final class ArgumentParserImpl implements ArgumentParser {
      * This function accumulates arguments for a given positional argument. It
      * only accumulates arguments based on how many arguments can be consumed
      * for given Argument object. The actual processing are done later.
-     * 
-     * @param state
-     * @param arg
-     * @throws ArgumentParserException
      */
     private void accumulatePositionalArg(ParseState state, ArgumentImpl arg)
             throws ArgumentParserException {
         if (!arg.getAction().consumeArgument()) {
             // This positional argument does not consume argument (is it
             // useful?)
-            ++state.posargIndex;
+            ++state.posArgIndex;
             return;
         }
         if (arg.getMinNumArg() == -1
                 || (arg.getMinNumArg() == 0 && arg.getMaxNumArg() == 1)) {
             // In case of: option takes exactly one argument, or nargs("?")
-            state.posargArgs.add(state.getArg());
+            state.posArgArgs.add(state.getArg());
             ++state.index;
-            ++state.posargIndex;
+            ++state.posArgIndex;
             return;
         }
-        for (; state.posargConsumed < arg.getMaxNumArg() && state.isArgAvail(); ++state.posargConsumed, ++state.index) {
+        for (; state.posArgConsumed < arg.getMaxNumArg() && state.isArgAvail(); ++state.posArgConsumed, ++state.index) {
             if (flagFound(state)) {
                 break;
             }
-            state.posargArgs.add(state.getArg());
+            state.posArgArgs.add(state.getArg());
         }
-        if (state.posargConsumed == arg.getMaxNumArg()) {
+        if (state.posArgConsumed == arg.getMaxNumArg()) {
             // all possible parameters are consumed for this positional
             // argument. Process next one.
-            ++state.posargIndex;
-            state.posargConsumed = 0;
-            return;
+            ++state.posArgIndex;
+            state.posArgConsumed = 0;
         }
     }
 
     /**
      * This function processes named arguments accumulated in state.
-     * 
-     * @param res
-     * @param state
-     * @throws ArgumentParserException
      */
     private void processPositionalArgs(Map<String, Object> res, ParseState state)
             throws ArgumentParserException {
         // we have gathered all available positional parameters in state. Let's
         // see it can provide enough parameters for positional arguments.
 
-        int[] mustLeft = new int[posargs_.size() + 1];
-        for (int i = 0; i < posargs_.size(); ++i) {
-            ArgumentImpl arg = posargs_.get(i);
+        int[] mustLeft = new int[posArgs_.size() + 1];
+        for (int i = 0; i < posArgs_.size(); ++i) {
+            ArgumentImpl arg = posArgs_.get(i);
             if (!arg.getAction().consumeArgument()) {
                 mustLeft[i] = 0;
                 continue;
@@ -1099,18 +1066,18 @@ public final class ArgumentParserImpl implements ArgumentParser {
         }
         // Summing up from the back of the list, we have mustLeft[i + 1]
         // containing the number of arguments must be left when
-        // processing posargs_.get(i).
-        mustLeft[posargs_.size()] = 0;
-        for (int i = posargs_.size() - 1; i >= 0; --i) {
+        // processing posArgs_.get(i).
+        mustLeft[posArgs_.size()] = 0;
+        for (int i = posArgs_.size() - 1; i >= 0; --i) {
             mustLeft[i] += mustLeft[i + 1];
         }
-        if (mustLeft[0] > state.posargArgs.size()) {
+        if (mustLeft[0] > state.posArgArgs.size()) {
             throw new ArgumentParserException(localize("tooFewArgumentsError"),
                     this);
         }
-        int argindex = 0;
-        for (int i = 0; i < posargs_.size(); ++i) {
-            ArgumentImpl arg = posargs_.get(i);
+        int argIndex = 0;
+        for (int i = 0; i < posArgs_.size(); ++i) {
+            ArgumentImpl arg = posArgs_.get(i);
             if (!arg.getAction().consumeArgument()) {
                 arg.run(this, res, null, null);
                 continue;
@@ -1118,21 +1085,21 @@ public final class ArgumentParserImpl implements ArgumentParser {
             if (arg.getMinNumArg() == -1) {
                 // consumes exactly one parameter
                 arg.run(this, res, null,
-                        arg.convert(this, state.posargArgs.get(argindex++)));
+                        arg.convert(this, state.posArgArgs.get(argIndex++)));
                 continue;
             }
             if (arg.getMinNumArg() == 0 && arg.getMaxNumArg() == 1) {
                 // consumes 0 or 1 parameter
-                if (mustLeft[i + 1] == state.posargArgs.size() - argindex) {
+                if (mustLeft[i + 1] == state.posArgArgs.size() - argIndex) {
                     // cannot consume parameter here
                     continue;
                 }
                 arg.run(this, res, null,
-                        arg.convert(this, state.posargArgs.get(argindex++)));
+                        arg.convert(this, state.posArgArgs.get(argIndex++)));
                 continue;
             }
-            int n = Math.min(arg.getMaxNumArg(), state.posargArgs.size()
-                    - argindex - mustLeft[i + 1]);
+            int n = Math.min(arg.getMaxNumArg(), state.posArgArgs.size()
+                    - argIndex - mustLeft[i + 1]);
             // For positional arguments, empty list means no positional argument
             // is given. In this case, we want to keep default value, so don't
             // process the list.
@@ -1142,7 +1109,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
             List<Object> list = new ArrayList<Object>(n);
             for (; n > 0; --n) {
-                list.add(arg.convert(this, state.posargArgs.get(argindex++)));
+                list.add(arg.convert(this, state.posArgArgs.get(argIndex++)));
             }
             arg.run(this, res, null, list);
         }
@@ -1153,10 +1120,6 @@ public final class ArgumentParserImpl implements ArgumentParser {
      * consumed, this function returns true, because "--" is treated as special
      * named argument. If prefixFileChar is found in prefix of argument, read
      * arguments from that file and expand arguments in state necessary.
-     * 
-     * @param state
-     * @return
-     * @throws ArgumentParserException
      */
     private boolean flagFound(ParseState state) throws ArgumentParserException {
         while (fromFileFound(state)) {
@@ -1186,7 +1149,6 @@ public final class ArgumentParserImpl implements ArgumentParser {
      *            Current parser state.
      * @param file
      *            File from which additional arguments are read.
-     * @throws ArgumentParserException
      */
     private void extendArgs(ParseState state, String file)
             throws ArgumentParserException {
@@ -1209,27 +1171,27 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     reader.close();
                 }
             } catch (IOException e) {
+                // No action needed. Ignore errors during closing.
             }
         }
         int offset = state.index + 1;
-        String[] newargs = new String[list.size() + state.args.length - offset];
-        list.toArray(newargs);
-        System.arraycopy(state.args, offset, newargs, list.size(),
+        String[] newArgs = new String[list.size() + state.args.length - offset];
+        list.toArray(newArgs);
+        System.arraycopy(state.args, offset, newArgs, list.size(),
                 state.args.length - offset);
         if (state.lastFromFileArgIndex < offset) {
             state.lastFromFileArgIndex = list.size() - 1;
         } else {
             state.lastFromFileArgIndex += -offset + list.size();
         }
-        state.resetArgs(newargs);
+        state.resetArgs(newArgs);
     }
 
-    private void checkRequiredArgument(ParseState state, Set<ArgumentImpl> used)
-            throws ArgumentParserException {
+    private void checkRequiredArgument(ParseState state, Set<ArgumentImpl> used) {
         if (state.deferredException != null) {
             return;
         }
-        for (ArgumentImpl arg : optargs_) {
+        for (ArgumentImpl arg : optArgs_) {
             if (arg.isRequired() && !used.contains(arg)) {
                 state.deferredException = new ArgumentParserException(
                         String.format(TextHelper.LOCALE_ROOT,
@@ -1241,13 +1203,12 @@ public final class ArgumentParserImpl implements ArgumentParser {
         // arguments.
     }
 
-    private void checkRequiredMutex(ParseState state, ArgumentImpl[] used)
-            throws ArgumentParserException {
+    private void checkRequiredMutex(ParseState state, ArgumentImpl[] used) {
         if (state.deferredException != null) {
             return;
         }
-        for (int i = 0; i < arggroups_.size(); ++i) {
-            ArgumentGroupImpl group = arggroups_.get(i);
+        for (int i = 0; i < argGroups_.size(); ++i) {
+            ArgumentGroupImpl group = argGroups_.get(i);
             if (group.isMutex() && group.isRequired() && used[i] == null) {
                 StringBuilder sb = new StringBuilder();
                 for (ArgumentImpl arg : group.getArgs()) {
@@ -1264,12 +1225,12 @@ public final class ArgumentParserImpl implements ArgumentParser {
     }
 
     private void populateDefaults(Map<String, Object> opts) {
-        for (ArgumentImpl arg : posargs_) {
+        for (ArgumentImpl arg : posArgs_) {
             if (arg.getDefaultControl() != Arguments.SUPPRESS) {
                 opts.put(arg.getDest(), arg.getDefault());
             }
         }
-        for (ArgumentImpl arg : optargs_) {
+        for (ArgumentImpl arg : optArgs_) {
             if (arg.getDefaultControl() != Arguments.SUPPRESS) {
                 opts.put(arg.getDest(), arg.getDefault());
             }
@@ -1351,50 +1312,41 @@ public final class ArgumentParserImpl implements ArgumentParser {
      *            String
      * @param b
      *            String
-     * @param swap
-     *            Cost to swap 2 adjacent characters.
-     * @param sub
-     *            Cost to substitute character.
-     * @param add
-     *            Cost to add character.
-     * @param del
-     *            Cost to delete character.
      * @return Damerau–Levenshtein distance between {@code a} and {@code b}
      */
-    private int levenshtein(String a, String b, int swap, int sub, int add,
-            int del) {
-        int alen = a.length();
-        int blen = b.length();
-        int[][] dp = new int[3][blen + 1];
-        for (int i = 0; i <= blen; ++i) {
+    private int levenshtein(String a, String b) {
+        int aLen = a.length();
+        int bLen = b.length();
+        int[][] dp = new int[3][bLen + 1];
+        for (int i = 0; i <= bLen; ++i) {
             dp[1][i] = i;
         }
-        for (int i = 1; i <= alen; ++i) {
+        for (int i = 1; i <= aLen; ++i) {
             dp[0][0] = i;
-            for (int j = 1; j <= blen; ++j) {
+            for (int j = 1; j <= bLen; ++j) {
                 dp[0][j] = dp[1][j - 1]
-                        + (a.charAt(i - 1) == b.charAt(j - 1) ? 0 : sub);
+                        + (a.charAt(i - 1) == b.charAt(j - 1) ? 0 : SUBSTITUTION_COST);
                 if (i >= 2 && j >= 2 && a.charAt(i - 1) != b.charAt(j - 1)
                         && a.charAt(i - 2) == b.charAt(j - 1)
                         && a.charAt(i - 1) == b.charAt(j - 2)) {
-                    dp[0][j] = Math.min(dp[0][j], dp[2][j - 2] + swap);
+                    dp[0][j] = Math.min(dp[0][j], dp[2][j - 2] + SWAP_COST);
                 }
                 dp[0][j] = Math.min(dp[0][j],
-                        Math.min(dp[1][j] + del, dp[0][j - 1] + add));
+                        Math.min(dp[1][j] + DELETION_COST, dp[0][j - 1] + ADDITION_COST));
             }
             int[] temp = dp[2];
             dp[2] = dp[1];
             dp[1] = dp[0];
             dp[0] = temp;
         }
-        return dp[1][blen];
+        return dp[1][bLen];
     }
 
     private static class SubjectBody {
         public String subject;
-        public String body;
+        String body;
 
-        public SubjectBody(String subject, String body) {
+        SubjectBody(String subject, String body) {
             this.subject = subject;
             this.body = body;
         }
@@ -1402,10 +1354,10 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     // Made public for unit test
     public static class Candidate implements Comparable<Candidate> {
-        public int similarity;
+        int similarity;
         public String subject;
 
-        public Candidate(int similarity, String subject) {
+        Candidate(int similarity, String subject) {
             this.similarity = similarity;
             this.subject = subject;
         }
@@ -1431,10 +1383,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
             } else if (!subject.equals(other.subject)) {
                 return false;
             }
-            if (similarity != other.similarity) {
-                return false;
-            }
-            return true;
+            return similarity == other.similarity;
         }
 
         @Override
@@ -1460,14 +1409,14 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     private void printFlagCandidates(String flagBody, PrintWriter writer) {
         List<SubjectBody> subjects = new ArrayList<SubjectBody>();
-        for (ArgumentImpl arg : optargs_) {
+        for (ArgumentImpl arg : optArgs_) {
             String[] flags = arg.getFlags();
-            for (int i = 0, len = flags.length; i < len; ++i) {
-                String body = config_.prefixPattern_.removePrefix(flags[i]);
+            for (String flag : flags) {
+                String body = config_.prefixPattern_.removePrefix(flag);
                 if (body.length() <= 1) {
                     continue;
                 }
-                subjects.add(new SubjectBody(flags[i], body));
+                subjects.add(new SubjectBody(flag, body));
             }
         }
         printCandidates(flagBody, subjects, writer);
@@ -1498,11 +1447,10 @@ public final class ArgumentParserImpl implements ArgumentParser {
         for (SubjectBody sub : subjects) {
             if (sub.body.startsWith(body)) {
                 candidates.add(new Candidate(0, sub.subject));
-                continue;
             } else {
                 // Cost values were borrowed from git, help.c
-                candidates.add(new Candidate(levenshtein(body, sub.body, 0, 2,
-                        1, 4), sub.subject));
+                candidates.add(new Candidate(levenshtein(body, sub.body
+                ), sub.subject));
             }
         }
         if (candidates.isEmpty()) {
@@ -1516,12 +1464,12 @@ public final class ArgumentParserImpl implements ArgumentParser {
         }
         writer.println();
         writer.println("Did you mean:");
-        for (Candidate cand : candidates) {
-            if (cand.similarity > threshold) {
+        for (Candidate candidate : candidates) {
+            if (candidate.similarity > threshold) {
                 break;
             }
             writer.print("\t");
-            writer.println(cand.subject);
+            writer.println(candidate.subject);
         }
     }
 
@@ -1541,7 +1489,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         return command_;
     }
 
-    public TextWidthCounter getTextWidthCounter() {
+    TextWidthCounter getTextWidthCounter() {
         return config_.textWidthCounter_;
     }
 
@@ -1559,7 +1507,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
      * 
      * @return The main (parent) parser. null if this object is a root parser.
      */
-    public ArgumentParserImpl getMainParser() {
+    ArgumentParserImpl getMainParser() {
         return mainParser_;
     }
 

@@ -38,7 +38,7 @@ import org.junit.Test;
 public class ArgumentImplTest {
 
     private ArgumentParserConfigurationImpl config_ = ((ArgumentParserImpl) ArgumentParsers
-            .newFor("argpars4j").locale(Locale.US).build()).getConfig();
+            .newFor("argparse4j").locale(Locale.US).build()).getConfig();
 
     @Test
     public void testArgumentWithName() {
@@ -56,14 +56,9 @@ public class ArgumentImplTest {
         assertEquals("foo-bar", arg.textualName());
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testArgumentWithNoNameOrFlags() {
-        try {
-            new ArgumentImpl(config_);
-            fail();
-        } catch(IllegalArgumentException e) {
-            // success
-        }
+        new ArgumentImpl(config_);
     }
 
     @Test
@@ -75,20 +70,15 @@ public class ArgumentImplTest {
         assertEquals("FOO_BAR", arg.resolveMetavar()[0]);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testArgumentWithBadFlags() {
-        try {
-            new ArgumentImpl(config_, "f", "-f");
-            fail("Exception must be thrown");
-        } catch (IllegalArgumentException e) {
-            // success
-        }
+        new ArgumentImpl(config_, "f", "-f");
     }
 
     @Test
     public void testArgumentWithPrefix() {
         ArgumentParserConfigurationImpl config = ((ArgumentParserImpl) ArgumentParsers
-                .newFor("argpars4j").prefixChars("-+").locale(Locale.US)
+                .newFor("argparse4j").prefixChars("-+").locale(Locale.US)
                 .build()).getConfig();
         ArgumentImpl arg = new ArgumentImpl(config, "-f", "-+foo-bar", "++foo");
         assertNull(arg.getName());
@@ -96,14 +86,10 @@ public class ArgumentImplTest {
         assertEquals("FOO_BAR", arg.resolveMetavar()[0]);
     }
     
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testNargsWithZero() {
         ArgumentImpl arg = new ArgumentImpl(config_, "--foo");
-        try {
-            arg.nargs(0);
-            fail();
-        } catch(IllegalArgumentException e) {
-        }
+        arg.nargs(0);
     }
 
     @Test

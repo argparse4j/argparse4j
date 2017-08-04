@@ -37,7 +37,6 @@ import net.sourceforge.argparse4j.internal.TerminalWidth;
 
 /**
  * Factory class to create new ArgumentParser.
- * 
  */
 public final class ArgumentParsers {
 

@@ -38,7 +38,6 @@ import java.util.Locale;
  * <p>
  * <strong>The application code should not use this class directly.</strong>
  * </p>
- * 
  */
 public final class TextHelper {
 
@@ -74,9 +73,11 @@ public final class TextHelper {
             String start, String end) {
         StringBuilder sb = new StringBuilder();
         sb.append(start);
-        Iterator<T> it;
-        for (it = a.iterator(); offset > 0 && it.hasNext(); --offset, it.next())
-            ;
+        Iterator<T> it= a.iterator();
+        while (offset > 0 && it.hasNext()) {
+            --offset;
+            it.next();
+        }
         if (offset == 0 && it.hasNext()) {
             sb.append(it.next());
             while (it.hasNext()) {
@@ -102,13 +103,13 @@ public final class TextHelper {
         for (int start = iter.first(), end = iter.next(); end != BreakIterator.DONE; start = end, end = iter
                 .next()) {
             String sub = s.substring(start, end);
-            int subwidth = textWidthCounter.width(sub);
-            currentWidth += subwidth;
+            int subWidth = textWidthCounter.width(sub);
+            currentWidth += subWidth;
             if (currentWidth > width) {
-                res.append(adjustSpace(sb, width, currentWidth - subwidth))
+                res.append(adjustSpace(sb, width, currentWidth - subWidth))
                         .append(TextHelper.LINESEP).append(subsequentIndent);
                 sb.delete(0, sb.length());
-                currentWidth = subsequentIndent.length() + subwidth;
+                currentWidth = subsequentIndent.length() + subWidth;
             }
             sb.append(sub);
             // What if the application specifies text with line separator \n,
@@ -128,30 +129,34 @@ public final class TextHelper {
     /**
      * Given the maximum line width and current line width in sb, insert white
      * spaces in sb to make it look more "natural". The insertion points are the
-     * contagious block of white spaces. Before the processing, leading and
+     * contiguous block of white spaces. Before the processing, leading and
      * trailing white spaces are removed from sb.
      * 
      * @param sb
      *            String to adjust
      * @param width
      *            maximum line width
-     * @param curwidth
+     * @param curWidth
      *            current line width
      * @return adjusted sb
      */
     public static StringBuilder adjustSpace(StringBuilder sb, int width,
-            int curwidth) {
+            int curWidth) {
         int i, len = sb.length();
         int origLen = len;
-        for (i = 0; i < len && sb.charAt(i) == ' '; ++i)
-            ;
+        i = 0;
+        while (i < len && sb.charAt(i) == ' ') {
+            ++i;
+        }
         sb.delete(0, i);
         len = sb.length();
-        for (i = len - 1; i >= 0 && sb.charAt(i) == ' '; --i)
-            ;
+        i = len - 1;
+        while (i >= 0 && sb.charAt(i) == ' ') {
+            --i;
+        }
         sb.delete(i + 1, len);
         len = sb.length();
-        curwidth -= origLen - len;
+        curWidth -= origLen - len;
 
         int numWsBlock = 0;
         boolean cont = false;
@@ -171,7 +176,7 @@ public final class TextHelper {
         // Distribute needWs white spaces to numWsBlock blocks.
         // Put one more space to the middle of the blocks to look nicer if
         // needWs is not divisible by numWsBlock.
-        int needWs = width - curwidth;
+        int needWs = width - curWidth;
         int eachWs = needWs / numWsBlock;
         int rem = needWs % numWsBlock;
         int remStart = (numWsBlock - rem + 1) / 2;

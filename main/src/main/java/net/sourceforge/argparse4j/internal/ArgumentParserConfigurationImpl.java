@@ -8,17 +8,17 @@ import net.sourceforge.argparse4j.helper.TextWidthCounter;
 import net.sourceforge.argparse4j.inf.ArgumentParserConfiguration;
 
 public class ArgumentParserConfigurationImpl implements ArgumentParserConfiguration {
-    public final String prog_;
-    public final boolean addHelp_;
-    public final String prefixChars_;
-    public final PrefixPattern prefixPattern_;
+    final String prog_;
+    final boolean addHelp_;
+    final String prefixChars_;
+    final PrefixPattern prefixPattern_;
     private final String fromFilePrefix_;
-    public final PrefixPattern fromFilePrefixPattern_;
+    final PrefixPattern fromFilePrefixPattern_;
     private final ResourceBundle resourceBundle_;
-    public final TextWidthCounter textWidthCounter_;
-    public final int formatWidth_;
-    public final boolean singleMetavar_;
-    public final boolean noDestConversionForPositionalArgs_;
+    final TextWidthCounter textWidthCounter_;
+    final int formatWidth_;
+    final boolean singleMetavar_;
+    final boolean noDestConversionForPositionalArgs_;
 
     public ArgumentParserConfigurationImpl(String prog, boolean addHelp,
             String prefixChars, String fromFilePrefix, Locale locale,
@@ -56,7 +56,7 @@ public class ArgumentParserConfigurationImpl implements ArgumentParserConfigurat
         noDestConversionForPositionalArgs_ = noDestConversionForPositionalArgs;
     }
 
-    public ArgumentParserConfigurationImpl forSubparser(boolean addHelp,
+    ArgumentParserConfigurationImpl forSubparser(boolean addHelp,
             String prefixChars) {
         return new ArgumentParserConfigurationImpl(prog_, addHelp, prefixChars,
                 fromFilePrefix_, resourceBundle_, textWidthCounter_,

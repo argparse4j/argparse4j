@@ -36,7 +36,6 @@ import net.sourceforge.argparse4j.inf.ArgumentParser;
  * <p>
  * {@link #consumeArgument()} always returns {@code true}.
  * </p>
- * 
  */
 public class StoreArgumentAction implements ArgumentAction {
 

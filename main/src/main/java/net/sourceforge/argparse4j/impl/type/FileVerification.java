@@ -150,6 +150,7 @@ public class FileVerification {
                 return;
             }
         } catch (IOException e) {
+            // No action needed. Throw an exception indicating creation is not possible later.
         }
 
         // An exception was thrown or the parent directory can't be written

@@ -23,6 +23,8 @@
  */
 package net.sourceforge.argparse4j.helper;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
@@ -46,10 +48,10 @@ public class TextHelperTest {
         assertEquals("",
                 TextHelper.concat(new Integer[] { 1, 2, 3 }, 3, ", "));
 
-        assertEquals("", TextHelper.concat(Arrays.asList(), 0, ","));
-        assertEquals("", TextHelper.concat(Arrays.asList(""), 0, ","));
+        assertEquals("", TextHelper.concat(emptyList(), 0, ","));
+        assertEquals("", TextHelper.concat(singletonList(""), 0, ","));
         assertEquals("alpha",
-                TextHelper.concat(Arrays.asList("alpha"), 0, ","));
+                TextHelper.concat(singletonList("alpha"), 0, ","));
         assertEquals("1, 2, 3",
                 TextHelper.concat(Arrays.asList(1, 2, 3), 0, ", "));
         assertEquals("2, 3",

@@ -38,7 +38,6 @@ import net.sourceforge.argparse4j.inf.Subparsers;
 
 /**
  * <strong>The application code must not use this class directly.</strong>
- * 
  */
 public final class SubparsersImpl implements Subparsers {
 
@@ -56,7 +55,7 @@ public final class SubparsersImpl implements Subparsers {
     private String dest_ = "";
     private String metavar_ = "";
 
-    public SubparsersImpl(ArgumentParserImpl mainParser) {
+    SubparsersImpl(ArgumentParserImpl mainParser) {
         mainParser_ = mainParser;
     }
 
@@ -126,7 +125,7 @@ public final class SubparsersImpl implements Subparsers {
         return this;
     }
 
-    public boolean hasSubCommand() {
+    boolean hasSubCommand() {
         return !parsers_.isEmpty();
     }
 
@@ -137,7 +136,7 @@ public final class SubparsersImpl implements Subparsers {
      * @return true if SubparserImpl has at least one sub-command whose help
      *         output is not suppressed.
      */
-    public boolean hasNotSuppressedSubCommand() {
+    boolean hasNotSuppressedSubCommand() {
         for (Map.Entry<String, SubparserImpl> entry : parsers_.entrySet()) {
             if (entry.getValue().getHelpControl() != FeatureControl.SUPPRESS) {
                 return true;
@@ -152,12 +151,9 @@ public final class SubparsersImpl implements Subparsers {
      * ambiguous, {@link ArgumentParserException} will be thrown. If no matching
      * SubparserImpl is found, this function returns null.
      * 
-     * @param state
-     * @param command
      * @return next SubparserImpl or null
-     * @throws ArgumentParserException
      */
-    private SubparserImpl resolveNextSubparser(ParseState state, String command)
+    private SubparserImpl resolveNextSubparser(String command)
             throws ArgumentParserException {
         if (command.isEmpty()) {
             return null;
@@ -181,12 +177,12 @@ public final class SubparsersImpl implements Subparsers {
         return ap;
     }
 
-    public void parseArg(ParseState state, Map<String, Object> opts)
+    void parseArg(ParseState state, Map<String, Object> opts)
             throws ArgumentParserException {
         if (parsers_.isEmpty()) {
             throw new IllegalArgumentException("too many arguments");
         }
-        SubparserImpl ap = resolveNextSubparser(state, state.getArg());
+        SubparserImpl ap = resolveNextSubparser(state.getArg());
         if (ap == null) {
             StringBuilder sb = new StringBuilder();
             for (Map.Entry<String, SubparserImpl> entry : parsers_.entrySet()) {
@@ -208,7 +204,7 @@ public final class SubparsersImpl implements Subparsers {
         }
     }
 
-    public String formatShortSyntax() {
+    String formatShortSyntax() {
         if (metavar_.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             sb.append("{");
@@ -235,7 +231,7 @@ public final class SubparsersImpl implements Subparsers {
      * @param format_width
      *            column width
      */
-    public void printSubparserHelp(PrintWriter writer, int format_width) {
+    void printSubparserHelp(PrintWriter writer, int format_width) {
         TextHelper.printHelp(writer, formatShortSyntax(), help_,
                 mainParser_.getTextWidthCounter(), format_width);
         for (Map.Entry<String, SubparserImpl> entry : parsers_.entrySet()) {
@@ -250,9 +246,9 @@ public final class SubparsersImpl implements Subparsers {
     /**
      * Returns collection of the sub-command name under this object.
      * 
-     * @return collection of the sub-comman name
+     * @return collection of the sub-command name
      */
-    public Collection<String> getCommands() {
+    Collection<String> getCommands() {
         return parsers_.keySet();
     }
 
@@ -266,7 +262,7 @@ public final class SubparsersImpl implements Subparsers {
      * @param alias
      *            alias name
      */
-    public void addAlias(SubparserImpl subparser, String... alias) {
+    void addAlias(SubparserImpl subparser, String... alias) {
         for (String command : alias) {
             if (parsers_.containsKey(command)) {
                 throw new IllegalArgumentException(String.format(

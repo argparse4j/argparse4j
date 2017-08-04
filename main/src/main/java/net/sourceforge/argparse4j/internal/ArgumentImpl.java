@@ -46,7 +46,6 @@ import net.sourceforge.argparse4j.inf.MetavarInference;
 
 /**
  * <strong>The application code must not use this class directly.</strong>
- * 
  */
 public final class ArgumentImpl implements Argument {
 
@@ -68,12 +67,12 @@ public final class ArgumentImpl implements Argument {
     private ArgumentParserConfigurationImpl config_;
     private ArgumentGroupImpl argumentGroup_;
 
-    public ArgumentImpl(ArgumentParserConfigurationImpl config,
+    ArgumentImpl(ArgumentParserConfigurationImpl config,
             String... nameOrFlags) {
         this(config, null, nameOrFlags);
     }
 
-    public ArgumentImpl(ArgumentParserConfigurationImpl config,
+    ArgumentImpl(ArgumentParserConfigurationImpl config,
             ArgumentGroupImpl argumentGroup, String... nameOrFlags) {
         if (nameOrFlags.length == 0) {
             throw new IllegalArgumentException("no nameOrFlags was specified");
@@ -102,13 +101,13 @@ public final class ArgumentImpl implements Argument {
                 }
             }
             for (String flag : flags_) {
-                boolean longflag = config.prefixPattern_.matchLongFlag(flag);
+                boolean longFlag = config.prefixPattern_.matchLongFlag(flag);
                 if (dest_ == null) {
                     dest_ = flag;
-                    if (longflag) {
+                    if (longFlag) {
                         break;
                     }
-                } else if (longflag) {
+                } else if (longFlag) {
                     dest_ = flag;
                     break;
                 }
@@ -131,7 +130,7 @@ public final class ArgumentImpl implements Argument {
      * 
      * @return short syntax
      */
-    public String formatShortSyntax() {
+    String formatShortSyntax() {
         if (name_ == null) {
             StringBuilder sb = new StringBuilder();
             if (!required_) {
@@ -157,7 +156,7 @@ public final class ArgumentImpl implements Argument {
      * 
      * @return short syntax
      */
-    public String formatShortSyntaxNoBracket() {
+    String formatShortSyntaxNoBracket() {
         if (name_ == null) {
             StringBuilder sb = new StringBuilder();
             sb.append(flags_[0]);
@@ -171,7 +170,7 @@ public final class ArgumentImpl implements Argument {
         }
     }
 
-    public String[] resolveMetavar() {
+    String[] resolveMetavar() {
         if (metavar_ == null) {
             if (choice_ == null) {
                 if (type_ instanceof MetavarInference) {
@@ -195,7 +194,7 @@ public final class ArgumentImpl implements Argument {
         return metavar_;
     }
 
-    public String formatMetavar() {
+    String formatMetavar() {
         StringBuilder sb = new StringBuilder();
         if (action_.consumeArgument()) {
             String[] metavar = resolveMetavar();
@@ -473,7 +472,7 @@ public final class ArgumentImpl implements Argument {
         return this;
     }
 
-    public boolean isNamedArgument() {
+    boolean isNamedArgument() {
         return name_ == null;
     }
 
@@ -524,11 +523,11 @@ public final class ArgumentImpl implements Argument {
         return required_;
     }
 
-    public int getMinNumArg() {
+    int getMinNumArg() {
         return minNumArg_;
     }
 
-    public int getMaxNumArg() {
+    int getMaxNumArg() {
         return maxNumArg_;
     }
 
@@ -536,7 +535,7 @@ public final class ArgumentImpl implements Argument {
         return metavar_;
     }
 
-    public ArgumentGroupImpl getArgumentGroup() {
+    ArgumentGroupImpl getArgumentGroup() {
         return argumentGroup_;
     }
 
@@ -548,7 +547,7 @@ public final class ArgumentImpl implements Argument {
         return help_;
     }
 
-    public String[] getFlags() {
+    String[] getFlags() {
         return flags_;
     }
 

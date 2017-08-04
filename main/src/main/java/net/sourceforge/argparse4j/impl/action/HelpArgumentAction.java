@@ -41,7 +41,6 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
  * {@code HelpScreenException} exception after printing the help message.
  * {@link #consumeArgument()} always returns {@code false}.
  * </p>
- * 
  */
 public class HelpArgumentAction implements ArgumentAction {
 

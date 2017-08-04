@@ -40,14 +40,9 @@ public class RangeArgumentChoiceTest {
         assertFalse(choice.contains(256));
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testContainsWithWrongType() {
-        try {
-            choice.contains("10");
-            fail();
-        } catch(IllegalArgumentException e) {
-            // success
-        }
+        choice.contains("10");
     }
 
     @Test

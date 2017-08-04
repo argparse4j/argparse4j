@@ -39,7 +39,6 @@ import java.util.Comparator;
  * <p>
  * <strong>The application code should not use this class directly.</strong>
  * </p>
- * 
  */
 public class CJKTextWidthCounter implements TextWidthCounter {
 
@@ -62,7 +61,7 @@ public class CJKTextWidthCounter implements TextWidthCounter {
         return cnt;
     }
 
-    private static enum EastAsianWidth {
+    private enum EastAsianWidth {
         W, // Wide
         F, // Full
         A // Ambiguous
@@ -70,19 +69,18 @@ public class CJKTextWidthCounter implements TextWidthCounter {
 
     /**
      * Range is [first, last)
-     * 
      */
     private static class CpRange {
         int first, last;
         EastAsianWidth w;
 
-        public CpRange(int first, int last, EastAsianWidth w) {
+        CpRange(int first, int last, EastAsianWidth w) {
             this.first = first;
             this.last = last;
             this.w = w;
         }
 
-        public CpRange() {
+        CpRange() {
         }
 
     }

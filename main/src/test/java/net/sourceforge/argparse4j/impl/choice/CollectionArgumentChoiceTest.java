@@ -45,14 +45,9 @@ public class CollectionArgumentChoiceTest {
         assertFalse(choice.contains("0"));
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testContainsWithWrongType() {
-        try {
-            choice.contains("2");
-            fail();
-        } catch (IllegalArgumentException e) {
-            // success
-        }
+        choice.contains("2");
     }
 
     @Test
@@ -78,9 +73,9 @@ public class CollectionArgumentChoiceTest {
         assertTrue(c.contains(Fancy.B));
     }
 
-    private static enum Simple {A, B, C}
+    private enum Simple {A, B, C}
 
-    private static enum Fancy {
+    private enum Fancy {
         A {
             @Override
             String getFoo() {

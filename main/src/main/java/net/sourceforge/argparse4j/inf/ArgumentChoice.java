@@ -25,7 +25,6 @@ package net.sourceforge.argparse4j.inf;
 
 /**
  * This interface defines simple data validation method.
- * 
  */
 public interface ArgumentChoice {
 

@@ -49,7 +49,7 @@ public class CountArgumentActionTest {
     private CountArgumentAction act;
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         act = new CountArgumentAction();
         arg = new MyMockArgument();
         attrs = new HashMap<String, Object>();

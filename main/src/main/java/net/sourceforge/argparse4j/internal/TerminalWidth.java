@@ -68,7 +68,7 @@ public class TerminalWidth {
             return UNKNOWN_WIDTH; // actually, this might also work on Solaris
                                   // but this hasn't been tested
         }
-        ProcessBuilder builder = new ProcessBuilder(which("sh").toString(),
+        ProcessBuilder builder = new ProcessBuilder(whichSh().toString(),
                 "-c", "stty -a < /dev/tty");
         builder.redirectErrorStream(true);
         Process process = builder.start();
@@ -118,16 +118,16 @@ public class TerminalWidth {
         }
     }
 
-    private File which(String cmd) throws IOException {
+    private File whichSh() throws IOException {
         String path = System.getenv("PATH");
         if (path != null) {
           for (String dir : path.split(Pattern.quote(File.pathSeparator))) {
-              File command = new File(dir.trim(), cmd);
+              File command = new File(dir.trim(), "sh");
               if (command.canExecute()) {
                   return command.getAbsoluteFile();
               }
           }
         }
-        throw new IOException("No command '" + cmd + "' on path " + path);
+        throw new IOException("No command 'sh' on path " + path);
     }
 }
