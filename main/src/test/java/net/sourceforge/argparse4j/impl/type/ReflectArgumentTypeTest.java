@@ -43,7 +43,7 @@ public class ReflectArgumentTypeTest {
     private MockArgument ma;
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         ma = new MockArgument();
     }
 
@@ -122,7 +122,7 @@ public class ReflectArgumentTypeTest {
     }
 
     private static final class NonStaticValueOf {
-        public String arg_;
+        String arg_;
 
         public NonStaticValueOf(String arg) {
             arg_ = "From ctor";
@@ -142,7 +142,7 @@ public class ReflectArgumentTypeTest {
     }
 
     private static final class WrongReturnTypeValueOf {
-        public String arg_;
+        String arg_;
 
         public WrongReturnTypeValueOf(String arg) {
             arg_ = arg;
@@ -175,7 +175,7 @@ public class ReflectArgumentTypeTest {
     }
 
     private static final class NonStringValueOf {
-        public String arg_;
+        String arg_;
 
         public NonStringValueOf(String arg) {
             arg_ = arg;

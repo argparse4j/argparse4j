@@ -28,7 +28,7 @@ import java.util.List;
 
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 
-public class ParseState {
+class ParseState {
     /**
      * Array of arguments.
      */
@@ -82,10 +82,9 @@ public class ParseState {
      */
     List<String> unknown;
 
-    ParseState(String args[], int index, boolean negNumFlag,
-               List<String> unknown) {
+    ParseState(String[] args, boolean negNumFlag, List<String> unknown) {
         this.args = args;
-        this.index = index;
+        this.index = 0;
         this.lastFromFileArgIndex = -1;
         this.negNumFlag = negNumFlag;
         this.deferredException = null;

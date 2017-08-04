@@ -15,7 +15,7 @@ Argparse4j is available in Maven central repository:
     <version>0.7.0</version>
   </dependency>
 
-**IMPORTANT**: When upgrading from 0.4.4 or ealier version, read
+**IMPORTANT**: When upgrading from 0.4.4 or earlier version, read
 `Migration <https://argparse4j.github.io/migration.html>`_.
 There is an important change in 0.5.0 which might break you code.  The
 documentation describes the change and how to migrate from earlier

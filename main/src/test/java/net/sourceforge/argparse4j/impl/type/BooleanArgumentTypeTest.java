@@ -42,7 +42,7 @@ public class BooleanArgumentTypeTest {
     private MockArgument ma;
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         ma = new MockArgument();
     }
 

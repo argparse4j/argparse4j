@@ -10,7 +10,7 @@ known arguments only.  Metavar for Boolean and Enum types are now
 automatically generated if neither Argument#metavar() nor
 Argument#choices() is used.  To achieve this, MetavarInference
 interface, which is part of public API, was added for the underlying
-mechanism.  The BooleanArgumenType and its helper method
+mechanism.  The BooleanArgumentType and its helper method
 Arguments#booleanType() were added for strict boolean parameter
 handling.  Previously, when parsing concatenated short options, the
 default prefix character ("-") is used, regardless of the prefix

@@ -80,7 +80,7 @@ public interface Argument {
      * </p>
      * 
      * <p>
-     * The const value defauls to {@code null}.
+     * The const value defaults to {@code null}.
      * </p>
      * 
      * @param value
@@ -96,7 +96,7 @@ public interface Argument {
      * </p>
      * <p>
      * The given {@code values} will be converted to {@link List}. The const
-     * value defauls to {@code null}. If you want to set non-List item, use
+     * value defaults to {@code null}. If you want to set non-List item, use
      * {@link #setConst(Object)}.
      * </p>
      * 
