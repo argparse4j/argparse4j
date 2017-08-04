@@ -20,10 +20,6 @@
         <jdk.7.rt.jar.path>${jdk.build.rt.jar.path}</jdk.7.rt.jar.path>
     </properties>
 
-    <prerequisites>
-        <maven>3.0.4</maven>
-    </prerequisites>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -54,6 +50,28 @@
     </dependencyManagement>
 
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.4.1</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.0.4</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
         <pluginManagement>
             <plugins>
                 <plugin>
