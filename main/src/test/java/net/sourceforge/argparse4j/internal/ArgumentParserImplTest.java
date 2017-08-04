@@ -36,6 +36,7 @@ import static net.sourceforge.argparse4j.test.TestHelper.list;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -540,9 +541,9 @@ public class ArgumentParserImplTest {
         ap.addArgument("--buzz").nargs("*").action(append()).setDefault("buzz");
 
         Namespace res = ap.parseArgs(zeroargs);
-        assertEquals(null, res.get("foo"));
+        assertNull(res.get("foo"));
         assertEquals("bar", res.get("bar"));
-        assertEquals(null, res.get("baz"));
+        assertNull(res.get("baz"));
         assertEquals("buzz", res.get("buzz"));
 
         // Make sure that empty list overwrites previous arguments.
@@ -624,7 +625,7 @@ public class ArgumentParserImplTest {
         ap.addArgument("b").nargs("*").setDefault(false).action(action);
         Namespace res = ap.parseArgs(new String[] {});
         assertEquals(list("default"), res.get("f"));
-        assertEquals(false, action.invoked);
+        assertFalse(action.invoked);
     }
 
     @Test
@@ -674,7 +675,7 @@ public class ArgumentParserImplTest {
         // b should take only 2, to leave remaining arguments to c and e.
         assertEquals(list("b1", "b2"), res.get("b"));
         assertEquals(list("c1", "c2"), res.get("c"));
-        assertEquals(null, res.get("d"));
+        assertNull(res.get("d"));
         assertEquals("e", res.get("e"));
         // f returns default value
         assertEquals(list("f1", "f2"), res.get("f"));
@@ -913,7 +914,7 @@ public class ArgumentParserImplTest {
         Namespace res = ap.parseKnownArgs(
                 "p -f a b -g c d -i k --i +abc".split(" "), unknown);
 
-        assertEquals(list("b", "d", "-i", "k", "--i", "+bc"), unknown);
+        assertEquals(unknown, list("b", "d", "-i", "k", "--i", "+bc"));
         assertEquals("a", res.get("f"));
         assertEquals("c", res.get("g"));
         assertEquals("p", res.get("path"));
@@ -923,7 +924,7 @@ public class ArgumentParserImplTest {
         Map<String, Object> attrs = new HashMap<String, Object>();
         ap.parseKnownArgs("p q".split(" "), unknown, attrs);
 
-        assertEquals(list("q"), unknown);
+        assertEquals(unknown, list("q"));
         assertEquals("p", attrs.get("path"));
 
         unknown.clear();
@@ -937,7 +938,7 @@ public class ArgumentParserImplTest {
         Out out = new Out();
         ap.parseKnownArgs("p q".split(" "), unknown, out);
 
-        assertEquals(list("q"), unknown);
+        assertEquals(unknown, list("q"));
         assertEquals("p", out.path);
 
         unknown.clear();
@@ -946,7 +947,7 @@ public class ArgumentParserImplTest {
 
         ap.parseKnownArgs("p q".split(" "), unknown, attrs, out);
 
-        assertEquals(list("q"), unknown);
+        assertEquals(unknown, list("q"));
         assertEquals("p", attrs.get("path"));
         assertEquals("p", out.path);
     }
@@ -959,7 +960,7 @@ public class ArgumentParserImplTest {
         List<String> unknown = new ArrayList<String>();
         Namespace res = ap.parseKnownArgs("-g install -fx -i k".split(" "), unknown);
 
-        assertEquals(list("-g", "-i", "k"), unknown);
+        assertEquals(unknown, list("-g", "-i", "k"));
         assertEquals("x", res.get("f"));
     }
 
@@ -1514,8 +1515,8 @@ public class ArgumentParserImplTest {
         Candidate fooCopy = new Candidate(15, "foo");
         Candidate bar = new Candidate(15, "bar");
         Candidate foo2 = new Candidate(16, "foo");
-        assertTrue(foo.equals(foo));
-        assertTrue(foo.equals(fooCopy));
+        assertEquals(foo, foo);
+        assertEquals(foo, fooCopy);
         assertFalse(foo.equals(bar));
         assertFalse(foo.equals(foo2));
         assertFalse(foo.equals(null));

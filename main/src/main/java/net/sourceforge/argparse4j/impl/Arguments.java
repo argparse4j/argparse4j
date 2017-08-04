@@ -257,6 +257,7 @@ public final class Arguments {
      *            The enum type
      * @return {@link EnumArgumentType} object
      */
+    @Deprecated
     public static <T extends Enum<T>> EnumArgumentType<T> enumType(Class<T> type) {
         return new EnumArgumentType<T>(type);
     }

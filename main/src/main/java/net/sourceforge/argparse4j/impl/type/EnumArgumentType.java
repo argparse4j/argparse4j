@@ -49,6 +49,7 @@ import net.sourceforge.argparse4j.inf.ArgumentType;
  * @param <T>
  *            Type of enum
  */
+@Deprecated
 public class EnumArgumentType<T extends Enum<T>> implements ArgumentType<T> {
 
     private Class<T> type_;
