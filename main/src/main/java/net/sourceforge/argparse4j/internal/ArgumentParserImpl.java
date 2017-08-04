@@ -396,7 +396,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
      * Returns arguments in {@code args} whose {@link Argument#getHelpControl()}
      * do not return {@link Arguments#SUPPRESS}.
      * 
-     * @param args arguments to filter.
+     * @param args arguments to filter
      * @return filtered list of arguments
      */
     private static List<ArgumentImpl> filterSuppressedArgs(
@@ -690,9 +690,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     }
 
-    private void parseKnownArgsCreatingUnknownIfNeeded(String args[],
-            List<String> unknown, Map<String, Object> attrs)
-            throws ArgumentParserException {
+    private void parseKnownArgsCreatingUnknownIfNeeded(String args[], List<String> unknown,
+            Map<String, Object> attrs) throws ArgumentParserException {
         if (unknown == null) {
             unknown = new ArrayList<String>();
         }

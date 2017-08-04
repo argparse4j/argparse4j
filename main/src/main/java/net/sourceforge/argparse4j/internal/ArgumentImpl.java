@@ -68,12 +68,12 @@ public final class ArgumentImpl implements Argument {
     private ArgumentGroupImpl argumentGroup_;
 
     ArgumentImpl(ArgumentParserConfigurationImpl config,
-                 String... nameOrFlags) {
+            String... nameOrFlags) {
         this(config, null, nameOrFlags);
     }
 
     ArgumentImpl(ArgumentParserConfigurationImpl config,
-                 ArgumentGroupImpl argumentGroup, String... nameOrFlags) {
+            ArgumentGroupImpl argumentGroup, String... nameOrFlags) {
         if (nameOrFlags.length == 0) {
             throw new IllegalArgumentException("no nameOrFlags was specified");
         }

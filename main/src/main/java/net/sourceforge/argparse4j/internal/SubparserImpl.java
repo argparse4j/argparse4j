@@ -52,7 +52,7 @@ public final class SubparserImpl implements Subparser, ArgumentParser {
     private FeatureControl helpControl_;
 
     SubparserImpl(ArgumentParserConfigurationImpl config, String command,
-                  ArgumentParserImpl mainParser) {
+            ArgumentParserImpl mainParser) {
         command_ = command;
         parser_ = new ArgumentParserImpl(config, command, mainParser);
     }

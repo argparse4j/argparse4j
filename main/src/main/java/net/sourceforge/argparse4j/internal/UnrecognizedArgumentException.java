@@ -35,7 +35,7 @@ public class UnrecognizedArgumentException extends ArgumentParserException {
     private String argument_;
 
     public UnrecognizedArgumentException(String message, ArgumentParser parser,
-                                  String argument) {
+            String argument) {
         super(message, parser);
         argument_ = argument;
     }

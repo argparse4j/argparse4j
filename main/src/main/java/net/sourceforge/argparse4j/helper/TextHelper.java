@@ -141,7 +141,7 @@ public final class TextHelper {
      * @return adjusted sb
      */
     public static StringBuilder adjustSpace(StringBuilder sb, int width,
-                                     int curWidth) {
+            int curWidth) {
         int i, len = sb.length();
         int origLen = len;
         i = 0;

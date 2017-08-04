@@ -35,7 +35,7 @@ public class UnrecognizedCommandException extends ArgumentParserException {
     private String command_;
 
     public UnrecognizedCommandException(String message, ArgumentParser parser,
-                                 String command) {
+            String command) {
         super(message, parser);
         command_ = command;
     }

@@ -57,7 +57,7 @@ public class ArgumentParserConfigurationImpl implements ArgumentParserConfigurat
     }
 
     ArgumentParserConfigurationImpl forSubparser(boolean addHelp,
-                                                 String prefixChars) {
+            String prefixChars) {
         return new ArgumentParserConfigurationImpl(prog_, addHelp, prefixChars,
                 fromFilePrefix_, resourceBundle_, textWidthCounter_,
                 formatWidth_, singleMetavar_,
