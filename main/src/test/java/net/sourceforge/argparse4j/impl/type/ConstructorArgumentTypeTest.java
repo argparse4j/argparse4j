@@ -24,7 +24,6 @@
 package net.sourceforge.argparse4j.impl.type;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
@@ -35,16 +34,11 @@ import org.junit.Test;
 
 public class ConstructorArgumentTypeTest {
 
-    @Test
+    @Test(expected = ArgumentParserException.class)
     public void testConvert() throws ArgumentParserException {
         ArgumentParser ap = ArgumentParsers.newFor("argparse4j").build();
         ConstructorArgumentType<Integer> at = new ConstructorArgumentType<Integer>(Integer.class);
         assertEquals((Integer)100, at.convert(null, null, "100"));
-        try {
-            at.convert(ap, new MockArgument(), "0x100");
-            fail();
-        } catch(ArgumentParserException e) {
-        }
+        at.convert(ap, new MockArgument(), "0x100");
     }
-
 }

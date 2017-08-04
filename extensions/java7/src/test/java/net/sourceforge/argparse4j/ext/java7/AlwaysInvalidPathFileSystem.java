@@ -76,6 +76,7 @@ class AlwaysInvalidPathFileSystem extends FileSystem {
     }
 
     @Override
+    @SuppressWarnings("NullableProblems")
     public Path getPath(String first, String... more) {
         throw new InvalidPathException("", "");
     }
