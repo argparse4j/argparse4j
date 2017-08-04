@@ -49,9 +49,9 @@ public class RangeArgumentChoice<T extends Comparable<T>> implements
      * Creates object using range [{@code min}, {@code max}], inclusive.
      * 
      * @param min
-     *            The lowerbound of the range, inclusive.
+     *            The lower bound of the range, inclusive.
      * @param max
-     *            The upperbound of the range, inclusive.
+     *            The upper bound of the range, inclusive.
      */
     public RangeArgumentChoice(T min, T max) {
         min_ = min;
@@ -61,12 +61,13 @@ public class RangeArgumentChoice<T extends Comparable<T>> implements
     @Override
     public boolean contains(Object val) {
         if (min_.getClass().equals(val.getClass())) {
+            //noinspection unchecked
             T v = (T) val;
             return min_.compareTo(v) <= 0 && 0 <= max_.compareTo(v);
         } else {
             throw new IllegalArgumentException(String.format(
                     TextHelper.LOCALE_ROOT,
-                    "type mismatch (Make sure that you specified corrent Argument.type()):"
+                    "type mismatch (Make sure that you specified correct Argument.type()):"
                             + " expected: %s actual: %s", min_.getClass()
                             .getName(), val.getClass().getName()));
         }

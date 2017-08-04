@@ -39,7 +39,6 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
  * {@link #onAttach(Argument)} calls {@link Argument#setDefault(Object)} with
  * {@code true}. {@link #consumeArgument()} always returns {@code false}.
  * </p>
- * 
  */
 public class StoreFalseArgumentAction implements ArgumentAction {
 

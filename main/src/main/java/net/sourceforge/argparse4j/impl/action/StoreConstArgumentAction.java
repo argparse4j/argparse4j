@@ -40,7 +40,6 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
  * commonly used with named arguments that specify sort of flags.
  * {@link #consumeArgument()} always returns {@code false}.
  * </p>
- * 
  */
 public class StoreConstArgumentAction implements ArgumentAction {
 

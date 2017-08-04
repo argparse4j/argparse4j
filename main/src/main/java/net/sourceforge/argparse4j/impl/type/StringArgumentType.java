@@ -30,7 +30,6 @@ import net.sourceforge.argparse4j.inf.ArgumentType;
 
 /**
  * Specialized to String type, just echos back given string.
- * 
  */
 public class StringArgumentType implements ArgumentType<String> {
 

@@ -45,7 +45,6 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
  * overwritten by the List containing {@code value}. {@link #consumeArgument()}
  * always returns {@code false}.
  * </p>
- * 
  */
 public class AppendConstArgumentAction implements ArgumentAction {
 
@@ -56,6 +55,7 @@ public class AppendConstArgumentAction implements ArgumentAction {
         if (attrs.containsKey(arg.getDest())) {
             Object obj = attrs.get(arg.getDest());
             if (obj instanceof List) {
+                //noinspection unchecked
                 ((List<Object>) obj).add(arg.getConst());
                 return;
             }

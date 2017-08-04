@@ -42,7 +42,6 @@ import net.sourceforge.argparse4j.inf.Subparsers;
 
 /**
  * <strong>The application code must not use this class directly.</strong>
- * 
  */
 public final class SubparserImpl implements Subparser, ArgumentParser {
 
@@ -52,8 +51,8 @@ public final class SubparserImpl implements Subparser, ArgumentParser {
     private String help_ = "";
     private FeatureControl helpControl_;
 
-    public SubparserImpl(ArgumentParserConfigurationImpl config, String command,
-            ArgumentParserImpl mainParser) {
+    SubparserImpl(ArgumentParserConfigurationImpl config, String command,
+                  ArgumentParserImpl mainParser) {
         command_ = command;
         parser_ = new ArgumentParserImpl(config, command, mainParser);
     }
@@ -267,7 +266,7 @@ public final class SubparserImpl implements Subparser, ArgumentParser {
         parser_.parseArgs(state, opts);
     }
 
-    public void printSubparserHelp(PrintWriter writer, int format_width) {
+    void printSubparserHelp(PrintWriter writer, int format_width) {
         if (!help_.isEmpty()) {
             String title = "  " + command_;
             if (!aliases_.isEmpty()) {
@@ -286,7 +285,7 @@ public final class SubparserImpl implements Subparser, ArgumentParser {
         return parser_.getConfig();
     }
 
-    public FeatureControl getHelpControl() {
+    FeatureControl getHelpControl() {
         return helpControl_;
     }
 }

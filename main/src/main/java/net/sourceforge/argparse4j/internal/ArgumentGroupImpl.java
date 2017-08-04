@@ -57,7 +57,7 @@ public final class ArgumentGroupImpl implements ArgumentGroup,
      */
     private boolean required_ = false;
 
-    public ArgumentGroupImpl(ArgumentParserImpl argumentParser, String title) {
+    ArgumentGroupImpl(ArgumentParserImpl argumentParser, String title) {
         argumentParser_ = argumentParser;
         title_ = TextHelper.nonNull(title);
     }
@@ -99,19 +99,19 @@ public final class ArgumentGroupImpl implements ArgumentGroup,
         }
     }
 
-    public int getIndex() {
+    int getIndex() {
         return index_;
     }
 
-    public void setIndex(int index) {
+    void setIndex(int index) {
         index_ = index;
     }
 
-    public boolean isMutex() {
+    boolean isMutex() {
         return mutex_;
     }
 
-    public void setMutex(boolean mutex) {
+    void setMutex(boolean mutex) {
         mutex_ = mutex;
     }
 
@@ -130,7 +130,7 @@ public final class ArgumentGroupImpl implements ArgumentGroup,
      * @return true if the help message for this group should be in separate
      *         group.
      */
-    public boolean isSeparateHelp() {
+    boolean isSeparateHelp() {
         return !mutex_ || !title_.isEmpty() || !description_.isEmpty();
     }
 }

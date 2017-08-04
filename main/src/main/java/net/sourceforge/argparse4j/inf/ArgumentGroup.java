@@ -26,7 +26,6 @@ package net.sourceforge.argparse4j.inf;
 /**
  * This interface defines a method to conceptually group up {@link Argument}
  * objects.
- * 
  */
 public interface ArgumentGroup extends ArgumentContainer {
     @Override

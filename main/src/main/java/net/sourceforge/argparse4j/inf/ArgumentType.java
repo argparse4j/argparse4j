@@ -43,7 +43,7 @@ public interface ArgumentType<T> {
      * </p>
      * 
      * @param parser
-     *            The aprser.
+     *            The parser.
      * @param arg
      *            The argument this type attached to.
      * @param value
