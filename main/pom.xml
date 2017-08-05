@@ -226,16 +226,7 @@
                         <onlyModified>true</onlyModified>
                         <onlyBinaryIncompatible>true</onlyBinaryIncompatible>
                         <excludes>
-                            <exclude>net.sourceforge.argparse4j.internal.ArgumentGroupImpl</exclude>
-                            <exclude>net.sourceforge.argparse4j.internal.ArgumentImpl</exclude>
-                            <exclude>net.sourceforge.argparse4j.internal.ArgumentParserConfigurationImpl</exclude>
-                            <exclude>net.sourceforge.argparse4j.internal.ArgumentParserImpl</exclude>
-                            <exclude>net.sourceforge.argparse4j.internal.ParseState</exclude>
-                            <exclude>net.sourceforge.argparse4j.internal.SubparserImpl</exclude>
-                            <exclude>net.sourceforge.argparse4j.internal.SubparsersImpl</exclude>
-                            <exclude>net.sourceforge.argparse4j.internal.TerminalWidth</exclude>
-                            <exclude>net.sourceforge.argparse4j.internal.UnrecognizedArgumentException</exclude>
-                            <exclude>net.sourceforge.argparse4j.internal.UnrecognizedCommandException</exclude>
+                            <exclude>net.sourceforge.argparse4j.internal</exclude>
                         </excludes>
                     </parameter>
                 </configuration>
