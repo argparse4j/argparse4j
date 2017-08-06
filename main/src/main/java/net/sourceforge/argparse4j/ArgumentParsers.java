@@ -60,6 +60,7 @@ public final class ArgumentParsers {
      * @param prog
      *         The program name
      * @return ArgumentParserBuilder object
+     * @since 0.8.0
      */
     public static ArgumentParserBuilder newFor(String prog) {
         return new ArgumentParserBuilder(prog);

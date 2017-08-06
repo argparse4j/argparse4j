@@ -73,6 +73,7 @@ public interface Subparser extends ArgumentParser {
      * @param ctrl
      *            The special value to control help message handling.
      * @return this
+     * @since 0.8.0
      */
     Subparser help(FeatureControl ctrl);
 

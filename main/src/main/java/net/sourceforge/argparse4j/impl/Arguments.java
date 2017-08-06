@@ -304,6 +304,7 @@ public final class Arguments {
      * @param type
      *            The enum type
      * @return {@link CaseInsensitiveEnumNameArgumentType} object
+     * @since 0.8.0
      */
     public static <T extends Enum<T>> CaseInsensitiveEnumNameArgumentType<T>
             caseInsensitiveEnumType(Class<T> type) {
@@ -325,6 +326,7 @@ public final class Arguments {
      * @param type
      *            The enum type
      * @return {@link CaseInsensitiveEnumStringArgumentType} object
+     * @since 0.8.0
      */
     public static <T extends Enum<T>> CaseInsensitiveEnumStringArgumentType<T> 
             caseInsensitiveEnumStringType(Class<T> type) {

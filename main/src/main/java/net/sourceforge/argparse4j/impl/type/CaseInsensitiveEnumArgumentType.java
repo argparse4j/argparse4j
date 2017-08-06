@@ -15,14 +15,16 @@ public class CaseInsensitiveEnumArgumentType<T extends Enum<T>>
     private Locale lowerCasingLocale_;
 
     /**
-     * <p> Do not use. This constructor creates a case insensitive enum name
+     * <p>
+     * Do not use. This constructor creates a case insensitive enum name
      * argument type, but converts the enum names and the values passed on the
      * command line to lower case in a way that depends on the current user
      * locale. This may result in values not matching an enum name if the
-     * program is run by a user with a different locale. </p>
+     * program is run by a user with a different locale.
+     * </p>
      *
      * @param type
-     *         the enum type
+     *         the enum type.
      * @deprecated Use one of the subclasses, which always convert case
      * correctly.
      */
@@ -31,6 +33,18 @@ public class CaseInsensitiveEnumArgumentType<T extends Enum<T>>
         this(type, Locale.getDefault());
     }
 
+    /**
+     * <p>
+     * Create an instance. 
+     * </p>
+     *
+     * @param type
+     *         the enum type.
+     * @param lowerCasingLocale
+     *         the locale to use for converting to lower case. Sub classes
+     *         should always pass {@link Locale#ROOT}.
+     * @since 0.8.0
+     */
     protected CaseInsensitiveEnumArgumentType(Class<T> type,
             Locale lowerCasingLocale) {
         type_ = type;
@@ -59,6 +73,16 @@ public class CaseInsensitiveEnumArgumentType<T extends Enum<T>>
                 parser, arg);
     }
 
+    /**
+     * <p>
+     * Convert the given enum value to its string representation.
+     * </p>
+     *
+     * @param t
+     *         the enum value to convert.
+     * @return the string representation of {@code t}.
+     * @since 0.8.0
+     */
     protected String toStringRepresentation(T t) {
         return t.name();        
     }
@@ -87,6 +111,7 @@ public class CaseInsensitiveEnumArgumentType<T extends Enum<T>>
      * objects to obtain the actual String representation.
      * </p>
      * @return The objects used to generate String representations.
+     * @since 0.8.0
      */
     protected Object[] getStringRepresentations() {
         return type_.getEnumConstants();

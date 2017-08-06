@@ -38,6 +38,7 @@ import java.util.Locale;
  *
  * @param <T>
  *            Type of enum
+ * @since 0.8.0
  */
 public class CaseInsensitiveEnumStringArgumentType<T extends Enum<T>>
         extends CaseInsensitiveEnumArgumentType<T> {

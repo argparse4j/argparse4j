@@ -2,6 +2,8 @@ package net.sourceforge.argparse4j.inf;
 
 /**
  * A container to which arguments can be added.
+ * 
+ * @since 0.8.0
  */
 public interface ArgumentContainer {
     /**

@@ -508,6 +508,7 @@ public interface ArgumentParser extends ArgumentContainer {
      * 
      * @param e
      *            Error thrown by {@link #parseArgs(String[])}.
+     * @since 0.8.0
      */
     void handleError(ArgumentParserException e, PrintWriter writer);
 
