@@ -105,7 +105,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testRequiredOptArg() throws ArgumentParserException {
+    public void testRequiredNamedArg() throws ArgumentParserException {
         ap.addArgument("--foo").required(true);
         try {
             ap.parseArgs(new String[] {});
@@ -128,7 +128,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testRequiredOptArgWithSubcommand()
+    public void testRequiredNamedArgWithSubcommand()
             throws ArgumentParserException {
         ap.addArgument("--foo").required(true);
         ap.addSubparsers().addParser("install");

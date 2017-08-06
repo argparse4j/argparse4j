@@ -46,8 +46,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
     private static final int DELETION_COST = 4;
     private static final int ADDITION_COST = 1;
 
-    private Map<String, ArgumentImpl> optArgIndex_ = new HashMap<String, ArgumentImpl>();
-    private List<ArgumentImpl> optArgs_ = new ArrayList<ArgumentImpl>();
+    private Map<String, ArgumentImpl> namedArgIndex_ = new HashMap<String, ArgumentImpl>();
+    private List<ArgumentImpl> namedArgs_ = new ArrayList<ArgumentImpl>();
     private List<ArgumentImpl> posArgs_ = new ArrayList<ArgumentImpl>();
     private List<ArgumentGroupImpl> argGroups_ = new ArrayList<ArgumentGroupImpl>();
     private Map<String, Object> defaults_ = new HashMap<String, Object>();
@@ -102,7 +102,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         ArgumentImpl arg = new ArgumentImpl(config_, group, nameOrFlags);
         if (arg.isNamedArgument()) {
             for (String flag : arg.getFlags()) {
-                ArgumentImpl another = optArgIndex_.get(flag);
+                ArgumentImpl another = namedArgIndex_.get(flag);
                 if (another != null) {
                     // TODO No conflict handler ATM
                     throw new IllegalArgumentException(String.format(
@@ -115,9 +115,9 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 if (NEG_NUM_PATTERN.matcher(flag).matches()) {
                     negNumFlag_ = true;
                 }
-                optArgIndex_.put(flag, arg);
+                namedArgIndex_.put(flag, arg);
             }
-            optArgs_.add(arg);
+            namedArgs_.add(arg);
         } else {
             for (ArgumentImpl another : posArgs_) {
                 if (arg.getName().equals(another.getName())) {
@@ -240,10 +240,10 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 subparsers_.printSubparserHelp(writer, formatWidth);
             }
         }
-        if (checkDefaultGroup(optArgs_)) {
+        if (checkDefaultGroup(namedArgs_)) {
             writer.println();
             writer.println(localize("named.arguments"));
-            printArgumentHelp(writer, optArgs_, formatWidth);
+            printArgumentHelp(writer, namedArgs_, formatWidth);
         }
         if (hasSubCommand && !subparsersUntitled) {
             writer.println();
@@ -353,7 +353,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         if (command_ != null) {
             opts.add(command_);
         }
-        for (ArgumentImpl arg : optArgs_) {
+        for (ArgumentImpl arg : namedArgs_) {
             if (arg.getHelpControl() != Arguments.SUPPRESS
                     && (arg.getArgumentGroup() == null || !arg
                             .getArgumentGroup().isMutex())) {
@@ -434,7 +434,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         if (parser.command_ != null) {
             opts.add(parser.command_);
         }
-        for (ArgumentImpl arg : parser.optArgs_) {
+        for (ArgumentImpl arg : parser.namedArgs_) {
             if (arg.getHelpControl() != Arguments.SUPPRESS
                     && arg.isRequired()
                     && (arg.getArgumentGroup() == null || !arg
@@ -508,7 +508,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
      */
     @Override
     public Object getDefault(String dest) {
-        for (ArgumentImpl arg : optArgs_) {
+        for (ArgumentImpl arg : namedArgs_) {
             if (dest.equals(arg.getDest()) && arg.getDefault() != null) {
                 return arg.getDefault();
             }
@@ -725,7 +725,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         if (SHORT_OPTS_PATTERN.matcher(term).matches()) {
             for (int i = 1, termLen = term.length(); i < termLen; ++i) {
                 String shortFlag = "-" + term.charAt(i);
-                ArgumentImpl arg = optArgIndex_.get(shortFlag);
+                ArgumentImpl arg = namedArgIndex_.get(shortFlag);
                 if (arg == null) {
                     return false;
                 }
@@ -753,20 +753,20 @@ public final class ArgumentParserImpl implements ArgumentParser {
      */
     private ArgumentImpl resolveNextFlag(String flag)
             throws ArgumentParserException {
-        ArgumentImpl arg = optArgIndex_.get(flag);
+        ArgumentImpl arg = namedArgIndex_.get(flag);
         if (arg != null) {
             return arg;
         }
-        List<String> cand = TextHelper.findPrefix(optArgIndex_.keySet(), flag);
+        List<String> cand = TextHelper.findPrefix(namedArgIndex_.keySet(), flag);
         if (cand.isEmpty()) {
             return null;
         } else if (checkConcatenatedShortOpts(flag)) {
             // Get first short option
             cand.add(flag.substring(0, 2));
         } else if (cand.size() == 1) {
-            return optArgIndex_.get(cand.get(0));
+            return namedArgIndex_.get(cand.get(0));
         }
-        // At this point, more than 1 flags were found from optArgIndex_
+        // At this point, more than 1 flags were found from namedArgIndex_
         // and/or flag forms concatenated short options.
         // Sort in order to make unit test easier.
         Collections.sort(cand);
@@ -808,7 +808,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                         for (int i = 1, termLen = term.length(); i < termLen; ++i) {
                             String shortFlag = term.substring(0, 1)
                                     + term.charAt(i);
-                            arg = optArgIndex_.get(shortFlag);
+                            arg = namedArgIndex_.get(shortFlag);
                             if (arg == null) {
                                 shortOptsFound = false;
                                 unknownStart = i;
@@ -1191,7 +1191,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         if (state.deferredException != null) {
             return;
         }
-        for (ArgumentImpl arg : optArgs_) {
+        for (ArgumentImpl arg : namedArgs_) {
             if (arg.isRequired() && !used.contains(arg)) {
                 state.deferredException = new ArgumentParserException(
                         String.format(TextHelper.LOCALE_ROOT,
@@ -1230,7 +1230,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 opts.put(arg.getDest(), arg.getDefault());
             }
         }
-        for (ArgumentImpl arg : optArgs_) {
+        for (ArgumentImpl arg : namedArgs_) {
             if (arg.getDefaultControl() != Arguments.SUPPRESS) {
                 opts.put(arg.getDest(), arg.getDefault());
             }
@@ -1409,7 +1409,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     private void printFlagCandidates(String flagBody, PrintWriter writer) {
         List<SubjectBody> subjects = new ArrayList<SubjectBody>();
-        for (ArgumentImpl arg : optArgs_) {
+        for (ArgumentImpl arg : namedArgs_) {
             String[] flags = arg.getFlags();
             for (String flag : flags) {
                 String body = config_.prefixPattern_.removePrefix(flag);
