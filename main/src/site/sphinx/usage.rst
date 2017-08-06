@@ -1310,7 +1310,7 @@ default value is used when no command line argument was present::
     Namespace(foo=42)
 
 Providing :javafield:`Arguments.SUPPRESS` causes no attribute to be
-added if the command ine argument was not present::
+added if the command line argument was not present::
 
     public static void main(String[] args) throws ArgumentParserException {
         ArgumentParser parser = ArgumentParsers.newFor("prog").build();
