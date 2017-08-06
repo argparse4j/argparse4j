@@ -1,4 +1,4 @@
-.. include:: ../../../README.rst
+.. include:: ../../../../README.rst
 
 To see how to use argparse4j, see :doc:`usage`.  See also
 :doc:`examples`.

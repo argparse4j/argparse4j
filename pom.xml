@@ -21,6 +21,97 @@
         <jdk.7.rt.jar.path>${jdk.build.rt.jar.path}</jdk.7.rt.jar.path>
     </properties>
 
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>https://raw.github.com/tatsuhiro-t/argparse4j/master/LICENSE.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>tatsuhiro_t</id>
+            <name>Tatsuhiro Tsujikawa</name>
+            <url>https://github.com/tatsuhiro_t</url>
+            <timezone>+9</timezone>
+        </developer>
+        <developer>
+            <id>jstuyts</id>
+            <name>Johan Stuyts</name>
+            <url>https://github.com/jstuyts</url>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
+    
+    <contributors>
+        <contributor>
+            <name>Amr Mostafa</name>
+            <url>https://github.com/amr</url>
+        </contributor>
+        <contributor>
+            <name>dougclayton</name>
+            <url>https://github.com/dougclayton</url>
+        </contributor>
+        <contributor>
+            <name>Eitan Adler</name>
+            <url>https://github.com/grimreaper</url>
+        </contributor>
+        <contributor>
+            <name>Jenny Loomis Williamson</name>
+            <url>https://github.com/jloomis</url>
+        </contributor>
+        <contributor>
+            <name>Joakim Bergman</name>
+            <url>https://github.com/bergman</url>
+        </contributor>
+        <contributor>
+            <name>Jonathan Ruckwood</name>
+            <url>https://github.com/jon-ruckwood</url>
+        </contributor>
+        <contributor>
+            <name>Jörg Schömer</name>
+            <url>https://github.com/Joerg-Schoemer</url>
+        </contributor>
+        <contributor>
+            <name>Juan Manuel Caicedo Carvajal</name>
+            <url>https://github.com/cavorite</url>
+        </contributor>
+        <contributor>
+            <name>Kostas Lekkas</name>
+            <url>https://github.com/lekkas</url>
+        </contributor>
+        <contributor>
+            <name>Skuratovich Sergey</name>
+            <url>https://github.com/SSNikolaevich</url>
+        </contributor>
+        <contributor>
+            <name>Wolfgang Hoschek</name>
+            <url>https://github.com/whoschek</url>
+        </contributor>
+    </contributors>
+
+    <issueManagement>
+        <system>github.com</system>
+        <url>https://github.com/tatsuhiro-t/argparse4j/issues</url>
+    </issueManagement>
+
+    <scm>
+        <connection>scm:git:git://github.com/tatsuhiro-t/argparse4j.git</connection>
+        <developerConnection>scm:git:git@github.com:tatsuhiro-t/argparse4j.git</developerConnection>
+        <url>https://github.com/tatsuhiro-t/argparse4j</url>
+    </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
