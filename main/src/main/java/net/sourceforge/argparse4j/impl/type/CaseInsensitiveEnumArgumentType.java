@@ -9,12 +9,32 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.ArgumentType;
 import net.sourceforge.argparse4j.inf.MetavarInference;
 
-public abstract class CaseInsensitiveEnumArgumentType<T extends Enum<T>>
+public class CaseInsensitiveEnumArgumentType<T extends Enum<T>>
         implements ArgumentType<T>, MetavarInference {
     protected Class<T> type_;
-    
-    protected CaseInsensitiveEnumArgumentType(Class<T> type) {
-        this.type_ = type;
+    private Locale lowerCasingLocale_;
+
+    /**
+     * <p> Do not use. This constructor creates a case insensitive enum name
+     * argument type, but converts the enum names and the values passed on the
+     * command line to lower case in a way that depends on the current user
+     * locale. This may result in values not matching an enum name if the
+     * program is run by a user with a different locale. </p>
+     *
+     * @param type
+     *         the enum type
+     * @deprecated Use one of the subclasses, which always convert case
+     * correctly.
+     */
+    @Deprecated
+    public CaseInsensitiveEnumArgumentType(Class<T> type) {
+        this(type, Locale.getDefault());
+    }
+
+    protected CaseInsensitiveEnumArgumentType(Class<T> type,
+            Locale lowerCasingLocale) {
+        type_ = type;
+        lowerCasingLocale_ = lowerCasingLocale;
     }
 
     @Override
@@ -39,7 +59,9 @@ public abstract class CaseInsensitiveEnumArgumentType<T extends Enum<T>>
                 parser, arg);
     }
 
-    protected abstract String toStringRepresentation(T t);
+    protected String toStringRepresentation(T t) {
+        return t.name();        
+    }
 
     /**
      * <p>
@@ -66,7 +88,9 @@ public abstract class CaseInsensitiveEnumArgumentType<T extends Enum<T>>
      * </p>
      * @return The objects used to generate String representations.
      */
-    protected abstract Object[] getStringRepresentations();
+    protected Object[] getStringRepresentations() {
+        return type_.getEnumConstants();
+    }
 
     /**
      * Get the String representation of the given value.
@@ -76,6 +100,6 @@ public abstract class CaseInsensitiveEnumArgumentType<T extends Enum<T>>
      * @return The String representation of <code>value</code>.
      */
     private String toCaseInsensitiveForm(String value) {
-        return value.toLowerCase(Locale.ROOT);
+        return value.toLowerCase(lowerCasingLocale_);
     }
 }

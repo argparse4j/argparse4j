@@ -23,6 +23,8 @@
  */
 package net.sourceforge.argparse4j.impl.type;
 
+import java.util.Locale;
+
 /**
  * <p>
  * ArgumentType subclass for enum type using case-insensitive matching of
@@ -41,7 +43,7 @@ public class CaseInsensitiveEnumStringArgumentType<T extends Enum<T>>
         extends CaseInsensitiveEnumArgumentType<T> {
 
     public CaseInsensitiveEnumStringArgumentType(Class<T> type) {
-        super(type);
+        super(type, Locale.ROOT);
     }
 
     /**
