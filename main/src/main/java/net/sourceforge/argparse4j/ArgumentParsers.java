@@ -163,7 +163,7 @@ public final class ArgumentParsers {
                         .getLanguage()) ? new CJKTextWidthCounter() : new ASCIITextWidthCounter(),
                 getFormatWidth(), isSingleMetavar(),
                 getNoDestConversionForPositionalArgs());
-        return new ArgumentParserImpl(config, null, null);
+        return new ArgumentParserImpl(config);
     }
 
     private static final String cjkWidthLangsSrc_[] = { "ja", "zh", "ko" };
