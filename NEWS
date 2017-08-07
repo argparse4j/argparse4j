@@ -1,52 +1,135 @@
-argparse4j 0.7.0
+argparse4j 0.8.0
 ================
 
 Release Note
 ------------
 
-This release adds several new functionalists.
-ArgumentParser#parseKnownArgs() family methods were added to parse
-known arguments only.  Metavar for Boolean and Enum types are now
-automatically generated if neither Argument#metavar() nor
-Argument#choices() is used.  To achieve this, MetavarInference
-interface, which is part of public API, was added for the underlying
-mechanism.  The BooleanArgumentType and its helper method
-Arguments#booleanType() were added for strict boolean parameter
-handling.  Previously, when parsing concatenated short options, the
-default prefix character ("-") is used, regardless of the prefix
-characters given by application.  Now it is corrected, and the prefix
-characters given by application are used for this purpose.
+New features have been added, and things have been improved on a lot
+of fronts. See below.
+
+The Maven build has been modified to allow for extension modules. All
+plug-ins have been upgraded too. CI builds are running on Travis CI
+now.
+
+Multiple differently-configured parsers can now be used at the same
+time without interfering with each other. Client code that adds
+arguments to an argument container can be made reusable.
+
+Optional arguments are now called named arguments. Arguments not given
+by the user can be suppressed in the resulting namespace. Case-
+insensitive enum argument types have been improved and extended.
+
+The exit code will no longer indicate an error if the user requests
+help. The help text can be written to a destination other than
+standard output. Help can be suppressed for arguments and sub parsers.
+
+Parsers can be configured to use a locale other than the default.
+Dutch and Russian translations have been added. CJK character widths
+have been updated.
+
+Java 7 and Hadoop support has been added using extension modules. Both
+introduce a new argument type.
+
+If you, or a project you use, implement "ArgumentParser" or
+"Subparser", you may run into run time issues when you upgrade.
 
 Changes
 -------
 
-* Add BooleanArgumentType for strict boolean value conversion
+Infrastructure
 
-* Infer metavar for enums
+* The project has been restructured to allow for extension modules.
+  Extension modules can add support for newer JDKs and external APIs
+  without introducing JDK requirements or dependencies in the main
+  module.
 
-  Previously, when enum types is used as type, either with
-  ReflectArgumentType or EnumStringArgumentType, application had to
-  set metavar to show their available values.  With this commit,
-  metavar is automatically created using MetavarInference interface.
+* The Maven plug-ins have been upgraded to latest versions.
 
-* Introduce MetavarInference interface, and infer Boolean metavar
+* A CI build is now running for all commits on Travis CI. The build
+  detects the use of classes of SDKs newer than the one we support.
+  See: https://travis-ci.org/tatsuhiro-t/argparse4j
 
-  Previously, when Boolean.class is passed to Argument#type(), and no
-  metavar is provided, the help message was like "-f F".  This is
-  intentional, and expected, but it is better for user to show them F
-  is true or false.  This commit introduce MetavarInference interface.
-  When sub class of ArgumentType also implements MetavarInference, it
-  can infer metavar from its interface.  We made ReflectArgumentType
-  implement this interface, and if Boolean.class is given for its
-  constructor, then return useful Boolean value metavar from
-  inferMetavar() method.
+* Paths of IntelliJ IDEA have been added to the Git ignore list.
 
-* Add ArgumentParser#parseKnownArgs() to parse known arguments only
+Parsers
 
-  If a parameter, named unknown, is given, all unrecognized arguments
-  are stored in it.  This parsing operation does not work in all cases
-  as you expect.  In particular, if variable length positional
-  arguments (nargs("*") or nargs("+")), all non-prefixed arguments are
-  consumed.
+* A new way to create parsers was introduced to allow for multiple,
+  simultaneously-used parser instances with different configurations
+  without interfering with each other. See
+  "ArgumentParsers.newFor(String)".
 
-* Use prefixChars to parse concatenated short options
+* Arguments can be added to "ArgumentGroup",
+  "MutuallyExclusiveArgumentGroup" and "ArgumentParser". Interface
+  "ArgumentContainer" was introduced to allow code adding arguments to
+  one of these to be reused for all of them.
+
+Arguments
+
+* Optional arguments (which could be configured to be required) have
+  been renamed to "named arguments".
+
+* Added (optional) suppression of key with value "null" in the
+  namespace for arguments not present on the command line. See
+  "Argument.setDefault(FeatureControl)".
+
+* Case-insensitive enum matching has been fixed. It now uses the root
+  locale for deterministic conversion of characters to lower case. You
+  have to switch to "CaseInsensitiveEnumNameArgumentType" to make use
+  of the improved implementation. "CaseInsensitiveEnumArgumentType"
+  behaves like before, but its constructor has been deprecated. See
+  "Arguments.caseInsensitiveEnumType(Class<T>)".
+
+* A variant of case-insensitive enum matching has been added that uses
+  "toString()" instead of "name()" for the enum value. See
+  "Arguments.caseInsensitiveEnumStringType(Class<T>)".
+
+* Customized conversion of an enum to a value is now possible by
+  creating a sub class of "CaseInsensitiveEnumArgumentType". See the
+  existing sub classes for an example.
+
+Help
+
+* If you use "ArgumentParser.parseArgsOrFail(String[])" or
+  "ArgumentParser.parseKnownArgsOrFail(String[], List<String>)", and
+  the user requests help, the exit code will be 0 instead of 1 now.
+
+* It is now possible to write the help text to a specific
+  "PrintWriter" instead of standard output. See
+  "ArgumentParser.printHelp(PrintWriter)".
+
+* Added (optional) suppression of help for arguments and sub parsers.
+  See "Argument.help(FeatureControl)" and
+  "Subparser.help(FeatureControl)".
+
+Internationalization
+
+* Added a feature to create a parser that uses a locale other than the
+  default of the JVM. See "ArgumentParserBuilder.locale(Locale)".
+
+* Added Dutch and Russian translations.
+
+* All user messages have been localized. argparse4j is available in
+  Dutch, English, German and Russian.
+
+* The CJK character widths have been updated to Unicode 10.
+
+Extension modules
+
+* An extension module for Java 7 has been added. It contains the
+  following features:
+  * An argument type for "java.nio.file.Path".
+
+* An extension module for Hadoop has been added. It contains the
+  following features:
+  * An argument type for "org.apache.hadoop.fs.Path".
+
+Backward compatibility
+
+* Methods have been added to interfaces "ArgumentParser" and
+  "Subparser". Classes implementing these interfaces must be updated
+  and recompiled. If you use existing binary artifacts containing
+  classes implementing these interfaces, and you upgrade argparse4j, a
+  "NoSuchMethodError" will be thrown if one of these new methods is
+  invoked. These interfaces were not meant to be implemented by client
+  code, so there should be very few, if any, custom implementations.
+  The chances of running into problems should be very slim.
