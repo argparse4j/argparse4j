@@ -2607,6 +2607,40 @@ use `acceptSystemIn()` method::
     usage: prog [-h] [-i IN] [-o OUT]
     prog: error: argument -i/--in: Insufficient permissions to read file: 'not-found'
 
+The verifications can be used in any combination, but not all
+combinations make sense. The verifications can be split in 2
+categories: presence & type, and permissions & properties. You should
+always use exactly 1 verification from the presence & type category,
+and then you can use 0 or more permission & property verifications:
+
+=================== ============== ====== ======= ============
+Permission/property Does not exist Exists Is file Is directory
+=================== ============== ====== ======= ============
+Is absolute         ●              ●      ●       ●  
+------------------- -------------- ------ ------- ------------
+Read                               ●      ●       ●  
+------------------- -------------- ------ ------- ------------
+Write                              ●      ●       ●  
+------------------- -------------- ------ ------- ------------
+Execute                            ●      ●       ●  
+------------------- -------------- ------ ------- ------------
+Write parent        ●              ●      ●       ●  
+------------------- -------------- ------ ------- ------------
+Create              ●                              
+=================== ============== ====== ======= ============
+
+From version 0.8.0 it is also possible to specify verification groups,
+of which 1 must verify successfully. This is useful where you can
+create the needed file or directory yourself if it does not exist yet.
+For example::
+
+    <file argument type>
+            // The output directory does not exist, but it is possible to create it.
+            .verifyNotExists().verifyCanCreate()
+            .or()
+            // The output directory already exists, and it is possible to write to it.
+            .verifyIsDirectory().verifyCanWrite()
+
 Argument groups
 ^^^^^^^^^^^^^^^
 

@@ -37,7 +37,8 @@ import net.sourceforge.argparse4j.inf.ArgumentType;
 public class FileArgumentType implements ArgumentType<File> {
 
     private boolean acceptSystemIn = false;
-    private final FileVerification fileVerification = new FileVerification();
+    private final FileVerification firstFileVerification = new FileVerification();
+    private FileVerification currentFileVerification = firstFileVerification;
 
     public FileArgumentType() {
     }
@@ -60,7 +61,7 @@ public class FileArgumentType implements ArgumentType<File> {
      * @return this
      */
     public FileArgumentType verifyExists() {
-        fileVerification.verifyExists = true;
+        currentFileVerification.verifyExists = true;
         return this;
     }
 
@@ -71,7 +72,7 @@ public class FileArgumentType implements ArgumentType<File> {
      * @return this
      */
     public FileArgumentType verifyNotExists() {
-        fileVerification.verifyNotExists = true;
+        currentFileVerification.verifyNotExists = true;
         return this;
     }
 
@@ -82,7 +83,7 @@ public class FileArgumentType implements ArgumentType<File> {
      * @return this
      */
     public FileArgumentType verifyIsFile() {
-        fileVerification.verifyIsFile = true;
+        currentFileVerification.verifyIsFile = true;
         return this;
     }
 
@@ -93,7 +94,7 @@ public class FileArgumentType implements ArgumentType<File> {
      * @return this
      */
     public FileArgumentType verifyIsDirectory() {
-        fileVerification.verifyIsDirectory = true;
+        currentFileVerification.verifyIsDirectory = true;
         return this;
     }
 
@@ -104,7 +105,7 @@ public class FileArgumentType implements ArgumentType<File> {
      * @return this
      */
     public FileArgumentType verifyCanRead() {
-        fileVerification.verifyCanRead = true;
+        currentFileVerification.verifyCanRead = true;
         return this;
     }
 
@@ -115,7 +116,7 @@ public class FileArgumentType implements ArgumentType<File> {
      * @return this
      */
     public FileArgumentType verifyCanWrite() {
-        fileVerification.verifyCanWrite = true;
+        currentFileVerification.verifyCanWrite = true;
         return this;
     }
 
@@ -126,7 +127,7 @@ public class FileArgumentType implements ArgumentType<File> {
      * @return this
      */
     public FileArgumentType verifyCanWriteParent() {
-        fileVerification.verifyCanWriteParent = true;
+        currentFileVerification.verifyCanWriteParent = true;
         return this;
     }
 
@@ -137,7 +138,7 @@ public class FileArgumentType implements ArgumentType<File> {
      * @return this
      */
     public FileArgumentType verifyCanCreate() {
-        fileVerification.verifyCanCreate = true;
+        currentFileVerification.verifyCanCreate = true;
         return this;
     }
 
@@ -148,7 +149,7 @@ public class FileArgumentType implements ArgumentType<File> {
      * @return this
      */
     public FileArgumentType verifyCanExecute() {
-        fileVerification.verifyCanExecute = true;
+        currentFileVerification.verifyCanExecute = true;
         return this;
     }
 
@@ -159,7 +160,18 @@ public class FileArgumentType implements ArgumentType<File> {
      * @return this
      */
     public FileArgumentType verifyIsAbsolute() {
-        fileVerification.verifyIsAbsolute = true;
+        currentFileVerification.verifyIsAbsolute = true;
+        return this;
+    }
+
+    /**
+     * Start a new verification group. Of all verification groups at least 1
+     * must be verified successfully for the file to be accepted.
+     *
+     * @return this
+     */
+    public FileArgumentType or() {
+        currentFileVerification = currentFileVerification.or();
         return this;
     }
 
@@ -168,7 +180,7 @@ public class FileArgumentType implements ArgumentType<File> {
             throws ArgumentParserException {
         File file = new File(value);
         if (!isSystemIn(file)) {
-            fileVerification.verify(parser, arg, file);
+            firstFileVerification.verify(parser, arg, file);
         }
         return file;
     }

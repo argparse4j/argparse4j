@@ -56,7 +56,8 @@ public class PathArgumentType implements ArgumentType<Path> {
 
     private final FileSystem fileSystem;
     private boolean acceptSystemIn = false;
-    private final FileVerification fileVerification = new FileVerification();
+    private final FileVerification firstFileVerification = new FileVerification();
+    private FileVerification currentFileVerification = firstFileVerification;
 
     /**
      * Create an instance using the default file system for resolving the path.
@@ -99,7 +100,7 @@ public class PathArgumentType implements ArgumentType<Path> {
      * @return this
      */
     public PathArgumentType verifyExists() {
-        fileVerification.verifyExists = true;
+        currentFileVerification.verifyExists = true;
         return this;
     }
 
@@ -110,7 +111,7 @@ public class PathArgumentType implements ArgumentType<Path> {
      * @return this
      */
     public PathArgumentType verifyNotExists() {
-        fileVerification.verifyNotExists = true;
+        currentFileVerification.verifyNotExists = true;
         return this;
     }
 
@@ -121,7 +122,7 @@ public class PathArgumentType implements ArgumentType<Path> {
      * @return this
      */
     public PathArgumentType verifyIsFile() {
-        fileVerification.verifyIsFile = true;
+        currentFileVerification.verifyIsFile = true;
         return this;
     }
 
@@ -132,7 +133,7 @@ public class PathArgumentType implements ArgumentType<Path> {
      * @return this
      */
     public PathArgumentType verifyIsDirectory() {
-        fileVerification.verifyIsDirectory = true;
+        currentFileVerification.verifyIsDirectory = true;
         return this;
     }
 
@@ -143,7 +144,7 @@ public class PathArgumentType implements ArgumentType<Path> {
      * @return this
      */
     public PathArgumentType verifyCanRead() {
-        fileVerification.verifyCanRead = true;
+        currentFileVerification.verifyCanRead = true;
         return this;
     }
 
@@ -154,7 +155,7 @@ public class PathArgumentType implements ArgumentType<Path> {
      * @return this
      */
     public PathArgumentType verifyCanWrite() {
-        fileVerification.verifyCanWrite = true;
+        currentFileVerification.verifyCanWrite = true;
         return this;
     }
 
@@ -165,7 +166,7 @@ public class PathArgumentType implements ArgumentType<Path> {
      * @return this
      */
     public PathArgumentType verifyCanWriteParent() {
-        fileVerification.verifyCanWriteParent = true;
+        currentFileVerification.verifyCanWriteParent = true;
         return this;
     }
 
@@ -176,7 +177,7 @@ public class PathArgumentType implements ArgumentType<Path> {
      * @return this
      */
     public PathArgumentType verifyCanCreate() {
-        fileVerification.verifyCanCreate = true;
+        currentFileVerification.verifyCanCreate = true;
         return this;
     }
 
@@ -187,7 +188,7 @@ public class PathArgumentType implements ArgumentType<Path> {
      * @return this
      */
     public PathArgumentType verifyCanExecute() {
-        fileVerification.verifyCanExecute = true;
+        currentFileVerification.verifyCanExecute = true;
         return this;
     }
 
@@ -198,7 +199,18 @@ public class PathArgumentType implements ArgumentType<Path> {
      * @return this
      */
     public PathArgumentType verifyIsAbsolute() {
-        fileVerification.verifyIsAbsolute = true;
+        currentFileVerification.verifyIsAbsolute = true;
+        return this;
+    }
+
+    /**
+     * Start a new verification group. Of all verification groups at least 1
+     * must be verified successfully for the path to be accepted.
+     *
+     * @return this
+     */
+    public PathArgumentType or() {
+        currentFileVerification = currentFileVerification.or();
         return this;
     }
 
@@ -222,7 +234,7 @@ public class PathArgumentType implements ArgumentType<Path> {
         try {
             File file = path.toFile();
             if (!isSystemIn(value)) {
-                fileVerification.verify(parser, arg, file);
+                firstFileVerification.verify(parser, arg, file);
             }
         } catch (UnsupportedOperationException e) {
             // Ignore: Not the default file system provider, so conversion to a

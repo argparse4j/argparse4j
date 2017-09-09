@@ -55,12 +55,40 @@ public class FileVerification {
     public boolean verifyCanCreate = false;
     public boolean verifyCanExecute = false;
     public boolean verifyIsAbsolute = false;
+    private FileVerification nextFileVerification;
+    
+    public FileVerification or() {
+        nextFileVerification = new FileVerification();
+        return nextFileVerification;
+    }
 
     public void verify(ArgumentParser parser, Argument arg, File file) throws
             ArgumentParserException {
         if (verifyIsAbsolute) {
             verifyIsAbsolute(parser, arg, file);
         }
+        
+        boolean mustContinueWithNextFileVerification;
+        try {
+            verifyPresenceAndType(parser, arg, file);
+            mustContinueWithNextFileVerification = false;
+        } catch (ArgumentParserException e) {
+            if (nextFileVerification == null) {
+                throw e;
+            } else {
+                mustContinueWithNextFileVerification = true;
+            }
+        }
+        
+        if (mustContinueWithNextFileVerification) {
+            nextFileVerification.verify(parser, arg, file);
+        } else {
+            verifyPermissions(parser, arg, file);
+        }
+    }
+
+    private void verifyPresenceAndType(ArgumentParser parser, Argument arg,
+            File file) throws ArgumentParserException {
         if (verifyExists) {
             verifyExists(parser, arg, file);
         }
@@ -73,6 +101,10 @@ public class FileVerification {
         if (verifyIsDirectory) {
             verifyIsDirectory(parser, arg, file);
         }
+    }
+
+    private void verifyPermissions(ArgumentParser parser, Argument arg,
+            File file) throws ArgumentParserException {
         if (verifyCanRead) {
             verifyCanRead(parser, arg, file);
         }
@@ -92,35 +124,35 @@ public class FileVerification {
 
     private void verifyExists(ArgumentParser parser, Argument arg, File file)
             throws ArgumentParserException {
-        if (!file.exists()) {
+        if (!exists(file)) {
             throwException(parser, arg, file, "fileNotFoundError");
         }
     }
 
     private void verifyNotExists(ArgumentParser parser, Argument arg, File file)
             throws ArgumentParserException {
-        if (file.exists()) {
+        if (exists(file)) {
             throwException(parser, arg, file, "fileFoundError");
         }
     }
 
     private void verifyIsFile(ArgumentParser parser, Argument arg, File file)
             throws ArgumentParserException {
-        if (!file.isFile()) {
+        if (!isFile(file)) {
             throwException(parser, arg, file, "notAFileError");
         }
     }
 
     private void verifyIsDirectory(ArgumentParser parser, Argument arg,
             File file) throws ArgumentParserException {
-        if (!file.isDirectory()) {
+        if (!isDirectory(file)) {
             throwException(parser, arg, file, "notADirectoryError");
         }
     }
 
     private void verifyCanRead(ArgumentParser parser, Argument arg, File file)
             throws ArgumentParserException {
-        if (!file.canRead()) {
+        if (!canRead(file)) {
             throwException(parser, arg, file,
                     "insufficientPermissionsToReadFileError");
         }
@@ -128,7 +160,7 @@ public class FileVerification {
 
     private void verifyCanWrite(ArgumentParser parser, Argument arg, File file)
             throws ArgumentParserException {
-        if (!file.canWrite()) {
+        if (!canWrite(file)) {
             throwException(parser, arg, file,
                     "insufficientPermissionsToWriteFileError");
         }
@@ -137,7 +169,7 @@ public class FileVerification {
     private void verifyCanWriteParent(ArgumentParser parser, Argument arg,
             File file) throws ArgumentParserException {
         File parent = file.getParentFile();
-        if (parent == null || !parent.canWrite()) {
+        if (parent == null || !canWrite(parent)) {
             throwException(parser, arg, file, "cannotWriteParentOfFileError");
         }
     }
@@ -146,7 +178,7 @@ public class FileVerification {
             throws ArgumentParserException {
         try {
             File parent = file.getCanonicalFile().getParentFile();
-            if (parent != null && parent.canWrite()) {
+            if (parent != null && canWrite(parent)) {
                 return;
             }
         } catch (IOException e) {
@@ -159,7 +191,7 @@ public class FileVerification {
 
     private void verifyCanExecute(ArgumentParser parser, Argument arg, File file)
             throws ArgumentParserException {
-        if (!file.canExecute()) {
+        if (!canExecute(file)) {
             throwException(parser, arg, file,
                     "insufficientPermissionsToExecuteFileError");
         }
@@ -182,5 +214,31 @@ public class FileVerification {
                                 messageKey),
                         file),
                 parser, arg);
+    }
+
+    // Methods to allow mocking the return values of "File" methods.
+    
+    protected boolean exists(File file) {
+        return file.exists();
+    }
+
+    protected boolean isDirectory(File file) {
+        return file.isDirectory();
+    }
+
+    protected boolean isFile(File file) {
+        return file.isFile();
+    }
+
+    protected boolean canRead(File file) {
+        return file.canRead();
+    }
+
+    protected boolean canWrite(File file) {
+        return file.canWrite();
+    }
+
+    protected boolean canExecute(File file) {
+        return file.canExecute();
     }
 }

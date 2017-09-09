@@ -86,6 +86,12 @@ Arguments
 * Customized conversion of an enum to a value is now possible by
   creating a sub class of "CaseInsensitiveEnumArgumentType". See the
   existing sub classes for an example.
+  
+* It is now possible to specify multiple verification groups for "File"
+  (and Java 7 "Path") types. If at least one group is verified
+  successfully, the argument is accepted. This is useful for
+  applications that can create the missing file or directory
+  themselves.
 
 Help
 
