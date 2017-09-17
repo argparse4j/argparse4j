@@ -2,7 +2,7 @@
     <parent>
         <artifactId>argparse4j-root</artifactId>
         <groupId>net.sourceforge.argparse4j</groupId>
-        <version>0.8.0</version>
+        <version>0.9.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
