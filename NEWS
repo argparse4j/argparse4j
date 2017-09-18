@@ -1,3 +1,14 @@
+argparse4j 0.8.1
+================
+
+Release Note
+------------
+
+This release fixes the missing argparse4j-root and
+argparse4j-extensions on maven repository.
+
+
+
 argparse4j 0.8.0
 ================
 
