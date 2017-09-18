@@ -19,7 +19,7 @@
     </modules>
     
     <properties>
-        <previously.released.version>0.7.0</previously.released.version>
+        <previously.released.version>0.8.1</previously.released.version>
         <jdk.build.rt.jar.path>${env.JAVA_HOME}/jre/lib/rt.jar</jdk.build.rt.jar.path>
         <jdk.6.rt.jar.path>${jdk.build.rt.jar.path}</jdk.6.rt.jar.path>
         <jdk.7.rt.jar.path>${jdk.build.rt.jar.path}</jdk.7.rt.jar.path>
