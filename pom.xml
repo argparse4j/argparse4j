@@ -28,7 +28,7 @@
     <licenses>
         <license>
             <name>MIT</name>
-            <url>https://raw.github.com/tatsuhiro-t/argparse4j/master/LICENSE.txt</url>
+            <url>https://raw.github.com/argparse4j/argparse4j/master/LICENSE.txt</url>
         </license>
     </licenses>
 
@@ -96,13 +96,13 @@
 
     <issueManagement>
         <system>github.com</system>
-        <url>https://github.com/tatsuhiro-t/argparse4j/issues</url>
+        <url>https://github.com/argparse4j/argparse4j/issues</url>
     </issueManagement>
 
     <scm>
-        <connection>scm:git:git://github.com/tatsuhiro-t/argparse4j.git</connection>
-        <developerConnection>scm:git:git@github.com:tatsuhiro-t/argparse4j.git</developerConnection>
-        <url>https://github.com/tatsuhiro-t/argparse4j</url>
+        <connection>scm:git:git://github.com/argparse4j/argparse4j.git</connection>
+        <developerConnection>scm:git:git@github.com:argparse4j/argparse4j.git</developerConnection>
+        <url>https://github.com/argparse4j/argparse4j</url>
     </scm>
 
     <distributionManagement>
