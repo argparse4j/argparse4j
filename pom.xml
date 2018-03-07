@@ -16,6 +16,7 @@
     <modules>
         <module>extensions</module>
         <module>main</module>
+        <module>issue110</module>
     </modules>
     
     <properties>
