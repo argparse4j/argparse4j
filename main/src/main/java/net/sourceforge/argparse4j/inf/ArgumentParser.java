@@ -365,6 +365,22 @@ public interface ArgumentParser extends ArgumentContainer {
             throws ArgumentParserException;
 
     /**
+     * Convenience method for parsing args into a UserData object
+     * @see #parseArgs(String[], Object)
+     * @param args
+     *            Command line arguments
+     * @param userDataClass
+     *            Class of object to store attributes. Class requires a public no-args constructor.
+     * @param <T>
+     *            The return type of user data
+     * @return
+     * @throws ArgumentParserException
+     *            If an error occurs of issue with reflection
+     */
+    <T> T parseArgs(String[] args, Class<T> userDataClass)
+            throws ArgumentParserException;
+
+    /**
      * <p>
      * Parses command line arguments.
      * </p>

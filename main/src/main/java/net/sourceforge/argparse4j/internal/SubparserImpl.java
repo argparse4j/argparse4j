@@ -209,6 +209,12 @@ public final class SubparserImpl implements Subparser, ArgumentParser {
     }
 
     @Override
+    public <T> T parseArgs(String[] args, Class<T> userDataClass)
+            throws ArgumentParserException{
+        return parser_.parseArgs(args, userDataClass);
+    }
+
+    @Override
     public void parseArgs(String[] args, Map<String, Object> attrs,
             Object userData) throws ArgumentParserException {
         parser_.parseArgs(args, attrs, userData);

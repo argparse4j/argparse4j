@@ -584,6 +584,20 @@ public final class ArgumentParserImpl implements ArgumentParser {
     }
 
     @Override
+    public <T> T parseArgs(String[] args, Class<T> userDataClass)
+            throws ArgumentParserException {
+        try {
+            T userData = userDataClass.newInstance();
+            parseArgs(args, userData);
+            return userData;
+        } catch (InstantiationException e) {
+            throw new ArgumentParserException(e, this);
+        } catch (IllegalAccessException e) {
+            throw new ArgumentParserException(e, this);
+        }
+    }
+
+    @Override
     public void parseKnownArgs(String[] args, List<String> unknown,
             Object userData) throws ArgumentParserException {
         Map<String, Object> attrs = new HashMap<String, Object>();

@@ -1021,33 +1021,6 @@ public class ArgumentParserImplTest {
 
     @Test
     public void testParseArgsWithUserData() throws ArgumentParserException {
-        @SuppressWarnings({"unused", "WeakerAccess"})
-        class Out {
-            @Arg(dest = "null")
-            public String x;
-            @Arg(dest = "username", ignoreError = true)
-            private int y;
-            @Arg(dest = "username")
-            String name;
-            @Arg
-            String host;
-            
-            private int[] ints;
-
-            @Arg(dest = "attrs")
-            private void setInts(int ints[]) {
-                this.ints = ints;
-            }
-
-            int[] getInts() {
-                return ints;
-            }
-
-            @Arg(dest = "attrs", ignoreError = true)
-            public void setY(int y) {
-                this.y = y;
-            }
-        }
 
         ap.addArgument("--username");
         ap.addArgument("--host");
@@ -1058,12 +1031,7 @@ public class ArgumentParserImplTest {
         assertEquals("example.com", out.host);
         assertArrayEquals(new int[] { 1, 2, 3 }, out.getInts());
         
-        // Test inheritance
-        class SubOut extends Out {
-        	@Arg
-            private int port;
-        }
-        
+
         ap.addArgument("--port").type(Integer.class);
         SubOut subOut = new SubOut();
         ap.parseArgs("--username alice --host example.com --port 8080 --attrs 1 2 3".split(" "), subOut);
@@ -1072,6 +1040,59 @@ public class ArgumentParserImplTest {
         assertArrayEquals(new int[] { 1, 2, 3 }, subOut.getInts());
         assertEquals(8080, subOut.port);
         
+    }
+    @SuppressWarnings({"unused", "WeakerAccess"})
+    static class Out {
+        @Arg(dest = "null")
+        public String x;
+        @Arg(dest = "username", ignoreError = true)
+        private int y;
+        @Arg(dest = "username")
+        String name;
+        @Arg
+        String host;
+
+        private int[] ints;
+
+        @Arg(dest = "attrs")
+        private void setInts(int ints[]) {
+            this.ints = ints;
+        }
+
+        int[] getInts() {
+            return ints;
+        }
+
+        @Arg(dest = "attrs", ignoreError = true)
+        public void setY(int y) {
+            this.y = y;
+        }
+    }
+    // Test inheritance
+    static class SubOut extends Out {
+        @Arg
+        private int port;
+    }
+
+    @Test
+    public void testParseArgsWithUserDataClass() throws ArgumentParserException {
+
+        ap.addArgument("--username");
+        ap.addArgument("--host");
+        ap.addArgument("--attrs").nargs("*").type(Integer.class);
+        Out out = ap.parseArgs("--username alice --host example.com --attrs 1 2 3".split(" "), Out.class);
+        assertEquals("alice", out.name);
+        assertEquals("example.com", out.host);
+        assertArrayEquals(new int[] { 1, 2, 3 }, out.getInts());
+
+
+        ap.addArgument("--port").type(Integer.class);
+        SubOut subOut = ap.parseArgs("--username alice --host example.com --port 8080 --attrs 1 2 3".split(" "), SubOut.class);
+        assertEquals("alice", subOut.name);
+        assertEquals("example.com", subOut.host);
+        assertArrayEquals(new int[] { 1, 2, 3 }, subOut.getInts());
+        assertEquals(8080, subOut.port);
+
     }
 
     @Test
