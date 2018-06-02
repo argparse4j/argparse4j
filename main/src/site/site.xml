@@ -22,10 +22,10 @@
 		<menu name="Overview">
 			<item name="Introduction" href="index.html" />
 			<item name="Download"
-				href="https://github.com/tatsuhiro-t/argparse4j/releases" />
+				href="https://github.com/argparse4j/argparse4j/releases" />
 			<item name="Download (~0.5.0)"
 				href="http://sourceforge.net/projects/argparse4j/files/" />
-			<item name="Source Code" href="https://github.com/tatsuhiro-t/argparse4j" />
+			<item name="Source Code" href="https://github.com/argparse4j/argparse4j" />
 			<item name="Usage" href="usage.html" />
 			<item name="Examples" href="examples.html" />
 		</menu>
