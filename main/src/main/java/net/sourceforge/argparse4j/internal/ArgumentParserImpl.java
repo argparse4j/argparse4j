@@ -1463,7 +1463,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
             return;
         }
         writer.println();
-        writer.println("Did you mean:");
+        writer.println(localize("didYouMean"));
         for (Candidate candidate : candidates) {
             if (candidate.similarity > threshold) {
                 break;
