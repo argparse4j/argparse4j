@@ -268,7 +268,8 @@ public final class ArgumentImpl implements Argument {
             if (!help_.isEmpty()) {
                 sb.append(" ");
             }
-            sb.append("(default: ").append(default_.toString()).append(")");
+            sb.append("(").append(localize("default")).append(" ")
+                    .append(default_.toString()).append(")");
             help = sb.toString();
         } else {
             help = help_;
