@@ -56,35 +56,52 @@ public class FileVerification {
     public boolean verifyCanExecute = false;
     public boolean verifyIsAbsolute = false;
     private FileVerification nextFileVerification;
-    
+
     public FileVerification or() {
         nextFileVerification = new FileVerification();
         return nextFileVerification;
     }
 
-    public void verify(ArgumentParser parser, Argument arg, File file) throws
-            ArgumentParserException {
+    public void verify(final ArgumentParser parser, final Argument arg,
+            final File file) throws ArgumentParserException {
         if (verifyIsAbsolute) {
             verifyIsAbsolute(parser, arg, file);
         }
-        
-        boolean mustContinueWithNextFileVerification;
+
+        FileVerificationStep verifyPresenceAndType = new FileVerificationStep() {
+            @Override
+            public void verify() throws ArgumentParserException {
+                verifyPresenceAndType(parser, arg, file);
+            }
+        };
+        if (!verifyStep(verifyPresenceAndType)) {
+            nextFileVerification.verify(parser, arg, file);
+        } else {
+            FileVerificationStep verifyPermissions = new FileVerificationStep() {
+                @Override
+                public void verify() throws ArgumentParserException {
+                    verifyPermissions(parser, arg, file);
+                }
+            };
+            if (!verifyStep(verifyPermissions)) {
+                nextFileVerification.verify(parser, arg, file);
+            }
+        }
+    }
+
+    private boolean verifyStep(FileVerificationStep step) throws
+            ArgumentParserException {
+        boolean result = true;
         try {
-            verifyPresenceAndType(parser, arg, file);
-            mustContinueWithNextFileVerification = false;
+            step.verify();
         } catch (ArgumentParserException e) {
             if (nextFileVerification == null) {
                 throw e;
             } else {
-                mustContinueWithNextFileVerification = true;
+                result = false;
             }
         }
-        
-        if (mustContinueWithNextFileVerification) {
-            nextFileVerification.verify(parser, arg, file);
-        } else {
-            verifyPermissions(parser, arg, file);
-        }
+        return result;
     }
 
     private void verifyPresenceAndType(ArgumentParser parser, Argument arg,
@@ -122,22 +139,22 @@ public class FileVerification {
         }
     }
 
-    private void verifyExists(ArgumentParser parser, Argument arg, File file)
-            throws ArgumentParserException {
+    private void verifyExists(ArgumentParser parser, Argument arg,
+            File file) throws ArgumentParserException {
         if (!exists(file)) {
             throwException(parser, arg, file, "fileNotFoundError");
         }
     }
 
-    private void verifyNotExists(ArgumentParser parser, Argument arg, File file)
-            throws ArgumentParserException {
+    private void verifyNotExists(ArgumentParser parser, Argument arg,
+            File file) throws ArgumentParserException {
         if (exists(file)) {
             throwException(parser, arg, file, "fileFoundError");
         }
     }
 
-    private void verifyIsFile(ArgumentParser parser, Argument arg, File file)
-            throws ArgumentParserException {
+    private void verifyIsFile(ArgumentParser parser, Argument arg,
+            File file) throws ArgumentParserException {
         if (!isFile(file)) {
             throwException(parser, arg, file, "notAFileError");
         }
@@ -150,16 +167,16 @@ public class FileVerification {
         }
     }
 
-    private void verifyCanRead(ArgumentParser parser, Argument arg, File file)
-            throws ArgumentParserException {
+    private void verifyCanRead(ArgumentParser parser, Argument arg,
+            File file) throws ArgumentParserException {
         if (!canRead(file)) {
             throwException(parser, arg, file,
                     "insufficientPermissionsToReadFileError");
         }
     }
 
-    private void verifyCanWrite(ArgumentParser parser, Argument arg, File file)
-            throws ArgumentParserException {
+    private void verifyCanWrite(ArgumentParser parser, Argument arg,
+            File file) throws ArgumentParserException {
         if (!canWrite(file)) {
             throwException(parser, arg, file,
                     "insufficientPermissionsToWriteFileError");
@@ -174,8 +191,8 @@ public class FileVerification {
         }
     }
 
-    private void verifyCanCreate(ArgumentParser parser, Argument arg, File file)
-            throws ArgumentParserException {
+    private void verifyCanCreate(ArgumentParser parser, Argument arg,
+            File file) throws ArgumentParserException {
         try {
             File parent = file.getCanonicalFile().getParentFile();
             if (parent != null && canWrite(parent)) {
@@ -189,35 +206,31 @@ public class FileVerification {
         throwException(parser, arg, file, "cannotCreateFileError");
     }
 
-    private void verifyCanExecute(ArgumentParser parser, Argument arg, File file)
-            throws ArgumentParserException {
+    private void verifyCanExecute(ArgumentParser parser, Argument arg,
+            File file) throws ArgumentParserException {
         if (!canExecute(file)) {
             throwException(parser, arg, file,
                     "insufficientPermissionsToExecuteFileError");
         }
     }
 
-    private void verifyIsAbsolute(ArgumentParser parser, Argument arg, File file)
-            throws ArgumentParserException {
+    private void verifyIsAbsolute(ArgumentParser parser, Argument arg,
+            File file) throws ArgumentParserException {
         if (!file.isAbsolute()) {
             throwException(parser, arg, file, "notAnAbsoluteFileError");
         }
     }
 
     private void throwException(ArgumentParser parser, Argument arg, File file,
-            String messageKey)
-            throws ArgumentParserException {
-        throw new ArgumentParserException(
-                String.format(TextHelper.LOCALE_ROOT,
-                        MessageLocalization.localize(
-                                parser.getConfig().getResourceBundle(),
-                                messageKey),
-                        file),
-                parser, arg);
+            String messageKey) throws ArgumentParserException {
+        throw new ArgumentParserException(String.format(TextHelper.LOCALE_ROOT,
+                MessageLocalization
+                        .localize(parser.getConfig().getResourceBundle(),
+                                messageKey), file), parser, arg);
     }
 
     // Methods to allow mocking the return values of "File" methods.
-    
+
     protected boolean exists(File file) {
         return file.exists();
     }
@@ -241,4 +254,8 @@ public class FileVerification {
     protected boolean canExecute(File file) {
         return file.canExecute();
     }
+}
+
+interface FileVerificationStep {
+    void verify() throws ArgumentParserException;
 }
