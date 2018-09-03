@@ -2,6 +2,7 @@ package net.sourceforge.argparse4j.impl.type;
 
 import java.util.Locale;
 
+import net.sourceforge.argparse4j.helper.MessageLocalization;
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
@@ -67,10 +68,11 @@ public class CaseInsensitiveEnumArgumentType<T extends Enum<T>>
 
         String choices = TextHelper.concat(getStringRepresentations(), 0,
                 ",", "{", "}");
-        throw new ArgumentParserException(String.format(
-                TextHelper.LOCALE_ROOT,
-                "could not convert '%s' (choose from %s)", value, choices),
-                parser, arg);
+        throw new ArgumentParserException(String.format(TextHelper.LOCALE_ROOT,
+                MessageLocalization.localize(
+                        parser.getConfig().getResourceBundle(),
+                        "couldNotConvertChooseFromError"),
+                value, choices), parser, arg);
     }
 
     /**
