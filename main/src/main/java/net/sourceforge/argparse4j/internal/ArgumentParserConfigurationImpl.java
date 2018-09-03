@@ -7,7 +7,8 @@ import net.sourceforge.argparse4j.helper.PrefixPattern;
 import net.sourceforge.argparse4j.helper.TextWidthCounter;
 import net.sourceforge.argparse4j.inf.ArgumentParserConfiguration;
 
-public class ArgumentParserConfigurationImpl implements ArgumentParserConfiguration {
+public class ArgumentParserConfigurationImpl
+        implements ArgumentParserConfiguration {
     final String prog_;
     final boolean addHelp_;
     final String prefixChars_;
@@ -29,9 +30,11 @@ public class ArgumentParserConfigurationImpl implements ArgumentParserConfigurat
         prefixChars_ = prefixChars;
         prefixPattern_ = new PrefixPattern(prefixChars);
         fromFilePrefix_ = fromFilePrefix;
-        fromFilePrefixPattern_ = fromFilePrefix == null ? null : new PrefixPattern(fromFilePrefix);
+        fromFilePrefixPattern_ = fromFilePrefix == null ? null : new PrefixPattern(
+                fromFilePrefix);
         resourceBundle_ = ResourceBundle
-                .getBundle(ArgumentParserImpl.class.getName(), locale);
+                .getBundle(ArgumentParserImpl.class.getName(), locale,
+                        UnitedStatesEnglishFallbackControl.INSTANCE);
         textWidthCounter_ = textWidthCounter;
         formatWidth_ = formatWidth;
         singleMetavar_ = singleMetavar;
@@ -48,7 +51,8 @@ public class ArgumentParserConfigurationImpl implements ArgumentParserConfigurat
         prefixChars_ = prefixChars;
         prefixPattern_ = new PrefixPattern(prefixChars);
         fromFilePrefix_ = fromFilePrefix;
-        fromFilePrefixPattern_ = fromFilePrefix == null ? null : new PrefixPattern(fromFilePrefix);
+        fromFilePrefixPattern_ = fromFilePrefix == null ? null : new PrefixPattern(
+                fromFilePrefix);
         resourceBundle_ = resourceBundle;
         textWidthCounter_ = textWidthCounter;
         formatWidth_ = formatWidth;
@@ -71,5 +75,14 @@ public class ArgumentParserConfigurationImpl implements ArgumentParserConfigurat
     @Override
     public Locale getLocale() {
         return resourceBundle_.getLocale();
+    }
+}
+
+class UnitedStatesEnglishFallbackControl extends ResourceBundle.Control {
+    static final UnitedStatesEnglishFallbackControl INSTANCE = new UnitedStatesEnglishFallbackControl();
+
+    @Override
+    public Locale getFallbackLocale(String baseName, Locale locale) {
+        return Locale.US;
     }
 }

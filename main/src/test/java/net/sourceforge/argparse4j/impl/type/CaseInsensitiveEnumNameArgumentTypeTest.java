@@ -61,7 +61,7 @@ public class CaseInsensitiveEnumNameArgumentTypeTest {
     }
 
     @Test
-    public void testConvertErrorsWithUnknownMember() throws ArgumentParserException {
+    public void testConvertErrorsWithUnknownMember() {
         ArgumentParser ap = ArgumentParsers.newFor("argparse4j")
                 .locale(Locale.US).build();
         CaseInsensitiveEnumNameArgumentType<Lang> type = CaseInsensitiveEnumNameArgumentType
@@ -77,8 +77,7 @@ public class CaseInsensitiveEnumNameArgumentTypeTest {
     }
     
     @Test
-    public void testIgnoresLocaleOfParserForCaseInsensitivity() throws
-            ArgumentParserException {
+    public void testIgnoresLocaleOfParserForCaseInsensitivity() {
         ArgumentParser ap = ArgumentParsers.newFor("argparse4j")
                 .locale(new Locale("tr")).build();
         CaseInsensitiveEnumNameArgumentType<Lang> type = CaseInsensitiveEnumNameArgumentType
