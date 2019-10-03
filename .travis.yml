@@ -1,6 +1,8 @@
 language: java
 addons:
   apt:
+    sources:
+      - openjdk-r-java
     packages:
       - openjdk-6-jdk
 jdk: openjdk8
