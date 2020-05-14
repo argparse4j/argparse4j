@@ -8,7 +8,7 @@ before_install:
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip -B -V
 script:
   # Use JDK 7 as the runtime for the JDK 6 build for now
-  - jdk_switcher use openjdk7
+  - jdk_switcher use openjdk-7-jdk
   - export JAVA6_HOME=$JAVA_HOME
   - export JAVA7_HOME=$JAVA_HOME
   - jdk_switcher use openjdk8
