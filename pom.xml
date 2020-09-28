@@ -20,9 +20,10 @@
     
     <properties>
         <previously.released.version>0.8.1</previously.released.version>
-        <jdk.build.rt.jar.path>${env.JAVA_HOME}/jre/lib/rt.jar</jdk.build.rt.jar.path>
-        <jdk.6.rt.jar.path>${jdk.build.rt.jar.path}</jdk.6.rt.jar.path>
-        <jdk.7.rt.jar.path>${jdk.build.rt.jar.path}</jdk.7.rt.jar.path>
+        <!-- empty path variables by default to prevent IDE errors -->
+        <!-- these variables must be set by an argument property or the JAVA6_HOME/JAVA7_HOME environment variables -->
+        <jdk.6.rt.jar.path/>
+        <jdk.7.rt.jar.path/>
     </properties>
 
     <licenses>
@@ -145,6 +146,81 @@
         </dependencies>
     </dependencyManagement>
 
+    <profiles>
+        <!-- set property 'jdk.6.rt.jar.path' based on environment variable JAVA6_HOME -->
+        <profile>
+            <id>env-java6-home</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>env.JAVA6_HOME</name>
+                </property>
+            </activation>
+            <properties>
+                <jdk.6.rt.jar.path>${env.JAVA6_HOME}/jre/lib/rt.jar</jdk.6.rt.jar.path>
+            </properties>
+        </profile>
+        <!-- set property 'jdk.7.rt.jar.path' based on environment variable JAVA7_HOME -->
+        <profile>
+            <id>env-java7-home</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>env.JAVA7_HOME</name>
+                </property>
+            </activation>
+            <properties>
+                <jdk.7.rt.jar.path>${env.JAVA7_HOME}/jre/lib/rt.jar</jdk.7.rt.jar.path>
+            </properties>
+        </profile>
+        <!-- enable validation checks unless -DskipJdkPathValidation=true is set -->
+        <profile>
+            <id>enforce-jdk-paths</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>skipJdkPathValidation</name>
+                    <value>!true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <version>1.4.1</version>
+                        <executions>
+                            <execution>
+                                <id>enforce-jdk-paths</id>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <requireProperty>
+                                            <property>jdk.6.rt.jar.path</property>
+                                            <message>A JDK 6 rt.jar path must be specified via property 'jdk.6.rt.jar.path' or derived from environment variable JAVA6_HOME</message>
+                                            <!-- require a non-empty string -->
+                                            <regex>.+</regex>
+                                            <regexMessage>A JDK 6 rt.jar path must be specified via property 'jdk.6.rt.jar.path' or derived from environment variable JAVA6_HOME</regexMessage>
+                                        </requireProperty>
+                                        <requireProperty>
+                                            <property>jdk.7.rt.jar.path</property>
+                                            <message>A JDK 7 rt.jar path must be specified via property 'jdk.7.rt.jar.path' or derived from environment variable JAVA7_HOME</message>
+                                            <!-- require a non-empty string -->
+                                            <regex>.+</regex>
+                                            <regexMessage>A JDK 7 rt.jar path must be specified via property 'jdk.7.rt.jar.path' or derived from environment variable JAVA7_HOME</regexMessage>
+                                        </requireProperty>
+                                    </rules>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
             <plugin>
@@ -159,6 +235,10 @@
                         </goals>
                         <configuration>
                             <rules>
+                                <requireJavaVersion>
+                                    <version>[1.9,)</version>
+                                    <message>A JDK 9+ installation is required to compile this Maven project</message>
+                                </requireJavaVersion>
                                 <requireMavenVersion>
                                     <version>3.0.4</version>
                                 </requireMavenVersion>
@@ -224,7 +304,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.6.2</version>
+                    <version>3.8.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.sonatype.plugins</groupId>
@@ -244,7 +324,7 @@
                 <plugin>
                     <groupId>com.github.siom79.japicmp</groupId>
                     <artifactId>japicmp-maven-plugin</artifactId>
-                    <version>0.10.0</version>
+                    <version>0.14.3</version>
                 </plugin>
             </plugins>
         </pluginManagement>
