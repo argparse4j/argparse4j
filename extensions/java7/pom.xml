@@ -140,6 +140,9 @@
                         <configuration>
                             <source>9</source>
                             <release>9</release>
+                            <includes>
+                                <include>module-info.java</include>
+                            </includes>
                         </configuration>
                     </execution>
                     <!-- Recompile as Java 7 to overwrite Java 9 class files, except module-info.java -->
