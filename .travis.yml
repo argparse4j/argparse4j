@@ -5,6 +5,13 @@ addons:
     packages:
       - openjdk-6-jdk
 jdk: openjdk9
+cache:
+  directories:
+    - $HOME/.m2
+# Delete artifacts that we build to prevent old and incorrect files from
+# breaking the current build.
+before_cache:
+  - rm --force --recursive $HOME/.m2/repository/net/sourceforge/argparse4j
 install:
 - export JAVA9_HOME=$JAVA_HOME
 - jdk_switcher use openjdk6
