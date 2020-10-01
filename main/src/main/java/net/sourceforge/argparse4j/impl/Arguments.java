@@ -71,7 +71,9 @@ public final class Arguments {
      * The value specified in command line will be checked to see whether it
      * fits in given range [min, max], inclusive.
      * </p>
-     * 
+     *
+     * @param <T>
+     *            The type of the values in the range
      * @param min
      *            The lower bound of the range, inclusive.
      * @param max
@@ -251,7 +253,9 @@ public final class Arguments {
      * </p>
      * 
      * @deprecated
-     * 
+     *
+     * @param <T>
+     *            The type of the enum
      * @param type
      *            The enum type
      * @return {@link EnumArgumentType} object
@@ -282,7 +286,9 @@ public final class Arguments {
      * {@link Enum#toString()}, this behaves the same as
      * {@link ReflectArgumentType} or just use {@link Argument#type(Class)}.
      * </p>
-     * 
+     *
+     * @param <T>
+     *            The type of the enum
      * @param type
      *            The enum type
      * @return {@link EnumStringArgumentType} object
@@ -301,6 +307,8 @@ public final class Arguments {
      * Uses {@link Enum#name()} as the String representation of the enum.
      * </p>
      *
+     * @param <T>
+     *            The type of the enum
      * @param type
      *            The enum type
      * @return {@link CaseInsensitiveEnumNameArgumentType} object
@@ -322,7 +330,9 @@ public final class Arguments {
      * {@link Enum#toString()}, this behaves the same as
      * {@link CaseInsensitiveEnumNameArgumentType}.
      * </p>
-     * 
+     *
+     * @param <T>
+     *            The type of the enum
      * @param type
      *            The enum type
      * @return {@link CaseInsensitiveEnumStringArgumentType} object

@@ -55,7 +55,9 @@ public class Namespace {
 
     /**
      * Returns attribute with given attribute name {@code dest}.
-     * 
+     *
+     * @param <T>
+     *            The type of the attribute value
      * @param dest
      *            The attribute name
      * @return The attribute value, or {@code null} if it is not found.
@@ -176,7 +178,9 @@ public class Namespace {
 
     /**
      * Returns attribute as {@link List} with given attribute name {@code dest}.
-     * 
+     *
+     * @param <E>
+     *            The type of the list elements
      * @param dest
      *            The attribute name
      * @return The attribute value casted to {@link List}, or {@code null} if it

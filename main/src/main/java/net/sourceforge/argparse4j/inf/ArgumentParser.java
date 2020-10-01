@@ -115,7 +115,7 @@ public interface ArgumentParser extends ArgumentContainer {
      * calculated from the arguments this object contains.
      * </p>
      * <p>
-     * If the given usage contains <tt>${prog}</tt> string, it will be replaced
+     * If the given usage contains <code>${prog}</code> string, it will be replaced
      * with the program name given in
      * {@link ArgumentParsers#newArgumentParser(String)}.
      * </p>
@@ -143,7 +143,7 @@ public interface ArgumentParser extends ArgumentContainer {
      * Sets version string. It will be displayed {@link #printVersion()}.
      * </p>
      * <p>
-     * If the given usage contains <tt>${prog}</tt> string, it will be replaced
+     * If the given usage contains <code>${prog}</code> string, it will be replaced
      * with the program name given in
      * {@link ArgumentParsers#newArgumentParser(String)}. This processed text
      * will be printed without text-wrapping.
@@ -508,6 +508,8 @@ public interface ArgumentParser extends ArgumentContainer {
      * 
      * @param e
      *            Error thrown by {@link #parseArgs(String[])}.
+     * @param writer
+     *            The writer to which to write error messages
      * @since 0.8.0
      */
     void handleError(ArgumentParserException e, PrintWriter writer);

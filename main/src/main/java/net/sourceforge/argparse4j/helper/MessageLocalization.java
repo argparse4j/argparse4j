@@ -5,7 +5,7 @@ import java.util.ResourceBundle;
 /**
  * <p>
  * MessageLocalization is a helper class to provide methods for localization.
- * <p>
+ * </p>
  * <p>
  * <strong>The application code should not use this class directly.</strong>
  * </p>

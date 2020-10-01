@@ -49,6 +49,8 @@ public class CaseInsensitiveEnumNameArgumentType<T extends Enum<T>>
      * Creates a {@code CaseInsensitiveEnumNameArgumentType} for the given enum
      * type.
      *
+     * @param <T>
+     *         The type of the enum
      * @param type
      *         type of the enum the {@code CaseInsensitiveEnumNameArgumentType}
      *         should convert to

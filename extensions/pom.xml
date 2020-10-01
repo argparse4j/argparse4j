@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
 
     <name>argparse4j-extensions</name>
-    <url>http://argparse4j.github.io</url>
+    <url>https://argparse4j.github.io</url>
     <description>The command-line parser library based on Python's argparse</description>
 
     <modules>

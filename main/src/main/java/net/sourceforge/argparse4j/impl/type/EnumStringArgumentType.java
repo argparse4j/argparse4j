@@ -55,6 +55,9 @@ public class EnumStringArgumentType<T extends Enum<T>> implements
     /**
      * <p>
      * Creates an {@code EnumStringArgumentType} for the given enum type.
+     *
+     * @param <T>
+     *         The type of the enum
      * @param type
      *            type of the enum the {@code EnumStringArgumentType} should convert to
      * @return an {@code EnumStringArgumentType} that converts Strings to {@code type} 

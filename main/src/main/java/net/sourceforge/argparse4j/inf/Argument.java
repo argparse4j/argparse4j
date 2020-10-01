@@ -51,7 +51,7 @@ public interface Argument {
     /**
      * <p>
      * Sets the number of command line arguments that should be consumed.
-     * <p>
+     * </p>
      * <p>
      * This method takes one of following string: {@code "*"}, {@code "+"} and
      * {@code "?"}. If {@code "*"} is given, All command line arguments present
@@ -99,7 +99,9 @@ public interface Argument {
      * value defaults to {@code null}. If you want to set non-List item, use
      * {@link #setConst(Object)}.
      * </p>
-     * 
+     *
+     * @param <E>
+     *            The type of the values
      * @param values
      *            The const values
      * @return this
@@ -131,7 +133,9 @@ public interface Argument {
      * be converted to {@link List}. If you want to set non-List item, use
      * {@link Argument#setDefault(Object)}.
      * </p>
-     * 
+     *
+     * @param <E>
+     *            The type of the values
      * @param values
      *            The default values
      * @return this
@@ -168,7 +172,9 @@ public interface Argument {
      * counterpart. For example, if int.class is given, it is silently converted
      * to Integer.class.
      * </p>
-     * 
+     *
+     * @param <T>
+     *            The type of the value this argument accepts
      * @param type
      *            The type which the command line argument should be converted
      *            to.
@@ -185,7 +191,9 @@ public interface Argument {
      * This would be useful if you need to convert the command line argument
      * into a type which does not have a constructor with one String argument.
      * </p>
-     * 
+     *
+     * @param <T>
+     *            The type of the value this argument accepts
      * @param type
      *            The {@link ArgumentType} object
      * @return this
@@ -236,7 +244,9 @@ public interface Argument {
 
     /**
      * Sets a collection of the allowable values for the argument.
-     * 
+     *
+     * @param <E>
+     *            The type of the values
      * @param values
      *            A collection of the allowable values
      * @return this
@@ -245,7 +255,9 @@ public interface Argument {
 
     /**
      * Sets a collection of the allowable values for the argument.
-     * 
+     *
+     * @param <E>
+     *            The type of the values
      * @param values
      *            A collection of the allowable values
      * @return this

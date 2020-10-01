@@ -13,4 +13,4 @@ install:
 - export JAVA7_HOME=$JAVA_HOME
 - export JAVA_HOME=$JAVA9_HOME
 script:
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip -B -V
+  - mvn install -Dgpg.skip -B -V

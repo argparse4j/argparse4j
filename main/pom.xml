@@ -10,7 +10,7 @@
     <packaging>jar</packaging>
 
     <name>argparse4j</name>
-    <url>http://argparse4j.github.io</url>
+    <url>https://argparse4j.github.io</url>
     <description>The command-line parser library based on Python's argparse</description>
     <inceptionYear>2012</inceptionYear>
 
@@ -105,6 +105,10 @@
                 <configuration>
                     <locale>en</locale>
                     <stylesheet>maven</stylesheet>
+                    <source>8</source>
+                    <sourceFileExcludes>
+                        <sourceFileExclude>module-info.java</sourceFileExclude>
+                    </sourceFileExcludes>
                 </configuration>
                 <executions>
                     <execution>
