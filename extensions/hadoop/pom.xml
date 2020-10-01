@@ -25,6 +25,13 @@
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-common</artifactId>
+            <!-- exclude missing jdk.tools:jdk.tools:1.6 dependency -->
+            <exclusions>
+                <exclusion>
+                    <groupId>jdk.tools</groupId>
+                    <artifactId>jdk.tools</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -124,14 +131,67 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                    <compilerArgs>
-                        <arg>-bootclasspath</arg>
-                        <arg>${jdk.6.rt.jar.path}</arg>
-                    </compilerArgs>
-                </configuration>
+                <executions>
+                    <!-- Disable default phase due to fixed id and position in lifecycle -->
+                    <execution>
+                        <id>default-compile</id>
+                        <phase>none</phase>
+                        <!-- specify source/target for IDE integration -->
+                        <configuration>
+                            <source>9</source>
+                            <target>9</target>
+                        </configuration>
+                    </execution>
+                    <!-- Compile project with Java 9 to ensure module-info.java is valid -->
+                    <execution>
+                        <id>jdk9-module-compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <source>9</source>
+                            <release>9</release>
+                            <includes>
+                                <include>module-info.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <!-- Recompile as Java 6 to overwrite Java 9 class files, except module-info.java -->
+                    <execution>
+                        <id>jdk6-compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <source>1.6</source>
+                            <target>1.6</target>
+                            <compilerArgs>
+                                <arg>-bootclasspath</arg>
+                                <arg>${jdk.6.rt.jar.path}</arg>
+                            </compilerArgs>
+                            <excludes>
+                                <exclude>module-info.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                    <!-- Compile test sources with a minimum of 1.6 -->
+                    <execution>
+                        <id>default-testCompile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                        <configuration>
+                            <source>1.6</source>
+                            <target>1.6</target>
+                            <compilerArgs>
+                                <arg>-bootclasspath</arg>
+                                <arg>${jdk.6.rt.jar.path}</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
