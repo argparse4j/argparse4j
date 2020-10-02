@@ -1,9 +1,5 @@
 dist: trusty
 language: java
-addons:
-  apt:
-    packages:
-      - openjdk-6-jdk
 jdk: openjdk9
 cache:
   directories:
@@ -12,12 +8,6 @@ cache:
 # breaking the current build.
 before_cache:
   - rm --force --recursive $HOME/.m2/repository/net/sourceforge/argparse4j
-install:
-- export JAVA9_HOME=$JAVA_HOME
-- jdk_switcher use openjdk6
-- export JAVA6_HOME=$JAVA_HOME
-- jdk_switcher use openjdk7
-- export JAVA7_HOME=$JAVA_HOME
-- export JAVA_HOME=$JAVA9_HOME
+install: skip
 script:
   - mvn install -Dgpg.skip -B -V
