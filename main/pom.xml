@@ -147,18 +147,16 @@
                         <phase>none</phase>
                         <!-- specify source/target for IDE integration -->
                         <configuration>
-                            <source>9</source>
-                            <target>9</target>
+                            <release>9</release>
                         </configuration>
                     </execution>
                     <!-- Compile project with Java 9 to ensure module-info.java is valid -->
                     <execution>
-                        <id>jdk9-module-compile</id>
+                        <id>java-9-module-compile</id>
                         <goals>
                             <goal>compile</goal>
                         </goals>
                         <configuration>
-                            <source>9</source>
                             <release>9</release>
                             <includes>
                                 <include>module-info.java</include>
@@ -167,24 +165,19 @@
                     </execution>
                     <!-- Recompile as Java 6 to overwrite Java 9 class files, except module-info.java -->
                     <execution>
-                        <id>jdk6-compile</id>
+                        <id>java-6-compile</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>compile</goal>
                         </goals>
                         <configuration>
-                            <source>1.6</source>
-                            <target>1.6</target>
-                            <compilerArgs>
-                                <arg>-bootclasspath</arg>
-                                <arg>${jdk.6.rt.jar.path}</arg>
-                            </compilerArgs>
+                            <release>6</release>
                             <excludes>
                                 <exclude>module-info.java</exclude>
                             </excludes>
                         </configuration>
                     </execution>
-                    <!-- Compile test sources with a minimum of 1.6 -->
+                    <!-- Compile test sources with a minimum of Java 6 -->
                     <execution>
                         <id>default-testCompile</id>
                         <phase>test-compile</phase>
@@ -192,12 +185,7 @@
                             <goal>testCompile</goal>
                         </goals>
                         <configuration>
-                            <source>1.6</source>
-                            <target>1.6</target>
-                            <compilerArgs>
-                                <arg>-bootclasspath</arg>
-                                <arg>${jdk.6.rt.jar.path}</arg>
-                            </compilerArgs>
+                            <release>6</release>
                         </configuration>
                     </execution>
                 </executions>
