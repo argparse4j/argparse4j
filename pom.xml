@@ -44,17 +44,32 @@
             <id>jstuyts</id>
             <name>Johan Stuyts</name>
             <url>https://github.com/jstuyts</url>
-            <timezone>+1</timezone>
+            <timezone>Europe/Amsterdam</timezone>
         </developer>
     </developers>
     
     <contributors>
         <contributor>
+            <name>Adam Parkin</name>
+            <url>https://github.com/pzelnip</url>
+        </contributor>
+        <contributor>
             <name>Amr Mostafa</name>
             <url>https://github.com/amr</url>
         </contributor>
         <contributor>
-            <name>dougclayton</name>
+            <name>andrewj</name>
+        </contributor>
+        <contributor>
+            <name>Brice Jaglin</name>
+            <url>https://github.com/bjaglin</url>
+        </contributor>
+        <contributor>
+            <name>concision</name>
+            <url>https://github.com/concision</url>
+        </contributor>
+        <contributor>
+            <name>Douglas Clayton</name>
             <url>https://github.com/dougclayton</url>
         </contributor>
         <contributor>
@@ -84,6 +99,10 @@
         <contributor>
             <name>Kostas Lekkas</name>
             <url>https://github.com/lekkas</url>
+        </contributor>
+        <contributor>
+            <name>marikaris</name>
+            <url>https://github.com/marikaris</url>
         </contributor>
         <contributor>
             <name>Skuratovich Sergey</name>
