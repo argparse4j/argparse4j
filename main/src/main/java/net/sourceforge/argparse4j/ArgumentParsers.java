@@ -166,7 +166,7 @@ public final class ArgumentParsers {
         return new ArgumentParserImpl(config);
     }
 
-    private static final String cjkWidthLangsSrc_[] = { "ja", "zh", "ko" };
+    private static final String[] cjkWidthLangsSrc_ = { "ja", "zh", "ko" };
     static List<String> cjkWidthLangs_ = Arrays
             .asList(cjkWidthLangsSrc_);
 

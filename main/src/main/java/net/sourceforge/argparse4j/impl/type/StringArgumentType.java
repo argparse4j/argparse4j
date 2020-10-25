@@ -25,7 +25,6 @@ package net.sourceforge.argparse4j.impl.type;
 
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
-import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.ArgumentType;
 
 /**
@@ -34,9 +33,7 @@ import net.sourceforge.argparse4j.inf.ArgumentType;
 public class StringArgumentType implements ArgumentType<String> {
 
     @Override
-    public String convert(ArgumentParser parser, Argument arg, String value)
-            throws ArgumentParserException {
+    public String convert(ArgumentParser parser, Argument arg, String value) {
         return value;
     }
-
 }

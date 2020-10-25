@@ -50,7 +50,7 @@ import net.sourceforge.argparse4j.inf.MetavarInference;
 public final class ArgumentImpl implements Argument {
 
     private String name_;
-    private String flags_[];
+    private String[] flags_;
     private String dest_;
     private ArgumentType<?> type_ = new StringArgumentType();
     private ArgumentAction action_ = Arguments.store();
@@ -60,12 +60,12 @@ public final class ArgumentImpl implements Argument {
     private FeatureControl defaultControl_;
     private FeatureControl helpControl_;
     private boolean required_;
-    private String metavar_[];
+    private String[] metavar_;
     private int minNumArg_ = -1;
     private int maxNumArg_ = -1;
     private String help_ = "";
-    private ArgumentParserConfigurationImpl config_;
-    private ArgumentGroupImpl argumentGroup_;
+    private final ArgumentParserConfigurationImpl config_;
+    private final ArgumentGroupImpl argumentGroup_;
 
     ArgumentImpl(ArgumentParserConfigurationImpl config,
             String... nameOrFlags) {
@@ -323,8 +323,9 @@ public final class ArgumentImpl implements Argument {
         return this;
     }
 
+    @SafeVarargs
     @Override
-    public <E> ArgumentImpl setConst(E... values) {
+    public final <E> ArgumentImpl setConst(E... values) {
         // Allow null
         const_ = Arrays.asList(values);
         return this;
@@ -337,8 +338,9 @@ public final class ArgumentImpl implements Argument {
         return this;
     }
 
+    @SafeVarargs
     @Override
-    public <E> ArgumentImpl setDefault(E... values) {
+    public final <E> ArgumentImpl setDefault(E... values) {
         // Allow null
         default_ = Arrays.asList(values);
         return this;
@@ -351,7 +353,7 @@ public final class ArgumentImpl implements Argument {
     }
 
     private <T> ReflectArgumentType<T> createReflectArgumentType(Class<T> type) {
-        return new ReflectArgumentType<T>(type);
+        return new ReflectArgumentType<>(type);
     }
 
     @Override
@@ -425,16 +427,17 @@ public final class ArgumentImpl implements Argument {
         if (values == null) {
             throw new IllegalArgumentException("choice cannot be null");
         }
-        choice_ = new CollectionArgumentChoice<E>(values);
+        choice_ = new CollectionArgumentChoice<>(values);
         return this;
     }
 
+    @SafeVarargs
     @Override
-    public <E> ArgumentImpl choices(E... values) {
+    public final <E> ArgumentImpl choices(E... values) {
         if (values == null) {
             throw new IllegalArgumentException("choice cannot be null");
         }
-        choice_ = new CollectionArgumentChoice<E>(values);
+        choice_ = new CollectionArgumentChoice<>(values);
         return this;
     }
 
@@ -500,7 +503,7 @@ public final class ArgumentImpl implements Argument {
         // they are configured with nargs("*") and default is null.
         // In this case, return empty list.
         if (!isNamedArgument() && default_ == null && maxNumArg_ > 1) {
-            return new ArrayList<Object>();
+            return new ArrayList<>();
         } else {
             return default_;
         }

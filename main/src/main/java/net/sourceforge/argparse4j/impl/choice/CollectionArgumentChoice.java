@@ -40,7 +40,7 @@ import net.sourceforge.argparse4j.inf.ArgumentChoice;
  */
 public class CollectionArgumentChoice<E> implements ArgumentChoice {
 
-    private Collection<E> values_;
+    private final Collection<E> values_;
 
     /**
      * Initializes this object from given values.
@@ -48,6 +48,7 @@ public class CollectionArgumentChoice<E> implements ArgumentChoice {
      * @param values
      *            Valid values
      */
+    @SafeVarargs
     public CollectionArgumentChoice(E... values) {
         values_ = Arrays.asList(values);
     }
@@ -72,7 +73,7 @@ public class CollectionArgumentChoice<E> implements ArgumentChoice {
         Object first = values_.iterator().next();
         if (first.getClass().equals(val.getClass())
                 || first instanceof Enum && val instanceof Enum
-                && ((Enum) first).getDeclaringClass().equals(((Enum) val).getDeclaringClass())) {
+                && ((Enum<?>) first).getDeclaringClass().equals(((Enum<?>) val).getDeclaringClass())) {
             //noinspection SuspiciousMethodCalls
             return values_.contains(val);
         } else {

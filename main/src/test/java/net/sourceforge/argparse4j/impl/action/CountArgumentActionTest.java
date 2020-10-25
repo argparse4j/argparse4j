@@ -52,12 +52,12 @@ public class CountArgumentActionTest {
     public void setup() {
         act = new CountArgumentAction();
         arg = new MyMockArgument();
-        attrs = new HashMap<String, Object>();
+        attrs = new HashMap<>();
         attrs.put(arg.getDest(), 0);
     }
 
     @Test
-    public void testRun() throws ArgumentParserException {
+    public void testRun() {
         act.run(null, arg, attrs, "-f", null);
         assertEquals(1, attrs.get(arg.getDest()));
         act.run(null, arg, attrs, "-f", null);

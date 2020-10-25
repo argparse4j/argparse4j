@@ -30,7 +30,6 @@ import java.util.Map;
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentAction;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
-import net.sourceforge.argparse4j.inf.ArgumentParserException;
 
 /**
  * <p>
@@ -49,8 +48,7 @@ public class AppendArgumentAction implements ArgumentAction {
 
     @Override
     public void run(ArgumentParser parser, Argument arg,
-            Map<String, Object> attrs, String flag, Object value)
-            throws ArgumentParserException {
+            Map<String, Object> attrs, String flag, Object value) {
         if (attrs.containsKey(arg.getDest())) {
             Object obj = attrs.get(arg.getDest());
             if (obj instanceof List) {
@@ -59,7 +57,7 @@ public class AppendArgumentAction implements ArgumentAction {
                 return;
             }
         }
-        List<Object> list = new ArrayList<Object>();
+        List<Object> list = new ArrayList<>();
         list.add(value);
         attrs.put(arg.getDest(), list);
     }

@@ -82,7 +82,7 @@ public final class Arguments {
      */
     public static <T extends Comparable<T>> RangeArgumentChoice<T> range(T min,
             T max) {
-        return new RangeArgumentChoice<T>(min, max);
+        return new RangeArgumentChoice<>(min, max);
     }
 
     private static final StoreArgumentAction store_ = new StoreArgumentAction();
@@ -262,7 +262,7 @@ public final class Arguments {
      */
     @Deprecated
     public static <T extends Enum<T>> EnumArgumentType<T> enumType(Class<T> type) {
-        return new EnumArgumentType<T>(type);
+        return new EnumArgumentType<>(type);
     }
 
     /**
@@ -295,7 +295,7 @@ public final class Arguments {
      */
     public static <T extends Enum<T>> EnumStringArgumentType<T> enumStringType(
             Class<T> type) {
-        return new EnumStringArgumentType<T>(type);
+        return new EnumStringArgumentType<>(type);
     }
 
     /**
@@ -316,7 +316,7 @@ public final class Arguments {
      */
     public static <T extends Enum<T>> CaseInsensitiveEnumNameArgumentType<T>
             caseInsensitiveEnumType(Class<T> type) {
-        return new CaseInsensitiveEnumNameArgumentType<T>(type);
+        return new CaseInsensitiveEnumNameArgumentType<>(type);
     }
 
     /**
@@ -340,7 +340,7 @@ public final class Arguments {
      */
     public static <T extends Enum<T>> CaseInsensitiveEnumStringArgumentType<T> 
             caseInsensitiveEnumStringType(Class<T> type) {
-        return new CaseInsensitiveEnumStringArgumentType<T>(type);
+        return new CaseInsensitiveEnumStringArgumentType<>(type);
     }
 
     /**

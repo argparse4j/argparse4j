@@ -44,7 +44,7 @@ public class EnumArgumentTypeTest {
     public void testConvert() throws ArgumentParserException {
         ArgumentParser ap = ArgumentParsers.newFor("argparse4j")
                 .locale(Locale.US).build();
-        EnumArgumentType<Foo> type = new EnumArgumentType<Foo>(Foo.class);
+        EnumArgumentType<Foo> type = new EnumArgumentType<>(Foo.class);
         assertEquals(Foo.BRAVO, type.convert(null, null, "BRAVO"));
         try {
             type.convert(ap, new MockArgument(), "DELTA");

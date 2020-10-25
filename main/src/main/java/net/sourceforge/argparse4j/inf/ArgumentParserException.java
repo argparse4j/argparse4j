@@ -33,7 +33,7 @@ import java.util.Locale;
 public class ArgumentParserException extends Exception {
 
     private static final long serialVersionUID = 1L;
-    private transient ArgumentParser parser_;
+    private final transient ArgumentParser parser_;
 
     public ArgumentParserException(ArgumentParser parser) {
         super();

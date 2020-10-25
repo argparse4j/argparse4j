@@ -44,10 +44,10 @@ public final class ArgumentGroupImpl implements ArgumentGroup,
      * Index in {@link ArgumentParserImpl}.
      */
     private int index_;
-    private String title_ = "";
+    private final String title_;
     private String description_ = "";
-    private ArgumentParserImpl argumentParser_;
-    private List<ArgumentImpl> args_ = new ArrayList<ArgumentImpl>();
+    private final ArgumentParserImpl argumentParser_;
+    private final List<ArgumentImpl> args_ = new ArrayList<>();
     /**
      * true if this is a mutually exclusive group.
      */

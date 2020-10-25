@@ -45,9 +45,9 @@ import net.sourceforge.argparse4j.inf.Subparsers;
  */
 public final class SubparserImpl implements Subparser, ArgumentParser {
 
-    private String command_;
-    private List<String> aliases_ = new ArrayList<String>();
-    private ArgumentParserImpl parser_;
+    private final String command_;
+    private final List<String> aliases_ = new ArrayList<>();
+    private final ArgumentParserImpl parser_;
     private String help_ = "";
     private FeatureControl helpControl_;
 
@@ -187,7 +187,7 @@ public final class SubparserImpl implements Subparser, ArgumentParser {
     }
 
     @Override
-    public Namespace parseArgsOrFail(String args[]) {
+    public Namespace parseArgsOrFail(String[] args) {
         return parser_.parseArgsOrFail(args);
     }
 
@@ -261,7 +261,7 @@ public final class SubparserImpl implements Subparser, ArgumentParser {
         return this;
     }
 
-    public void parseArgs(ParseState state, Map<String, Object> opts)
+    void parseArgs(ParseState state, Map<String, Object> opts)
             throws ArgumentParserException {
         parser_.parseArgs(state, opts);
     }

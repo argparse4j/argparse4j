@@ -42,8 +42,8 @@ import net.sourceforge.argparse4j.inf.ArgumentChoice;
 public class RangeArgumentChoice<T extends Comparable<T>> implements
         ArgumentChoice {
 
-    private T min_;
-    private T max_;
+    private final T min_;
+    private final T max_;
 
     /**
      * Creates object using range [{@code min}, {@code max}], inclusive.

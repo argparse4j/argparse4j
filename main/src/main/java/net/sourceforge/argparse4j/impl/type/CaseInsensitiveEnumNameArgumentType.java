@@ -59,7 +59,7 @@ public class CaseInsensitiveEnumNameArgumentType<T extends Enum<T>>
      */
     public static <T extends Enum<T>> CaseInsensitiveEnumNameArgumentType<T>
             forEnum(Class<T> type) {
-        return new CaseInsensitiveEnumNameArgumentType<T>(type);
+        return new CaseInsensitiveEnumNameArgumentType<>(type);
     }
 
     @Override

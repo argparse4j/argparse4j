@@ -48,7 +48,7 @@ public class ReflectArgumentTypeTest {
     }
 
     private <T> ReflectArgumentType<T> createRA(Class<T> type) {
-        return new ReflectArgumentType<T>(type);
+        return new ReflectArgumentType<>(type);
     }
 
     @Test

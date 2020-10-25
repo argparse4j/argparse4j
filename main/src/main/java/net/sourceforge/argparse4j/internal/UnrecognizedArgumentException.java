@@ -32,7 +32,7 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
 public class UnrecognizedArgumentException extends ArgumentParserException {
 
     private static final long serialVersionUID = -256412358164687976L;
-    private String argument_;
+    private final String argument_;
 
     public UnrecognizedArgumentException(String message, ArgumentParser parser,
             String argument) {

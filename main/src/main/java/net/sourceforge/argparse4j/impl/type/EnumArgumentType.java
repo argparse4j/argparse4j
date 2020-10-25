@@ -52,7 +52,7 @@ import net.sourceforge.argparse4j.inf.ArgumentType;
 @Deprecated
 public class EnumArgumentType<T extends Enum<T>> implements ArgumentType<T> {
 
-    private Class<T> type_;
+    private final Class<T> type_;
 
     public EnumArgumentType(Class<T> type) {
         type_ = type;

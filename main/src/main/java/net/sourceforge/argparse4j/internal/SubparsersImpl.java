@@ -41,14 +41,14 @@ import net.sourceforge.argparse4j.inf.Subparsers;
  */
 public final class SubparsersImpl implements Subparsers {
 
-    private ArgumentParserImpl mainParser_;
+    private final ArgumentParserImpl mainParser_;
     /**
      * The key is subparser command or alias name and value is subparser object.
      * The real command and alias names share the same subparser object. To
      * identify the aliases, check key equals to
      * {@link SubparserImpl#getCommand()}. If they are equal, it is not alias.
      */
-    private Map<String, SubparserImpl> parsers_ = new LinkedHashMap<String, SubparserImpl>();
+    private final Map<String, SubparserImpl> parsers_ = new LinkedHashMap<>();
     private String help_ = "";
     private String title_ = "";
     private String description_ = "";

@@ -41,7 +41,7 @@ import java.util.Map;
  */
 public class Namespace {
 
-    private Map<String, Object> attrs_;
+    private final Map<String, Object> attrs_;
 
     /**
      * Construct this object using given {@code attrs}.

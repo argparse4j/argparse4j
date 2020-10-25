@@ -49,10 +49,10 @@ public final class TextHelper {
      */
     public static final Locale LOCALE_ROOT = Locale.ROOT;
 
-    public static final String LINESEP = System.getProperty("line.separator");
+    public static final String LINESEP = System.lineSeparator();
 
-    public static <T> String concat(T a[], int offset, String sep,
-            String start, String end) {
+    public static <T> String concat(T[] a, int offset, String sep,
+                                    String start, String end) {
         StringBuilder sb = new StringBuilder();
         sb.append(start);
         if (a.length - offset > 0) {
@@ -65,7 +65,7 @@ public final class TextHelper {
         return sb.toString();
     }
 
-    public static <T> String concat(T a[], int offset, String sep) {
+    public static <T> String concat(T[] a, int offset, String sep) {
         return concat(a, offset, sep, "", "");
     }
 
@@ -243,7 +243,7 @@ public final class TextHelper {
      * @return List of strings matched
      */
     public static List<String> findPrefix(Collection<String> src, String prefix) {
-        List<String> res = new ArrayList<String>();
+        List<String> res = new ArrayList<>();
         for (String s : src) {
             if (s.startsWith(prefix)) {
                 res.add(s);

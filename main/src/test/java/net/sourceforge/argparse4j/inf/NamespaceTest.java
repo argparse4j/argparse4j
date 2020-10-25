@@ -33,7 +33,7 @@ import org.junit.Test;
 public class NamespaceTest {
     @Test
     public void testGetString() {
-        Map<String, Object> attrs = new HashMap<String, Object>();
+        Map<String, Object> attrs = new HashMap<>();
         attrs.put("string", "string");
         attrs.put("integer", 1000000009);
         Namespace ns = new Namespace(attrs);

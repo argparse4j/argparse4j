@@ -51,7 +51,7 @@ import net.sourceforge.argparse4j.inf.ArgumentType;
 @Deprecated
 public class ConstructorArgumentType<T> implements ArgumentType<T> {
 
-    private Class<T> type_;
+    private final Class<T> type_;
 
     /**
      * <p>
@@ -74,9 +74,7 @@ public class ConstructorArgumentType<T> implements ArgumentType<T> {
         T obj = null;
         try {
             obj = type_.getConstructor(String.class).newInstance(value);
-        } catch (InstantiationException e) {
-            handleInstantiationError(e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException e) {
             handleInstantiationError(e);
         } catch (InvocationTargetException e) {
             String localizedTypeName = localizeTypeNameIfPossible(parser,
@@ -88,8 +86,6 @@ public class ConstructorArgumentType<T> implements ArgumentType<T> {
                                     "couldNotConvertToError"),
                             value, localizedTypeName),
                     e.getCause(), parser, arg);
-        } catch (NoSuchMethodException e) {
-            handleInstantiationError(e);
         }
         return obj;
     }

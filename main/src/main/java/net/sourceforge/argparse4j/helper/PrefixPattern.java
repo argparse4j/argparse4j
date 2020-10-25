@@ -36,8 +36,8 @@ import java.util.regex.Pattern;
  */
 public class PrefixPattern {
 
-    private String prefixChars_;
-    private Pattern prefixPattern_;
+    private final String prefixChars_;
+    private final Pattern prefixPattern_;
 
     /**
      * Creates this object using given {@code prefixChars}.

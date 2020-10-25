@@ -90,11 +90,11 @@ class ParseState {
         this.deferredException = null;
         this.posArgIndex = 0;
         this.posArgConsumed = 0;
-        this.posArgArgs = new ArrayList<String>();
+        this.posArgArgs = new ArrayList<>();
         this.unknown = unknown;
     }
 
-    void resetArgs(String args[]) {
+    void resetArgs(String[] args) {
         this.args = args;
         this.index = 0;
     }

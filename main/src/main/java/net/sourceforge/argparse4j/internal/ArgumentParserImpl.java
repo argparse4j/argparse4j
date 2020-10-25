@@ -36,6 +36,8 @@ import java.security.PrivilegedAction;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 /**
  * <strong>The application code must not use this class directly.</strong>
  */
@@ -46,15 +48,15 @@ public final class ArgumentParserImpl implements ArgumentParser {
     private static final int DELETION_COST = 4;
     private static final int ADDITION_COST = 1;
 
-    private Map<String, ArgumentImpl> namedArgIndex_ = new HashMap<String, ArgumentImpl>();
-    private List<ArgumentImpl> namedArgs_ = new ArrayList<ArgumentImpl>();
-    private List<ArgumentImpl> posArgs_ = new ArrayList<ArgumentImpl>();
-    private List<ArgumentGroupImpl> argGroups_ = new ArrayList<ArgumentGroupImpl>();
-    private Map<String, Object> defaults_ = new HashMap<String, Object>();
-    private SubparsersImpl subparsers_ = new SubparsersImpl(this);
-    private ArgumentParserImpl mainParser_;
-    private String command_;
-    private ArgumentParserConfigurationImpl config_;
+    private final Map<String, ArgumentImpl> namedArgIndex_ = new HashMap<>();
+    private final List<ArgumentImpl> namedArgs_ = new ArrayList<>();
+    private final List<ArgumentImpl> posArgs_ = new ArrayList<>();
+    private final List<ArgumentGroupImpl> argGroups_ = new ArrayList<>();
+    private final Map<String, Object> defaults_ = new HashMap<>();
+    private final SubparsersImpl subparsers_ = new SubparsersImpl(this);
+    private final ArgumentParserImpl mainParser_;
+    private final String command_;
+    private final ArgumentParserConfigurationImpl config_;
     private String usage_ = "";
     private String description_ = "";
     private String epilog_ = "";
@@ -348,7 +350,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
             firstIndent = "";
             subsequentIndent = indent.substring(0, offset);
         }
-        List<String> opts = new ArrayList<String>();
+        List<String> opts = new ArrayList<>();
         addUpperParserUsage(opts, mainParser_);
         if (command_ != null) {
             opts.add(command_);
@@ -406,7 +408,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
      */
     private static List<ArgumentImpl> filterSuppressedArgs(
             Collection<ArgumentImpl> args) {
-        ArrayList<ArgumentImpl> res = new ArrayList<ArgumentImpl>();
+        ArrayList<ArgumentImpl> res = new ArrayList<>();
         for (ArgumentImpl arg : args) {
             if (arg.getHelpControl() != Arguments.SUPPRESS) {
                 res.add(arg);
@@ -522,7 +524,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     }
 
     @Override
-    public Namespace parseArgsOrFail(String args[]) {
+    public Namespace parseArgsOrFail(String[] args) {
         try {
             return parseArgs(args);
         } catch (HelpScreenException e) {
@@ -536,7 +538,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     }
 
     @Override
-    public Namespace parseKnownArgsOrFail(String args[], List<String> unknown) {
+    public Namespace parseKnownArgsOrFail(String[] args, List<String> unknown) {
         try {
             return parseKnownArgs(args, unknown);
         } catch (HelpScreenException e) {
@@ -550,16 +552,16 @@ public final class ArgumentParserImpl implements ArgumentParser {
     }
 
     @Override
-    public Namespace parseArgs(String args[]) throws ArgumentParserException {
-        Map<String, Object> attrs = new HashMap<String, Object>();
+    public Namespace parseArgs(String[] args) throws ArgumentParserException {
+        Map<String, Object> attrs = new HashMap<>();
         parseArgs(args, attrs);
         return new Namespace(attrs);
     }
 
     @Override
-    public Namespace parseKnownArgs(String args[], List<String> unknown)
+    public Namespace parseKnownArgs(String[] args, List<String> unknown)
             throws ArgumentParserException {
-        Map<String, Object> attrs = new HashMap<String, Object>();
+        Map<String, Object> attrs = new HashMap<>();
         parseKnownArgs(args, unknown, attrs);
         return new Namespace(attrs);
     }
@@ -579,14 +581,14 @@ public final class ArgumentParserImpl implements ArgumentParser {
     @Override
     public void parseArgs(String[] args, Object userData)
             throws ArgumentParserException {
-        Map<String, Object> attrs = new HashMap<String, Object>();
+        Map<String, Object> attrs = new HashMap<>();
         parseArgs(args, attrs, userData);
     }
 
     @Override
     public void parseKnownArgs(String[] args, List<String> unknown,
             Object userData) throws ArgumentParserException {
-        Map<String, Object> attrs = new HashMap<String, Object>();
+        Map<String, Object> attrs = new HashMap<>();
         parseKnownArgs(args, unknown, attrs, userData);
     }
 
@@ -607,7 +609,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     private void fillUserDataFromAttrs(Object userData, Map<String, Object> attrs) {
 
-        Class userClass = userData.getClass();
+        Class<?> userClass = userData.getClass();
         while (userClass != null) {
             for (final Field field : userClass.getDeclaredFields()) {
                 Arg ann = field.getAnnotation(Arg.class);
@@ -622,13 +624,9 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     Object val = attrs.get(argDest);
                     try {
                         AccessController
-                                .doPrivileged(new PrivilegedAction<Void>() {
-
-                                    @Override
-                                    public Void run() {
-                                        field.setAccessible(true);
-                                        return null;
-                                    }
+                                .doPrivileged((PrivilegedAction<Void>) () -> {
+                                    field.setAccessible(true);
+                                    return null;
                                 });
                         field.set(userData,
                                 ReflectHelper.list2Array(field.getType(), val));
@@ -666,13 +664,9 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     }
                     try {
                         AccessController
-                                .doPrivileged(new PrivilegedAction<Void>() {
-
-                                    @Override
-                                    public Void run() {
-                                        method.setAccessible(true);
-                                        return null;
-                                    }
+                                .doPrivileged((PrivilegedAction<Void>) () -> {
+                                    method.setAccessible(true);
+                                    return null;
                                 });
                         method.invoke(userData,
                                 ReflectHelper.list2Array(fargs[0], val));
@@ -695,10 +689,10 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     }
 
-    private void parseKnownArgsCreatingUnknownIfNeeded(String args[], List<String> unknown,
-            Map<String, Object> attrs) throws ArgumentParserException {
+    private void parseKnownArgsCreatingUnknownIfNeeded(String[] args, List<String> unknown,
+                                                       Map<String, Object> attrs) throws ArgumentParserException {
         if (unknown == null) {
-            unknown = new ArrayList<String>();
+            unknown = new ArrayList<>();
         }
         parseArgsAtOffsetZero(args, unknown, attrs);
     }
@@ -775,10 +769,10 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 TextHelper.concat(cand, 0, ", ")), this);
     }
 
-    public void parseArgs(ParseState state, Map<String, Object> attrs)
+    void parseArgs(ParseState state, Map<String, Object> attrs)
             throws ArgumentParserException {
         populateDefaults(attrs);
-        Set<ArgumentImpl> used = new HashSet<ArgumentImpl>();
+        Set<ArgumentImpl> used = new HashSet<>();
         ArgumentImpl[] groupUsed = new ArgumentImpl[argGroups_.size()];
         int posArgsLen = posArgs_.size();
         while (state.isArgAvail()) {
@@ -838,7 +832,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
                         state.unknown
                                 .add(unknownStart == -1 ? term : term
-                                        .substring(0, 1)
+                                        .charAt(0)
                                         + term.substring(unknownStart));
                     }
                 }
@@ -986,7 +980,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
             return;
         }
 
-        List<Object> list = new ArrayList<Object>();
+        List<Object> list = new ArrayList<>();
         if (embeddedValue == null) {
             for (int i = 0; i < arg.getMaxNumArg() && state.isArgAvail(); ++i, ++state.index) {
                 if (flagFound(state)) {
@@ -1107,7 +1101,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 continue;
             }
 
-            List<Object> list = new ArrayList<Object>(n);
+            List<Object> list = new ArrayList<>(n);
             for (; n > 0; --n) {
                 list.add(arg.convert(this, state.posArgArgs.get(argIndex++)));
             }
@@ -1152,11 +1146,9 @@ public final class ArgumentParserImpl implements ArgumentParser {
      */
     private void extendArgs(ParseState state, String file)
             throws ArgumentParserException {
-        List<String> list = new ArrayList<String>();
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(
-                    new FileInputStream(file), "utf-8"));
+        List<String> list = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+                new FileInputStream(file), UTF_8))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 list.add(line);
@@ -1165,15 +1157,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
             throw new ArgumentParserException(String.format(
                     TextHelper.LOCALE_ROOT,
                     localize("couldNotReadFromFileError"), file), e, this);
-        } finally {
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (IOException e) {
-                // No action needed. Ignore errors during closing.
-            }
         }
+        // No action needed. Ignore errors during closing.
         int offset = state.index + 1;
         String[] newArgs = new String[list.size() + state.args.length - offset];
         list.toArray(newArgs);
@@ -1408,7 +1393,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     }
 
     private void printFlagCandidates(String flagBody, PrintWriter writer) {
-        List<SubjectBody> subjects = new ArrayList<SubjectBody>();
+        List<SubjectBody> subjects = new ArrayList<>();
         for (ArgumentImpl arg : namedArgs_) {
             String[] flags = arg.getFlags();
             for (String flag : flags) {
@@ -1423,7 +1408,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
     }
 
     private void printCommandCandidates(String command, PrintWriter writer) {
-        List<SubjectBody> subjects = new ArrayList<SubjectBody>();
+        List<SubjectBody> subjects = new ArrayList<>();
         for (String com : subparsers_.getCommands()) {
             subjects.add(new SubjectBody(com, com));
         }
@@ -1443,7 +1428,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
      */
     private void printCandidates(String body, List<SubjectBody> subjects,
             PrintWriter writer) {
-        List<Candidate> candidates = new ArrayList<Candidate>();
+        List<Candidate> candidates = new ArrayList<>();
         for (SubjectBody sub : subjects) {
             if (sub.body.startsWith(body)) {
                 candidates.add(new Candidate(0, sub.subject));

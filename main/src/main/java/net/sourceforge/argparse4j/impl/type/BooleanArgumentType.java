@@ -117,5 +117,6 @@ public class BooleanArgumentType implements ArgumentType<Boolean>,
                 falseValue_ }, 0, ",", "{", "}") };
     }
 
-    private String trueValue_, falseValue_;
+    private final String trueValue_;
+    private final String falseValue_;
 }

@@ -20,10 +20,6 @@
     
     <properties>
         <previously.released.version>0.8.1</previously.released.version>
-        <!-- empty path variables by default to prevent IDE errors -->
-        <!-- these variables must be set by an argument property or the JAVA6_HOME/JAVA7_HOME environment variables -->
-        <jdk.6.rt.jar.path/>
-        <jdk.7.rt.jar.path/>
     </properties>
 
     <licenses>
@@ -148,9 +144,9 @@
                 <artifactId>hadoop-common</artifactId>
                 <!--
                     An older version of Hadoop is used so clients are not
-                    forced to use a newer version and Java 7.
+                    forced to use a newer version and Java 9.
                 -->
-                <version>2.2.0</version>
+                <version>2.7.0</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>

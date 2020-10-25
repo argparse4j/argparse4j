@@ -46,7 +46,7 @@ import net.sourceforge.argparse4j.inf.MetavarInference;
 public class EnumStringArgumentType<T extends Enum<T>> implements
         ArgumentType<T>, MetavarInference {
 
-    private Class<T> type_;
+    private final Class<T> type_;
 
     public EnumStringArgumentType(Class<T> type) {
         type_ = type;
@@ -63,7 +63,7 @@ public class EnumStringArgumentType<T extends Enum<T>> implements
      * @return an {@code EnumStringArgumentType} that converts Strings to {@code type} 
      */
     public static <T extends Enum<T>> EnumStringArgumentType<T> forEnum(Class<T> type) {
-        return new EnumStringArgumentType<T>(type);
+        return new EnumStringArgumentType<>(type);
     }
 
     @Override

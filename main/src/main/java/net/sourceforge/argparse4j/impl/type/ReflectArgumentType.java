@@ -53,7 +53,7 @@ import net.sourceforge.argparse4j.inf.MetavarInference;
 public class ReflectArgumentType<T> implements ArgumentType<T>,
         MetavarInference {
 
-    private Class<T> type_;
+    private final Class<T> type_;
 
     /**
      * <p>
@@ -149,15 +149,11 @@ public class ReflectArgumentType<T> implements ArgumentType<T>,
         T obj = null;
         try {
             obj = type_.getConstructor(String.class).newInstance(value);
-        } catch (InstantiationException e) {
-            handleInstantiationError(e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException e) {
             handleInstantiationError(e);
         } catch (InvocationTargetException e) {
             throwArgumentParserException(parser, arg, value,
                     e.getCause() == null ? e : e.getCause());
-        } catch (NoSuchMethodException e) {
-            handleInstantiationError(e);
         }
         return obj;
     }

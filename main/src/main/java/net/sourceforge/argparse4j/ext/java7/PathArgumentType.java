@@ -43,7 +43,7 @@ import net.sourceforge.argparse4j.inf.ArgumentType;
  * </p>
  *
  * <p>
- * This object can convert path string to {@link java.nio.file.Path} object. The
+ * This object can convert path string to {@link Path} object. The
  * command-line programs traditionally accept the file path "-" as standard
  * input. This object supports this when
  * {@link PathArgumentType#acceptSystemIn()} is used. Also there are several

@@ -52,11 +52,11 @@ public class AppendArgumentActionTest {
     private Map<String, Object> attrs;
     @Before
     public void setup() {
-        attrs = new HashMap<String, Object>();
+        attrs = new HashMap<>();
     }
     
     @Test
-    public void testRun() throws ArgumentParserException {
+    public void testRun() {
         act.run(null, arg, attrs, null, "hello");
         assertEquals(singletonList("hello"), attrs.get("dest"));
         act.run(null, arg, attrs, null, "world");
@@ -64,7 +64,7 @@ public class AppendArgumentActionTest {
     }
 
     @Test
-    public void testRunWithDefaultNonList() throws ArgumentParserException {
+    public void testRunWithDefaultNonList() {
         attrs.put("dest", "default");
         act.run(null, arg, attrs, null, "hello");
         assertEquals(singletonList("hello"), attrs.get("dest"));

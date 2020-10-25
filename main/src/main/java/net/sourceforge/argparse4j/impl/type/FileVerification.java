@@ -68,21 +68,11 @@ public class FileVerification {
             verifyIsAbsolute(parser, arg, file);
         }
 
-        FileVerificationStep verifyPresenceAndType = new FileVerificationStep() {
-            @Override
-            public void verify() throws ArgumentParserException {
-                verifyPresenceAndType(parser, arg, file);
-            }
-        };
+        FileVerificationStep verifyPresenceAndType = () -> verifyPresenceAndType(parser, arg, file);
         if (!verifyStep(verifyPresenceAndType)) {
             nextFileVerification.verify(parser, arg, file);
         } else {
-            FileVerificationStep verifyPermissions = new FileVerificationStep() {
-                @Override
-                public void verify() throws ArgumentParserException {
-                    verifyPermissions(parser, arg, file);
-                }
-            };
+            FileVerificationStep verifyPermissions = () -> verifyPermissions(parser, arg, file);
             if (!verifyStep(verifyPermissions)) {
                 nextFileVerification.verify(parser, arg, file);
             }

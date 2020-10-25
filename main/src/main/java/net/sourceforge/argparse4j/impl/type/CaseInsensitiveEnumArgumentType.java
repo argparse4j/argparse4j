@@ -13,7 +13,7 @@ import net.sourceforge.argparse4j.inf.MetavarInference;
 public class CaseInsensitiveEnumArgumentType<T extends Enum<T>>
         implements ArgumentType<T>, MetavarInference {
     protected Class<T> type_;
-    private Locale lowerCasingLocale_;
+    private final Locale lowerCasingLocale_;
 
     /**
      * <p>

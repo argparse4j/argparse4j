@@ -29,7 +29,7 @@ import org.junit.Test;
 
 public class CollectionArgumentChoiceTest {
 
-    private CollectionArgumentChoice<Integer> choice = new CollectionArgumentChoice<Integer>(
+    private CollectionArgumentChoice<Integer> choice = new CollectionArgumentChoice<>(
             1, 2, 3);
 
     @Test
@@ -40,7 +40,7 @@ public class CollectionArgumentChoiceTest {
 
     @Test
     public void testContainsWithEmptyCollection() {
-        CollectionArgumentChoice<Integer> choice = new CollectionArgumentChoice<Integer>();
+        CollectionArgumentChoice<Integer> choice = new CollectionArgumentChoice<>();
         assertFalse(choice.contains(0));
         assertFalse(choice.contains("0"));
     }
@@ -63,13 +63,13 @@ public class CollectionArgumentChoiceTest {
 
     @Test
     public void testSimpleEnum() {
-        CollectionArgumentChoice<Simple> c = new CollectionArgumentChoice<Simple>(Simple.values());
+        CollectionArgumentChoice<Simple> c = new CollectionArgumentChoice<>(Simple.values());
         assertTrue(c.contains(Simple.B));
     }
 
     @Test
     public void testAbstractEnum() {
-        CollectionArgumentChoice<Fancy> c = new CollectionArgumentChoice<Fancy>(Fancy.values());
+        CollectionArgumentChoice<Fancy> c = new CollectionArgumentChoice<>(Fancy.values());
         assertTrue(c.contains(Fancy.B));
     }
 

@@ -58,11 +58,11 @@ public class AppendConstArgumentActionTest {
     
     @Before
     public void setup() {
-        attrs = new HashMap<String, Object>();
+        attrs = new HashMap<>();
     }
     
     @Test
-    public void testRun() throws ArgumentParserException {
+    public void testRun() {
         act.run(null, arg, attrs, null, null);
         assertEquals(singletonList("const"), attrs.get("dest"));
         act.run(null, arg, attrs, null, null);
@@ -70,7 +70,7 @@ public class AppendConstArgumentActionTest {
     }
 
     @Test
-    public void testRunWithDefaultNonList() throws ArgumentParserException {
+    public void testRunWithDefaultNonList() {
         attrs.put("dest", "default");
         act.run(null, arg, attrs, null, null);
         assertEquals(singletonList("const"), attrs.get("dest"));

@@ -43,7 +43,9 @@
     <reporting>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>3.1.1</version>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -158,21 +160,21 @@
                             </includes>
                         </configuration>
                     </execution>
-                    <!-- Recompile as Java 6 to overwrite Java 9 class files, except module-info.java -->
+                    <!-- Recompile as Java 8 to overwrite Java 9 class files, except module-info.java -->
                     <execution>
-                        <id>java-6-compile</id>
+                        <id>java-8-compile</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>compile</goal>
                         </goals>
                         <configuration>
-                            <release>6</release>
+                            <release>8</release>
                             <excludes>
                                 <exclude>module-info.java</exclude>
                             </excludes>
                         </configuration>
                     </execution>
-                    <!-- Compile test sources with a minimum of Java 6 -->
+                    <!-- Compile test sources with a minimum of Java 8 -->
                     <execution>
                         <id>default-testCompile</id>
                         <phase>test-compile</phase>
@@ -180,7 +182,7 @@
                             <goal>testCompile</goal>
                         </goals>
                         <configuration>
-                            <release>6</release>
+                            <release>8</release>
                         </configuration>
                     </execution>
                 </executions>

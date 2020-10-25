@@ -301,7 +301,7 @@ public interface ArgumentParser extends ArgumentContainer {
      *            Command line arguments.
      * @return {@link Namespace} object.
      */
-    Namespace parseArgsOrFail(String args[]);
+    Namespace parseArgsOrFail(String[] args);
 
     /**
      * <p>
@@ -319,7 +319,7 @@ public interface ArgumentParser extends ArgumentContainer {
      * @throws ArgumentParserException
      *             If an error occurred.
      */
-    Namespace parseArgs(String args[]) throws ArgumentParserException;
+    Namespace parseArgs(String[] args) throws ArgumentParserException;
 
     /**
      * <p>
@@ -401,7 +401,7 @@ public interface ArgumentParser extends ArgumentContainer {
      * @return {@link Namespace} object.
      * @since 0.7.0
      */
-    Namespace parseKnownArgsOrFail(String args[], List<String> unknown);
+    Namespace parseKnownArgsOrFail(String[] args, List<String> unknown);
 
     /**
      * <p>
@@ -419,7 +419,7 @@ public interface ArgumentParser extends ArgumentContainer {
      *             If an error occurred.
      * @since 0.7.0
      */
-    Namespace parseKnownArgs(String args[], List<String> unknown)
+    Namespace parseKnownArgs(String[] args, List<String> unknown)
             throws ArgumentParserException;
 
     /**

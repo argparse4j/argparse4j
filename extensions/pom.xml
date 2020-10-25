@@ -18,7 +18,6 @@
 
     <modules>
         <module>hadoop</module>
-        <module>java7</module>
     </modules>
     <build>
         <plugins>

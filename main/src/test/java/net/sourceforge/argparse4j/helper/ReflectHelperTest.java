@@ -32,10 +32,9 @@ public class ReflectHelperTest {
 
     @Test
     public void testList2Array() {
-        int a1[] = (int[]) ReflectHelper.list2Array(int[].class, asList(1, 2, 3));
+        int[] a1 = (int[]) ReflectHelper.list2Array(int[].class, asList(1, 2, 3));
         assertArrayEquals(new int[] { 1, 2, 3 }, a1);
-        @SuppressWarnings("unchecked")
-        int a2[][] = (int[][]) ReflectHelper.list2Array(int[][].class,
+        int[][] a2 = (int[][]) ReflectHelper.list2Array(int[][].class,
                 asList(asList(1, 2), asList(3, 4)));
         assertArrayEquals(
                 new int[][] { new int[] { 1, 2 }, new int[] { 3, 4 } }, a2);

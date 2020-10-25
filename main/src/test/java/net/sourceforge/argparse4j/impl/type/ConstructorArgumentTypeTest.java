@@ -37,7 +37,7 @@ public class ConstructorArgumentTypeTest {
     @Test(expected = ArgumentParserException.class)
     public void testConvert() throws ArgumentParserException {
         ArgumentParser ap = ArgumentParsers.newFor("argparse4j").build();
-        ConstructorArgumentType<Integer> at = new ConstructorArgumentType<Integer>(Integer.class);
+        ConstructorArgumentType<Integer> at = new ConstructorArgumentType<>(Integer.class);
         assertEquals((Integer)100, at.convert(null, null, "100"));
         at.convert(ap, new MockArgument(), "0x100");
     }

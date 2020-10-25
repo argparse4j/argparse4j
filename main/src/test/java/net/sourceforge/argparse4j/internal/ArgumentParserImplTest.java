@@ -35,12 +35,7 @@ import static net.sourceforge.argparse4j.impl.Arguments.range;
 import static net.sourceforge.argparse4j.impl.Arguments.storeConst;
 import static net.sourceforge.argparse4j.impl.Arguments.storeFalse;
 import static net.sourceforge.argparse4j.impl.Arguments.storeTrue;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.FileInputStream;
 import java.io.PrintWriter;
@@ -82,7 +77,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testCtor() throws ArgumentParserException {
+    public void testCtor() {
         ap = (ArgumentParserImpl) ArgumentParsers.newFor("prog").addHelp(false)
                 .prefixChars("+").fromFilePrefix("@").build();
         assertEquals("prog", ap.getProg());
@@ -105,7 +100,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testRequiredNamedArg() throws ArgumentParserException {
+    public void testRequiredNamedArg() {
         ap.addArgument("--foo").required(true);
         try {
             ap.parseArgs(new String[] {});
@@ -128,8 +123,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testRequiredNamedArgWithSubcommand()
-            throws ArgumentParserException {
+    public void testRequiredNamedArgWithSubcommand() {
         ap.addArgument("--foo").required(true);
         ap.addSubparsers().addParser("install");
         try {
@@ -140,7 +134,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testTooFewArgumentForPosArg() throws ArgumentParserException {
+    public void testTooFewArgumentForPosArg() {
         ap.addArgument("foo");
         try {
             ap.parseArgs(new String[] {});
@@ -151,8 +145,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testTooFewArgumentForPosArgWithNargs()
-            throws ArgumentParserException {
+    public void testTooFewArgumentForPosArgWithNargs() {
         ap.addArgument("foo").nargs(3);
         try {
             ap.parseArgs(new String[] {});
@@ -163,13 +156,13 @@ public class ArgumentParserImplTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testAddPrefixedArgumentWithConflict() throws ArgumentParserException {
+    public void testAddPrefixedArgumentWithConflict() {
         ap.addArgument("--foo");
         ap.addArgument("--foo");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testAddArgumentWithConflict() throws ArgumentParserException {
+    public void testAddArgumentWithConflict() {
         ap.addArgument("foo");
         ap.addArgument("foo");
     }
@@ -244,7 +237,6 @@ public class ArgumentParserImplTest {
         ap.addArgument("--bar").action(append());
         Namespace res = ap.parseArgs("--foo a --foo b --bar c --bar d"
                 .split(" "));
-        //noinspection unchecked
         assertEquals(asList(singletonList("a"), singletonList("b")), res.get("foo"));
         assertEquals(asList("c", "d"), res.get("bar"));
     }
@@ -337,7 +329,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testParseArgsWithNargs() throws ArgumentParserException {
+    public void testParseArgsWithNargs() {
         ap.addArgument("--foo").nargs(2);
         ap.addArgument("bar");
         try {
@@ -363,8 +355,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testParseArgsWithFileInputStream()
-            throws ArgumentParserException {
+    public void testParseArgsWithFileInputStream() {
         ap.addArgument("--input").type(FileInputStream.class);
         try {
             ap.parseArgs("--input not_found.txt".split(" "));
@@ -375,7 +366,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testParseArgsWithFromFilePrefixAndUnrecognizedArgs() throws ArgumentParserException {
+    public void testParseArgsWithFromFilePrefixAndUnrecognizedArgs() {
         ap = (ArgumentParserImpl) ArgumentParsers.newFor("argparse4j")
                 .addHelp(true).prefixChars(DEFAULT_PREFIX_CHARS)
                 .fromFilePrefix("@").locale(Locale.US).build();
@@ -555,17 +546,14 @@ public class ArgumentParserImplTest {
 
         // Make sure that empty list is appended
         res = ap.parseArgs("--baz".split(" "));
-        //noinspection unchecked
         assertEquals(singletonList(emptyList()), res.get("baz"));
 
         // Make sure that empty list overwrites default value
         res = ap.parseArgs("--buzz".split(" "));
-        //noinspection unchecked
         assertEquals(singletonList(emptyList()), res.get("buzz"));
 
         // sanity check: Make sure that given list overwrites default value
         res = ap.parseArgs("--buzz 1 2".split(" "));
-        //noinspection unchecked
         assertEquals(singletonList(asList("1", "2")), res.get("buzz"));
     }
 
@@ -599,7 +587,6 @@ public class ArgumentParserImplTest {
         assertEquals("foo", res.get("foo"));
         // Make sure that given argument list overwrites default.
         res = ap.parseArgs("a b".split(" "));
-        //noinspection unchecked
         assertEquals(singletonList(asList("a", "b")), res.get("foo"));
     }
 
@@ -611,8 +598,7 @@ public class ArgumentParserImplTest {
 
             @Override
             public void run(ArgumentParser parser, Argument arg,
-                    Map<String, Object> attrs, String flag, Object value)
-                    throws ArgumentParserException {
+                    Map<String, Object> attrs, String flag, Object value) {
                 invoked = true;
             }
 
@@ -642,8 +628,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testParseArgsWithUnrecognizedArgs()
-            throws ArgumentParserException {
+    public void testParseArgsWithUnrecognizedArgs() {
         ap.addArgument("foo");
         try {
             ap.parseArgs("alpha bravo charlie".split(" "));
@@ -685,7 +670,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testParseArgsWithTooFewPositional() throws ArgumentParserException {
+    public void testParseArgsWithTooFewPositional() {
         ap.addArgument("a");
         ap.addArgument("b").nargs("+");
         try {
@@ -722,7 +707,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testParseArgsWithMutexGroupDuplicate() throws ArgumentParserException {
+    public void testParseArgsWithMutexGroupDuplicate() {
         MutuallyExclusiveGroup group = ap.addMutuallyExclusiveGroup("mutex");
         group.addArgument("--foo");
         group.addArgument("--bar");
@@ -744,7 +729,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testParseArgsWithMutexGroupRequiredFail() throws ArgumentParserException {
+    public void testParseArgsWithMutexGroupRequiredFail() {
         MutuallyExclusiveGroup group = ap.addMutuallyExclusiveGroup("mutex").required(true);
         group.addArgument("--foo");
         group.addArgument("--bar");
@@ -757,7 +742,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testParseArgsWithMutexGroupConcatDuplicate() throws ArgumentParserException {
+    public void testParseArgsWithMutexGroupConcatDuplicate() {
         MutuallyExclusiveGroup group = ap.addMutuallyExclusiveGroup("mutex").required(true);
         group.addArgument("-a").action(Arguments.storeTrue());
         group.addArgument("-b").action(Arguments.storeTrue());
@@ -781,7 +766,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testParseArgsWithCommandAfterSeparator() throws ArgumentParserException {
+    public void testParseArgsWithCommandAfterSeparator() {
         Subparsers subparsers = ap.addSubparsers();
         subparsers.addParser("install");
         try {
@@ -793,7 +778,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testParseArgsWithoutSubcommand() throws ArgumentParserException {
+    public void testParseArgsWithoutSubcommand() {
         Subparsers subparsers = ap.addSubparsers();
         subparsers.addParser("install");
         try {
@@ -805,8 +790,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testParseArgsWithMutualExclusiveGroupAndSuppressHelp()
-            throws ArgumentParserException {
+    public void testParseArgsWithMutualExclusiveGroupAndSuppressHelp() {
         MutuallyExclusiveGroup mutex1 = ap.addMutuallyExclusiveGroup("mutex1")
                 .required(true);
         mutex1.addArgument("-a").help(Arguments.SUPPRESS);
@@ -907,7 +891,7 @@ public class ArgumentParserImplTest {
         ap.addArgument("+a").action(Arguments.storeTrue());
         ap.addArgument("path");
 
-        List<String> unknown = new ArrayList<String>();
+        List<String> unknown = new ArrayList<>();
         Namespace res = ap.parseKnownArgs(
                 "p -f a b -g c d -i k --i +abc".split(" "), unknown);
 
@@ -918,7 +902,7 @@ public class ArgumentParserImplTest {
 
         unknown.clear();
 
-        Map<String, Object> attrs = new HashMap<String, Object>();
+        Map<String, Object> attrs = new HashMap<>();
         ap.parseKnownArgs("p q".split(" "), unknown, attrs);
 
         assertEquals(unknown, singletonList("q"));
@@ -954,7 +938,7 @@ public class ArgumentParserImplTest {
         ArgumentParser install = ap.addSubparsers().addParser("install");
         install.addArgument("-f");
 
-        List<String> unknown = new ArrayList<String>();
+        List<String> unknown = new ArrayList<>();
         Namespace res = ap.parseKnownArgs("-g install -fx -i k".split(" "), unknown);
 
         assertEquals(unknown, asList("-g", "-i", "k"));
@@ -962,7 +946,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testSubparserInheritPrefixChars() throws ArgumentParserException {
+    public void testSubparserInheritPrefixChars() {
         ap = (ArgumentParserImpl) ArgumentParsers.newFor("argparse4j")
                 .addHelp(true).prefixChars("+").locale(Locale.US).build();
         ap.addSubparsers().addParser("install").addArgument("+f");
@@ -986,8 +970,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testArgumentParserWithoutAddHelp()
-            throws ArgumentParserException {
+    public void testArgumentParserWithoutAddHelp() {
         ap = (ArgumentParserImpl) ArgumentParsers.newFor("argparse4j")
                 .addHelp(false).locale(Locale.US).build();
         try {
@@ -999,7 +982,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testSubparserWithoutAddHelp() throws ArgumentParserException {
+    public void testSubparserWithoutAddHelp() {
         Subparsers subparsers = ap.addSubparsers();
         subparsers.addParser("install", false, DEFAULT_PREFIX_CHARS);
         try {
@@ -1011,7 +994,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testGetDefault() throws ArgumentParserException {
+    public void testGetDefault() {
         ap.addArgument("--foo").setDefault("alpha");
         ap.setDefault("foo", "bravo");
         ap.setDefault("bar", "charlie");
@@ -1035,7 +1018,7 @@ public class ArgumentParserImplTest {
             private int[] ints;
 
             @Arg(dest = "attrs")
-            private void setInts(int ints[]) {
+            private void setInts(int[] ints) {
                 this.ints = ints;
             }
 
@@ -1116,8 +1099,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testFormatHelpWithArgumentGroup()
-            throws ArgumentParserException {
+    public void testFormatHelpWithArgumentGroup() {
         ap.description("This is argparse4j.").epilog("This is epilog.");
         ArgumentGroup group = ap.addArgumentGroup("group1")
                 .description("group1 description");
@@ -1140,8 +1122,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testFormatHelpWithArgumentGroupWithoutTitleAndDescription()
-            throws ArgumentParserException {
+    public void testFormatHelpWithArgumentGroupWithoutTitleAndDescription() {
         ap.description("This is argparse4j.").epilog("This is epilog.");
         ArgumentGroup group = ap.addArgumentGroup("");
         group.addArgument("--foo");
@@ -1161,7 +1142,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testFormatHelpWithArgumentGroupWithoutHelp() throws ArgumentParserException {
+    public void testFormatHelpWithArgumentGroupWithoutHelp() {
         ap = (ArgumentParserImpl) ArgumentParsers.newFor("argparse4j")
                 .addHelp(false).locale(Locale.US).build();
         ArgumentGroup group1 = ap.addArgumentGroup("group1").description(
@@ -1188,8 +1169,7 @@ public class ArgumentParserImplTest {
     }
     
     @Test
-    public void testFormatHelpWithMutexGroup()
-            throws ArgumentParserException {
+    public void testFormatHelpWithMutexGroup() {
         ap.description("This is argparse4j.").epilog("This is epilog.");
         MutuallyExclusiveGroup group = ap.addMutuallyExclusiveGroup("group1")
                 .description("group1 description");
@@ -1215,8 +1195,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testFormatHelpWithMutexGroupWithoutTitleAndDescription()
-            throws ArgumentParserException {
+    public void testFormatHelpWithMutexGroupWithoutTitleAndDescription() {
         ap.description("This is argparse4j.").epilog("This is epilog.");
         MutuallyExclusiveGroup group = ap.addMutuallyExclusiveGroup();
         group.addArgument("--foo");
@@ -1239,7 +1218,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testFormatHelp() throws ArgumentParserException {
+    public void testFormatHelp() {
         ap.description("This is argparse4j.").epilog("This is epilog.");
         assertEquals(String.format(
                   TextHelper.LOCALE_ROOT,
@@ -1254,7 +1233,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testFormatHelpWithDefaultHelp() throws ArgumentParserException {
+    public void testFormatHelpWithDefaultHelp() {
         ap.defaultHelp(true).addArgument("--foo").setDefault("alpha");
         assertEquals(String.format(
                   TextHelper.LOCALE_ROOT,
@@ -1267,8 +1246,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testFormatHelpWithSuppress()
-            throws ArgumentParserException {
+    public void testFormatHelpWithSuppress() {
         ArgumentGroup group = ap.addArgumentGroup("group");
         group.addArgument("--foo");
         group.addArgument("--bar").help(Arguments.SUPPRESS);
@@ -1327,7 +1305,7 @@ public class ArgumentParserImplTest {
 
 
     @Test
-    public void testSubparserFormatHelp() throws ArgumentParserException {
+    public void testSubparserFormatHelp() {
         ap.addArgument("--bar");
         Subparsers subparsers = ap.addSubparsers();
         Subparser parser = subparsers.addParser("install");
@@ -1349,8 +1327,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testSubparserFormatHelpWithDefaultHelp()
-            throws ArgumentParserException {
+    public void testSubparserFormatHelpWithDefaultHelp() {
         ap.addArgument("--bar");
         Subparsers subparsers = ap.addSubparsers();
         Subparser parser = subparsers.addParser("install").defaultHelp(true);
@@ -1366,8 +1343,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testFormatHelpWithSubparserTitleDescription()
-            throws ArgumentParserException {
+    public void testFormatHelpWithSubparserTitleDescription() {
         Subparsers subparsers = ap.addSubparsers().help("subcommand help")
                 .title("mysubcommands").description("valid subcommands");
         subparsers.addParser("install").help("install help");
@@ -1387,8 +1363,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testFormatHelpWithSubparserAlias()
-            throws ArgumentParserException {
+    public void testFormatHelpWithSubparserAlias() {
         Subparsers subparsers = ap.addSubparsers().help("subcommand help")
                 .title("mysubcommands").description("valid subcommands");
         subparsers.addParser("clone").help("clone help");
@@ -1413,7 +1388,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testFormatHelpWithSuppressedSubCommand() throws ArgumentParserException {
+    public void testFormatHelpWithSuppressedSubCommand() {
         Subparsers subparsers = ap.addSubparsers().help("subcommand help")
                 .title("mysubcommands").description("valid subcommands");
         subparsers.addParser("clone").help("clone help");
@@ -1436,7 +1411,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testFormatHelpWithSuppressedAllSubCommand() throws ArgumentParserException {
+    public void testFormatHelpWithSuppressedAllSubCommand() {
         Subparsers subparsers = ap.addSubparsers().help("subcommand help")
                 .title("mysubcommands").description("valid subcommands");
         subparsers.addParser("checkout").help(Arguments.SUPPRESS);
@@ -1450,7 +1425,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testFormatHelpWithUntitledSuppressedSubCommand() throws ArgumentParserException {
+    public void testFormatHelpWithUntitledSuppressedSubCommand() {
         Subparsers subparsers = ap.addSubparsers().help("subcommand help");
         subparsers.addParser("clone").help("clone help");
         subparsers.addParser("checkout").help(Arguments.SUPPRESS);
@@ -1470,7 +1445,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testFormatHelpWithUntitledSuppressedAllSubCommand() throws ArgumentParserException {
+    public void testFormatHelpWithUntitledSuppressedAllSubCommand() {
         Subparsers subparsers = ap.addSubparsers().help("subcommand help");
         subparsers.addParser("checkout").help(Arguments.SUPPRESS);
         assertEquals(String.format(
@@ -1483,7 +1458,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testPrintHelp() throws ArgumentParserException {
+    public void testPrintHelp() {
         String h = "Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do";
         ap.addArgument("bar").help(h);
         ap.addArgument("verylonglongpositionalargument").help(h);
@@ -1502,7 +1477,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testFormatVersion() throws ArgumentParserException {
+    public void testFormatVersion() {
         ap.version("${prog} version 7.8.7 (Dreamliner)");
         assertEquals("argparse4j version 7.8.7 (Dreamliner)", ap.formatVersion());
     }
@@ -1515,20 +1490,18 @@ public class ArgumentParserImplTest {
         Candidate foo2 = new Candidate(16, "foo");
         assertEquals(foo, foo);
         assertEquals(foo, fooCopy);
-        assertFalse(foo.equals(bar));
-        assertFalse(foo.equals(foo2));
+        assertNotEquals(foo, bar);
+        assertNotEquals(foo, foo2);
         //noinspection ObjectEqualsNull
-        assertFalse(foo.equals(null));
-        //noinspection EqualsBetweenInconvertibleTypes
-        assertFalse(foo.equals("foo"));
+        assertNotEquals(null, foo);
         Candidate subNull = new Candidate(15, null);
-        assertFalse(foo.equals(subNull));
-        assertFalse(subNull.equals(foo));
+        assertNotEquals(foo, subNull);
+        assertNotEquals(subNull, foo);
 
         assertEquals(foo.hashCode(), fooCopy.hashCode());
-        assertFalse(foo.hashCode() == foo2.hashCode());
-        assertFalse(foo.hashCode() == bar.hashCode());
-        assertFalse(foo.hashCode() == subNull.hashCode());
+        assertNotEquals(foo.hashCode(), foo2.hashCode());
+        assertNotEquals(foo.hashCode(), bar.hashCode());
+        assertNotEquals(foo.hashCode(), subNull.hashCode());
     }
     
     @Test (expected=HelpScreenException.class)

@@ -29,7 +29,7 @@ import org.junit.Test;
 
 public class RangeArgumentChoiceTest {
 
-    private RangeArgumentChoice<Integer> choice = new RangeArgumentChoice<Integer>(0, 255);
+    private RangeArgumentChoice<Integer> choice = new RangeArgumentChoice<>(0, 255);
     
     @Test
     public void testContains() {
@@ -48,8 +48,8 @@ public class RangeArgumentChoiceTest {
     @Test
     public void testTextualFormat() {
         assertEquals("{0..255}", choice.textualFormat());
-        assertEquals("{0.3..0.9}", new RangeArgumentChoice<Double>(0.3, 0.9).textualFormat());
-        assertEquals("{a..z}", new RangeArgumentChoice<String>("a", "z").textualFormat());
+        assertEquals("{0.3..0.9}", new RangeArgumentChoice<>(0.3, 0.9).textualFormat());
+        assertEquals("{a..z}", new RangeArgumentChoice<>("a", "z").textualFormat());
     }
 
     @Test
