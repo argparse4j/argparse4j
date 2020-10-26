@@ -41,7 +41,7 @@ class AlwaysInvalidPathFileSystem extends FileSystem {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         throw new UnsupportedOperationException();
     }
 
@@ -92,7 +92,7 @@ class AlwaysInvalidPathFileSystem extends FileSystem {
     }
 
     @Override
-    public WatchService newWatchService() throws IOException {
+    public WatchService newWatchService() {
         throw new UnsupportedOperationException();
     }
 }
