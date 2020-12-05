@@ -23,6 +23,7 @@
  */
 package net.sourceforge.argparse4j.internal;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -37,8 +38,8 @@ import static net.sourceforge.argparse4j.impl.Arguments.storeFalse;
 import static net.sourceforge.argparse4j.impl.Arguments.storeTrue;
 import static org.junit.Assert.*;
 
-import java.io.FileInputStream;
-import java.io.PrintWriter;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -366,7 +367,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testParseArgsWithFromFilePrefixAndUnrecognizedArgs() {
+    public void testParseArgsWithFromFilePrefixAndUnrecognizedArgs() throws IOException {
         ap = (ArgumentParserImpl) ArgumentParsers.newFor("argparse4j")
                 .addHelp(true).prefixChars(DEFAULT_PREFIX_CHARS)
                 .fromFilePrefix("@").locale(Locale.US).build();
@@ -375,10 +376,12 @@ public class ArgumentParserImplTest {
         ap.addArgument("-c").action(Arguments.storeTrue());
         ap.addArgument("-d").action(Arguments.storeTrue());
         try {
-            // If unrecognized arguments was found in arguments from file, add
-            // additional help message.
-            ap.parseArgs("-a @target/test-classes/args5.txt".split(" "));
-            fail();
+            withArgsFile("args5", args5FilePath -> {
+                // If unrecognized arguments was found in arguments from file, add
+                // additional help message.
+                ap.parseArgs(new String[] { "-a", "@" + args5FilePath });
+                fail();
+            });
         } catch(ArgumentParserException e) {
             assertEquals(String.format(
                         TextHelper.LOCALE_ROOT,
@@ -387,16 +390,32 @@ public class ArgumentParserImplTest {
             		e.getMessage());
         }
         try {
-            // -x is not from file, so no additional help.
-            ap.parseArgs("@target/test-classes/args6.txt -x".split(" "));
-            fail();
+            withArgsFile("args6", args6FilePath -> {
+                // -x is not from file, so no additional help.
+                ap.parseArgs(new String[] { "@" + args6FilePath, "-x" });
+                fail();
+            });
         } catch(ArgumentParserException e) {
             assertEquals("unrecognized arguments: '-x'", e.getMessage());
         }
         try {
-            // Check @file inside @file extends check range (overlap case).
-            ap.parseArgs("@target/test-classes/args7.txt".split(" "));
-            fail();
+            withArgsFile("args6", args6FilePath -> {
+                File args7File = File.createTempFile("args7", ".txt");
+                try {
+                    args7File.deleteOnExit();
+                    try (FileOutputStream args7Output = new FileOutputStream(args7File)) {
+                        args7Output.write(("-a\r\n" +
+                                "@" + args6FilePath + "\r\n" +
+                                "-b\r\n" +
+                                "-x\r\n").getBytes(UTF_8));
+                    }
+                    // Check @file inside @file extends check range (overlap case).
+                    ap.parseArgs(new String[] { "@" + args7File.getPath() });
+                    fail();
+                } finally {
+                    args7File.delete();
+                }
+            });
         } catch(ArgumentParserException e) {
             assertEquals(String.format(
                         TextHelper.LOCALE_ROOT,
@@ -405,9 +424,13 @@ public class ArgumentParserImplTest {
             		e.getMessage());
         }
         try {
-            // Check range is updated by args5.txt (non-overlap case).
-            ap.parseArgs("@target/test-classes/args6.txt @target/test-classes/args5.txt".split(" "));
-            fail();
+            withArgsFile("args5", args5FilePath -> {
+                withArgsFile("args6", args6FilePath -> {
+                    // Check range is updated by args5.txt (non-overlap case).
+                    ap.parseArgs(new String[] { "@" + args6FilePath, "@" + args5FilePath });
+                    fail();
+                });
+            });
         } catch(ArgumentParserException e) {
             assertEquals(String.format(
                         TextHelper.LOCALE_ROOT,
@@ -416,8 +439,10 @@ public class ArgumentParserImplTest {
             		e.getMessage());
         }
         try {
-            // Unrecognized non-flag arguments
-            ap.parseArgs("@target/test-classes/args8.txt".split(" "));
+            withArgsFile("args8", args8FilePath -> {
+                // Unrecognized non-flag arguments
+                ap.parseArgs(new String[] { "@" + args8FilePath });
+            });
         } catch(ArgumentParserException e) {
             assertEquals(String.format(
                         TextHelper.LOCALE_ROOT,
@@ -431,8 +456,10 @@ public class ArgumentParserImplTest {
                 .fromFilePrefix("@/").locale(Locale.US).build();
         ap.addArgument("-a").action(Arguments.storeTrue());
         try {
-            ap.parseArgs("-a @target/test-classes/args5.txt".split(" "));
-            fail();
+            withArgsFile("args5", args5FilePath -> {
+                ap.parseArgs(new String[] { "-a", "@" + args5FilePath });
+                fail();
+            });
         } catch(ArgumentParserException e) {
             assertEquals(String.format(
                         TextHelper.LOCALE_ROOT,
@@ -443,7 +470,7 @@ public class ArgumentParserImplTest {
     }
 
     @Test
-    public void testParseArgsWithFromFilePrefix() throws ArgumentParserException {
+    public void testParseArgsWithFromFilePrefix() throws ArgumentParserException, IOException {
         ap = (ArgumentParserImpl) ArgumentParsers.newFor("argparse4j")
                 .addHelp(true).prefixChars(DEFAULT_PREFIX_CHARS)
                 .fromFilePrefix("@").build();
@@ -456,12 +483,50 @@ public class ArgumentParserImplTest {
         subparser.addArgument("--foo");
         subparser.addArgument("--bar").action(Arguments.storeTrue());
 
-        Namespace res = ap.parseArgs("-f foo @target/test-classes/args.txt --baz alpha @target/test-classes/args2.txt x y1 @target/test-classes/args3.txt add --bar @target/test-classes/args4.txt".split(" "));
-        assertEquals("bar", res.getString("f"));
-        assertEquals(asList("alpha", "bravo"), res.getList("baz"));
-        assertEquals("x", res.getString("x"));
-        assertEquals(asList("y1", "y2"), res.getList("y"));
-        assertEquals("HELLO", res.getString("foo"));
+        withArgsFile("args", 
+                argsFilePath -> withArgsFile("args2", 
+                        args2FilePath -> withArgsFile("args3",
+                                args3FilePath -> withArgsFile("args4", 
+                                        args4FilePath -> {
+            Namespace res = ap.parseArgs(("-f foo @" +
+                    argsFilePath + 
+                    " --baz alpha @" +
+                    args2FilePath +
+                    " x y1 @" +
+                    args3FilePath +
+                    " add --bar @" +
+                    args4FilePath).split(" "));
+            assertEquals("bar", res.getString("f"));
+            assertEquals(asList("alpha", "bravo"), res.getList("baz"));
+            assertEquals("x", res.getString("x"));
+            assertEquals(asList("y1", "y2"), res.getList("y"));
+            assertEquals("HELLO", res.getString("foo"));
+        }))));
+    }
+
+    @FunctionalInterface
+    interface ArgsFilePathConsumer {
+        void accept(String path) throws ArgumentParserException, IOException;
+    }
+    
+    private void withArgsFile(String baseName, ArgsFilePathConsumer argsFilePathConsumer) throws ArgumentParserException, IOException {
+        File argsFile = File.createTempFile(baseName, ".txt");
+        try {
+            argsFile.deleteOnExit();
+            try (InputStream argsInput = getClass().getClassLoader().getResourceAsStream(baseName + ".txt"); 
+                 FileOutputStream argsOutput = new FileOutputStream(argsFile)) {
+                byte[] buffer = new byte[4096];
+                int numberOfReadBytes = argsInput.read(buffer);
+                while (numberOfReadBytes != -1) {
+                    argsOutput.write(buffer, 0, numberOfReadBytes);
+                    numberOfReadBytes = argsInput.read(buffer);
+                }
+            }
+
+            argsFilePathConsumer.accept(argsFile.getPath());
+        } finally {
+            argsFile.delete();
+        }
     }
 
     @Test

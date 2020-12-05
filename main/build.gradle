@@ -1,0 +1,10 @@
+plugins {
+    id 'net.sourceforge.argparse4j.java-conventions'
+    id 'net.sourceforge.argparse4j.libraries'
+}
+
+dependencies {
+    testImplementation Libs.junit
+}
+
+description = 'argparse4j'

@@ -1,0 +1,4 @@
+ext.Libs = [
+        hadoopCommon: 'org.apache.hadoop:hadoop-common:2.7.0',
+        junit       : 'junit:junit:4.13.1'
+]

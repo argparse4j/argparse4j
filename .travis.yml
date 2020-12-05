@@ -10,4 +10,4 @@ before_cache:
   - rm --force --recursive $HOME/.m2/repository/net/sourceforge/argparse4j
 install: skip
 script:
-  - mvn install -Dgpg.skip -B -V
+  - ./gradlew build

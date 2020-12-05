@@ -1,0 +1,18 @@
+import argparse4j.gradle.java9modules.ModulePathProvider
+
+plugins {
+    id 'net.sourceforge.argparse4j.java-conventions'
+    id 'net.sourceforge.argparse4j.libraries'
+}
+
+dependencies {
+    api project(':argparse4j')
+    api Libs.hadoopCommon
+    testImplementation Libs.junit
+}
+
+description = 'argparse4j-hadoop'
+
+compileJava9Java {
+    options.compilerArgumentProviders.add(new ModulePathProvider(project, configurations.api))
+}

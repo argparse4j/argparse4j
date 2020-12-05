@@ -1,0 +1,68 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url = uri('https://repo.maven.apache.org/maven2/')
+    }
+}
+
+group = 'net.sourceforge.argparse4j'
+version = '0.9.0-SNAPSHOT'
+
+sourceSets {
+    java9
+}
+
+java {
+    withJavadocJar()
+}
+
+compileJava {
+    dependsOn compileJava9Java
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    options.compilerArgs.addAll(['--release', '8'])
+    options.encoding = 'UTF-8'
+
+    doLast {
+        copy {
+            from sourceSets.java9.java.outputDir
+            into "${sourceSets.main.java.outputDir}/META-INF/versions/9"
+        }
+    }
+}
+
+compileJava9Java {
+    sourceCompatibility = JavaVersion.VERSION_1_9
+    targetCompatibility = JavaVersion.VERSION_1_9
+    options.compilerArgs.addAll(['--release', '9'])
+    modularity.inferModulePath = true
+    options.encoding = 'UTF-8'
+    source(sourceSets.main.java.srcDirs)
+    include("module-info.java")
+}
+
+compileTestJava {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    options.compilerArgs.addAll(['--release', '8'])
+    options.encoding = 'UTF-8'
+}
+
+jar {
+    manifest.attributes(
+            'Multi-Release': 'true',
+    )
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
+}

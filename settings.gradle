@@ -1,0 +1,10 @@
+rootProject.name = 'argparse4j-root'
+
+include(':argparse4j')
+project(":argparse4j").projectDir = file('main')
+
+include(':argparse4j-extensions')
+project(":argparse4j-extensions").projectDir = file('extensions')
+
+include(':argparse4j-hadoop')
+project(":argparse4j-hadoop").projectDir = file('extensions/hadoop')

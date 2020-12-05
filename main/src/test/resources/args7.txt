@@ -1,4 +1,0 @@
--a
-@target/test-classes/args6.txt
--b
--x

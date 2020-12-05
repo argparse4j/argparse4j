@@ -1,5 +1,7 @@
-.idea
+/.gradle/
+/.idea/
+/build/
+/target/
 bin
-target
 *~
 *.iml
