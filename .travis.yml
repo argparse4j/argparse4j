@@ -1,13 +1,15 @@
 dist: trusty
 language: java
-jdk: openjdk9
+jdk: openjdk11
 cache:
   directories:
-    - $HOME/.m2
-# Delete artifacts that we build to prevent old and incorrect files from
-# breaking the current build.
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
 before_cache:
-  - rm --force --recursive $HOME/.m2/repository/net/sourceforge/argparse4j
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 install: skip
+before_script:
+  - cp gradle.travis.properties gradle.properties
 script:
   - ./gradlew build

@@ -3,5 +3,6 @@
 /build/
 /target/
 bin
+/gradle.properties
 *~
 *.iml
