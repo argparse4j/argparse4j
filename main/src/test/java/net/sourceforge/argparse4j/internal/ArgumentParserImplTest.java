@@ -404,10 +404,10 @@ public class ArgumentParserImplTest {
                 try {
                     args7File.deleteOnExit();
                     try (FileOutputStream args7Output = new FileOutputStream(args7File)) {
-                        args7Output.write(("-a\r\n" +
-                                "@" + args6FilePath + "\r\n" +
-                                "-b\r\n" +
-                                "-x\r\n").getBytes(UTF_8));
+                        args7Output.write(("-a" + System.lineSeparator() +
+                                "@" + args6FilePath + "" + System.lineSeparator() +
+                                "-b" + System.lineSeparator() +
+                                "-x" + System.lineSeparator()).getBytes(UTF_8));
                     }
                     // Check @file inside @file extends check range (overlap case).
                     ap.parseArgs(new String[] { "@" + args7File.getPath() });
