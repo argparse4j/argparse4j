@@ -1,8 +1,8 @@
 Argparse4j - The Java command-line argument parser library
 ==========================================================
 
-.. image:: https://travis-ci.org/argparse4j/argparse4j.svg?branch=master
-    :target: https://travis-ci.org/argparse4j/argparse4j
+.. image:: https://api.travis-ci.com/argparse4j/argparse4j.svg?branch=master
+    :target: https://travis-com.org/github/argparse4j/argparse4j
 
 Argparse4j is a command line argument parser library for Java based
 on Python's
