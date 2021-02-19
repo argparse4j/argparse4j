@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import net.sourceforge.argparse4j.helper.MessageLocalization;
 import net.sourceforge.argparse4j.helper.TextHelper;
@@ -481,8 +482,8 @@ public final class ArgumentImpl implements Argument {
     }
 
     public void run(ArgumentParserImpl parser, Map<String, Object> res,
-            String flag, Object value) throws ArgumentParserException {
-        action_.run(parser, this, res, flag, value);
+            String flag, Object value, Consumer<Object> valueSetter) throws ArgumentParserException {
+        action_.run(parser, this, res, flag, value, valueSetter);
     }
 
     // Getter methods

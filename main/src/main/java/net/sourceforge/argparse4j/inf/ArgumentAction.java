@@ -23,7 +23,10 @@
  */
 package net.sourceforge.argparse4j.inf;
 
+import net.sourceforge.argparse4j.annotation.Arg;
+
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * This interface defines behavior of action when an argument is encountered at
@@ -60,6 +63,11 @@ public interface ArgumentAction {
      */
     void run(ArgumentParser parser, Argument arg, Map<String, Object> attrs,
             String flag, Object value) throws ArgumentParserException;
+
+    default void run (ArgumentParser parser, Argument arg, Map<String, Object> attrs,
+                      String flag, Object value, Consumer<Object> valueSetter) throws ArgumentParserException {
+        run(parser, arg, attrs, flag, value);
+    }
 
     /**
      * Called when ArgumentAction is added to {@link Argument} using

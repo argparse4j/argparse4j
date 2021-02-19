@@ -26,6 +26,7 @@ package net.sourceforge.argparse4j.impl.action;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentAction;
@@ -47,9 +48,17 @@ import net.sourceforge.argparse4j.inf.ArgumentParser;
  */
 public class AppendConstArgumentAction implements ArgumentAction {
 
+
     @Override
     public void run(ArgumentParser parser, Argument arg,
-            Map<String, Object> attrs, String flag, Object value) {
+                    Map<String, Object> attrs, String flag, Object value) {
+        run(parser, arg, attrs, flag, value, list -> attrs.put(arg.getDest(), list));
+    }
+
+    @Override
+    public void run(ArgumentParser parser, Argument arg,
+                    Map<String, Object> attrs, String flag, Object value,
+                    Consumer<Object> valueSetter) {
         if (attrs.containsKey(arg.getDest())) {
             Object obj = attrs.get(arg.getDest());
             if (obj instanceof List) {
@@ -60,7 +69,7 @@ public class AppendConstArgumentAction implements ArgumentAction {
         }
         List<Object> list = new ArrayList<>();
         list.add(arg.getConst());
-        attrs.put(arg.getDest(), list);
+        valueSetter.accept(list);
     }
 
     @Override

@@ -20,11 +20,13 @@ public class ArgumentParserConfigurationImpl
     final int formatWidth_;
     final boolean singleMetavar_;
     final boolean noDestConversionForPositionalArgs_;
+    final boolean includeArgumentNamesAsKeysInResult_;
 
     public ArgumentParserConfigurationImpl(String prog, boolean addHelp,
             String prefixChars, String fromFilePrefix, Locale locale,
             TextWidthCounter textWidthCounter, int formatWidth,
-            boolean singleMetavar, boolean noDestConversionForPositionalArgs) {
+            boolean singleMetavar, boolean noDestConversionForPositionalArgs,
+            boolean includeArgumentNamesAsKeysInResult) {
         prog_ = prog;
         addHelp_ = addHelp;
         prefixChars_ = prefixChars;
@@ -38,13 +40,15 @@ public class ArgumentParserConfigurationImpl
         formatWidth_ = formatWidth;
         singleMetavar_ = singleMetavar;
         noDestConversionForPositionalArgs_ = noDestConversionForPositionalArgs;
+        includeArgumentNamesAsKeysInResult_ = includeArgumentNamesAsKeysInResult;
     }
 
     private ArgumentParserConfigurationImpl(String prog, boolean addHelp,
             String prefixChars, String fromFilePrefix,
             ResourceBundle resourceBundle, TextWidthCounter textWidthCounter,
             int formatWidth, boolean singleMetavar,
-            boolean noDestConversionForPositionalArgs) {
+            boolean noDestConversionForPositionalArgs,
+            boolean includeArgumentNamesAsKeysInResult) {
         prog_ = prog;
         addHelp_ = addHelp;
         prefixChars_ = prefixChars;
@@ -57,6 +61,7 @@ public class ArgumentParserConfigurationImpl
         formatWidth_ = formatWidth;
         singleMetavar_ = singleMetavar;
         noDestConversionForPositionalArgs_ = noDestConversionForPositionalArgs;
+        includeArgumentNamesAsKeysInResult_ = includeArgumentNamesAsKeysInResult;
     }
 
     ArgumentParserConfigurationImpl forSubparser(boolean addHelp,
@@ -64,7 +69,8 @@ public class ArgumentParserConfigurationImpl
         return new ArgumentParserConfigurationImpl(prog_, addHelp, prefixChars,
                 fromFilePrefix_, resourceBundle_, textWidthCounter_,
                 formatWidth_, singleMetavar_,
-                noDestConversionForPositionalArgs_);
+                noDestConversionForPositionalArgs_,
+                includeArgumentNamesAsKeysInResult_);
     }
 
     public ResourceBundle getResourceBundle() {
