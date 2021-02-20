@@ -47,7 +47,7 @@ Infrastructure
 
 * A CI build is now running for all commits on Travis CI. The build
   detects the use of classes of SDKs newer than the one we support.
-  See: https://travis-com.org/github/argparse4j/argparse4j
+  See: https://travis-ci.com/github/argparse4j/argparse4j
 
 * Paths of IntelliJ IDEA have been added to the Git ignore list.
 
