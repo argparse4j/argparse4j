@@ -22,7 +22,7 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void singleDashTwoWordsNamedSucceedsForUnderscore() throws ArgumentParserException {
+    public void singleDashTwoWordsNamedSucceedsForDest() throws ArgumentParserException {
         ArgumentParser parser = createParser();
         parser.addArgument("-a-b");
 
@@ -32,7 +32,7 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void singleDashTwoWordsNamedSucceedsForDash() throws ArgumentParserException {
+    public void singleDashTwoWordsNamedSucceedsForName() throws ArgumentParserException {
         ArgumentParser parser = createParser();
         parser.addArgument("-a-b");
 
@@ -52,7 +52,7 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void doubleDashTwoWordsNamedSucceedsForUnderscore() throws ArgumentParserException {
+    public void doubleDashTwoWordsNamedSucceedsForDest() throws ArgumentParserException {
         ArgumentParser parser = createParser();
         parser.addArgument("--a-b");
 
@@ -62,7 +62,7 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void doubleDashTwoWordsNamedSucceedsForDash() throws ArgumentParserException {
+    public void doubleDashTwoWordsNamedSucceedsForName() throws ArgumentParserException {
         ArgumentParser parser = createParser();
         parser.addArgument("--a-b");
 
@@ -82,7 +82,7 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void twoWordPositionalSucceedsForUnderscore() throws ArgumentParserException {
+    public void twoWordPositionalSucceedsForDest() throws ArgumentParserException {
         ArgumentParser parser = createParser();
         parser.addArgument("a-b");
 
@@ -92,7 +92,7 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void twoWordPositionalSucceedsForDash() throws ArgumentParserException {
+    public void twoWordPositionalSucceedsForName() throws ArgumentParserException {
         ArgumentParser parser = createParser();
         parser.addArgument("a-b");
 
@@ -113,7 +113,7 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void singleDashTwoWordsNamedFallingBackToDefaultSucceedsForUnderscore() throws ArgumentParserException {
+    public void singleDashTwoWordsNamedFallingBackToDefaultSucceedsForDest() throws ArgumentParserException {
         ArgumentParser parser = createParser();
         Argument argument = parser.addArgument("-a-b");
         argument.setDefault("value");
@@ -124,7 +124,7 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void singleDashTwoWordsNamedFallingBackToDefaultSucceedsForDash() throws ArgumentParserException {
+    public void singleDashTwoWordsNamedFallingBackToDefaultSucceedsForName() throws ArgumentParserException {
         ArgumentParser parser = createParser();
         Argument argument = parser.addArgument("-a-b");
         argument.setDefault("value");
@@ -146,7 +146,7 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void doubleDashTwoWordsNamedFallingBackToDefaultSucceedsForUnderscore() throws ArgumentParserException {
+    public void doubleDashTwoWordsNamedFallingBackToDefaultSucceedsForDest() throws ArgumentParserException {
         ArgumentParser parser = createParser();
         Argument argument = parser.addArgument("--a-b");
         argument.setDefault("value");
@@ -157,7 +157,7 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void doubleDashTwoWordsNamedFallingBackToDefaultSucceedsForDash() throws ArgumentParserException {
+    public void doubleDashTwoWordsNamedFallingBackToDefaultSucceedsForName() throws ArgumentParserException {
         ArgumentParser parser = createParser();
         Argument argument = parser.addArgument("--a-b");
         argument.setDefault("value");
@@ -180,7 +180,7 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void twoWordPositionalFallingBackToDefaultSucceedsForUnderscore() throws ArgumentParserException {
+    public void twoWordPositionalFallingBackToDefaultSucceedsForDest() throws ArgumentParserException {
         ArgumentParser parser = createParser();
         Argument argument = parser.addArgument("a-b");
         argument.nargs("*");
@@ -192,7 +192,7 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void twoWordPositionalFallingBackToDefaultSucceedsForDash() throws ArgumentParserException {
+    public void twoWordPositionalFallingBackToDefaultSucceedsForName() throws ArgumentParserException {
         ArgumentParser parser = createParser();
         Argument argument = parser.addArgument("a-b");
         argument.nargs("*");
@@ -204,7 +204,7 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void singleOtherPrefixTwoWordsNamedSucceedsForDash() throws ArgumentParserException {
+    public void singleOtherPrefixTwoWordsNamedSucceedsForName() throws ArgumentParserException {
         ArgumentParser parser = ArgumentParsers.newFor("test")
                 .prefixChars("|")
                 .includeArgumentNamesAsKeysInResult(true)
@@ -217,7 +217,7 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void doubleOtherPrefixTwoWordsNamedSucceedsForDash() throws ArgumentParserException {
+    public void doubleOtherPrefixTwoWordsNamedSucceedsForName() throws ArgumentParserException {
         ArgumentParser parser = ArgumentParsers.newFor("test")
                 .prefixChars("|")
                 .includeArgumentNamesAsKeysInResult(true)
