@@ -33,8 +33,7 @@ public class ArgumentParserConfigurationImpl
         fromFilePrefixPattern_ = fromFilePrefix == null ? null : new PrefixPattern(
                 fromFilePrefix);
         resourceBundle_ = ResourceBundle
-                .getBundle(ArgumentParserImpl.class.getName(), locale,
-                        UnitedStatesEnglishFallbackControl.INSTANCE);
+                .getBundle(ArgumentParserImpl.class.getName(), locale);
         textWidthCounter_ = textWidthCounter;
         formatWidth_ = formatWidth;
         singleMetavar_ = singleMetavar;
@@ -75,14 +74,5 @@ public class ArgumentParserConfigurationImpl
     @Override
     public Locale getLocale() {
         return resourceBundle_.getLocale();
-    }
-}
-
-class UnitedStatesEnglishFallbackControl extends ResourceBundle.Control {
-    static final UnitedStatesEnglishFallbackControl INSTANCE = new UnitedStatesEnglishFallbackControl();
-
-    @Override
-    public Locale getFallbackLocale(String baseName, Locale locale) {
-        return Locale.US;
     }
 }

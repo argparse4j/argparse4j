@@ -27,10 +27,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.internal.ArgumentParserImpl;
 import net.sourceforge.argparse4j.mock.MockArgument;
 
 import org.junit.Test;
@@ -84,16 +86,26 @@ public class CaseInsensitiveEnumStringArgumentTypeTest {
     @Test
     public void testIgnoresLocaleOfParserForCaseInsensitivity() throws
             ArgumentParserException {
+        Locale turkish = new Locale("tr");
         ArgumentParser ap = ArgumentParsers.newFor("argparse4j")
-                .locale(new Locale("tr")).build();
+                .locale(turkish).build();
         CaseInsensitiveEnumStringArgumentType<Lang> type = CaseInsensitiveEnumStringArgumentType
                 .forEnum(Lang.class);
         try {
             type.convert(ap, new MockArgument(), "ınterlisp");
             fail("Expected ArgumentParserException to be thrown");
         } catch (ArgumentParserException e) {
+            ResourceBundle bundle = ResourceBundle.getBundle(ArgumentParserImpl.class.getName(), turkish);
+            String localizedExpectedErrorMessage = String.format(
+                    bundle.getString("couldNotConvertChooseFromError"),
+                    "ınterlisp",
+                    "{PYTHON,JAVA,C++,Interlisp}");
+            String localizedExpectedFullErrorMessage = String.format(
+                    bundle.getString("argument"),
+                    null,
+                    localizedExpectedErrorMessage);
             assertEquals(
-                    "argument null: could not convert 'ınterlisp' (choose from {PYTHON,JAVA,C++,Interlisp})",
+                    localizedExpectedFullErrorMessage,
                     e.getMessage());
         }
     }
