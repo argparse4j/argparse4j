@@ -16,7 +16,22 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <scriptExtension/>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>onWindows</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <properties>
+                <scriptExtension>.cmd</scriptExtension>
+            </properties>
+        </profile>
+    </profiles>
 
     <dependencies>
         <dependency>
@@ -37,9 +52,9 @@
                         <reports>
                             <report>summary</report>
                             <report>dependencies</report>
-                            <report>project-team</report>
-                            <report>issue-tracking</report>
-                            <report>license</report>
+                            <report>team</report>
+                            <report>issue-management</report>
+                            <report>licenses</report>
                             <report>scm</report>
                         </reports>
                     </reportSet>
@@ -50,6 +65,10 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
                     <locale>en</locale>
+                    <release>8</release>
+                    <sourceFileExcludes>
+                        <sourceFileExclude>module-info.java</sourceFileExclude>
+                    </sourceFileExcludes>
                 </configuration>
                 <reportSets>
                     <reportSet>
@@ -85,7 +104,7 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <executable>sphinx-make-html</executable>
+                            <executable>sphinx-make-html${scriptExtension}</executable>
                             <arguments>
                                 <argument>${project.version}</argument>
                             </arguments>
@@ -108,6 +127,7 @@
                     <locale>en</locale>
                     <stylesheet>maven</stylesheet>
                     <source>8</source>
+                    <release>8</release>
                     <sourceFileExcludes>
                         <sourceFileExclude>module-info.java</sourceFileExclude>
                     </sourceFileExcludes>

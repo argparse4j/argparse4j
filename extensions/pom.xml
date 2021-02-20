@@ -44,6 +44,53 @@
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
+            <plugin>
+                <!--
+                    Both source and binary compatibility problems are
+                    reported. The reason is that the following incompatible
+                    changes are considered source changes. They do indeed not
+                    break binary compatibility, i.e. sub types will continue
+                    to load. But they will cause problems at run time if a
+                    client upgrades without recompilation of the client code,
+                    so we want to know about them:
+                    - METHOD_ABSTRACT_ADDED_TO_CLASS
+                    - METHOD_ADDED_TO_INTERFACE
+
+                    The report now contains more information than needed, but
+                    you only have to look at types marked with a "!" or "*".
+                -->
+                <groupId>com.github.siom79.japicmp</groupId>
+                <artifactId>japicmp-maven-plugin</artifactId>
+                <configuration>
+                    <oldVersion>
+                        <dependency>
+                            <groupId>net.sourceforge.argparse4j</groupId>
+                            <artifactId>argparse4j-hadoop</artifactId>
+                            <version>${previously.released.version}</version>
+                            <type>jar</type>
+                        </dependency>
+                    </oldVersion>
+                    <newVersion>
+                        <file>
+                            <path>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</path>
+                        </file>
+                    </newVersion>
+                    <parameter>
+                        <onlyModified>true</onlyModified>
+                        <excludes>
+                            <exclude>net.sourceforge.argparse4j.internal</exclude>
+                        </excludes>
+                    </parameter>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>cmp</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>

@@ -51,9 +51,9 @@
                         <reports>
                             <report>summary</report>
                             <report>dependencies</report>
-                            <report>project-team</report>
-                            <report>issue-tracking</report>
-                            <report>license</report>
+                            <report>team</report>
+                            <report>issue-management</report>
+                            <report>licenses</report>
                             <report>scm</report>
                         </reports>
                     </reportSet>
@@ -64,6 +64,10 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
                     <locale>en</locale>
+                    <release>8</release>
+                    <sourceFileExcludes>
+                        <sourceFileExclude>module-info.java</sourceFileExclude>
+                    </sourceFileExcludes>
                 </configuration>
                 <reportSets>
                     <reportSet>
@@ -102,6 +106,7 @@
                 <configuration>
                     <locale>en</locale>
                     <source>8</source>
+                    <release>8</release>
                     <sourceFileExcludes>
                         <sourceFileExclude>module-info.java</sourceFileExclude>
                     </sourceFileExcludes>
