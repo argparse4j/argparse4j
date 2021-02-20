@@ -203,6 +203,32 @@ public class ArgumentParserImplArgNamesInResultTest {
         assertEquals("value", namespace.get("a-b"));
     }
 
+    @Test
+    public void singleOtherPrefixTwoWordsNamedSucceedsForDash() throws ArgumentParserException {
+        ArgumentParser parser = ArgumentParsers.newFor("test")
+                .prefixChars("|")
+                .includeArgumentNamesAsKeysInResult(true)
+                .build();
+        parser.addArgument("|a-b");
+
+        Namespace namespace = parser.parseArgs(new String[]{"|a-b", "value"});
+
+        assertEquals("value", namespace.get("a-b"));
+    }
+
+    @Test
+    public void doubleOtherPrefixTwoWordsNamedSucceedsForDash() throws ArgumentParserException {
+        ArgumentParser parser = ArgumentParsers.newFor("test")
+                .prefixChars("|")
+                .includeArgumentNamesAsKeysInResult(true)
+                .build();
+        parser.addArgument("||a-b");
+
+        Namespace namespace = parser.parseArgs(new String[]{"||a-b", "value"});
+
+        assertEquals("value", namespace.get("a-b"));
+    }
+
     private ArgumentParser createParser() {
         return ArgumentParsers.newFor("test")
                 .includeArgumentNamesAsKeysInResult(true)

@@ -1246,16 +1246,12 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     private String getActualArgumentName(ArgumentImpl arg) {
         return arg.getName() == null
-                ? removePrefixDashes(arg.getFlags()[0])
+                ? removePrefix(arg.getFlags()[0])
                 : arg.getName();
     }
 
-    private String removePrefixDashes(String flag) {
-        int firstIndexOfNonDash = 0;
-        while (firstIndexOfNonDash < flag.length() && flag.charAt(firstIndexOfNonDash) == '-') {
-            firstIndexOfNonDash++;
-        }
-        return flag.substring(firstIndexOfNonDash);
+    private String removePrefix(String flag) {
+        return config_.prefixPattern_.removePrefix(flag);
     }
 
     @Override
