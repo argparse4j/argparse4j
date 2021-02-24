@@ -452,7 +452,10 @@ Currently messages have been (partially) translated to Dutch,
 English, German and Russian.
 
 The default locale is the default locale of the JVM
-(``Locale.getDefault()``).
+(``Locale.getDefault()``). Upto 0.9.0 the fallback locale for the
+argparse4j resource bundle was overridden to be "en_US". Because of
+the switch to named modules to support Java 9+, the override has been
+removed.
 
 .. _ArgumentParserBuilder-cjkWidthHack:
 
