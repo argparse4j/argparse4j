@@ -1246,7 +1246,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     private String getActualArgumentName(ArgumentImpl arg) {
         return arg.getName() == null
-                ? removePrefix(arg.getFlags()[0])
+                ? removePrefix(arg.getPrimaryFlag())
                 : arg.getName();
     }
 

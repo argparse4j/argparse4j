@@ -12,7 +12,7 @@ import static org.junit.Assert.assertNotNull;
 
 public class ArgumentParserImplArgNamesInResultTest {
     @Test
-    public void singleDashOneWordNamedSucceeds() throws ArgumentParserException {
+    public void singlePrefixOneWordNamedSucceeds() throws ArgumentParserException {
         ArgumentParser parser = createParser();
         parser.addArgument("-a");
 
@@ -22,7 +22,7 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void singleDashTwoWordsNamedSucceedsForDest() throws ArgumentParserException {
+    public void singlePrefixTwoWordsNamedSucceedsForDest() throws ArgumentParserException {
         ArgumentParser parser = createParser();
         parser.addArgument("-a-b");
 
@@ -32,7 +32,7 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void singleDashTwoWordsNamedSucceedsForName() throws ArgumentParserException {
+    public void singlePrefixTwoWordsNamedSucceedsForName() throws ArgumentParserException {
         ArgumentParser parser = createParser();
         parser.addArgument("-a-b");
 
@@ -42,7 +42,7 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void doubleDashWordNamedSucceeds() throws ArgumentParserException {
+    public void doublePrefixWordNamedSucceeds() throws ArgumentParserException {
         ArgumentParser parser = createParser();
         parser.addArgument("--a");
 
@@ -52,7 +52,7 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void doubleDashTwoWordsNamedSucceedsForDest() throws ArgumentParserException {
+    public void doublePrefixTwoWordsNamedSucceedsForDest() throws ArgumentParserException {
         ArgumentParser parser = createParser();
         parser.addArgument("--a-b");
 
@@ -62,11 +62,51 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void doubleDashTwoWordsNamedSucceedsForName() throws ArgumentParserException {
+    public void doublePrefixTwoWordsNamedAfterSinglePrefixSucceedsForDest() throws ArgumentParserException {
+        ArgumentParser parser = createParser();
+        parser.addArgument("-a", "--a-b");
+
+        Namespace namespace = parser.parseArgs(new String[]{"--a-b", "value"});
+
+        assertEquals("value", namespace.get("a_b"));
+    }
+
+    @Test
+    public void doubleAndSinglePrefixAndSinglePrefixArgumentSucceedsForDest() throws ArgumentParserException {
+        ArgumentParser parser = createParser();
+        parser.addArgument("-a", "--a-b");
+
+        Namespace namespace = parser.parseArgs(new String[]{"-a", "value"});
+
+        assertEquals("value", namespace.get("a_b"));
+    }
+
+    @Test
+    public void doublePrefixTwoWordsNamedSucceedsForName() throws ArgumentParserException {
         ArgumentParser parser = createParser();
         parser.addArgument("--a-b");
 
         Namespace namespace = parser.parseArgs(new String[]{"--a-b", "value"});
+
+        assertEquals("value", namespace.get("a-b"));
+    }
+
+    @Test
+    public void doublePrefixTwoWordsNamedAfterSinglePrefixSucceedsForName() throws ArgumentParserException {
+        ArgumentParser parser = createParser();
+        parser.addArgument("-a", "--a-b");
+
+        Namespace namespace = parser.parseArgs(new String[]{"--a-b", "value"});
+
+        assertEquals("value", namespace.get("a-b"));
+    }
+
+    @Test
+    public void doubleAndSinglePrefixAndSinglePrefixArgumentSucceedsForName() throws ArgumentParserException {
+        ArgumentParser parser = createParser();
+        parser.addArgument("-a", "--a-b");
+
+        Namespace namespace = parser.parseArgs(new String[]{"-a", "value"});
 
         assertEquals("value", namespace.get("a-b"));
     }
@@ -102,7 +142,7 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void singleDashOneWordNamedFallingBackToDefaultSucceeds() throws ArgumentParserException {
+    public void singlePrefixOneWordNamedFallingBackToDefaultSucceeds() throws ArgumentParserException {
         ArgumentParser parser = createParser();
         Argument argument = parser.addArgument("-a");
         argument.setDefault("value");
@@ -113,7 +153,7 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void singleDashTwoWordsNamedFallingBackToDefaultSucceedsForDest() throws ArgumentParserException {
+    public void singlePrefixTwoWordsNamedFallingBackToDefaultSucceedsForDest() throws ArgumentParserException {
         ArgumentParser parser = createParser();
         Argument argument = parser.addArgument("-a-b");
         argument.setDefault("value");
@@ -124,7 +164,7 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void singleDashTwoWordsNamedFallingBackToDefaultSucceedsForName() throws ArgumentParserException {
+    public void singlePrefixTwoWordsNamedFallingBackToDefaultSucceedsForName() throws ArgumentParserException {
         ArgumentParser parser = createParser();
         Argument argument = parser.addArgument("-a-b");
         argument.setDefault("value");
@@ -135,7 +175,7 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void doubleDashWordNamedFallingBackToDefaultSucceeds() throws ArgumentParserException {
+    public void doublePrefixWordNamedFallingBackToDefaultSucceeds() throws ArgumentParserException {
         ArgumentParser parser = createParser();
         Argument argument = parser.addArgument("--a");
         argument.setDefault("value");
@@ -146,7 +186,7 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void doubleDashTwoWordsNamedFallingBackToDefaultSucceedsForDest() throws ArgumentParserException {
+    public void doublePrefixTwoWordsNamedFallingBackToDefaultSucceedsForDest() throws ArgumentParserException {
         ArgumentParser parser = createParser();
         Argument argument = parser.addArgument("--a-b");
         argument.setDefault("value");
@@ -157,9 +197,31 @@ public class ArgumentParserImplArgNamesInResultTest {
     }
 
     @Test
-    public void doubleDashTwoWordsNamedFallingBackToDefaultSucceedsForName() throws ArgumentParserException {
+    public void doublePrefixTwoWordsNamedAfterSinglePrefixFallingBackToDefaultSucceedsForDest() throws ArgumentParserException {
+        ArgumentParser parser = createParser();
+        Argument argument = parser.addArgument("-a", "--a-b");
+        argument.setDefault("value");
+
+        Namespace namespace = parser.parseArgs(new String[0]);
+
+        assertEquals("value", namespace.get("a_b"));
+    }
+
+    @Test
+    public void doublePrefixTwoWordsNamedFallingBackToDefaultSucceedsForName() throws ArgumentParserException {
         ArgumentParser parser = createParser();
         Argument argument = parser.addArgument("--a-b");
+        argument.setDefault("value");
+
+        Namespace namespace = parser.parseArgs(new String[0]);
+
+        assertEquals("value", namespace.get("a-b"));
+    }
+
+    @Test
+    public void doublePrefixTwoWordsNamedAfterSinglePrefixFallingBackToDefaultSucceedsForName() throws ArgumentParserException {
+        ArgumentParser parser = createParser();
+        Argument argument = parser.addArgument("-a", "--a-b");
         argument.setDefault("value");
 
         Namespace namespace = parser.parseArgs(new String[0]);
