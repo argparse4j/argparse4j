@@ -6,7 +6,7 @@ Argparse4j - The Java command-line argument parser library
 
 Argparse4j is a command line argument parser library for Java based
 on Python's
-`argparse <http://docs.python.org/3/library/argparse.html>`_ module.
+`argparse <https://docs.python.org/3/library/argparse.html>`_ module.
 
 Argparse4j is available in Maven central repository:
 
@@ -58,7 +58,7 @@ Here is summary of features:
 * Argument/sub-command abbreviations.
 
 The primary documentation is done using `Sphinx
-<http://sphinx-doc.org/>`_.  You need Sphinx to run ``mvn site``.
+<https://www.sphinx-doc.org/en/master/>`_.  You need Sphinx to run ``mvn site``.
 
 Upgrading to 0.5.0 or later versions
 ------------------------------------
