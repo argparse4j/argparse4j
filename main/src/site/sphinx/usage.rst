@@ -2,7 +2,7 @@ The Argparse4j User Manual
 ==========================
 
 Argparse4j is a command line argument parser library for Java based on
-Python's `argparse <http://docs.python.org/3/library/argparse.html>`_
+Python's `argparse <https://docs.python.org/3/library/argparse.html>`_
 module.  Because of the difference of language features, we cannot use
 same syntax and usage of original, but we have tried to bring the same
 touch and feel as much as possible.  We also use same terminology as
@@ -594,7 +594,7 @@ Compare this with the output if using multiple metavariables::
 *singleMetavar* defaults to ``false``, so the metavariable is printed
 after each argument name.
 
-.. _ArgumentParserBuilder-includeArgumentNamesAsKeysInResult
+.. _ArgumentParserBuilder-includeArgumentNamesAsKeysInResult:
 
 includeArgumentNamesAsKeysInResult
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -656,6 +656,8 @@ Example for named argument with long argument::
 .. code-block:: console
 
     $ java Demo -f-b value
+    Namespace(foo_bar=value, foo-bar=value)
+    $ java Demo --foo-bar value
     Namespace(foo_bar=value, foo-bar=value)
 
 By default *includeArgumentNamesAsKeysInResult* is ``false``, so only
