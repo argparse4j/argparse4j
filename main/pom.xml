@@ -16,22 +16,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <scriptExtension/>
     </properties>
-
-    <profiles>
-        <profile>
-            <id>onWindows</id>
-            <activation>
-                <os>
-                    <family>windows</family>
-                </os>
-            </activation>
-            <properties>
-                <scriptExtension>.cmd</scriptExtension>
-            </properties>
-        </profile>
-    </profiles>
 
     <dependencies>
         <dependency>
@@ -94,20 +79,22 @@
                 <artifactId>maven-site-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
                         <id>sphinx-doc</id>
                         <phase>site</phase>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>run</goal>
                         </goals>
                         <configuration>
-                            <executable>sphinx-make-html${scriptExtension}</executable>
-                            <arguments>
-                                <argument>${project.version}</argument>
-                            </arguments>
+                            <target>
+                                <mkdir dir="src/site/sphinx/_build/html"/>
+                                <exec executable="sphinx-build" failonerror="true">
+                                    <arg line="-b html -d src/site/sphinx/_build/doctrees -D version=${project.version} -D release=${project.version} src/site/sphinx src/site/sphinx/_build/html"/>
+                                </exec>
+                            </target>
                         </configuration>
                     </execution>
                 </executions>
