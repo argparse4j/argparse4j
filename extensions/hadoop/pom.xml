@@ -65,9 +65,6 @@
                 <configuration>
                     <locale>en</locale>
                     <release>8</release>
-                    <sourceFileExcludes>
-                        <sourceFileExclude>module-info.java</sourceFileExclude>
-                    </sourceFileExcludes>
                 </configuration>
                 <reportSets>
                     <reportSet>
@@ -107,9 +104,6 @@
                     <locale>en</locale>
                     <source>8</source>
                     <release>8</release>
-                    <sourceFileExcludes>
-                        <sourceFileExclude>module-info.java</sourceFileExclude>
-                    </sourceFileExcludes>
                     <stylesheet>maven</stylesheet>
                 </configuration>
                 <executions>
@@ -142,55 +136,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <executions>
-                    <!-- Disable default phase due to fixed id and position in lifecycle -->
-                    <execution>
-                        <id>default-compile</id>
-                        <phase>none</phase>
-                        <!-- specify source/target for IDE integration -->
-                        <configuration>
-                            <release>9</release>
-                        </configuration>
-                    </execution>
-                    <!-- Compile project with Java 9 to ensure module-info.java is valid -->
-                    <execution>
-                        <id>java-9-module-compile</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <release>9</release>
-                            <includes>
-                                <include>module-info.java</include>
-                            </includes>
-                        </configuration>
-                    </execution>
-                    <!-- Recompile as Java 8 to overwrite Java 9 class files, except module-info.java -->
-                    <execution>
-                        <id>java-8-compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <release>8</release>
-                            <excludes>
-                                <exclude>module-info.java</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
-                    <!-- Compile test sources with a minimum of Java 8 -->
-                    <execution>
-                        <id>default-testCompile</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                        <configuration>
-                            <release>8</release>
-                        </configuration>
-                    </execution>
-                </executions>
+                <configuration>
+                    <release>8</release>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
