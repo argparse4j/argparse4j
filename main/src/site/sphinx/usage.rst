@@ -2,7 +2,7 @@ The Argparse4j User Manual
 ==========================
 
 Argparse4j is a command line argument parser library for Java based on
-Python's `argparse <http://docs.python.org/3/library/argparse.html>`_
+Python's `argparse <https://docs.python.org/3/library/argparse.html>`_
 module.  Because of the difference of language features, we cannot use
 same syntax and usage of original, but we have tried to bring the same
 touch and feel as much as possible.  We also use same terminology as
@@ -241,6 +241,12 @@ Configure the parser to be build using methods of the builder:
 * :ref:`ArgumentParserBuilder-singleMetavar` - Show the metavar
   string in help message only after the last flag instead of each
   flag. (default: ``false``)
+
+* :ref:`ArgumentParserBuilder-includeArgumentNamesAsKeysInResult` -
+  Also add the argument name as a key in the result (if a value for
+  the argument will be added for ``dest``). The argument name is the
+  name of positional arguments, and the first long flag, or otherwise
+  first flag, without the prefix for named arguments.
 
 * :ref:`ArgumentParserBuilder-noDestConversionForPositionalArgs` -
   Do not perform any conversion to produce "dest" value from
@@ -587,6 +593,76 @@ Compare this with the output if using multiple metavariables::
 
 *singleMetavar* defaults to ``false``, so the metavariable is printed
 after each argument name.
+
+.. _ArgumentParserBuilder-includeArgumentNamesAsKeysInResult:
+
+includeArgumentNamesAsKeysInResult
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``dest`` value of an argument is used as a key in the parse
+result. It is different from (but based on) the name or a flag of the
+argument. This requires clients to maintain 2 constants for working
+with arguments, if the argument contains dashes: 1 for the argument
+and 1 for ``dest``. With this flag you tell argparse4j to also
+include the name (see below) of the argument in the result.
+
+The name of an argument is determined as follows:
+
+* Positional arguments: the name of the argument
+
+* Named arguments: the first long flag, or if there is no long flag,
+  the first flag. The prefix will be removed
+
+Example for positional argument::
+
+    public static void main(String[] arguments) throws ArgumentParserException {
+        ArgumentParser parser = ArgumentParsers.newFor("prog")
+                .includeArgumentNamesAsKeysInResult(true)
+                .build();
+        parser.addArgument("foo-bar");
+        System.out.println(parser.parseArgs(arguments));
+    }
+
+.. code-block:: console
+
+    $ java Demo value
+    Namespace(foo_bar=value, foo-bar=value)
+
+Example for named argument::
+
+    public static void main(String[] arguments) throws ArgumentParserException {
+        ArgumentParser parser = ArgumentParsers.newFor("prog")
+                .includeArgumentNamesAsKeysInResult(true)
+                .build();
+        parser.addArgument("-foo-bar");
+        System.out.println(parser.parseArgs(arguments));
+    }
+
+.. code-block:: console
+
+    $ java Demo -foo-bar value
+    Namespace(foo_bar=value, foo-bar=value)
+
+Example for named argument with long argument::
+
+    public static void main(String[] arguments) throws ArgumentParserException {
+        ArgumentParser parser = ArgumentParsers.newFor("prog")
+                .includeArgumentNamesAsKeysInResult(true)
+                .build();
+        parser.addArgument("-f-b", "--foo-bar");
+        System.out.println(parser.parseArgs(arguments));
+    }
+
+.. code-block:: console
+
+    $ java Demo -f-b value
+    Namespace(foo_bar=value, foo-bar=value)
+    $ java Demo --foo-bar value
+    Namespace(foo_bar=value, foo-bar=value)
+
+By default *includeArgumentNamesAsKeysInResult* is ``false``, so only
+``dest`` of arguments is used for keys in the result.
+
 
 .. _ArgumentParserBuilder-noDestConversionForPositionalArgs:
 
@@ -2942,6 +3018,7 @@ available:
 .. |ArgumentParserBuilder.build| replace:: :javadocfunc:`ArgumentParserBuilder.build()`
 .. |ArgumentParserBuilder.cjkwidthHack| replace:: :javadocfunc:`ArgumentParserBuilder.cjkwidthHack(boolean)`
 .. |ArgumentParserBuilder.defaultFormatWidth| replace:: :javadocfunc:`ArgumentParserBuilder.defaultFormatWidth(int)`
+.. |ArgumentParserBuilder.includeArgumentNamesAsKeysInResult| replace:: :javadocfunc:`ArgumentParserBuilder.includeArgumentNamesAsKeysInResult(boolean)`
 .. |ArgumentParserBuilder.locale| replace:: :javadocfunc:`ArgumentParserBuilder.locale(java.util.Locale)`
 .. |ArgumentParserBuilder.noDestConversionForPositionalArgs| replace:: :javadocfunc:`ArgumentParserBuilder.noDestConversionForPositionalArgs(boolean)`
 .. |ArgumentParserBuilder.prefixChars| replace:: :javadocfunc:`ArgumentParserBuilder.prefixChars(java.lang.String)`

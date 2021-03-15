@@ -32,6 +32,7 @@ public class ArgumentParserBuilder {
     private boolean terminalWidthDetection_ = true;
     private boolean singleMetavar_ = false;
     private boolean noDestConversionForPositionalArgs_ = false;
+    private boolean includeArgumentNamesAsKeysInResult_ = false;
 
     ArgumentParserBuilder(String prog) {
         prog_ = prog;
@@ -212,6 +213,33 @@ public class ArgumentParserBuilder {
         return this;
     }
 
+    /**
+     * <p>
+     * Include the name (see below) of the argument as a key in the parse
+     * result in addition to the key in <code>dest</code> of the argument.
+     * </p>
+     *
+     * <p>
+     * The argument name is determined as follows:
+     * </p>
+     *
+     * <ul>
+     *     <li>Positional arguments: the name of the argument</li>
+     *     <li>Named arguments: the first long flag, or if no long flag is
+     *     present, the first flag, without the prefix</li>
+     * </ul>
+     *
+     * @param flag
+     *         If {@code true} is given, the argument name (as defined above)
+     *         will also be in included as a key in the result. Otherwise only
+     *         <code>dest</code> of the argument will be a key in the result.
+     * @return This builder.
+     */
+    public ArgumentParserBuilder includeArgumentNamesAsKeysInResult(boolean flag) {
+        includeArgumentNamesAsKeysInResult_ = flag;
+        return this;
+    }
+
     public ArgumentParser build() {
         return new ArgumentParserImpl(config());
     }
@@ -220,7 +248,8 @@ public class ArgumentParserBuilder {
         return new ArgumentParserConfigurationImpl(prog_, addHelp_, prefixChars_,
                 fromFilePrefix_, locale_, createTextWidthCounter(),
                 getFormatWidth(), singleMetavar_,
-                noDestConversionForPositionalArgs_);
+                noDestConversionForPositionalArgs_,
+                includeArgumentNamesAsKeysInResult_);
     }
 
     private TextWidthCounter createTextWidthCounter() {

@@ -817,7 +817,9 @@ public final class ArgumentParserImpl implements ArgumentParser {
                                 break;
                             }
                             checkMutex(arg, groupUsed);
-                            arg.run(this, attrs, shortFlag, null);
+                            final ArgumentImpl finalArg = arg;
+                            arg.run(this, attrs, shortFlag, null,
+                                    value -> addArgValue(attrs, finalArg, value));
                             used.add(arg);
                             // Set null to avoid using it twice.
                             arg = null;
@@ -945,7 +947,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
             throws ArgumentParserException {
         if (!arg.getAction().consumeArgument()) {
             if (embeddedValue == null) {
-                arg.run(this, res, flag, null);
+                arg.run(this, res, flag, null,
+                        value -> addArgValue(res, arg, value));
                 return;
             } else {
                 throw new ArgumentParserException(String.format(
@@ -973,9 +976,11 @@ public final class ArgumentParserImpl implements ArgumentParser {
                 }
                 // This is a special treatment for nargs("?"). If flag is
                 // given but no argument follows, produce const value.
-                arg.run(this, res, flag, arg.getConst());
+                arg.run(this, res, flag, arg.getConst(),
+                        value -> addArgValue(res, arg, value));
             } else {
-                arg.run(this, res, flag, arg.convert(this, argVal));
+                arg.run(this, res, flag, arg.convert(this, argVal),
+                        value -> addArgValue(res, arg, value));
             }
             return;
         }
@@ -999,7 +1004,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
         }
         // For named arguments, always process the list even if it is
         // empty.
-        arg.run(this, res, flag, list);
+        arg.run(this, res, flag, list,
+                value -> addArgValue(res, arg, value));
     }
 
     /**
@@ -1073,13 +1079,15 @@ public final class ArgumentParserImpl implements ArgumentParser {
         for (int i = 0; i < posArgs_.size(); ++i) {
             ArgumentImpl arg = posArgs_.get(i);
             if (!arg.getAction().consumeArgument()) {
-                arg.run(this, res, null, null);
+                arg.run(this, res, null, null,
+                        value -> addArgValue(res, arg, value));
                 continue;
             }
             if (arg.getMinNumArg() == -1) {
                 // consumes exactly one parameter
                 arg.run(this, res, null,
-                        arg.convert(this, state.posArgArgs.get(argIndex++)));
+                        arg.convert(this, state.posArgArgs.get(argIndex++)),
+                        value -> addArgValue(res, arg, value));
                 continue;
             }
             if (arg.getMinNumArg() == 0 && arg.getMaxNumArg() == 1) {
@@ -1089,7 +1097,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
                     continue;
                 }
                 arg.run(this, res, null,
-                        arg.convert(this, state.posArgArgs.get(argIndex++)));
+                        arg.convert(this, state.posArgArgs.get(argIndex++)),
+                        value -> addArgValue(res, arg, value));
                 continue;
             }
             int n = Math.min(arg.getMaxNumArg(), state.posArgArgs.size()
@@ -1105,7 +1114,8 @@ public final class ArgumentParserImpl implements ArgumentParser {
             for (; n > 0; --n) {
                 list.add(arg.convert(this, state.posArgArgs.get(argIndex++)));
             }
-            arg.run(this, res, null, list);
+            arg.run(this, res, null, list,
+                    value -> addArgValue(res, arg, value));
         }
     }
 
@@ -1211,18 +1221,37 @@ public final class ArgumentParserImpl implements ArgumentParser {
 
     private void populateDefaults(Map<String, Object> opts) {
         for (ArgumentImpl arg : posArgs_) {
-            if (arg.getDefaultControl() != Arguments.SUPPRESS) {
-                opts.put(arg.getDest(), arg.getDefault());
-            }
+            addArgDefaultIfNotSuppressed(opts, arg);
         }
         for (ArgumentImpl arg : namedArgs_) {
-            if (arg.getDefaultControl() != Arguments.SUPPRESS) {
-                opts.put(arg.getDest(), arg.getDefault());
-            }
+            addArgDefaultIfNotSuppressed(opts, arg);
         }
         for (Map.Entry<String, Object> entry : defaults_.entrySet()) {
             opts.put(entry.getKey(), entry.getValue());
         }
+    }
+
+    private void addArgDefaultIfNotSuppressed(Map<String, Object> opts, ArgumentImpl arg) {
+        if (arg.getDefaultControl() != Arguments.SUPPRESS) {
+            addArgValue(opts, arg, arg.getDefault());
+        }
+    }
+
+    private void addArgValue(Map<String, Object> opts, ArgumentImpl arg, Object value) {
+        opts.put(arg.getDest(), value);
+        if (config_.includeArgumentNamesAsKeysInResult_) {
+            opts.put(getActualArgumentName(arg), value);
+        }
+    }
+
+    private String getActualArgumentName(ArgumentImpl arg) {
+        return arg.getName() == null
+                ? removePrefix(arg.getPrimaryFlag())
+                : arg.getName();
+    }
+
+    private String removePrefix(String flag) {
+        return config_.prefixPattern_.removePrefix(flag);
     }
 
     @Override

@@ -162,7 +162,8 @@ public final class ArgumentParsers {
                 cjkWidthHack_ && cjkWidthLangs_.contains(Locale.getDefault()
                         .getLanguage()) ? new CJKTextWidthCounter() : new ASCIITextWidthCounter(),
                 getFormatWidth(), isSingleMetavar(),
-                getNoDestConversionForPositionalArgs());
+                getNoDestConversionForPositionalArgs(),
+                false);
         return new ArgumentParserImpl(config);
     }
 

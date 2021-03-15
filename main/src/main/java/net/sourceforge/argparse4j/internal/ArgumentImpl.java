@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import net.sourceforge.argparse4j.helper.MessageLocalization;
 import net.sourceforge.argparse4j.helper.TextHelper;
@@ -100,29 +101,33 @@ public final class ArgumentImpl implements Argument {
                                     flag, config.prefixPattern_.getPrefixChars()));
                 }
             }
-            for (String flag : flags_) {
-                boolean longFlag = config.prefixPattern_.matchLongFlag(flag);
-                if (dest_ == null) {
-                    dest_ = flag;
-                    if (longFlag) {
-                        break;
-                    }
-                } else if (longFlag) {
-                    dest_ = flag;
+            String flagToBaseDestOn = getPrimaryFlag();
+            dest_ = config.prefixPattern_.removePrefix(flagToBaseDestOn).replace('-', '_');
+        }
+    }
+
+    String getPrimaryFlag() {
+        String result = null;
+
+        for (String flag : flags_) {
+            boolean longFlag = config_.prefixPattern_.matchLongFlag(flag);
+            if (result == null) {
+                result = flag;
+                if (longFlag) {
                     break;
                 }
+            } else if (longFlag) {
+                result = flag;
+                break;
             }
-            dest_ = config.prefixPattern_.removePrefix(dest_).replace('-', '_');
         }
+
+        return result;
     }
 
     @Override
     public String textualName() {
-        if (name_ == null) {
-            return TextHelper.concat(flags_, 0, "/");
-        } else {
-            return name_;
-        }
+        return name_ == null ? TextHelper.concat(flags_, 0, "/") : name_;
     }
 
     /**
@@ -300,18 +305,22 @@ public final class ArgumentImpl implements Argument {
 
     @Override
     public ArgumentImpl nargs(String n) {
-        if (n.equals("*")) {
-            minNumArg_ = 0;
-            maxNumArg_ = Integer.MAX_VALUE;
-        } else if (n.equals("+")) {
-            minNumArg_ = 1;
-            maxNumArg_ = Integer.MAX_VALUE;
-        } else if (n.equals("?")) {
-            minNumArg_ = 0;
-            maxNumArg_ = 1;
-        } else {
-            throw new IllegalArgumentException(
-                    "narg expects positive integer or one of '*', '+' or '?'");
+        switch (n) {
+            case "*":
+                minNumArg_ = 0;
+                maxNumArg_ = Integer.MAX_VALUE;
+                break;
+            case "+":
+                minNumArg_ = 1;
+                maxNumArg_ = Integer.MAX_VALUE;
+                break;
+            case "?":
+                minNumArg_ = 0;
+                maxNumArg_ = 1;
+                break;
+            default:
+                throw new IllegalArgumentException(
+                        "narg expects positive integer or one of '*', '+' or '?'");
         }
         return this;
     }
@@ -481,8 +490,8 @@ public final class ArgumentImpl implements Argument {
     }
 
     public void run(ArgumentParserImpl parser, Map<String, Object> res,
-            String flag, Object value) throws ArgumentParserException {
-        action_.run(parser, this, res, flag, value);
+            String flag, Object value, Consumer<Object> valueSetter) throws ArgumentParserException {
+        action_.run(parser, this, res, flag, value, valueSetter);
     }
 
     // Getter methods
