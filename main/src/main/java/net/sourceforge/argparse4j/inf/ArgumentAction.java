@@ -64,7 +64,39 @@ public interface ArgumentAction {
     void run(ArgumentParser parser, Argument arg, Map<String, Object> attrs,
             String flag, Object value) throws ArgumentParserException;
 
-    default void run (ArgumentParser parser, Argument arg, Map<String, Object> attrs,
+    /**
+     * <p>
+     * Executes this action.
+     * </p>
+     * <p>
+     * If the objects derived from {@link RuntimeException} are thrown in this
+     * method because of invalid input from command line, subclass must catch
+     * these exceptions and wrap them in {@link ArgumentParserException} and
+     * give simple error message to explain what happened briefly.
+     * </p>
+     *
+     * @param parser
+     *            The parser.
+     * @param arg
+     *            The argument this action attached to.
+     * @param attrs
+     *            The current map of attributes. Implementations may read from
+     *            this map, but may not change it. Implementations must call
+     *            the <code>valueSetter</code> with the actual value to be set.
+     * @param flag
+     *            The actual option flag in command line if {@code arg} is a
+     *            named arguments. {@code null} if {@code arg} is a
+     *            positional argument.
+     * @param value
+     *            The attribute value. This may be null if this action does not
+     *            consume any arguments.
+     * @param valueSetter
+     *            The consumer that will set the actual value determined by
+     *            this action in the result.
+     * @throws ArgumentParserException
+     *             If error occurred.
+     */
+    default void run(ArgumentParser parser, Argument arg, Map<String, Object> attrs,
                       String flag, Object value, Consumer<Object> valueSetter) throws ArgumentParserException {
         run(parser, arg, attrs, flag, value);
     }
