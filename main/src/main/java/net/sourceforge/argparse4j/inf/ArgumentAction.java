@@ -60,7 +60,12 @@ public interface ArgumentAction {
      *            consume any arguments.
      * @throws ArgumentParserException
      *             If error occurred.
+     * @deprecated Does not provide the flexibility to let the parser and/or
+     * argument decide how the value is stored.
+     * {@link #run(ArgumentParser, Argument, Map, String, Object, Consumer)}
+     * will be called instead. Existing actions should implement that method.
      */
+    @Deprecated
     void run(ArgumentParser parser, Argument arg, Map<String, Object> attrs,
             String flag, Object value) throws ArgumentParserException;
 
