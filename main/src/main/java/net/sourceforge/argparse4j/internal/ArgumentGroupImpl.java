@@ -96,7 +96,9 @@ public final class ArgumentGroupImpl implements ArgumentGroup,
         if (mutex_ && argumentParser_.getConfig().mustHelpTextIncludeMutualExclusivity_) {
             writer.print("  ");
             String mutualExclusiveExplanation = argumentParser_
-                    .localize("help.atMostOneArgumentMayBeGiven");
+                    .localize(required_
+                            ? "help.exactlyOneArgumentMustBeGiven"
+                            : "help.atMostOneArgumentMayBeGiven");
             writer.println(TextHelper.wrap(
                     argumentParser_.getTextWidthCounter(), mutualExclusiveExplanation,
                     format_width, 2, "", "  "));

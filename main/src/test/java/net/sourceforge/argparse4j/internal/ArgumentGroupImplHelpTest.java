@@ -60,7 +60,7 @@ public class ArgumentGroupImplHelpTest extends TestCase {
                 "  -b B" + EOL, help);
     }
 
-    public void testIncludesMutualExclusivityIfMutuallyExclusiveGroupAndEnabled() {
+    public void testIncludesOptionalMutualExclusivityIfOptionalMutuallyExclusiveGroupAndEnabled() {
         ArgumentParser parser = ArgumentParsers.newFor("group help")
                 .mustHelpTextIncludeMutualExclusivity(true)
                 .locale(Locale.ENGLISH)
@@ -81,6 +81,33 @@ public class ArgumentGroupImplHelpTest extends TestCase {
                 "  mutually-exclusive group" + EOL +
                 EOL +
                 "  At most 1 of the arguments below may be given." + EOL +
+                EOL +
+                "  -a A" + EOL +
+                "  -b B" + EOL, help);
+    }
+
+    public void testIncludesRequiredMutualExclusivityIfRequiredMutuallyExclusiveGroupAndEnabled() {
+        ArgumentParser parser = ArgumentParsers.newFor("group help")
+                .mustHelpTextIncludeMutualExclusivity(true)
+                .locale(Locale.ENGLISH)
+                .build();
+        MutuallyExclusiveGroup group = parser.addMutuallyExclusiveGroup("group")
+                .description("mutually-exclusive group")
+                .required(true);
+        group.addArgument("-a");
+        group.addArgument("-b");
+
+        String help = parser.formatHelp();
+
+        assertEquals("usage: group help [-h] (-a A | -b B)" + EOL +
+                EOL +
+                "named arguments:" + EOL +
+                "  -h, --help             show this help message and exit" + EOL +
+                EOL +
+                "group:" + EOL +
+                "  mutually-exclusive group" + EOL +
+                EOL +
+                "  Exactly 1 of the arguments below must be given." + EOL +
                 EOL +
                 "  -a A" + EOL +
                 "  -b B" + EOL, help);
