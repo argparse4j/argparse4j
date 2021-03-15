@@ -35,6 +35,8 @@ import net.sourceforge.argparse4j.internal.ArgumentParserConfigurationImpl;
 import net.sourceforge.argparse4j.internal.ArgumentParserImpl;
 import net.sourceforge.argparse4j.internal.TerminalWidth;
 
+import static net.sourceforge.argparse4j.DefaultSettings.INITIAL_DEFAULT_SETTINGS;
+
 /**
  * Factory class to create new ArgumentParser.
  */
@@ -63,7 +65,24 @@ public final class ArgumentParsers {
      * @since 0.8.0
      */
     public static ArgumentParserBuilder newFor(String prog) {
-        return new ArgumentParserBuilder(prog);
+        return new ArgumentParserBuilder(prog, INITIAL_DEFAULT_SETTINGS);
+    }
+
+    /**
+     * <p>
+     * Creates {@link ArgumentParserBuilder} with given program name and
+     * default settings.
+     * </p>
+     *
+     * @param prog
+     *         The program name
+     * @param defaultSettings
+     *         The default settings to use.
+     * @return ArgumentParserBuilder object
+     * @since 0.9.0
+     */
+    public static ArgumentParserBuilder newFor(String prog, DefaultSettings defaultSettings) {
+        return new ArgumentParserBuilder(prog, defaultSettings);
     }
 
     /**
@@ -163,6 +182,7 @@ public final class ArgumentParsers {
                         .getLanguage()) ? new CJKTextWidthCounter() : new ASCIITextWidthCounter(),
                 getFormatWidth(), isSingleMetavar(),
                 getNoDestConversionForPositionalArgs(),
+                false,
                 false);
         return new ArgumentParserImpl(config);
     }

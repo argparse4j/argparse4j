@@ -33,9 +33,11 @@ public class ArgumentParserBuilder {
     private boolean singleMetavar_ = false;
     private boolean noDestConversionForPositionalArgs_ = false;
     private boolean includeArgumentNamesAsKeysInResult_ = false;
+    boolean mustHelpTextIncludeMutualExclusivity_ = false;
 
-    ArgumentParserBuilder(String prog) {
+    ArgumentParserBuilder(String prog, DefaultSettings defaultSettings) {
         prog_ = prog;
+        defaultSettings.apply(this);
     }
 
     /**
@@ -240,6 +242,24 @@ public class ArgumentParserBuilder {
         return this;
     }
 
+    /**
+     * <p>
+     * Add a text to the help of mutually-exclusive groups explaining that at
+     * most 1 arguments of the group may be given.
+     * </p>
+     *
+     * @param flag
+     *         If {@code true} is given, the help text of mutually-exclusive
+     *         groups will be extended to indicate at most 1 argument of the
+     *         group can be given. Otherwise the mutual exclusivity of a group
+     *         is only visible in the usage.
+     * @return This builder.
+     */
+    public ArgumentParserBuilder mustHelpTextIncludeMutualExclusivity(boolean flag) {
+        mustHelpTextIncludeMutualExclusivity_ = flag;
+        return this;
+    }
+
     public ArgumentParser build() {
         return new ArgumentParserImpl(config());
     }
@@ -249,7 +269,8 @@ public class ArgumentParserBuilder {
                 fromFilePrefix_, locale_, createTextWidthCounter(),
                 getFormatWidth(), singleMetavar_,
                 noDestConversionForPositionalArgs_,
-                includeArgumentNamesAsKeysInResult_);
+                includeArgumentNamesAsKeysInResult_,
+                mustHelpTextIncludeMutualExclusivity_);
     }
 
     private TextWidthCounter createTextWidthCounter() {
@@ -264,4 +285,5 @@ public class ArgumentParserBuilder {
             return defaultFormatWidth_;
         }
     }
+
 }

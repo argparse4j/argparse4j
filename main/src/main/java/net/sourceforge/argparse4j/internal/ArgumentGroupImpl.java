@@ -93,6 +93,15 @@ public final class ArgumentGroupImpl implements ArgumentGroup,
                     format_width, 2, "", "  "));
             writer.println();
         }
+        if (mutex_ && argumentParser_.getConfig().mustHelpTextIncludeMutualExclusivity_) {
+            writer.print("  ");
+            String mutualExclusiveExplanation = argumentParser_
+                    .localize("help.atMostOneArgumentMayBeGiven");
+            writer.println(TextHelper.wrap(
+                    argumentParser_.getTextWidthCounter(), mutualExclusiveExplanation,
+                    format_width, 2, "", "  "));
+            writer.println();
+        }
         for (ArgumentImpl arg : args_) {
             arg.printHelp(writer, argumentParser_.isDefaultHelp(),
                     argumentParser_.getTextWidthCounter(), format_width);

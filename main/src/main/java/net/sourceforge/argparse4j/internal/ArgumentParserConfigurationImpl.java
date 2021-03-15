@@ -21,12 +21,14 @@ public class ArgumentParserConfigurationImpl
     final boolean singleMetavar_;
     final boolean noDestConversionForPositionalArgs_;
     final boolean includeArgumentNamesAsKeysInResult_;
+    final boolean mustHelpTextIncludeMutualExclusivity_;
 
     public ArgumentParserConfigurationImpl(String prog, boolean addHelp,
             String prefixChars, String fromFilePrefix, Locale locale,
             TextWidthCounter textWidthCounter, int formatWidth,
             boolean singleMetavar, boolean noDestConversionForPositionalArgs,
-            boolean includeArgumentNamesAsKeysInResult) {
+            boolean includeArgumentNamesAsKeysInResult,
+            boolean mustHelpTextIncludeMutualExclusivity) {
         prog_ = prog;
         addHelp_ = addHelp;
         prefixChars_ = prefixChars;
@@ -41,6 +43,7 @@ public class ArgumentParserConfigurationImpl
         singleMetavar_ = singleMetavar;
         noDestConversionForPositionalArgs_ = noDestConversionForPositionalArgs;
         includeArgumentNamesAsKeysInResult_ = includeArgumentNamesAsKeysInResult;
+        mustHelpTextIncludeMutualExclusivity_ = mustHelpTextIncludeMutualExclusivity;
     }
 
     private ArgumentParserConfigurationImpl(String prog, boolean addHelp,
@@ -48,7 +51,8 @@ public class ArgumentParserConfigurationImpl
             ResourceBundle resourceBundle, TextWidthCounter textWidthCounter,
             int formatWidth, boolean singleMetavar,
             boolean noDestConversionForPositionalArgs,
-            boolean includeArgumentNamesAsKeysInResult) {
+            boolean includeArgumentNamesAsKeysInResult,
+            boolean mustHelpTextIncludeMutualExclusivity) {
         prog_ = prog;
         addHelp_ = addHelp;
         prefixChars_ = prefixChars;
@@ -62,6 +66,7 @@ public class ArgumentParserConfigurationImpl
         singleMetavar_ = singleMetavar;
         noDestConversionForPositionalArgs_ = noDestConversionForPositionalArgs;
         includeArgumentNamesAsKeysInResult_ = includeArgumentNamesAsKeysInResult;
+        mustHelpTextIncludeMutualExclusivity_ = mustHelpTextIncludeMutualExclusivity;
     }
 
     ArgumentParserConfigurationImpl forSubparser(boolean addHelp,
@@ -70,7 +75,8 @@ public class ArgumentParserConfigurationImpl
                 fromFilePrefix_, resourceBundle_, textWidthCounter_,
                 formatWidth_, singleMetavar_,
                 noDestConversionForPositionalArgs_,
-                includeArgumentNamesAsKeysInResult_);
+                includeArgumentNamesAsKeysInResult_,
+                mustHelpTextIncludeMutualExclusivity_);
     }
 
     public ResourceBundle getResourceBundle() {

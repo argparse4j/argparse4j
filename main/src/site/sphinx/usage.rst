@@ -134,13 +134,37 @@ class. This will return a builder for the parser. (Note: Prior to
 0.8.0 an ArgumentParser object was created using
 ``newArgumentParser(...)`` methods of ``ArgumentParsers``. See
 :doc:`migration`.) Use method |ArgumentParserBuilder.build| to create
-the parser:
+the parser::
 
     ArgumentParser parser = ArgumentParsers.newFor("prog").build()
-         .description("Process some integers.");
+        .description("Process some integers.");
 
 The :javadoc:`inf.ArgumentParser` object will hold all the information
 necessary to parse the command line into Java data types.
+
+Since 0.9.0 there is a variant of |ArgumentParsers.newForDefaults|
+that allows you to choose of which version the defaults for
+configuration settings must be used. This makes it easy to use all
+improvements of a specific version without having to change all
+configuration settings individually::
+
+    ArgumentParser parser = ArgumentParsers.newFor("prog", DefaultSettings.VERSION_0_9_0_DEFAULT_SETTINGS)
+        .build()
+        .description("Process some integers.");
+
+The following versions have default settings that differ from the
+previous version:
+
+* 0.9.0
+    * The help text for a mutually-exclusive group will include an
+      extra paragraph explaining that at most 1 argument of that
+      group may be given:
+      :ref:`ArgumentParserBuilder-mustHelpTextIncludeMutualExclusivity`
+
+When upgrading to a newer version of argparse4j the chosen defaults
+will be honored, so the behavior of applications does not change
+without the developer explicitly opting in to improvements.
+
 
 .. _Adding-arguments:
 
@@ -247,6 +271,11 @@ Configure the parser to be build using methods of the builder:
   the argument will be added for ``dest``). The argument name is the
   name of positional arguments, and the first long flag, or otherwise
   first flag, without the prefix for named arguments.
+
+* :ref:`ArgumentParserBuilder-mustHelpTextIncludeMutualExclusivity` -
+  Add a text after the description and before the arguments of a
+  mutually-exclusive group explaining that at most 1 of the arguments
+  may be given.
 
 * :ref:`ArgumentParserBuilder-noDestConversionForPositionalArgs` -
   Do not perform any conversion to produce "dest" value from
@@ -662,6 +691,34 @@ Example for named argument with long argument::
 
 By default *includeArgumentNamesAsKeysInResult* is ``false``, so only
 ``dest`` of arguments is used for keys in the result.
+
+
+.. _ArgumentParserBuilder-mustHelpTextIncludeMutualExclusivity:
+
+mustHelpTextIncludeMutualExclusivity
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The mutual exclusivity of a group is normally only shown in the usage
+of a parser. By setting this option to ``true``, or specifying
+``DefaultSettings.VERSION_0_9_0_DEFAULT_SETTINGS`` (or higher) when
+creating a parser builder, a paragraph after the description and
+before the arguments of a mutually-exclusive group will be added to
+the help. This paragraph explains that at most 1 of the arguments of
+the group may be given. Example output:
+
+.. code-block:: console
+
+    MutexGroup:
+      A mutually-exclusive group.
+
+      At most 1 of the arguments below may be given.
+
+      -f First argument
+      -s Second argument
+
+By default *mustHelpTextIncludeMutualExclusivity* is ``false``,
+resulting in mutual exclusivity of a group being shown only in the
+usage.
 
 
 .. _ArgumentParserBuilder-noDestConversionForPositionalArgs:
@@ -2962,9 +3019,13 @@ Extensions
 Java 7
 ^^^^^^
 
-Argument types for classes and interfaces introduced in Java 7 are
-available in module ``argparse4j-java7``. The following argument
-types are available: 
+Since the switch to Java 8 in version 0.9.0, the extensions for Java
+7 have been added to the main JAR. The package has not changed, so
+when upgrading to 0.9.0 or higher, the only thing that needs to
+be done is the removal from the Java 7 extensions JAR from your
+dependencies.
+
+The following argument types are available:
 
 ``java.nio.file.Path``
   Argument type:
@@ -3011,7 +3072,7 @@ available:
 .. |ArgumentParser.parseArgs| replace:: :javadocfunc:`inf.ArgumentParser.parseArgs(java.lang.String[])`
 .. |ArgumentParser.printHelp| replace:: :javadocfunc:`inf.ArgumentParser.printHelp()`
 .. |ArgumentParser.printUsage| replace:: :javadocfunc:`inf.ArgumentParser.printUsage()`
-.. |ArgumentParser.setDefault| replace:: :javadocfunc:`inf.ArgumentParser.setDefault(java.lang.String, java.lang.Object)`
+.. |ArgumentParser.setDefault| replace:: :javadocfunc:`inf.ArgumentParser.setDefault(java.lang.String,java.lang.Object)`
 .. |ArgumentParser.usage| replace:: :javadocfunc:`inf.ArgumentParser.usage(java.lang.String)`
 .. |ArgumentParser.version| replace:: :javadocfunc:`inf.ArgumentParser.version(java.lang.String)`
 .. |ArgumentParserBuilder.addHelp| replace:: :javadocfunc:`ArgumentParserBuilder.addHelp(boolean)`
@@ -3025,6 +3086,7 @@ available:
 .. |ArgumentParserBuilder.singleMetavar| replace:: :javadocfunc:`ArgumentParserBuilder.singleMetavar(boolean)`
 .. |ArgumentParserBuilder.terminalWidthDetection| replace:: :javadocfunc:`ArgumentParserBuilder.terminalWidthDetection(boolean)`
 .. |ArgumentParsers.newFor| replace:: :javadocfunc:`ArgumentParsers.newFor(java.lang.String)`
+.. |ArgumentParsers.newForDefaults| replace:: :javadocfunc:`ArgumentParsers.newFor(java.lang.String,net.sourceforge.argparse4j.DefaultSettings)`
 .. |Arguments.appendConst| replace:: :javadocfunc:`impl.Arguments.appendConst()`
 .. |Arguments.append| replace:: :javadocfunc:`impl.Arguments.append()`
 .. |Arguments.caseInsensitiveEnumType| replace:: :javadocfunc:`impl.Arguments.caseInsensitiveEnumType(java.lang.Class)`
@@ -3033,7 +3095,7 @@ available:
 .. |Arguments.enumStringType| replace:: :javadocfunc:`impl.Arguments.enumStringType(java.lang.Class)`
 .. |Arguments.fileType| replace:: :javadocfunc:`impl.Arguments.fileType()`
 .. |Arguments.help| replace:: :javadocfunc:`impl.Arguments.help()`
-.. |Arguments.range| replace:: :javadocfunc:`impl.Arguments.range(T, T)`
+.. |Arguments.range| replace:: :javadocfunc:`impl.Arguments.range(T,T)`
 .. |Arguments.storeConst| replace:: :javadocfunc:`impl.Arguments.storeConst()`
 .. |Arguments.storeFalse| replace:: :javadocfunc:`impl.Arguments.storeFalse()`
 .. |Arguments.storeTrue| replace:: :javadocfunc:`impl.Arguments.storeTrue()`
@@ -3043,7 +3105,7 @@ available:
 .. |Namespace.getAttrs| replace:: :javadocfunc:`inf.Namespace.getAttrs()`
 .. |Subparser.dest| replace:: :javadocfunc:`inf.Subparser.dest(java.lang.String)`
 .. |Subparser.help| replace:: :javadocfunc:`inf.Subparser.help(java.lang.String)`
-.. |Subparser.setDefault| replace:: :javadocfunc:`inf.Subparser.setDefault(java.lang.String, java.lang.Object)`
+.. |Subparser.setDefault| replace:: :javadocfunc:`inf.Subparser.setDefault(java.lang.String,java.lang.Object)`
 .. |Subparsers.addParser| replace:: :javadocfunc:`inf.Subparsers.addParser(java.lang.String)`
 .. |Subparsers.description| replace:: :javadocfunc:`inf.Subparsers.description(java.lang.String)`
 .. |Subparsers.dest| replace:: :javadocfunc:`inf.Subparsers.dest(java.lang.String)`

@@ -1525,7 +1525,7 @@ public final class ArgumentParserImpl implements ArgumentParser {
         return mainParser_;
     }
 
-    private String localize(String messageKey) {
+    String localize(String messageKey) {
         return MessageLocalization.localize(config_.getResourceBundle(),
                 messageKey);
     }
