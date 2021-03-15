@@ -48,8 +48,9 @@ public class MockArgument implements Argument {
         return null;
     }
 
+    @SafeVarargs
     @Override
-    public <E> Argument setConst(E... values) {
+    public final <E> Argument setConst(E... values) {
         return null;
     }
 
@@ -58,8 +59,9 @@ public class MockArgument implements Argument {
         return null;
     }
 
+    @SafeVarargs
     @Override
-    public <E> Argument setDefault(E... values) {
+    public final <E> Argument setDefault(E... values) {
         return null;
     }
 
@@ -98,8 +100,9 @@ public class MockArgument implements Argument {
         return null;
     }
 
+    @SafeVarargs
     @Override
-    public <E> Argument choices(E... values) {
+    public final <E> Argument choices(E... values) {
         return null;
     }
 
