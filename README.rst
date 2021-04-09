@@ -15,12 +15,12 @@ Argparse4j is available in Maven central repository:
   <dependency>
     <groupId>net.sourceforge.argparse4j</groupId>
     <artifactId>argparse4j</artifactId>
-    <version>0.8.1</version>
+    <version>0.9.0</version>
   </dependency>
 
-**IMPORTANT**: When upgrading from 0.4.4 or earlier version, read
-`Migration <https://argparse4j.github.io/migration.html>`_.
-There is an important change in 0.5.0 which might break you code.  The
+**IMPORTANT**: When upgrading, read `Migration
+<https://argparse4j.github.io/migration.html>`_.
+There is an important change in 0.5.0 which might break your code.  The
 documentation describes the change and how to migrate from earlier
 versions.
 
@@ -57,11 +57,18 @@ Here is summary of features:
 * Read additional arguments from file.
 * Argument/sub-command abbreviations.
 
+Requirements
+------------
+
+Java 8 or higher is needed.
+
+The main JAR contains module information for the Java Module System. The
+module name is ``net.sourceforge.argparse4j``.
+
+Building
+--------
+
+To build you need Java 9 or higher, and Maven 3.2.3 or higher.
+
 The primary documentation is done using `Sphinx
 <https://www.sphinx-doc.org/en/master/>`_.  You need Sphinx to run ``mvn site``.
-
-Upgrading to 0.5.0 or later versions
-------------------------------------
-
-Please consult the documentation section for `Migration
-<https://argparse4j.github.io/migration.html>`_.
