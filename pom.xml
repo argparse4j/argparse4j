@@ -4,7 +4,7 @@
 
     <artifactId>argparse4j-root</artifactId>
     <groupId>net.sourceforge.argparse4j</groupId>
-    <version>0.9.0</version>
+    <version>0.9.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>argparse4j-root</name>
@@ -117,7 +117,7 @@
         <connection>scm:git:git://github.com/argparse4j/argparse4j.git</connection>
         <developerConnection>scm:git:git@github.com:argparse4j/argparse4j.git</developerConnection>
         <url>https://github.com/argparse4j/argparse4j</url>
-      <tag>argparse4j-0.9.0</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <distributionManagement>
