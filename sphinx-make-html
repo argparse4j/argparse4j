@@ -1,5 +1,0 @@
-#!/bin/sh -e
-echo "Building sphinx documentation for version $1"
-cd main/src/site/sphinx
-make html PACKAGE_VERSION=$1
-cp -vr _build/html/* ../../../target/site/
