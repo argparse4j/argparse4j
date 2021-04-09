@@ -2,7 +2,7 @@
     <parent>
         <artifactId>argparse4j-root</artifactId>
         <groupId>net.sourceforge.argparse4j</groupId>
-        <version>0.9.0-SNAPSHOT</version>
+        <version>0.9.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -90,9 +90,9 @@
                         </goals>
                         <configuration>
                             <target>
-                                <mkdir dir="src/site/sphinx/_build/html"/>
+                                <mkdir dir="src/site/sphinx/_build/html" />
                                 <exec executable="sphinx-build" failonerror="true">
-                                    <arg line="-b html -d src/site/sphinx/_build/doctrees -D version=${project.version} -D release=${project.version} src/site/sphinx src/site/sphinx/_build/html"/>
+                                    <arg line="-b html -d src/site/sphinx/_build/doctrees -D version=${project.version} -D release=${project.version} src/site/sphinx src/site/sphinx/_build/html" />
                                 </exec>
                             </target>
                         </configuration>
