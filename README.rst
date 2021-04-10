@@ -70,5 +70,9 @@ Building
 
 To build you need Java 9 or higher, and Maven 3.2.3 or higher.
 
+By default the build signs the artifacts. This requires `GNU Privacy Guard
+<https://gnupg.org/>`_ and the setup of a personal key. Signing can be
+disabled by adding ``-Dgpg.skip=true`` to the arguments passed to Maven.
+
 The primary documentation is done using `Sphinx
 <https://www.sphinx-doc.org/en/master/>`_.  You need Sphinx to run ``mvn site``.
