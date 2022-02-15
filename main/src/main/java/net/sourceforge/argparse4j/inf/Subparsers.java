@@ -23,8 +23,6 @@
  */
 package net.sourceforge.argparse4j.inf;
 
-import net.sourceforge.argparse4j.ArgumentParsers;
-
 /**
  * <p>
  * This interface defines Subparsers which used to add {@link Subparser}.
@@ -33,68 +31,11 @@ import net.sourceforge.argparse4j.ArgumentParsers;
  * {@link Subparser} is used to add sub-command to {@link ArgumentParser}.
  * </p>
  */
-public interface Subparsers {
-
-    /**
-     * <p>
-     * Adds and returns {@link Subparser} object with given sub-command name.
-     * The given command must be unique for each Subparsers instance.
-     * </p>
-     * <p>
-     * The prefixChars is inherited from main ArgumentParser.
-     * </p>
-     * 
-     * @param command
-     *            Sub-command name
-     * @return {@link Subparser} object.
-     */
-    Subparser addParser(String command);
-
-    /**
-     * <p>
-     * Adds and returns {@link Subparser} object with given sub-command name and
-     * addHelp. The given command must be unique for each Subparsers instance.
-     * </p>
-     * <p>
-     * For {@code addHelp}, see
-     * {@link ArgumentParsers#newArgumentParser(String, boolean, String)}. The
-     * prefixChars is inherited from main ArgumentParser.
-     * </p>
-     * 
-     * @param command
-     *            Sub-command name
-     * @param addHelp
-     *            If true, {@code -h/--help} are available. If false, they are
-     *            not.
-     * @return {@link Subparser} object
-     */
-    Subparser addParser(String command, boolean addHelp);
-
-    /**
-     * <p>
-     * Adds and returns {@link Subparser} object with given sub-command name,
-     * addHelp and prefixChars. The given command must be unique for each
-     * Subparsers instance.
-     * </p>
-     * <p>
-     * For {@code addHelp}, see
-     * {@link ArgumentParsers#newArgumentParser(String, boolean, String)}.
-     * </p>
-     * 
-     * @param command
-     *            Sub-command name
-     * @param addHelp
-     *            If true, {@code -h/--help} are available. If false, they are
-     *            not.
-     * @param prefixChars
-     *            The set of characters that prefix named arguments.
-     * @return {@link Subparser} object
-     */
-    Subparser addParser(String command, boolean addHelp, String prefixChars);
+public interface Subparsers extends SubparserContainer {
 
     /**
      * Sets the name of attribute which the selected command name is stored.
-     * 
+     *
      * @param dest
      *            The name of attribute the selected command name is stored.
      * @return this.
@@ -103,7 +44,7 @@ public interface Subparsers {
 
     /**
      * Sets the text to display in the help message for sub-commands.
-     * 
+     *
      * @param help
      *            The text to display in the help message.
      * @return this
@@ -118,7 +59,7 @@ public interface Subparsers {
      * If either title or description({@link #description(String)}) is
      * specified, sub-command help will be displayed in its own group.
      * </p>
-     * 
+     *
      * @param title
      *            The text to display as a title of sub-commands
      * @return this
@@ -134,7 +75,7 @@ public interface Subparsers {
      * If either description or title({@link #title(String)}) is specified,
      * sub-command help will be displayed in its own group.
      * </p>
-     * 
+     *
      * @param description
      *            The text to display to briefly describe sub-commands
      * @return this
@@ -151,10 +92,25 @@ public interface Subparsers {
      * arbitrary string to use. This is useful if there are many sub-commands
      * and you don't want to show them all.
      * </p>
-     * 
+     *
      * @param metavar
      *            The text used to represent sub-commands in help messages
      * @return this
      */
     Subparsers metavar(String metavar);
+
+    /**
+     * <p>
+     * Adds a new SubparserGroup to the Subparsers instance.
+     * </p>
+     * <p>
+     * SubparserGroups allow to group Suparser objects into logical groups.
+     * Subparsers within a SubparserGroup are displayed separated from other
+     * Subparsers within the help menu and accept a custom title for the
+     * group.
+     * </p>
+     *
+     * @return new created SubparserGroup instance
+     */
+    SubparserGroup addSubparserGroup();
 }
