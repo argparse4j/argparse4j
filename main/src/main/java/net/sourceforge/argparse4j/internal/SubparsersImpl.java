@@ -24,7 +24,6 @@
 package net.sourceforge.argparse4j.internal;
 
 import java.io.PrintWriter;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -37,59 +36,22 @@ import net.sourceforge.argparse4j.helper.MessageLocalization;
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.FeatureControl;
-import net.sourceforge.argparse4j.inf.Subparsers;
 import net.sourceforge.argparse4j.inf.SubparserGroup;
+import net.sourceforge.argparse4j.inf.Subparsers;
 
 /**
  * <strong>The application code must not use this class directly.</strong>
  */
-public final class SubparsersImpl implements Subparsers {
+public final class SubparsersImpl extends SubparserGroupImpl implements Subparsers {
 
-    private final ArgumentParserImpl mainParser_;
-    /**
-     * The key is subparser command or alias name and value is subparser object.
-     * The real command and alias names share the same subparser object. To
-     * identify the aliases, check key equals to
-     * {@link SubparserImpl#getCommand()}. If they are equal, it is not alias.
-     */
-    private final Map<String, SubparserImpl> parsers_ = new LinkedHashMap<>();
     private final Set<SubparserGroupImpl> subparsers_ = new LinkedHashSet<SubparserGroupImpl>();
     private String help_ = "";
-    private String title_ = "";
     private String description_ = "";
     private String dest_ = "";
     private String metavar_ = "";
 
     SubparsersImpl(ArgumentParserImpl mainParser) {
-        mainParser_ = mainParser;
-    }
-
-    @Override
-    public SubparserImpl addParser(String command) {
-        return addParser(command, true, mainParser_.getPrefixChars());
-    }
-
-    @Override
-    public SubparserImpl addParser(String command, boolean addHelp) {
-        return addParser(command, addHelp, mainParser_.getPrefixChars());
-    }
-
-    @Override
-    public SubparserImpl addParser(String command, boolean addHelp,
-            String prefixChars) {
-        if (command == null || command.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "command cannot be null or empty");
-        } else if (parsers_.containsKey(command)) {
-            throw new IllegalArgumentException(String.format(
-                    TextHelper.LOCALE_ROOT,
-                    "command '%s' has been already used", command));
-        }
-        SubparserImpl parser = new SubparserImpl(
-                mainParser_.getConfig().forSubparser(addHelp, prefixChars),
-                command, mainParser_);
-        parsers_.put(command, parser);
-        return parser;
+        super(mainParser);
     }
 
     public SubparserGroup addSubparserGroup() {
@@ -116,10 +78,6 @@ public final class SubparsersImpl implements Subparsers {
         return this;
     }
 
-    public String getTitle() {
-        return title_;
-    }
-
     @Override
     public SubparsersImpl description(String description) {
         description_ = TextHelper.nonNull(description);
@@ -144,26 +102,6 @@ public final class SubparsersImpl implements Subparsers {
             parsers.putAll(subparsersGroup.getParsers());
 
         return parsers;
-    }
-
-    boolean hasSubCommand() {
-        return !getParsers().isEmpty();
-    }
-
-    /**
-     * Return true if SubparserImpl has at least one sub-command whose help
-     * output is not suppressed.
-     *
-     * @return true if SubparserImpl has at least one sub-command whose help
-     *         output is not suppressed.
-     */
-    boolean hasNotSuppressedSubCommand() {
-        for (Map.Entry<String, SubparserImpl> entry : getParsers().entrySet()) {
-            if (entry.getValue().getHelpControl() != FeatureControl.SUPPRESS) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -270,37 +208,6 @@ public final class SubparsersImpl implements Subparsers {
 
             if( iterator.hasNext() )
                 writer.println();
-        }
-    }
-
-    /**
-     * Returns collection of the sub-command name under this object.
-     *
-     * @return collection of the sub-command name
-     */
-    Collection<String> getCommands() {
-        return getParsers().keySet();
-    }
-
-    /**
-     * Adds Subparser alias names for given Subparser. For each SubparsersImpl
-     * instance, alias names and commands must be unique. If duplication is
-     * found, {@link IllegalArgumentException} is thrown.
-     *
-     * @param subparser
-     *            Subparser to add alias names
-     * @param alias
-     *            alias name
-     */
-    void addAlias(SubparserImpl subparser, String... alias) {
-        for (String command : alias) {
-            if (parsers_.containsKey(command)) {
-                throw new IllegalArgumentException(String.format(
-                        TextHelper.LOCALE_ROOT,
-                        "command '%s' has been already used", command));
-            } else {
-                parsers_.put(command, subparser);
-            }
         }
     }
 

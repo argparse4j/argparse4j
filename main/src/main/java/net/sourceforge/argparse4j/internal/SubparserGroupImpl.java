@@ -30,40 +30,39 @@ import java.util.Map;
 
 import net.sourceforge.argparse4j.helper.TextHelper;
 import net.sourceforge.argparse4j.inf.FeatureControl;
-import net.sourceforge.argparse4j.inf.Subparser;
 import net.sourceforge.argparse4j.inf.SubparserGroup;
 
 /**
  * <strong>The application code must not use this class directly.</strong>
  */
-public final class SubparserGroupImpl implements SubparserGroup {
+public class SubparserGroupImpl implements SubparserGroup {
 
-    private final ArgumentParserImpl mainParser_;
+    protected final ArgumentParserImpl mainParser_;
     /**
      * The key is subparser command or alias name and value is subparser object.
      * The real command and alias names share the same subparser object. To
      * identify the aliases, check key equals to
      * {@link SubparserImpl#getCommand()}. If they are equal, it is not alias.
      */
-    private final Map<String, SubparserImpl> parsers_ = new LinkedHashMap<>();
-    private String title_ = "";
+    protected final Map<String, SubparserImpl> parsers_ = new LinkedHashMap<>();
+    protected String title_ = "";
 
     SubparserGroupImpl(ArgumentParserImpl mainParser) {
         mainParser_ = mainParser;
     }
 
     @Override
-    public Subparser addParser(String command) {
+    public SubparserImpl addParser(String command) {
         return addParser(command, true, mainParser_.getPrefixChars());
     }
 
     @Override
-    public Subparser addParser(String command, boolean addHelp) {
+    public SubparserImpl addParser(String command, boolean addHelp) {
         return addParser(command, addHelp, mainParser_.getPrefixChars());
     }
 
     @Override
-    public Subparser addParser(String command, boolean addHelp,
+    public SubparserImpl addParser(String command, boolean addHelp,
             String prefixChars) {
         if (command == null || command.isEmpty()) {
             throw new IllegalArgumentException(
@@ -94,7 +93,7 @@ public final class SubparserGroupImpl implements SubparserGroup {
         return parsers_;
     }
 
-    public void printSubparserHelp(PrintWriter writer, int format_width) {
+    void printSubparserHelp(PrintWriter writer, int format_width) {
         if (!title_.isEmpty()) {
             writer.println(" " + title_);
         }
@@ -107,8 +106,25 @@ public final class SubparserGroupImpl implements SubparserGroup {
         }
     }
 
+    /**
+     * Checks whether the SubparserGroup contains at least one Subparser.
+     *
+     * @return true if at least one Subparser is present in the group
+     */
     boolean hasSubCommand() {
-        return !parsers_.isEmpty();
+        return !getParsers().isEmpty();
+    }
+
+    /**
+     * Checks whether the specified key already exists within the parsers_ map.
+     *
+     * @param key
+     *             the key to check for
+     * @return true if the key does already exist
+     */
+    boolean containsKey(String key)
+    {
+        return getParsers().containsKey(key);
     }
 
     /**
@@ -119,7 +135,7 @@ public final class SubparserGroupImpl implements SubparserGroup {
      *         output is not suppressed.
      */
     boolean hasNotSuppressedSubCommand() {
-        for (Map.Entry<String, SubparserImpl> entry : parsers_.entrySet()) {
+        for (Map.Entry<String, SubparserImpl> entry : getParsers().entrySet()) {
             if (entry.getValue().getHelpControl() != FeatureControl.SUPPRESS) {
                 return true;
             }
@@ -133,7 +149,7 @@ public final class SubparserGroupImpl implements SubparserGroup {
      * @return collection of the sub-command name
      */
     Collection<String> getCommands() {
-        return parsers_.keySet();
+        return getParsers().keySet();
     }
 
     /**
@@ -148,7 +164,7 @@ public final class SubparserGroupImpl implements SubparserGroup {
      */
     void addAlias(SubparserImpl subparser, String... alias) {
         for (String command : alias) {
-            if (parsers_.containsKey(command)) {
+            if (containsKey(command)) {
                 throw new IllegalArgumentException(String.format(
                         TextHelper.LOCALE_ROOT,
                         "command '%s' has been already used", command));
